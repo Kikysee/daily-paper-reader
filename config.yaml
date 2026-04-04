@@ -25,3 +25,62 @@ subscriptions:
     stage: A
     diff_threshold_pct: 15
   keyword_recall_mode: or
+  intent_profiles:
+    - tag: 遥感农业
+      description: 请帮我查利用遥感技术进行作物参数估计和土壤水分的文章
+      enabled: true
+      paper_sources:
+        - arxiv
+      keywords:
+        - keyword: soil moisture
+          keyword_cn: 土壤水分
+          query: soil moisture retrieval
+        - keyword: crop parameter estimation
+          keyword_cn: ''
+          query: crop parameter estimation
+        - keyword: remote sensing
+          keyword_cn: 遥感
+          query: remote sensing technology applications
+        - keyword: crop parameter
+          keyword_cn: 作物参数
+          query: crop parameter estimation
+        - keyword: agriculture
+          keyword_cn: 农业
+          query: agricultural remote sensing
+      intent_queries:
+        - query: Soil moisture retrieval from microwave remote sensing
+          query_cn: ''
+          enabled: true
+          source: manual
+          note: ''
+        - query: Using SAR backscatter to estimate crop biophysical parameters like LAI and biomass
+          query_cn: ''
+          enabled: true
+          source: manual
+          note: ''
+        - query: Methods for soil moisture retrieval using remote sensing
+          query_cn: 利用遥感反演土壤水分的方法
+          enabled: true
+          source: manual
+          note: ''
+        - query: Applications of remote sensing in agriculture for crop and soil monitoring
+          query_cn: 遥感在农业中用于作物和土壤监测的应用
+          enabled: true
+          source: manual
+          note: ''
+      updated_at: '2026-04-04T14:36:23.623Z'
+source_backends:
+  arxiv:
+    papers_table: arxiv_papers
+    use_vector_rpc: true
+    vector_rpc: match_arxiv_papers
+    vector_rpc_exact: match_arxiv_papers_exact
+    use_bm25_rpc: true
+    bm25_rpc: match_arxiv_papers_bm25
+    sync_table: arxiv_sync_status
+    sync_success_value: success
+    schema: public
+    kind: supabase
+    enabled: true
+    url: https://lyucdwgefyfbmaiopjbk.supabase.co
+    anon_key: sb_publishable_lX-oi64Uxyd7SIVv3_w2Uw_MTOojeKq
