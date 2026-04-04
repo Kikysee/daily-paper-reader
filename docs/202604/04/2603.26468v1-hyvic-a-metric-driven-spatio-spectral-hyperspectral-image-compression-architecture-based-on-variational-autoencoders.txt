@@ -1,0 +1,888 @@
+Title: HyVIC: A Metric-Driven Spatio-Spectral Hyperspectral Image Compression Architecture Based on Variational Autoencoders
+
+URL Source: https://arxiv.org/pdf/2603.26468v1
+
+Published Time: Mon, 30 Mar 2026 01:17:46 GMT
+
+Number of Pages: 14
+
+Markdown Content:
+> JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 1
+
+# HyVIC: A Metric-Driven Spatio-Spectral Hyperspectral Image Compression Architecture Based on Variational Autoencoders 
+
+Martin Hermann Paul Fuchs , Behnood Rasti , Senior Member, IEEE , and Beg¨ um Demir , Senior Member, IEEE 
+
+Abstract —The rapid growth of hyperspectral data archives in remote sensing (RS) necessitates effective compression methods for storage and transmission. Recent advances in learning-based hyperspectral image (HSI) compression have significantly enhanced both reconstruction fidelity and compression efficiency. However, existing methods typically adapt variational image compression models designed for natural images, without ad-equately accounting for the distinct spatio-spectral redundancies inherent in HSIs. In particular, they lack explicit architectural designs to balance spatial and spectral feature learning, limiting their ability to effectively leverage the unique characteristics of hyperspectral data. To address this issue, we introduce spatio-spectral variational hyperspectral image compression architec-ture (HyVIC). The proposed model comprises four main com-ponents: 1) adjustable spatio-spectral encoder; 2) spatio-spectral hyperencoder; 3) spatio-spectral hyperdecoder; and 4) adjustable spatio-spectral decoder. We demonstrate that the trade-off be-tween spatial and spectral feature learning is crucial for the reconstruction fidelity, and therefore present a metric-driven strategy to systematically select the hyperparameters of the pro-posed model. Extensive experiments on two benchmark datasets demonstrate the effectiveness of the proposed model, achieving high spatial and spectral reconstruction fidelity across a wide range of compression ratios (CRs) and improving the state of the art by up to 4.66 dB in terms of BD-PSNR. Based on our results, we offer insights and derive practical guidelines to guide future research directions in learning-based variational HSI compression. Our code and pre-trained model weights are publicly available at https://git.tu-berlin.de/rsim/hyvic. 
+
+Index Terms —Hyperspectral image compression, spatio-spectral feature learning, rate–distortion optimization, varia-tional autoencoder, deep learning, remote sensing. 
+
+I. I NTRODUCTION 
+
+# HYPERSPECTRAL sensors deployed on satellites, air-craft, and unmanned aerial vehicles (UAVs) provide rich spectral information, enabling accurate identification and dis-crimination of materials on the Earth’s surface. This supports a wide range of remote sensing (RS) applications, such as climate & environmental monitoring [1], urban mapping & planning [2], defense & security surveillance [3], disaster monitoring [4], and precision agriculture [5]. Ongoing ad-vancements in hyperspectral sensor technology have enabled the acquisition of increasingly detailed spectral and spatial information, which is critical for performing advanced ana-lytical tasks. However, the substantial data volumes generated              
+
+> Martin Hermann Paul Fuchs and Beg¨ um Demir are with the Faculty of Electrical Engineering and Computer Science, Technische Universit¨ at Berlin, 10587 Berlin, Germany and also with the Berlin Institute for the Foundations of Learning and Data (BIFOLD), 10587 Berlin, Germany (e-mail: m.fuchs@tu-berlin.de; demir@tu-berlin.de). Behnood Rasti is an independent researcher. (e-mail: behnood.rasti@gmail.com).
+
+by these sensors pose significant challenges with respect to data storage and transmission. Consequently, the efficient and effective compression of hyperspectral images (HSIs) has emerged as an essential research topic in RS [6]. Numerous HSI compression methods have been proposed in the literature, which can generally be grouped into three categories: i) lossless, e.g. [7], [8]; ii) near-lossless, e.g. [9], [10]; and iii) lossy, e.g. [11], [12] HSI compression. Each category corresponds to a distinct trade-off between reconstruction fidelity and compression efficiency. While loss-less HSI compression enables a perfect reconstruction, the achievable compression ratios (CRs) are typically limited to a factor of 2 – 4 [13]. Near-lossless HSI compression can achieve higher CRs by allowing a small, controllable, and upper-bounded distortion, but the achievable CRs remain limited. In contrast, lossy HSI compression enables substantially higher CRs by selectively discarding perceptually irrelevant and less important information, making it well suited to meet the stringent bandwidth and storage constraints in RS [6]. Traditional methods for lossy HSI compression have been extensively investigated. Early works predominantly rely on conventional signal processing techniques, among which trans-form coding [14] emerged as one of the most widely consid-ered approaches. They derive compact latent representations of hyperspectral data by applying predefined mathematical transformations, followed by coefficient quantization and sub-sequent entropy coding, e.g. [15]–[17]. Despite their demon-strated effectiveness, traditional transform coding methods rely on linear, hand-crafted transformations that are not specifi-cally optimized for the underlying data distribution, thereby limiting their generalization capability across heterogeneous hyperspectral data. To address the limitations of traditional transform cod-ing methods, lossy learning-based HSI compression, which can model complex non-linear relationships, has recently at-tracted great attention. Learning-based models exploit hierar-chical and data-adaptive representations learned from large-scale training datasets and have demonstrated improved rate-distortion (RD) performance as well as enhanced generaliza-tion across diverse scenes [6]. Various learning-based models have been introduced, building upon generative adversar-ial networks (GANs) [18]–[20], implicit neural representa-tions (INR) [21], [22], convolutional autoencoders (CAEs) [23]–[25], and transformer-based autoencoders [26]. Among them, autoencoders have shown particularly strong reconstruc-tion fidelity. They are trained end-to-end and employ one-dimensional (1-D) [23], [26], two-dimensional (2-D) [24], or three-dimensional (3-D) [25] neural network architectures  
+
+> arXiv:2603.26468v1 [cs.CV] 27 Mar 2026 JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 2
+
+to achieve dimensionality reduction and obtain a compact latent representation. However, due to their fixed architec-tural designs, these autoencoders lack mechanisms to dy-namically exploit spectral and spatial redundancies under specific compression requirements and sensor characteristics. Flexible models such as spatio-spectral compression network (S2C-Net) [27] and adjustable spatio-spectral hyperspectral image compression network (HyCASS) [28] address this is-sue by combining spatial and spectral compression blocks to enable adjustable spatio-spectral HSI compression across different CRs and ground sample distances (GSDs). Although adjustable spatio-spectral compression exhibits promising re-sults, existing models are solely based on dimensionality re-duction. Consequently, the latent representations may contain redundant information, which could be leveraged to achieve more efficient compression. To jointly optimize rate and distortion, several learning-based HSI compression models [29]–[31] have been intro-duced that are based on variational autoencoders (VAEs) [32]. These models employ the hyperprior framework [33], [34] from natural image compression to jointly reduce the distortion of the reconstruction and the entropy of the quantized latent representation, given a learned prior probability model, which enables lossless entropy coding of the latent. Despite their advances, existing VAE-based HSI compression models lack proper architectural design to exploit the complex spatio-spectral redundancies inherent in HSIs as they mainly rely on spatial feature learning. As a result, current models are constrained in their ability to fully leverage the unique char-acteristics of HSIs, limiting both the reconstruction fidelity and the achievable CRs. To address these issues, in this paper, we propose spatio-spectral variational hy perspectral image compression architec-ture (HyVIC), a novel metric-driven VAE for HSI compres-sion. The proposed model is made up of: 1) an adjustable spatio-spectral encoder; 2) a spatio-spectral hyperencoder; 3) a spatio-spectral hyperdecoder; and 4) an adjustable spa-tio-spectral decoder. In contrast to existing models, HyVIC specifically leverages the spatio-spectral redundancies of HSIs by incorporating adjustable spatial and spectral model com-ponents, whose hyperparameters are fixed through a metric-driven selection strategy. The proposed model is evaluated on the HySpecNet-11k [35] and the MLRetSet [36] benchmark datasets in order to demonstrate its effectiveness along the RD curve. Our experimental results indicate that variational HSI compression is highly dependent on a balanced trade-off between spatial and spectral feature learning. The main contributions of this paper are summarized as follows:  
+
+> •
+
+We propose an adjustable VAE-based model for lossy spatio-spectral HSI compression that achieves effective compression performance across a wide range of CRs by specifically leveraging both spatial and spectral redundan-cies present in HSIs.  
+
+> •
+
+We demonstrate that the selection of the hyperparameters of the proposed model, which control spatial and spectral feature learning, has a substantial impact on compression performance. To address this, we employ a metric-driven strategy to systematically adapt the model’s hyperparam-eters to the characteristics of HSIs.  
+
+> •
+
+We provide extensive experimental results on two bench-mark datasets, including an ablation study, comparisons with other approaches, and analyses of the reconstruction results and errors, in order to demonstrate the effective-ness and generalization capability of the proposed model.  
+
+> •
+
+Based on our findings, we provide insights and derive practical guidelines that help shape future research in learning-based variational HSI compression. The remaining part of this paper is organized as follows. Section II presents the related work. Section III introduces the proposed model. Section IV describes the considered datasets and provides the experimental setup, while the experimental results are carried out in Section V. Section VI concludes our paper. II. R ELATED WORK 
+
+In this section, we first review recent advances in lossy learning-based HSI compression and subsequently discuss variational image compression methods in both computer vision (CV) and RS. 
+
+A. Lossy Learning-Based HSI Compression 
+
+Lossy learning-based HSI compression has attracted great attention, as it enables high CRs at the cost of a small degree of information loss. Most of the state-of-the-art methods employ the autoencoder architecture, where an encoder performs di-mensionality reduction by transforming the input into a lower-dimensional latent space, and a decoder reconstructs the data from this compressed representation. Existing autoencoder architectures mainly differ in their way of processing the spectral and spatial dimensions. For example, K¨ uster et al. [12], [23] introduce 1D-convolutional autoencoder (1D-CAE) that leverages 1-D convolutions to learn spectral features and 1-D pooling for spectral compression. To increase the achiev-able CRs and exploit spatial redundancies, La Grassa et al. [24] propose spectral signals compressor network (SSCNet), which achieves spatial feature learning and spatial compres-sion through 2-D convolutions and 2-D pooling, respectively. For a joint feature learning and compression of spatio-spectral redundancies, Chong et al. [25] present 3D convolutional auto-encoder (3D-CAE) that stacks multiple 3-D convolu-tions with stride. Motivated by the effectiveness of spectral feature learning at low CRs [35], hyperspectral compression transformer (HyCoT) [26] employs a transformer-based au-toencoder for pixelwise compression of HSI that exploits long-range spectral redundancies. Flexible models such as S2C-Net [27] and HyCASS [28] combine spatial and spectral compression blocks, enabling adjustable spatio-spectral HSI compression that adapts to both compression requirements and sensor characteristics. In addition to autoencoders, Fuchs et al. [18] introduce HiFiC SE , a GAN designed for spatio-spectral compression of HSIs that extends the high fidelity compression (HiFiC) frame-work [37] by incorporating squeeze and excitation (SE) blocks to effectively leverage spectral redundancies alongside spatial redundancies. Another GAN-based model, named multi-scale JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 3
+
+attention spatial-spectral high-fidelity compression network (MSAHiFiC), is proposed by Wan et al. [20], which employs a superprior network to guide RD optimization, enhancing per-formance under constrained bitrate conditions. To strengthen spectral feature modeling, the network employs a multiscale spectral attention module, and they integrate the spectral reconstruction fidelity term into the loss function. Rezasoltani et al. [21] propose conducting lossy HSI compression by using INR, where a multilayer perceptron (MLP) network learns to map pixel locations to their spectral signatures, with the network weights serving as a compressed representation of the HSI. Zhao et al. [22] extend this approach by interpreting hyperspectral data as a video sequence, where each spectral band is treated as an individual frame of information. Vari-ations across spectral bands are modeled as transformations between frames, and neural video representation is used to encode the data within the network parameters. 
+
+B. Variational Image Compression in CV and RS 
+
+Recent advances in CV are largely driven by variational image compression frameworks [33], [34], which have subse-quently inspired similar compression works in RS. Variational image compression is introduced by Ball´ e et al. [38] as a non-linear transform coding approach that can be trained end-to-end. The objective is to reduce the entropy of the latent representation under a prior probability model, referred to as the entropy model, which is shared between the encoder and decoder. This enables end-to-end optimization of both compression efficiency and reconstruction fidelity using a RD loss. In this context, they propose the fully-factorized prior, a convolutional neural network (CNN)-based VAE with a fixed, non-parametric, and fully-factorized entropy model that is learned during training. Building upon this work, Ball´ e et al. [33] propose the scale-only hyperprior, which employs a gaussian scale mixture (GSM) as an image-dependent entropy model. The scale parameters of the GSM are inferred from additionally transmitted side information, denoted as the hy-perlatent, which effectively models the spatial redundancies inside the latent representation. This model is subsequently extended by Minnen et al. [34] to the mean & scale hy-perprior, replacing the GSM with a gaussian mixture model (GMM) and jointly deriving mean and scale parameters from the hyperlatent. Furthermore, they introduce the context + hyperprior model, which extends the mean & scale hyperprior with a complementary autoregressive context model, where both components are jointly optimized. Apart from CNN-based models, hybrid models have been proposed that combine transformer layers with convolutional layers to jointly capture long-range and short-range redundancies [39], [40]. In recent years, several learning-based HSI compression works based on variational image compression have been proposed in RS. For example, Verd´ u et al. [41] introduce a scalable HSI compression model that leverages channel clustering to lower computational demand while enabling adaptation to hyperspectral sensors with varying numbers of spectral bands. This work is further extended in [30] to support multirate compression of panchromatic, multispectral, and hy-perspectral RS images. In [29], Guo et al. propose hyperspec-tral compression network via contrastive learning (HCCNet) to tackle attribute collapse inside the latent representation, which is caused by the inherent properties of HSIs and the effects of quantization during compression. To this end, the network learns discriminative representations instead of relying solely on RD optimization. In [31], Park et al. propose hyperspectral-VAE for joint spatio-spectral compression of HSIs while preserving key atmospheric information. However, existing variational HSI compression models are constrained in effectively leveraging the spatio-spectral redundancies of HSIs, as their architectures do not explicitly facilitate a balanced spatial and spectral feature learning. III. P ROPOSED SPATIO -S PECTRAL VARIATIONAL 
+
+HYPERSPECTRAL IMAGE COMPRESSION ARCHITECTURE 
+
+(HyVIC) Let X ∈ RH×W ×C denote an HSI, where H, W and 
+
+C represent image height, image width and the number of spectral bands, respectively. To compress X, in this paper we focus our attention on variational HSI compression. In particular, we introduce HyVIC to facilitate efficient spatio-spectral HSI compression. The proposed model builds upon the mean & scale hyperprior [34] by introducing adjustable spatial and spectral feature learning blocks that explicitly model the unique spatio-spectral redundancies present in HSIs. Variational HSI compression aims at transforming X into a compact latent representation Y ∈ RΣ×Ω×M with latent height Σ, latent width Ω and M latent channels. Y can be quantized to ˆY ∈ ZΣ×Ω×M and encoded into a bitstream 
+
+b ∈ (0 , 1) L of length L using entropy coding (i.e. arithmetic coding [42]) based on an entropy model. Simultaneously, 
+
+ˆY should preserve sufficient information to enable the lossy reconstruction of ˆX ∈ RH×W ×C with minimal distortion. The training objective is to jointly minimize the expected length of b and the expected distortion between X and ˆX, resulting in a RD optimization problem. As shown in Fig. 1, HyVIC is composed of four main components: i) an adjustable encoder EΦ that transforms the input HSI into its latent representation by exploiting both short-range spatial and long-range spectral redundancies; ii) a hyperencoder EH 
+
+> Ψ
+
+that leverages spatio-spectral redundancies present in the latent to form the hyperlatent; iii) a hyper-decoder DH 
+
+> Γ
+
+that estimates the parameters used for entropy coding from the quantized hyperlatent; and iv) an adjustable decoder DΦ′ that reconstructs the HSI based on the short-range spatial and long-range spectral information present inside the quantized latent. During our experiments, we demonstrate that the adjustable trade-off between spatial and spectral feature learning inside HyVIC has a substantial impact on reconstruction fidelity. To appropriately select these respective hyperparameters, we employ a metric-driven selection strategy that is guided by the Bjøntegaard delta PSNR (BD-PSNR) [43], a quantitative evaluation metric commonly employed in video compression. This ensures a well-balanced trade-off between spatial and spectral feature learning, which optimizes reconstruction quality across the entire RD curve. JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 4
+
+Conv2D 
+
+C → N
+
+1 × 1
+
+> GDN
+
+•
+
+Conv2D 
+
+N → Nk × k
+
+↓2
+
+> GDN
+
+•
+
+Conv2D 
+
+N → M
+
+1 × 1
+
+Q
+
+AE 
+
+AD 
+
+Conv2D 
+
+M → N
+
+1 × 1
+
+> LeakyReLU
+
+Conv2D 
+
+N → Nk × k
+
+↓2
+
+> LeakyReLU
+
+Conv2D 
+
+N → Nk × k
+
+↓2
+
+QH
+
+AE H
+
+AD H
+
+Conv2D 
+
+N → Mk × k
+
+↑2
+
+> LeakyReLU
+
+Conv2D 
+
+M → 32 Mk × k
+
+↑2
+
+> LeakyReLU
+
+Conv2D  
+
+> 32
+
+M → 2M
+
+1 × 1
+
+•
+
+Conv2D 
+
+M → N
+
+1 × 1
+
+> IGDN
+
+•
+
+Conv2D 
+
+N → Nk × k
+
+↑2
+
+> IGDN
+
+•
+
+Conv2D 
+
+N → C
+
+1 × 1
+
+•
+
+ˆY
+
+ˆY
+
+Y Z
+
+ˆZ
+
+ˆZ
+
+ˆμ, ˆσ
+
+ˆμ, ˆσ
+
+S×
+
+S×
+
+EΦ
+
+DΦ′
+
+EH
+
+> Ψ
+
+DH
+
+> Γ
+
+X
+
+ˆX
+
+Fig. 1: Block diagram of the proposed HyVIC model. Initially, the encoder EΦ transforms the input HSI X into its latent representation Y, which is subsequently transformed by the hyperencoder EH 
+
+> Ψ
+
+to the hyperlatent Z. Y and Z are quantized to 
+
+ˆY and ˆZ, compressed into a bitstream and subsequently reconstructed using arithmetic coding. ˆZ serves as side information to estimate both mean ˆμ and scale ˆσ parameters via the hyperdecoder DH 
+
+> Γ
+
+, which are used inside the GMM-based entropy model to encode ˆY. In conrast, ˆZ is encoded using a fully-factorized entropy model. Finally, the decoder DΦ′ reconstructs ˆX
+
+based on ˆY.In detail, the operational flow of HyVIC can be described as follows: First, the encoder EΦ transforms the original HSI 
+
+X into the latent representation Y, which is subsequently processed by the hyperencoder EH 
+
+> Ψ
+
+forming the hyperlatent representation Z. Z is quantized to ˆZ and entropy-coded by the arithmetic encoder AE H into a bitstream, which serves as side information. The arithmetic decoder AD H is used to losslessly reconstruct ˆZ from the bitstream. Both AE H and AD H use the same fixed, non-parametric and fully-factorized entropy model that is learned during training. The hyperdecoder DH 
+
+> Γ
+
+is responsible to transform the hyperlatent ˆZ into both the mean 
+
+ˆμ and scale ˆσ parameters of the conditional GMM used to estimate the probability distribution for the arithmetic encoder (AE) and arithmetic decoder (AD). The quantized latent ˆY is then entropy-coded using the estimated entropy model. Finally, the decoder DΦ′ reconstructs ˆX based on ˆY. A comprehensive description of the proposed model is presented in the following subsections. 
+
+A. HyVIC Encoder 
+
+Initially, the encoder EΦ : RH×W ×C → RΣ×Ω×M of the proposed HyVIC model transforms the original HSI X
+
+into its latent representation Y, where Y = EΦ(X). EΦ
+
+leverages spatio–spectral redundancies by sequentially stack-ing adjustable spectral and spatial processing blocks. First, a pixelwise convolution is applied, which is realized via a 2-D convolutional layer using a 1 × 1 kernel. While 2-D convo-lutions are generally employed to model spatial relationships, using a 1 × 1 kernel guarantees that the convolution operates on each pixel location independently, without combining in-formation from neighboring spatial locations. The pixelwise convolution exploits spectral redundancies across the entire spectrum of each pixel by mapping the high-dimensional num-ber of spectral bands C into a feature space using N filters. Afterwards, a non-linear generalized divisive normalization (GDN) [44] is employed as the activation function, performing local divisive normalization, a transformation that has been demonstrated to be especially effective for image density modeling and compression [38], [44]. Following the spectral feature extraction, HyVIC subsequently leverages the spatial redundancies by stacking an adjustable number of spatial stages S, each consisting of a 2-D convolutional layer that captures local spatial redundancies using a k ×k convolutional kernel with a stride of 2, combined with a GDN activation function. This progressively decreases the spatial dimensions while simultaneously enriching the feature space with spatially contextual information. Afterwards, another pixelwise convo-lution is applied to fuse the attained features maps, yielding the latent representation Y that captures spatio-spectral features. 
+
+Y is subsequently discretized by a quantizer Q :
+
+RΣ×Ω×M → ZΣ×Ω×M , resulting in the quantized latent ˆY =
+
+Q(Y), where Q(Y) = ⌊Y⌉ denotes a rounding operation that JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 5
+
+maps Y to its closest integer. Because quantization yields zero gradients almost everywhere, Q(Y) is substituted with additive uniform noise during training to enable gradient-based optimization [38]. ˆY can be losslessly compressed into a bit-stream via entropy coding, which relies on a prior distribution 
+
+p ˆY ( ˆY). To estimate p ˆY ( ˆY), we employ the mean & scale hyperprior architecture [34], which introduces a hyperencoder and a hyperdecoder. 
+
+B. HyVIC Hyperencoder 
+
+The HyVIC hyperencoder EH 
+
+> Ψ
+
+: RΣ×Ω×M → RΠ×Ξ×N
+
+transforms the latent Y into the hyperlatent Z, where Z =
+
+EH 
+
+> Ψ
+
+(Y). Z contains side information that models the spatio-spectral redundancies among the elements of Y. First, spectral information is extracted via a pixelwise convolution that reduces the channel dimension from M to N . A leaky rectified linear unit (LeakyReLU) is applied to introduce non-linearity and enhance the capability to learn complex patterns from data. Subsequently, two 2-D convolutional layers with kernel size k
+
+and stride 2 are applied to integrate spatial redundancies into 
+
+Z, thereby producing a compact hyperlatent representation that captures both spectral and spatial information. An additional LeakyReLU activation function is present between these two layers to enable the model to capture complex non-linear relationships. Discretization is achieved via the quantizer QH :
+
+RΠ×Ξ×N → ZΠ×Ξ×N , where ˆZ = QH(Z). As in the HyVIC encoder, quantization is replaced by additive uniform noise during training. The quantized hyperlatent ˆZ is entropy-coded and transmitted as side information. This is done via AE H and AD H that share a fixed, non-parametric and fully-factorized entropy model [38], which is learned during traning. 
+
+C. HyVIC Hyperdecoder 
+
+The hyperdecoder DH 
+
+> Γ
+
+: ZΠ×Ξ×N → RΣ×Ω×M ×RΣ×Ω×M
+
+of HyVIC uses the quantized hyperlatent ˆZ to estimate the spatial distribution of means ˆμ and the spatial distribution of standard deviations ˆσ, i.e., (ˆμ, ˆσ) = DH 
+
+> Γ
+
+(ˆZ). ˆμ and ˆσ
+
+are used inside the GMM to perform entropy coding. DH
+
+> Γ
+
+provides an image-dependent entropy model, which effectively reduces the expected bitrate. The transmission of additional side information for each HSI has been shown to require fewer bits than the encoding of every HSI based on a fixed entropy model [34]. To effectively model ˆμ and ˆσ, DH 
+
+> Γ
+
+first restores the spatial dimension using two 2-D convolutional layers with kernel size k and a stride of 2, thereby performing learned up-sampling. To enhance the representational capacity, the num-ber of feature channels is increased to M and 32 M in the first and second convolutional layer, respectively, following [34]. Each convolution is followed by a LeakyReLU activation to introduce non-linearity and improve the modeling of complex spatial dependencies. Afterwards, a pixelwise convolution is employed to fuse the spatial feature maps across all channels, resulting in a joint spatio-spectral feature representation. In this process, the channel dimension is increased from 32 M to 
+
+2M , as both ˆμ and ˆσ require M channels each. Each element ˆYi is modeled as a Gaussian with mean μi
+
+and standard deviation σi, convolved with a standard uniform distribution [34]: 
+
+p ˆY ( ˆY) = Y
+
+> i
+
+
+
+N  μi, σ 2
+
+> i
+
+ ∗ U 
+
+
+
+− 12 , 12
+
+ 
+
+( ˆYi). (1) Based on this conditional GMM, arithmetic coding [42] is employed, which compresses and reconstructs ˆY using AE and AD, respectively. 
+
+D. HyVIC Decoder 
+
+Finally, the HyVIC decoder DΦ′ : ZΣ×Ω×M → RH×W ×C
+
+is responsible for reconstructing ˆX based on the quantized latent ˆY, where ˆX = DΦ′ ( ˆY). This is achieved by first extracting spectral features with a pixelwise convolution that reduces the channels from M to N . An inverse generalized divisive normalization (IGDN) [44] is subsequently employed as the activation function, as studies have demonstrated its effectiveness in the context of image compression [38], [44]. Afterwards, a 2-D convolutional layer with kernel size k and a stride of 2 in combination with an IGDN activation is stacked S times, to progressively recover spatial information and restore the original image resolution. Finally, the spatio-spectral feature maps are further fused along the spectral dimension by a pixelwise convolution, which simultaneously adjusts the number of output channels to match the number of spectral bands C.
+
+E. Rate-Distortion Loss 
+
+To train HyVIC, we formulate the training objective as a RD optimization problem with a Lagrangian multiplier λ. The corresponding RD loss LRD is given as: 
+
+LRD = LR + λ · L D
+
+= 1
+
+H · W · C · EX∼pX [− log 2 p ˆY ( ˆY) − log 2 pˆZ(ˆZ)] + λ · EX∼pX [D(X, ˆX)] ,
+
+(2) where LR represents the normalized bitrate required to en-code the latent and hyperlatent. LD denotes the distortion introduced by the compression model, evaluated over the sensor-specific dynamic range, and λ is a Lagrange multi-plier determining the desired trade-off between compression efficiency and reconstruction quality. pX denotes the unknown probability distribution of the original HSIs. p ˆY and pˆZ are the learned entropy models of the quantized latent and hyperlatent, respectively. As the distortion measure, we employ the mean squared error (MSE) defined as: MSE (X, ˆX) = 1
+
+H · W · C
+
+X
+
+> h,w,c
+
+
+
+X(h, w, c ) − ˆX(h, w, c )
+
+2
+
+.
+
+(3) Thus, since D(X, ˆX) corresponds to a Gaussian likelihood with closed-form expression, HyVIC can be interpreted as a VAE [32]. JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 6
+
+IV. D ATASET DESCRIPTION AND EXPERIMENTAL SETUP 
+
+A. Dataset Description 
+
+To assess the performance of the proposed model, we car-ried out our experiments on two benchmark datasets described in the following. 
+
+1) HySpecNet-11k: HySpecNet-11k [35] is a large-scale hyperspectral benchmark dataset constructed from 250 tiles acquired by the Environmental Mapping and Analysis Pro-gram (EnMAP) satellite [45]. The dataset comprises 11 ,483 
+
+nonoverlapping HSIs with a GSD of 30 m and a spectral range of 420 – 2,450 nm . Each HSI consist of 128 × 128 pixels and 202 spectral bands . The data is radiometrically, geometrically, and atmospherically corrected (i.e., the L2A water & land product). We used the recommended splits from [35] for training, validation, and test sets covering 70 % , 20 % ,and 10 % of the HSIs, respectively. Fig. 2 illustrates example images from this dataset. 
+
+2) MLRetSet: MLRetSet [36] is a hyperspectral benchmark dataset with a GSD of 27 .86 cm derived from twelve tiles acquired during an airborne flight covering the Turkish towns Yenice and Yes ¸ilkaya on 4 May 2019. The dataset comprises 
+
+3,840 nonoverlapping HSIs of size 100 × 100 pixels with 
+
+369 spectral bands each. We split the data into i) a training set that includes 70 % of the HSIs; ii) a validation set that includes 20 % of the HSIs; and iii) test set that includes 10 % 
+
+of the HSIs. Fig. 3 shows exemplary images of this dataset. 
+
+B. Experimental Setup 
+
+Our implementation is based on PyTorch and the Com-pressAI framework [46]. For the HySpecNet-11k dataset, we followed the easy split as introduced in [35]. For the MLRetSet dataset, the HSIs were center-cropped to 96 × 96 pixels 
+
+to facilitate successive spatial downsampling by factors of two, consistent with the requirements of spatial and spatio-spectral compression models. Training runs were carried out on a single NVIDIA A100 GPU with 40 GB of VRAM. Following [34], we employ two Adam optimizers [47]: a main optimizer for all parameters excluding those of the entropy model, and an auxiliary (aux) optimizer for the entropy model parameters, with learning rates (LRs) of 10 −4 and 10 −3,respectively. The batch size (BS) was set to 16 and the number of epochs to 150 based on empirical observations balancing loss convergence, training time and final model performance. Kernel sizes k ∈ { 3, 5, 7} were considered in our experiments to assess the impact of the spatial receptive field on the reconstruction fidelity. The number of spatial stages S inside HyVIC encoder and decoder was varied between 0 × and 4 ×
+
+to evaluate the effect of different levels of spatial processing. To account for different transform capacities, we varied M ∈{384 , 768 , 1024 , 1280 }, while fixing the hyperlatent channels to N = 35 M in order to reduce the search space and follow the design in [33]. To obtain different CRs for each model and create a RD curve covering a wide range of CRs, we vary 
+
+λ ∈ { 10 −7, 10 −6, 10 −5, 10 −4, 10 −2, 1, 10 2, 10 4} throughout our experiments. For entropy coding, we employed the asym-metric numeral systems (ANS) [48] within AE, AD, AE H and TABLE I: Selected hyperparameter values used for training.                                   
+
+> Hyperparameter Value Epochs 150
+> BS 16
+> LR (main, aux) (10 −4,10 −3)
+> λ{10 −7,10 −6,10 −5,10 −4,10 −2,1,10 2,10 4}
+> S{0×,1×,2×,3×,4×}
+> (M,N){(384 ,230 ), ( 768 ,460 ), ( 1024 ,614 ), ( 1280 ,768 )}
+> k{3,5,7}
+
+AD H. An overview of all hyperparameters used in this study is provided in Table I. We compare HyVIC with two traditional compression ap-proaches, namely JPEG2000 and principle component analysis (PCA), as well as the following state-of-the-art learning-based models: 1) 1D-CAE [23], a spectral compression model; 2) SSCNet [24], a CAE performing spatial compres-sion; 3) 3D-CAE [25], a spatio-spectral compression model; 4) HyCoT [26], a transformer-based autoencoder exploiting long-range spectral redundancies for pixelwise compression; 5) HiFiC SE [18], a GAN-based spatio-spectral compression model; 6) HyCASS [28], an adjustable compression model in both spectral and spatial dimensions; 7) Verd´ u et al. [30], a VAE based on channel clustering; 8) hyperspectral-VAE [31], a VAE for joint data compression and component ex-traction of HSIs; 9) MSAHiFiC [20], a super-prior driven high-fidelity spectral attention network; and 10) mean & scale hyperprior [34], a variational image compression model that employs spatially adaptive Gaussian entropy modeling. For a fair comparison, we chose different training epochs, LRs, and BSs per model and dataset to balance training time and GPU memory usage while ensuring loss convergence in each training run. The corresponding hyperparameters were determined empirically through preliminary grid search and subsequent analysis of the results. 
+
+C. Evaluation Metrics 
+
+For the assessment of the HSI compression methods, we employ two kinds of metrics: i) metrics that quantify com-pression efficiency (rate); and i) metrics that quantify recon-struction fidelity (distortion). In our experiments we use the CR to measure the data reduction, while peak signal-to-noise ratio (PSNR), BD-PSNR, spectral angle (SA), and structural similarity index measure (SSIM) are used to measure the re-construction quality. Given an original HSI X ∈ RH×W ×C , its reconstruction ˆX ∈ RH×W ×C , and the compressed bitstream 
+
+b ∈ { 0, 1}L, the metrics are defined as follows. 
+
+1) Compression Ratio (CR): The compression efficiency is evaluated using the CR as a metric. The CR between X with bit depth Nb and b, which includes both latent and hyperlatent, of length L can be expressed as follows: CR (X, b) = Nb · H · W · CL . (4) A higher CR corresponds to stronger compression of the hyperspectral data, which typically results in lower reconstruc-tion fidelity due to the loss of information. JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 7
+
+EnMAP data ©DLR [2022] All rights reserved. Fig. 2: True color representations of exemplary HSIs present in the HySpecNet-11k dataset [35]. 
+
+Fig. 3: True color representations of examplary HSIs present in the MLRetSet dataset [36]. 
+
+2) Peak Signal-to-Noise Ratio (PSNR): To evaluate the reconstruction quality, we employ the PSNR between X and 
+
+ˆX, defined as: PSNR 
+
+
+
+X, ˆX
+
+
+
+= 10 · log 10 
+
+ MAX 2
+
+MSE 
+
+
+
+X, ˆX
+
+ , (5) where MAX denotes the maximum possible pixel value, and the MSE is defined as in Equation 3. The PSNR is a widely used metric to quantify the quality of a reconstructed image. A higher PSNR value indicates improved reconstruction quality, which corresponds to a reduced distortion. 
+
+3) Bjøntegaard Delta PSNR (BD-PSNR): The BD-PSNR [43] is a metric commonly employed in the evaluation of video codecs. In the context of HSI compression, it quantifies the average difference in reconstruction quality (as PSNR in decibels ( dB )) between two RD curves at the same CR. The BD-PSNR between two compression models A and B, can be defined as follows: BD-PSNR (A, B ) = 1
+
+CR max − CR min 
+
+Z CR max 
+
+> CR min
+
+PSNR A (CR ) − PSNR B (CR ) dCR ,
+
+(6) where CR min and CR max denote the range of integration and the continuous RD curves are calculated using the Akima interpolation [49]. Positive BD-PSNR values indicate that compression model A provides on average a better reconstruc-tion quality than the reference model B.
+
+4) Spectral Angle (SA): To quantify the average spectral distortion between X and ˆX, we report the SA defined as: SA 
+
+
+
+X, ˆX
+
+
+
+= 1
+
+H · W
+
+X
+
+> h,w
+
+180 
+
+π arccos ⟨X (h, w ) , ˆX (h, w )⟩∥ X (h, w ) ∥2 · ∥ ˆX (h, w ) ∥2
+
+!
+
+,
+
+(7) where ⟨· , ·⟩ and ∥ · ∥ 2 denote the dot product and the Euclidean norm, respectively. A lower SA corresponds to higher spectral similarity and is inherently scale-invariant. 
+
+5) Structural Similarity Index Measure (SSIM): To assess the perceived spatial quality of a reconstruction, we use the SSIM defined as: SSIM 
+
+
+
+X, ˆX
+
+
+
+= (2 · μX μ ˆX + c1) · (2 · σX ˆX + c2)(μ2 
+
+> X
+
++ μ2ˆX + c1) · (σ2 
+
+> X
+
++ σ2ˆX + c2) , (8) where μX and μ ˆX are the means, σ2 
+
+> X
+
+and σ2ˆX are the variances and σX ˆX is the covariance of X and ˆX. c1 and c2 are constants to provide stability against weak denominators. The SSIM metric ranges from −1 to 1, with higher values indicating better perceptual reconstruction quality. V. E XPERIMENTAL RESULTS 
+
+To assess the performance of the proposed HyVIC model, we carried out different kinds of experiments in order to: 1) conduct an ablation study of HyVIC while jointly per-forming metric-driven hyperparameter selection; 2) compare HyVIC with the state of the art; and 3) analyze the reconstruc-tion results with respect to spatial and spectral reconstruction fidelity. JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 8
+
+A. Ablation Study and Metric-Driven Hyperparameter Selec-tion 
+
+In this subsection, we analyze the impact of HyVIC’s kernel size k, spatial stages S, latent channels M , and hyperlatent channels N on the reconstruction quality across multiple CRs using the HySpecNet-11k benchmark dataset. Based on the results, we employ a metric-driven hyperparameter selection strategy using the BD-PSNR metric to systematically adapt the hyperparameters of HyVIC to the characteristics of HSIs. 
+
+1) Kernel Size: The size k of the convolutional kernels determines the extent of the spatial receptive field within the four components of HyVIC. The effect of different values of 
+
+k ∈ { 3, 5, 7} on the reconstruction quality, memory usage and computational complexity is shown in Fig. 4. To this end, the remaining hyperparameters of HyVIC are fixed to 
+
+S = 2, M = 768 , and N = 460 , as this configuration provides a reasonable trade-off between spatial and spectral feature learning. As shown in Fig. 4 (a), a small receptive field of k = 3 consistently achieves the best reconstruction quality across all three λ values, where a higher λ indicates a lower CR. In particular, k = 3 yields PSNR improvements of 1.03 dB and 1.25 dB for λ = 10 −6, 0.64 dB and 0.60 dB 
+
+for λ = 10 −2, and 1.46 dB and 2.80 dB for λ = 10 4,compared to k = 5 and k = 7 , respectively. On average, these gains correspond to relative PSNR improvements of 2.26 % 
+
+and 3.38 % , respectively. These results suggest that the most relevant spatial redundancies are predominantly concentrated in the immediate neighborhood, thereby limiting the benefit of modeling broader spatial context. This behavior can largely be attributed to the low spatial resolution of RS HSIs. Moreover, Fig. 4 (b) and (c) demonstrate that using k = 3 
+
+substantially reduces both model size and computational com-plexity, as smaller kernels inherently require fewer parameters and floating point operations (FLOPs). Specifically, using 
+
+k = 3 reduces the number of parameters by 67 .96 % and 
+
+84 .91 % and the FLOPs by 65 .3 % and 82 .9 % compared to 
+
+k = 5 and k = 7 , respectively. We would like to note that the number of parameters and FLOPs is determined solely by the model architecture and are therefore independent of λ.Overall, the results demonstrate that, despite the increased representational capacity of larger convolutional kernels, a kernel size of k = 3 consistently achieves superior reconstruc-tion fidelity while substantially reducing both model size and computational complexity. Therefore, k = 3 is selected for all subsequent experiments. It is noted that the findings regarding the kernel size were also confirmed through experiments on the MLRetSet dataset (not reported for space constraints). 
+
+2) Spatial Stages, Latent and Hyperlatent Channels: Fig. 5 presents the ablation study of HyVIC with respect to the spatial stages S, latent channels M , and hyperlatent channels N . To evaluate both spatial and spectral reconstruction fidelity, the RD curves are visualized using (a) PSNR, (b) SSIM, and (c) SA as distortion metrics, with the rate expressed as CR on a logarithmic scale. By analyzing the RD curves associated to different values of S in Fig. 5 (a), one can observe that the choice of S
+
+has a significant impact on the reconstruction fidelity with its effect varying depending on the CR. As an example, in 
+
+λ = 10 −6 λ = 10 −2 λ = 10 4
+
+40 
+
+45 
+
+50 
+
+> PSNR [ dB ]
+
+k = 3 
+
+k = 5 
+
+k = 7 
+
+> (a) Reconstruction quality
+
+50 
+
+100 
+
+150 
+
+> Parameters [ M]
+> (b) Memory usage
+
+200 
+
+400 
+
+600 
+
+800 
+
+> FLOPs [ G]
+> (c) Computational complexity
+
+Fig. 4: Ablation study of kernel size k on (a) reconstruction quality evaluated as PSNR, (b) memory usage in terms of parameter count, and (c) computational complexity measured in FLOPs. Results are reported on the HySpecNet-11k [35] test set (easy split) for three λ values, while fixing S = 2 ,
+
+M = 768 , and N = 460 .the case of zero spatial stages ( S = 0 ×), where HyVIC relies solely on spectral feature learning for the latent rep-resentation, the reconstruction quality decreases notably at higher CRs. This behavior can be attributed to the fact that spatial redundancies are not exploited with 0 × spatial stages, although they become increasingly important under stronger compression constraints [28]. In addition, the hyperencoder benefits from spatial structure in the latent representation to more effectively model the underlying probability distribution. In contrast, configurations with 3 × and 4 × spatial stages exhibit reduced reconstruction fidelity at lower CRs, where preserving spectral information is more crucial [28]. In this CR regime, excessive spatial downsampling limits the model’s ability to accurately reconstruct spectral content. As mentioned in [33], lower CRs require higher M and N ,but beyond a certain point, further increasing the transform ca-pacity results in only marginal improvements. This behavior is also evident in Fig. 5 (a), where increasing M and N improves the reconstruction quality. Given the high number of spectral bands in HSIs, higher M and N are required compared to natural images. However, the performance saturates relatively early, suggesting that the latent and hyperlatent dimensions do not increase proportionally with the number of input channels. The trends observed for PSNR in Fig. 5 (a) are consistent across other distortion metrics, as shown in (b) for SSIM and (c) for SA. Overall, the results demonstrate that the proposed model achieves a balanced spatio-spectral compression, effec-tively preserving both spatial structure and spectral coherence. To enable a justified selection of HyVIC’s hyperparameters, we employ the BD-PSNR metric to reduce each RD curve JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 9                                                                                                                    
+
+> S=0×,M=384 ,N=230 S=1×,M=384 ,N=230 S=2×,M=384 ,N=230 S=3×,M=384 ,N=230 S=4×,M=384 ,N=230
+> S=0×,M=768 ,N=460 S=1×,M=768 ,N=460 S=2×,M=768 ,N=460 S=3×,M=768 ,N=460 S=4×,M=768 ,N=460
+> S=0×,M=1,024 ,N=614 S=1×,M=1,024 ,N=614 S=2×,M=1,024 ,N=614 S=3×,M=1,024 ,N=614 S=4×,M=1,024 ,N=614
+> S=0×,M=1,280 ,N=768 S=1×,M=1,280 ,N=768 S=2×,M=1,280 ,N=768 S=3×,M=1,280 ,N=768 S=4×,M=1,280 ,N=768
+
+128 512 2,048 8,192 
+
+40 
+
+45 
+
+50 
+
+CR 
+
+> PSNR [ dB ]
+
+(a) 
+
+128 512 2,048 8,192 
+
+0.94 
+
+0.96 
+
+0.98 
+
+1
+
+CR 
+
+> SSIM
+
+(b) 
+
+128 512 2,048 8,192 
+
+0
+
+2
+
+4
+
+6
+
+CR 
+
+> SA [ ◦]
+
+(c) 
+
+Fig. 5: Ablation study for spatial stages S, latent channels M , and hyperlatent channels N on the RD performance for the HySpecNet-11k [35] test set (easy split). Rate is visualized as CR in a logarithmic scale and distortion is given as (a) PSNR, (b) SSIM, and (c) SA. from Fig. 5 (a) into a single scalar value that summarizes the overall compression performance. As state-of-the-art reference model (see Equation 6), we use the HyCASS model as it represents the best-performing model prior to this work. Fig. 6 shows the resulting BD-PSNR values for the 20 evaluated hyperparameter combinations, with each point in the 3-D plot representing a specific combination of S, M , and N .Saturation is observed within the considered values of M and 
+
+N , indicating that further increases in latent or hyperlatent channels would provide negligible gains [33]. Considering 
+
+(1280 , 768) as the best configuration for (M, N ), BD-PSNR plateaus for 2 × spatial stages, while 1 × achieves comparable reconstruction quality but incurs higher computational com-plexity due to larger spatial dimensions remaining in the latent representation. Based on this analysis, the hyperparameters are fixed to S = 2 ×, M = 1,280 , and N = 768 for the subsequent experiments. We would like to note that the same settings were also applied on the MLRetSet dataset, demonstrating the generalization capability of the proposed model and the selected hyperparameters, as demonstrated in the following subsection. 
+
+B. Comparison with Other Approaches 
+
+In this subsection, we analyze the effectiveness of HyVIC by comparing its RD curve with several traditional baselines and state-of-the-art learning-based HSI compression models on the HySpecNet-11k and the MLRetSet benchmark datasets. The models considered for comparison include: 1) JPEG2000; 2) PCA; 3) 1D-CAE [23]; 4) SSCNet [24]; 5) 3D-CAE [25]; 6) HyCoT [26]; 7) HiFiC SE [18]; 8) HyCASS [28]; 9) Verd´ uet al. [30]; 10) hyperspectral-VAE [31]; 11) MSAHiFiC [20]; and 12) mean & scale hyperprior [34]. In the first set of experiments, we compare HyVIC with the state of the art on the HySpecNet-11k dataset. Fig. 7 (a) shows the RD curves of the considered models, where the rate is expressed as the CR in a logarithmic scale and the distortion is measured as PSNR in dB . Due to its metric-driven design adapted to the HSI domain, HyVIC consistently achieves superior reconstruction fidelity compared to all state-of-the-art methods for CR s > 32 . At lower CR s < 32 ,traditional approaches (i.e., JPEG2000 and PCA) achieve the best reconstruction quality, highlighting the effectiveness of predefined mathematical transformations in low-compression regimes. However, their reconstruction performance degrades rapidly as the CR increases beyond this range, indicating a limited ability to maintain reconstruction fidelity under stronger compression constraints. This behavior highlights the need for learning-based compression that can better model the complex spatio-spectral redundancies of HSIs in scenarios with strict bandwidth or storage space constraints. For medium CR s ∈ [32 , 512] , HyVIC is highly effective as its metric-driven design allows for a transform capacity inside the latent and hyperlatent that is adjusted to the characteristics of HSIs. Due to balanced spatial and spectral feature learning, HyVIC reduces the entropy of the latent representation while simultaneously increasing reconstruction fidelity. For high CR s > 512 , HyVIC maintains strong reconstruction fidelity. However, its advantage diminishes compared to models with high spatial compression (e.g., SSCNet, HyCASS, and mean & scale hyperprior), as spatial redundancy becomes increasingly important in this CR regime [28]. In summary, HyVIC im-proves upon HyCASS, the formerly best-performing model, by 
+
+4.66 dB in BD-PSNR across the entire RD curve. Compared to the mean & scale hyperprior, the metric-driven selection of our adjustable architecture yields substantial improvements, further highlighting the effectiveness of the proposed model. In the second set of trials, we assess the generalization capability of the proposed model and the selected hyperparam-eters by comparing its RD performance with those obtained by state-of-the-art models on the MLRetSet [36] dataset, as shown in Fig. 7 (b). The results demonstrate that the proposed model achieves the highest reconstruction fidelity among the evaluated compression models for CR s > 64 . For lower JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 10 
+
+0 × 1 × 2 × 3 × 4 × (384, 230) 
+
+(768, 460) 
+
+(1024, 614) 
+
+(1280, 768) 
+
+3
+
+4
+
+5
+
+6
+
+S (M , N )
+
+> BD-PSNR [ dB ]
+
+3.5
+
+4
+
+4.5
+
+5
+
+5.5
+
+6
+
+6.5
+
+Fig. 6: BD-PSNR results, with HyCASS [28] as reference model, for different combinations of S, M , and N on the test set of HySpecNet-11k [35] (easy split). CR s < 64 , spectral learning-based models (i.e., 1D-CAE, HyCoT, and HyCASS with zero spatial stages) are partic-ularly effective, as the large number of 369 spectral bands 
+
+introduces strong spectral redundancies. However, in this CR regime, the traditional baselines JPEG2000 and PCA further improve upon this, suggesting that the redundancies can be effectively captured by linear transformations under low compression constraints. Compared to the HySpecNet-11k dataset, traditional methods remain competitive over a wider range of CRs (up to CR ≈ 64 instead of 32 ). This can be attributed to the higher number of spectral bands and the higher spatial resolution of MLRetSet, which introduces stronger local spatial and spectral redundancies due to the narrower distances of adjacent bands and pixels, which can be effectively captured by linear transformations. Once the CR exceeds 64 , the proposed model demonstrates its success by effectively capturing spatial and spectral redundancies via the metric-driven selection of the adjustable architecture. Com-pared to HySpecNet-11k, the absolute reconstruction fidelity (in terms of PSNR) is lower for this dataset across all models. This result indicates that the fine spatial and spectral details introduced by the higher spatial resolution and number of spectra bands pose a challenge for the compression models in achieving fine-grained reconstructions. However, for very high CR s > 4,096 , the reconstruction fidelity surpasses that observed for HySpecNet-11k. This behavior can be attributed to the different characteristics of the datasets, particularly the higher spatial resolution and increased number of spectral bands, which increase the spatial and spectral redundancies and therefore allow for more efficient compression under very strong compression constraints. Overall, the results demon-strate the strong generalization capability of the proposed model and the selected hyperparameters across HSIs with different sensor characteristics. 
+
+C. Reconstruction Results Analysis 1) True Color Reconstruction Results: To visually assess the spatial reconstruction fidelity of the proposed model, the true color reconstruction results of HyVIC and several state-of-the-art learning-based HSI compression models are presented in Fig. 8. In order to analyze the compression artifacts under varying scene characteristics and compression constraints, two representative HySpecNet-11k images are evaluated at two different CRs. For each reconstruction, the corresponding CR as well as the PSNR, SSIM, and SA are reported to enable a comprehensive comparison. For the coastal scene in Fig. 8 (a), a low CR of approximately 32 was targeted, while targeting a medium CR of 256 for the urban area scene in (h). We would like to note that the CRs of HyCoT, SSCNet, 3D-CAE, HyCASS and PCA are fixed by their architectural design, while the CR of variational HSI compression models (i.e., mean & scale hyperior and HyVIC) may vary across different HSIs depending on the entropy of the latent and hyperlatent representations. Close inspection of (b) - (g) and (i) - (n) reveals noticeable differences in reconstruction fidelity both across the respective compression models and CRs. Notably, HyCoT, HyCASS with 0 × spatial stages and PCA do not introduce spatial artifacts due to their pixelwise compression strategy in (b), (e) and (f), respectively. In fact, their recon-struction errors manifest as intensity offsets with increasing deviations for higher CRs as observed by comparing (b) and (i) with the respective original HSI. Spatial compression applied by SSCNet in (c) leads to a loss of fine spatial details and a blurring along the boundaries between different land cover types, which becomes more pronounced for the increased CRs in (j). Spatial blurring can also be observed for 3D-CAE JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 11             
+
+> JPEG2000 PCA 1D-CAE [23] SSCNet [24] 3D-CAE [25] HyCoT [26] HiFiC SE [18]
+> HyCASS [28] Verd´ u et al. [30] Hyperspectral-VAE [31] MSAHiFiC [20] Mean & scale hyperprior [34] HyVIC
+
+4 16 64 256 1,024 4,096 16 ,384 
+
+40 
+
+50 
+
+60 
+
+> 10 4
+> 10 2
+> 10 −2
+> 10 −4
+> 10 −5
+> 10 −6
+> 10 −7
+
+CR 
+
+> PSNR [ dB ]
+
+(a) HySpecNet-11k (easy split) 
+
+4 16 64 256 1,024 4,096 16 ,384 
+
+40 
+
+50 
+
+60   
+
+> 10 2
+> 110 −2
+> 10 −410 −5
+
+CR 
+
+> PSNR [ dB ]
+
+(b) MLRetSet 
+
+Fig. 7: Rate-distortion performance on the test set of (a) HySpecNet-11k [35] (easy split) and (b) MLRetSet [36]. The annotated numbers indicate the corresponding values of λ during training. in (d) due to the spatio-spectral compression using large convolutional kernels. Increasing the CR in (d) introduces higher distortion, which substantially affects the perceptual quality. For the mean & scale hyperprior in (m), one can observe loss of spatial structure due to the excessive spatial downsampling that is not adjusted to the low spatial resolution of HSIs. In contrast, HyVIC achieves the best perceptual quality in both (g) and (n), preserving spatial structure and intensity values due to the metric-driven architectural design that balances spatial and spectral feature learning. This is also reflected by the reported distortion metrics, indicating superior spatial and spectral reconstruction fidelity, surpassing the state of the art by 1.5 dB /0.001 /0.3◦ and 9.4 dB /0.049 /2.3◦ for PSNR/SSIM/SA on the two different HSIs, respectively. Over-all, the visual comparisons demonstrate that HyVIC consis-tently preserves both spatial structures and spectral coherence across different land cover types and compression constraints, confirming its effectiveness for high-fidelity HSI compression. Similar behavior of the true color reconstruction results has been observed for other HSIs at various CRs, as well as on the MLRetSet dataset (not reported for space constraints). 
+
+2) Reconstructed Spectral Signatures: Fig. 9 illustrates the reconstructed spectral signatures of two representative land cover types (i.e., dry bare soil and vegetation), derived from randomly selected pixels, for HyVIC and multiple state-of-the-art learning-based HSI compression models at a CR of approx-imately 256 . For dry bare soil in (a), all the reconstructions are able to follow the general shape of the spectral signature. However, reconstruction errors for HyCoT and 3D-CAE be-come more noticeable for the spectral bands 150 – 202 , likely due to the higher signal-to-noise ratio (SNR) of the sensor in the short-wavelength infrared (SWIR) bands. Compared to SSCNet, HyCASS and mean & scale hyperprior, which all closely reconstruct the original spectral signature, HyVIC achieves the most accurate reconstruction of the detailed spikes in the spectral signature. The spectral signature of a vegetation pixel surrounded by urban area, in Fig. 9 (b) presents a more challenging reconstruction problem. Models that predominantly rely on spatial information, such as SSCNet and 3D-CAE, exhibit larger errors due to the spatial dimensionality reduction, which limits their ability to capture the detailed spectral variations of individual pixels. This can be attributed to the vegetation pixel being surrounded by urban area, making it more difficult for these models to generalize effectively. HyCoT exhibits an increase in the reconstruction error, as the pronounced variation in the spectral signature is difficult to capture for a purely spectral compression model at such a high CR. HyVIC accurately reconstructs the original spectral signature, demonstrating only minor smoothing while largely preserving the overall spectral shape without introducing a significant offset. We observed a similar behavior of the reconstructed spectral signatures for different land cover types and on the MLRetSet dataset (not reported for space constraints). 
+
+3) Distribution of PSNRs and CRs: In order to empha-size the strengths and limitations of the proposed model in terms of reconstruction fidelity and compression efficiency, the distribution of PSNR and CR values across the HySpecNet-11k test set (easy split) is visualized in Fig. 10. For this experiment, the Lagrange multiplier λ is set to 10 −4, as the corresponding operating point on the RD curve provides a balanced trade-off between reconstruction quality and com-pression efficiency, enabling a representative assessment of the model’s overall behavior. The distribution of the PSNR values in (a) is concentrated around the mean of 50 .31 dB with a standard deviation of 2.08 dB , closely following a Gaussian distribution. This result underscores the robust generalization capabilities of the proposed model across diverse land cover JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 12 
+
+CR 
+
+> PSNR[ dB ]/SSIM/SA
+
+(a) Original HSI 
+
+28 .86 
+
+> 43 .6/0.993 /3.5◦
+
+(b) HyCoT [26] 
+
+32 .00 
+
+> 38 .6/0.966 /4.0◦
+
+(c) SSCNet [24] 
+
+31 .69 
+
+> 35 .6/0.908 /7.9◦
+
+(d) 3D-CAE [25] 
+
+28 .86 
+
+> 43 .1/0.994 /3.4◦
+
+(e) HyCASS [28] 
+
+33 .19 
+
+> 49 .3/0.995 /3.0◦
+
+(f) PCA 
+
+29 .82 
+
+> 50 .8/0.996 /2.7◦
+
+(g) HyVIC 
+
+CR 
+
+> PSNR[ dB ]/SSIM/SA
+
+(h) Original HSI 
+
+202 .00 
+
+> 31 .3/0.838 /7.8◦
+
+(i) HyCoT [26] 
+
+202 .00 
+
+> 34 .3/0.884 /5.0◦
+
+(j) SSCNet [24] 
+
+253 .49 
+
+> 30 .4/0.751 /7.3◦
+
+(k) 3D-CAE [25] 
+
+202 .00 
+
+> 37 .0/0.945 /3.8◦
+
+(l) HyCASS [28] 
+
+243 .94 
+
+> 34 .8/0.907 /4.9◦
+
+(m) Mean & scale hyperprior [34] 
+
+295 .92 
+
+> 46 .4/0.994 /1.5◦
+
+(n) HyVIC 
+
+Fig. 8: True color reconstruction results of HyVIC and state-of-the-art HSI compression models for two different HySpecNet-11k [35] images. Contains modified EnMAP data ©DLR [2022]. Original HyCoT [26] SSCNet [24] 3D-CAE [25] HyCASS [28] Mean & scale hyperprior [34] HyVIC 
+
+0 50 100 150 200 
+
+0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+Spectral Band Index Normalized Reflectance 
+
+(a) Dry Bare Soil 
+
+0 50 100 150 200 
+
+0
+
+0.1
+
+0.2
+
+0.3
+
+Spectral Band Index 
+
+> Normalized Reflectance
+
+(b) Vegetation 
+
+Fig. 9: Exemplary reconstructed spectral signatures of HyVIC and state-of-the-art learning-based HSI compression models for CR ≈ 256 . Contains modified EnMAP data ©DLR [2022]. types, enabling consistent high-fidelity reconstructions. As shown in the figure, the HSI with the lowest PSNR of 43 .41 dB 
+
+predominantly contains clouds and exhibits high spectral and spatial variations due to the presence of multiple land cover types. This complex scene poses significant challenges for the proposed model, as clouds are also underrepresented in the dataset. In contrast to that, the highest PSNR of 60 .29 dB 
+
+is obtained for a homogeneous scene containing only water, which exhibits low spectral and spatial variations, making it considerably less challenging to compress and accurately reconstruct. The distribution of the CR values in Fig. 10 (b) indicates that most of the HSIs can be compressed with a CR be-tween 256 and 1,024 . However, a significant amount of HSI achieves much higher CRs. In particular, homogeneous HSIs are compressible to the greatest extent, as illustrated by the water scene achieving the highest CR of 3,875 .37 . In contrast, HSIs containing complex texture, multiple land cover types, or underrepresented classes are associated with the lowest CRs, as shown by the example achieving only a CR of 265 .40 .Overall, our results highlight a bias towards homogeneous HSI, indicating that learning from complex scenes to enhance both compression efficiency and reconstruction fidelity of these HSIs should be considered in future works. Similar behavior of the distribution of PSNRs and CRs has been observed on the MLRetSet dataset (not reported for space constraints). VI. C ONCLUSION 
+
+In this paper, we have presented HyVIC, a metric-driven spatio-spectral model for learning-based variational HSI com-pression. The proposed model is made up of four main components: 1) an adjustable spatio-spectral encoder; 2) a spa-tio-spectral hyperencoder; 3) a spatio-spectral hyperdecoder; and 4) an adjustable spatio-spectral decoder. Unlike existing JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 13 
+
+40 45 50 55 60 
+
+0
+
+5
+
+10 
+
+PSNR [ dB ]
+
+> Relative Frequency [%]
+
+(a) 
+
+64 128 256 512 1,024 2,048 4,096 
+
+0
+
+10 
+
+20 
+
+CR 
+
+> Relative Frequency [%]
+
+(b) 
+
+Fig. 10: Distribution of PSNRs and CRs across the HySpecNet-11k [35] test set (easy split) for HyVIC with 
+
+λ = 10 −4. The mean values are indicated in red along the images with the lowest and highest metric values. Contains modified EnMAP data ©DLR [2022]. methods that naively adapt variational image compression models from the CV domain without explicitly modeling the spatio-spectral redundancies inherent in HSIs, HyVIC provides flexible control over balancing spatial and spectral feature learning to effectively leverage the unique characteristics of hyperspectral data. In the experiments, we have evaluated the proposed model on two benchmark datasets in order to conduct: i) ablation studies including a metric-driven selection of the proposed model’s hyperparameters; ii) comparisons with state-of-the-art methods; and iii) analyses of the reconstruction results. Our experimental results validate the effectiveness of HyVIC across a wide range of CRs and demonstrate the necessity to balance spatio-spectral feature learning to achieve high-fidelity spatial and spectral reconstructions. Our findings suggest that, compared to natural image compression, variational HSI compression benefits from a reduced spatial receptive field, reduced spatial downsampling and increased transform capacity to more effectively preserve the spatial and spectral information of HSIs. Furthermore, we observe that compression efficiency is significantly reduced for HSIs with complex textures, multiple land cover types, or under-represented classes, whereas it remains highly effective for homogeneous HSIs dominated by water. This highlights the need to account for such biases during model training to ensure a more balanced and robust HSI compression across diverse scenes. As a future work, we plan to explore entropy models that may more effectively capture the statistical dependencies within the latent representations of HSIs. Moreover, we plan to develop an interactive large language model (LLM) agent framework that guides the HSI compression process based on user input and contextual information. We believe that leveraging the reasoning capabilities of LLM agents can serve as a versatile, user-driven, and context-aware framework for HSI compression. REFERENCES [1] R. Rajabi, A. Zehtabian, K. D. Singh, A. Tabatabaeenejad, P. Ghamisi, and S. Homayouni, “Hyperspectral imaging in environmental monitoring and analysis,” Frontiers in Environmental Science , vol. 11, p. 1353447, 2024. [2] A. Nisha and A. Anitha, “Current advances in hyperspectral remote sensing in urban planning,” International Conference on Intelligent Computing Instrumentation and Control Technologies , pp. 94–98, 2022. [3] W. Gross, F. Queck, S. Schreiner, M. V¨ ogtli, J. Kuester, J. Mispelhorn, M. Kneub¨ uhler, and W. Middelmann, “A multi-temporal hyperspectral camouflage detection and transparency experiment,” Target and Back-ground Signatures VIII , vol. 12270, pp. 11–19, 2022. [4] P. Ye, “Remote sensing approaches for meteorological disaster moni-toring: Recent achievements and new challenges,” International Journal of Environmental Research and Public Health , vol. 19, no. 6, p. 3701, 2022. [5] C. B. Pande and K. N. Moharir, “Application of hyperspectral remote sensing role in precision farming and sustainable agriculture under cli-mate change: A review,” Climate Change Impacts on Natural Resources, Ecosystems and Agricultural Systems , pp. 503–520, 2023. [6] C. Gomes, I. Wittmann, D. Robert, J. Jakubik, T. Reichelt, S. Maurogio-vanni, R. Vinge, J. Hurst, E. Scheurer, R. Sedona et al. , “Lossy neural compression for geospatial analytics: A review,” IEEE Geoscience and Remote Sensing Magazine , pp. 2–40, 2025. [7] M. Hern´ andez-Cabronero, A. B. Kiely, M. Klimesh, I. Blanes, J. Ligo, E. Magli, and J. Serra-Sagrista, “The CCSDS 123.0-B-2 “low-complexity lossless and near-lossless multispectral and hyperspectral im-age compression” standard: A comprehensive review,” IEEE Geoscience and Remote Sensing Magazine , vol. 9, no. 4, pp. 102–119, 2021. [8] D. Valsesia, T. Bianchi, and E. Magli, “Onboard deep lossless and near-lossless predictive coding of hyperspectral images with line-based attention,” IEEE Transactions on Geoscience and Remote Sensing ,vol. 62, pp. 1–14, 2024. [9] S.-E. Qian, M. Bergeron, I. Cunningham, L. Gagnon, and A. Hollinger, “Near lossless data compression onboard a hyperspectral satellite,” IEEE Transactions on Aerospace and Electronic Systems , vol. 42, no. 3, pp. 851–866, 2006. [10] T. Zheng, Y. Dai, C. Xue, and L. Zhou, “Recursive least squares for near-lossless hyperspectral data compression,” Applied Sciences , vol. 12, no. 14, p. 7172, 2022. [11] M. J. Ryan and J. F. Arnold, “Lossy compression of hyperspectral data using vector quantization,” Remote Sensing of Environment , vol. 61, no. 3, pp. 419–436, 1997. [12] J. Kuester, W. Gross, S. Schreiner, W. Middelmann, and M. Heizmann, “Adaptive two-stage multisensor convolutional autoencoder model for lossy compression of hyperspectral data,” IEEE Transactions on Geo-science and Remote Sensing , vol. 61, pp. 1–22, 2023. [13] A. Altamimi and B. Ben Youssef, “Lossless and near-lossless com-pression algorithms for remotely sensed hyperspectral images,” Entropy ,vol. 26, no. 4, p. 316, 2024. [14] V. K. Goyal, “Theoretical foundations of transform coding,” IEEE Signal processing magazine , vol. 18, no. 5, pp. 9–21, 2002. [15] Q. Du and J. E. Fowler, “Hyperspectral image compression using JPEG2000 and principal component analysis,” IEEE Geoscience and Remote Sensing Letters , vol. 4, no. 2, pp. 201–205, 2007. [16] P. L. Dragotti, G. Poggi, and A. R. Ragozini, “Compression of multispec-tral images by three-dimensional SPIHT algorithm,” IEEE Transactions on Geoscience and Remote Sensing , vol. 38, no. 1, pp. 416–428, 2000. [17] X. Tang and W. A. Pearlman, “Three-dimensional wavelet-based com-pression of hyperspectral images,” Hyperspectral Data Compression , pp. 273–308, 2006. JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 14 
+
+[18] M. H. P. Fuchs, A. P. Byju, A. Walda, B. Rasti, and B. Demir, “Generative adversarial networks for spatio-spectral compression of hyperspectral images,” IEEE Workshop on Hyperspectral Imaging and Signal Processing: Evolution in Remote Sensing , pp. 1–5, 2024. [19] Y. Guo, W. Li, Q. Peng, and L. Tu, “Spectral constrained generative adversarial network for hyperspectral compression,” IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing ,2025. [20] Y. Wan, P. Luo, C. Chen, A. Ma, X. Gong, and Y. Zhong, “Msahific: A super-prior driven high-fidelity spectral attention network for hyperspec-tral image compression,” IEEE Transactions on Geoscience and Remote Sensing , 2025. [21] S. Rezasoltani and F. Z. Qureshi, “Hyperspectral image compression using sampling and implicit neural representations,” IEEE Transactions on Geoscience and Remote Sensing , vol. 63, pp. 1–12, 2024. [22] N. Zhao, T. Pan, Z. Li, E. Chen, and L. Zhang, “The paradigm shift in hyperspectral image compression: A neural video representation methodology,” Remote Sensing , vol. 17, no. 4, p. 679, 2025. [23] J. Kuester, W. Gross, and W. Middelmann, “1D-convolutional autoen-coder based hyperspectral data compression,” International Archives of Photogrammetry, Remote Sensing and Spatial Information Sciences ,vol. 43, pp. 15–21, 2021. [24] R. La Grassa, C. Re, G. Cremonese, and I. Gallo, “Hyperspectral data compression using fully convolutional autoencoder,” Remote Sensing ,vol. 14, no. 10, p. 2472, 2022. [25] Y. Chong, L. Chen, and S. Pan, “End-to-end joint spectral–spatial compression and reconstruction of hyperspectral images using a 3D convolutional autoencoder,” Journal of Electronic Imaging , vol. 30, no. 4, p. 041403, 2021. [26] M. H. P. Fuchs, B. Rasti, and B. Demir, “HyCoT: A transformer-based autoencoder for hyperspectral image compression,” IEEE Workshop on Hyperspectral Imaging and Signal Processing: Evolution in Remote Sensing , pp. 1–5, 2024. [27] N. Sprengel, M. H. P. Fuchs, and B. Demir, “Learning-based hyperspec-tral image compression using a spatio-spectral approach,” EGU General Assembly , 2024. [28] M. H. P. Fuchs, B. Rasti, and B. Demir, “Adjustable spatio-spectral hyperspectral image compression network,” IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing , vol. 18, pp. 28 957–28 970, 2025. [29] Y. Guo, Y. Chong, and S. Pan, “Hyperspectral image compression via cross-channel contrastive learning,” IEEE Transactions on Geoscience and Remote Sensing , vol. 61, pp. 1–18, 2023. [30] S. M. i Verd´ u, M. Chabert, T. Oberlin, and J. Serra-Sagrist` a, “Reduced-complexity multirate remote sensing data compression with neural networks,” IEEE Geoscience and Remote Sensing Letters , vol. 20, pp. 1–5, 2023. [31] C. F. Park, M. Perez-Carrasco, C. Nowlan, and C. Garraffo, “Hyperspec-tral variational autoencoders for joint data compression and component extraction,” arXiv preprint arXiv:2511.18521 , 2025. [32] D. P. Kingma and M. Welling, “Auto-encoding variational bayes,” arXiv preprint arXiv:1312.6114 , 2013. [33] J. Ball´ e, D. Minnen, S. Singh, S. J. Hwang, and N. Johnston, “Variational image compression with a scale hyperprior,” International Conference on Learning Representations , 2018. [34] D. Minnen, J. Ball´ e, and G. D. Toderici, “Joint autoregressive and hierarchical priors for learned image compression,” Advances in Neural Information Processing Systems , vol. 31, 2018. [35] M. H. P. Fuchs and B. Demir, “HySpecNet-11k: A large-scale hyper-spectral dataset for benchmarking learning-based hyperspectral image compression methods,” IEEE International Geoscience and Remote Sensing Symposium , pp. 1779–1782, 2023. [36] F. ¨Omr¨ uuzun, Y. Yardımcı C ¸ etin, U. M. Lelo˘ glu, and B. Demir, “A novel semantic content-based retrieval system for hyperspectral remote sensing imagery,” Remote Sensing , vol. 16, no. 8, p. 1462, 2024. [37] F. Mentzer, G. D. Toderici, M. Tschannen, and E. Agustsson, “High-fidelity generative image compression,” Advances in Neural Information Processing Systems , vol. 33, pp. 11 913–11 924, 2020. [38] J. Ball´ e, V. Laparra, and E. P. Simoncelli, “End-to-end optimized image compression,” International Conference on Learning Representations ,2017. [39] M. Lu, P. Guo, H. Shi, C. Cao, and Z. Ma, “Transformer-based image compression,” Data Compression Conference , p. 469, 2022. [40] J. Liu, H. Sun, and J. Katto, “Learned image compression with mixed transformer-cnn architectures,” IEEE/CVF conference on Computer Vi-sion and Pattern Recognition , pp. 14 388–14 397, 2023. [41] S. Mijares i Verd´ u, J. Ball´ e, V. Laparra, J. Bartrina-Rapesta, M. Hern´ andez-Cabronero, and J. Serra-Sagrist` a, “A scalable reduced-complexity compression of hyperspectral remote sensing images using deep learning,” Remote Sensing , vol. 15, no. 18, p. 4422, 2023. [42] J. Rissanen and G. G. Langdon, “Arithmetic coding,” IBM Journal of research and development , vol. 23, no. 2, pp. 149–162, 1979. [43] G. Bjontegaard, “Calculation of average psnr differences between rd-curves,” ITU-T SG16, Doc. VCEG-M33 , 2001. [44] J. Ball´ e, V. Laparra, and E. P. Simoncelli, “Density modeling of images using a generalized normalization transformation,” International Conference on Learning Representations , 2016. [45] L. Guanter, H. Kaufmann, K. Segl, S. Foerster, C. Rogass, S. Chabrillat, T. Kuester, A. Hollstein, G. Rossner, C. Chlebek et al. , “The EnMAP spaceborne imaging spectroscopy mission for earth observation,” Remote Sensing , vol. 7, no. 7, pp. 8830–8857, 2015. [46] J. B´ egaint, F. Racap´ e, S. Feltman, and A. Pushparaja, “CompressAI: A PyTorch library and evaluation platform for end-to-end compression research,” arXiv preprint arXiv:2011.03029 , 2020. [47] D. P. Kingma and J. Ba, “Adam: A method for stochastic optimization,” 
+
+arXiv preprint arXiv:1412.6980 , 2014. [48] J. Duda, K. Tahboub, N. J. Gadgil, and E. J. Delp, “The use of asymmetric numeral systems as an accurate replacement for huffman coding,” IEEE Picture Coding Symposium , pp. 65–69, 2015. [49] C. Herglotz, M. Kr¨ anzler, R. Mons, and A. Kaup, “Beyond bjøntegaard: Limits of video compression performance comparisons,” IEEE Interna-tional Conference on Image Processing , pp. 46–50, 2022.

@@ -1,0 +1,102 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.26947v1/fig-001.webp",
+      "caption": "Figure 2: High-level structure of the ICESEE codebase, showing modular components for data assimilation, model interfaces, utilities, and parallelization.",
+      "page": 11,
+      "index": 1,
+      "width": 527,
+      "height": 365
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26947v1/fig-002.webp",
+      "caption": "Figure 7: Left side: Reference velocity field and unassimilated velocity error relative to the true state at time 0 (a1, b1), respectively, followed by assimilated velocity error relative to the true velocity at selected times (c1–h1). Right side: Reference basal friction coefficient (a2), the basal friction coefficient difference between the unassimilated and true states (b2), and the difference between the assimilated and true basal friction coefficients at successive assimilation cycles (c2–h2).",
+      "page": 29,
+      "index": 2,
+      "width": 1046,
+      "height": 602
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26947v1/fig-003.webp",
+      "caption": "Table 2: Weak scaling performance of ICESEE–ISSM coupling.",
+      "page": 34,
+      "index": 3,
+      "width": 706,
+      "height": 281
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26947v1/fig-004.webp",
+      "caption": "Figure 10: Weak scaling runtime breakdown for the ICESEE–ISSM coupling showing the forecast, analysis, ensemble initialization, and I/O contributions. The forecast phase remains dominant and scales well, while I/O overhead increases slightly at higher process counts due to collective data synchronization.",
+      "page": 34,
+      "index": 4,
+      "width": 631,
+      "height": 373
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26947v1/fig-005.webp",
+      "caption": "Table 1: Strong scaling performance of ICESEE-ISSM coupling.",
+      "page": 33,
+      "index": 5,
+      "width": 800,
+      "height": 281
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26947v1/fig-006.webp",
+      "caption": "Figure 9: Strong scaling runtime breakdown for the ICESEE-ISSM coupling showing the forecast, analysis, ensemble initialization, and I/O contributions. The forecast step scales most efficiently, while the relative cost of I/O and analysis becomes more noticeable at higher process counts.",
+      "page": 33,
+      "index": 6,
+      "width": 683,
+      "height": 402
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26947v1/fig-007.webp",
+      "caption": "Figure 4: Left side: (a1) shows the true ice thickness at time zero. (b1) shows the difference between the simulation without assimilation and the true thickness at time zero. Panels (c1–e1) show the differences between the assimilated and true thickness fields after 5, 15, and 25 years, respectively. Right side: (a2) shows the true velocity magnitude at time zero. (b2) shows the difference between the velocity obtained without assimilation and the true velocity magnitude at time zero. Panels (c2–e2) show the differences between the assimilated and true velocity magnitudes after 5, 15, and 25 years, respectively. The magenta marker denotes the reference point at (1.25 km, 0.3 km), located within the perturbed (bump) region of the computational domain. ∆|u| denotes the signed difference in velocity magnitude.",
+      "page": 23,
+      "index": 7,
+      "width": 1050,
+      "height": 623
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26947v1/fig-008.webp",
+      "caption": "Figure 6: Left column: Reference bed topography (a1), bed elevation error of the unassimilated simulation relative to the true state (b1), and bed elevation error of the assimilated simulation relative to the true state at selected times (c1–h1). The small white circles overlaid on panel a1 mark the locations of bed observations assimilated at year 2. Right column: Reference ice thickness at the initial time (a2), ice thickness difference between the unassimilated and true simulations (b2), and the temporal evolution of the ice thickness difference between the assimilated and true states (c2–h2). The black solid, magenta solid, and cyan dashed curves denote the grounding line (GL) positions for the true, unassimilated, and assimilated states, respectively. The green solid dot on the true grounding line denotes the point at which the centerline intersects the grounding line.",
+      "page": 28,
+      "index": 8,
+      "width": 1046,
+      "height": 606
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26947v1/fig-009.webp",
+      "caption": "Figure 3: Overview of the ICESEE workflow illustrating the sequence of operations from the model initializations, observation loading and transformation to the model grid, ensemble initialization, model forecasting, and assimilation. Components shown in green, orange, magenta, and yellow represent the core ICESEE routines, while those in cyan and gray correspond to modelspecific extensions configurable by the user.",
+      "page": 12,
+      "index": 9,
+      "width": 762,
+      "height": 338
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26947v1/fig-010.webp",
+      "caption": "Figure 5: Temporal evolution of ice thickness (a), velocity (b), and surface mass balance (c) at the reference point indicated by the magenta marker in Figure 4.",
+      "page": 24,
+      "index": 10,
+      "width": 731,
+      "height": 612
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26947v1/fig-011.webp",
+      "caption": "Figure 8: Temporal evolution of the root-mean-square error (RMSE) of ice thickness, velocity, and basal friction coefficient (a–c), and the absolute difference between grounding line positions for the assimilated and true states, as well as for the unassimilated and true states, measured along the horizontal centerline passing through the green solid dot on the true grounding line in Figure 6 (right side) (d). Thin gray dotted vertical lines indicate assimilation times. Dotted red, blue, and cyan curves correspond to assimilated runs evaluated over grounded ice, grounded ice excluding the region upstream of the grounding line, and the whole domain, respectively; solid curves show the corresponding unassimilated cases.",
+      "page": 31,
+      "index": 11,
+      "width": 846,
+      "height": 937
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26947v1/fig-012.webp",
+      "caption": "Figure 1: Schematic of the Ensemble Kalman Filter (adapted from Gillet-Chaulet (2020)) illustrating four assimilation cycles. The process begins with four ensemble members (black dots within the green oval) initialized at time t0, after which the system state (green oval) is advanced through a forecast phase (indicated by the magenta dashed arrow), producing a predicted ensemble state (cyan box within the orange oval). Upon receiving an observation (red star), the state is updated to a new state (purple box inside the yellow oval) via the analysis step (red arrow). The cycle repeats for subsequent forecast and analysis phases, with blue dotted arrows indicating the trajectories of the individual ensemble realizations. Here, k and dt denote the timestep index and time increment, respectively.",
+      "page": 5,
+      "index": 12,
+      "width": 789,
+      "height": 396
+    }
+  ]
+}

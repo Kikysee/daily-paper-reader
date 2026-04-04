@@ -1,0 +1,102 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.01766v1/fig-001.webp",
+      "caption": "Fig. 4: Teacher–student architecture. A LiDAR-aware teacher supervises an RGBI-only student for CHM/PAI/FHD prediction.",
+      "page": 6,
+      "index": 1,
+      "width": 725,
+      "height": 454
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01766v1/fig-002.webp",
+      "caption": "Fig. 11:Metric-wise ITC masking. Tree-crown masks derived with DeepTrees [23] can be applied consistently to CHM, PAI, and FHD outputs for per-tree summaries.",
+      "page": 15,
+      "index": 2,
+      "width": 725,
+      "height": 524
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01766v1/fig-003.webp",
+      "caption": "Fig. 5: Teacher feature flow. Multi-modal feature extraction, fusion, and decoding in the teacher network.",
+      "page": 7,
+      "index": 3,
+      "width": 725,
+      "height": 748
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01766v1/fig-004.webp",
+      "caption": "Fig. 7: Quantitative agreement on held-out test tiles. CHM shows the strongest correlation; PAI and FHD remain harder under zero-shot transfer.",
+      "page": 10,
+      "index": 4,
+      "width": 725,
+      "height": 210
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01766v1/fig-005.webp",
+      "caption": "Fig. 10: Coniferous patch comparison. Ground truth (top), teacher (middle), and student (bottom) show strong CHM transfer; PAI/FHD remain directionally correct with compressed amplitude.",
+      "page": 14,
+      "index": 5,
+      "width": 725,
+      "height": 550
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01766v1/fig-006.webp",
+      "caption": "Fig. 1: Multi-modal data acquisition and forest structure derivation framework. (a) RGBI orthophotos and LiDAR are acquired at different times. (b) Inputs are spatially aligned in 2 km × 2 km tiles. (c) LiDAR provides privileged structural supervision (CHM, PAI, FHD, PAD) for teacher training, while the deployed student uses RGBI only.",
+      "page": 3,
+      "index": 6,
+      "width": 725,
+      "height": 410
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01766v1/fig-007.webp",
+      "caption": "Fig. 9: Broadleaved patch comparison. Ground truth (top), teacher (middle), and student (bottom) show close CHM agreement with clear crown delineation; PAI/FHD preserve major spatial gradients but appear smoother.",
+      "page": 13,
+      "index": 7,
+      "width": 725,
+      "height": 552
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01766v1/fig-008.webp",
+      "caption": "Fig. 6: Student feature flow. Multi-scale RGBI encoding and dense regression in the RGBI-only student.",
+      "page": 8,
+      "index": 8,
+      "width": 725,
+      "height": 375
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01766v1/fig-009.webp",
+      "caption": "Fig. 2: Study area and dataset split. Spatial distribution of the 96 RGBI– LiDAR tile pairs in Saxony and neighboring areas with geographically separated train/validation/test regions.",
+      "page": 4,
+      "index": 9,
+      "width": 725,
+      "height": 625
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01766v1/fig-010.webp",
+      "caption": "Fig. 8: Representative tile. Normalised (for comparison) student CHM/PAI/FHD maps are spatially coherent with LiDAR-derived references, with strongest agreement for CHM.",
+      "page": 12,
+      "index": 10,
+      "width": 725,
+      "height": 533
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01766v1/fig-011.webp",
+      "caption": "Table 1: Common canopy structure metrics and their equations[22,32].",
+      "page": 5,
+      "index": 11,
+      "width": 571,
+      "height": 216
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01766v1/fig-012.webp",
+      "caption": "Fig. 3: Preprocessing and alignment overview. RGBI and LiDAR products are transformed into pixel-aligned multi-modal training tensors for distillation.",
+      "page": 5,
+      "index": 12,
+      "width": 725,
+      "height": 260
+    }
+  ]
+}

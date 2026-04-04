@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.01141v1/fig-001.webp",
+      "caption": "Figure 4. The effect of the reconstruction loss versus semantic loss when incorporating the semantic constraint.",
+      "page": 7,
+      "index": 1,
+      "width": 500,
+      "height": 286
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01141v1/fig-002.webp",
+      "caption": "Table 1. Abundance Angle Distance (AAD) on the Synthetic Data with Gaussian White Noise from SNR = 30 to 15 db",
+      "page": 7,
+      "index": 2,
+      "width": 1058,
+      "height": 299
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01141v1/fig-003.webp",
+      "caption": "Figure 1. The cycle consistency in unmixing. Left: Summary of the bi-directional data flow. Right-top: the unmixing-mixing flow in the raw image domain. Right-bottom: the mixing-unmixing flow in abundance domain.",
+      "page": 3,
+      "index": 3,
+      "width": 1025,
+      "height": 407
+    }
+  ]
+}

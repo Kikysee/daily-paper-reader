@@ -1,0 +1,86 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.26468v1/fig-001.webp",
+      "caption": "Fig. 7: Rate-distortion performance on the test set of (a) HySpecNet-11k [35] (easy split) and (b) MLRetSet [36]. The annotated numbers indicate the corresponding values of λ during training.",
+      "page": 11,
+      "index": 1,
+      "width": 1024,
+      "height": 477
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26468v1/fig-002.webp",
+      "caption": "Fig. 2: True color representations of exemplary HSIs present in the HySpecNet-11k dataset [35].",
+      "page": 7,
+      "index": 2,
+      "width": 1076,
+      "height": 290
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26468v1/fig-003.webp",
+      "caption": "Fig. 3: True color representations of examplary HSIs present in the MLRetSet dataset [36].",
+      "page": 7,
+      "index": 3,
+      "width": 1076,
+      "height": 211
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26468v1/fig-004.webp",
+      "caption": "Fig. 6: BD-PSNR results, with HyCASS [28] as reference model, for different combinations of S, M , and N on the test set of HySpecNet-11k [35] (easy split).",
+      "page": 10,
+      "index": 4,
+      "width": 1060,
+      "height": 489
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26468v1/fig-005.webp",
+      "caption": "Fig. 10: Distribution of PSNRs and CRs across the HySpecNet-11k [35] test set (easy split) for HyVIC with λ = 10−4. The mean values are indicated in red along the images with the lowest and highest metric values. Contains modified EnMAP data ©DLR [2022].",
+      "page": 13,
+      "index": 5,
+      "width": 512,
+      "height": 613
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26468v1/fig-006.webp",
+      "caption": "Fig. 4: Ablation study of kernel size k on (a) reconstruction quality evaluated as PSNR, (b) memory usage in terms of parameter count, and (c) computational complexity measured in FLOPs. Results are reported on the HySpecNet-11k [35] test set (easy split) for three λ values, while fixing S = 2, M = 768, and N = 460.",
+      "page": 8,
+      "index": 6,
+      "width": 504,
+      "height": 472
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26468v1/fig-007.webp",
+      "caption": "Fig. 1: Block diagram of the proposed HyVIC model. Initially, the encoder EΦ transforms the input HSI X into its latent representation Y, which is subsequently transformed by the hyperencoder EH Ψ to the hyperlatent Z. Y and Z are quantized to Ŷ and Ẑ, compressed into a bitstream and subsequently reconstructed using arithmetic coding. Ẑ serves as side information to estimate both mean µ̂ and scale σ̂ parameters via the hyperdecoder DH Γ , which are used inside the GMM-based entropy model to encode Ŷ. In conrast, Ẑ is encoded using a fully-factorized entropy model. Finally, the decoder DΦ′ reconstructs X̂ based on Ŷ.",
+      "page": 4,
+      "index": 7,
+      "width": 1056,
+      "height": 566
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26468v1/fig-008.webp",
+      "caption": "Fig. 8: True color reconstruction results of HyVIC and state-of-the-art HSI compression models for two different HySpecNet11k [35] images. Contains modified EnMAP data ©DLR [2022].",
+      "page": 12,
+      "index": 8,
+      "width": 1064,
+      "height": 447
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26468v1/fig-009.webp",
+      "caption": "Fig. 9: Exemplary reconstructed spectral signatures of HyVIC and state-of-the-art learning-based HSI compression models for CR ≈ 256. Contains modified EnMAP data ©DLR [2022].",
+      "page": 12,
+      "index": 9,
+      "width": 507,
+      "height": 670
+    },
+    {
+      "url": "assets/figures/arxiv/2603.26468v1/fig-010.webp",
+      "caption": "Fig. 5: Ablation study for spatial stages S, latent channels M , and hyperlatent channels N on the RD performance for the HySpecNet-11k [35] test set (easy split). Rate is visualized as CR in a logarithmic scale and distortion is given as (a) PSNR, (b) SSIM, and (c) SA.",
+      "page": 9,
+      "index": 10,
+      "width": 1021,
+      "height": 386
+    }
+  ]
+}
