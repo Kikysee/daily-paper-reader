@@ -1,0 +1,118 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.15411v1/fig-001.webp",
+      "caption": "Figure 4: DMC-MTL, Classification, and Regression model predictions for (a) grape phenology and (b) grape cold hardiness. DMCMTL makes biologically realistic predictions while deep learning model predictions do not always respect biologicaly laws.",
+      "page": 6,
+      "index": 1,
+      "width": 458,
+      "height": 287
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15411v1/fig-002.webp",
+      "caption": "Figure 5: The performance of DMC-MTL models compared to deep learning and biophysical models under limited per-cultivar training data for grape phenology (Pheno) and cold hardiness (CH). Results are averaged over five seeds using the same two-seasons-per-cultivar evaluation sets.",
+      "page": 6,
+      "index": 2,
+      "width": 458,
+      "height": 283
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15411v1/fig-003.webp",
+      "caption": "Figure 6: Performance of the base DMC-MTL with increasing percultivar data compared to the performance of the DMC-MTL with the additional in-season adaptation training for grape phenology (Pheno) and cold hardiness (CH). Results averaged over five seeds.",
+      "page": 6,
+      "index": 3,
+      "width": 508,
+      "height": 260
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15411v1/fig-004.webp",
+      "caption": "Figure 10: The distribution of per-stage prediction error (RMSE in days) of the DMC-MTL model and GDD model. Additionally, DMC-MTL-SS models were trained to minimize per-stage error (as opposed to cumulative stage error).",
+      "page": 15,
+      "index": 4,
+      "width": 510,
+      "height": 319
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15411v1/fig-005.webp",
+      "caption": "Figure 1: Overview of our proposed method using phenology prediction as an example. In this case, seasonal phenological stages guide vineyard management operations. Our Dynamic Model Calibration via Multi-Task Learning (DMC-MTL) approach uses a pretrained neural network and biophsyical model to produce high fidelity and biologically realistic phenology state forecasts. The pretrained RNN produces daily parameter predictions (Base Temperature, Temperature Sum for Bud Break, etc.) of the Growing Degree Day (GDD) phenology model which handles the daily stage prediction.",
+      "page": 2,
+      "index": 5,
+      "width": 940,
+      "height": 325
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15411v1/fig-006.webp",
+      "caption": "Figure 8: Percentage of all cultivars with cumulative error below a given RMSE threshold modeling a grape grower’s tolerance for model prediction error. Results are reported over five seeds for (a) phenology and (b) cold hardiness.",
+      "page": 7,
+      "index": 6,
+      "width": 510,
+      "height": 323
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15411v1/fig-007.webp",
+      "caption": "Figure 7: Screenshot of the publicly accessible user interface on AgWeatherNet. The weather station-specific phenology forecasts during the 2025 season for the Cabernet Sauvignon cultivar of the Zapata (GDD-based biophysical model) are compared with the hybrid (DMC-MTL) model.",
+      "page": 7,
+      "index": 7,
+      "width": 483,
+      "height": 365
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15411v1/fig-008.webp",
+      "caption": "Table 7: The average seasonal error (RMSE in kg/ha for wheat yield) over all ten cultivars and five seeds in the testing set. DMCMTL is compared against gradient descent on the biophysical model, a deep learning approach, two hybrid models, and five DMC variants. Best-in-class results are reported in bold. A ∗ indicates that DMC-MTL yields a statistically significant improvement (p < 0.05) using the paired t-test relative to the corresponding baseline.",
+      "page": 14,
+      "index": 8,
+      "width": 512,
+      "height": 254
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15411v1/fig-009.webp",
+      "caption": "Table 5: Summary of real-world grapevine cultivar phenology and cold-hardiness observations collected from Washington State University in Prosser, WA.",
+      "page": 14,
+      "index": 9,
+      "width": 444,
+      "height": 660
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15411v1/fig-010.webp",
+      "caption": "Table 4: The parameters of the GDD Model, Ferguson Model, and WOFOST model used in the DMC-MTL approach. The ranges correspond to the minimum and maximum values that the parameter can be after tanh activation normalizing from the range [−1, 1]",
+      "page": 13,
+      "index": 10,
+      "width": 931,
+      "height": 550
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15411v1/fig-011.webp",
+      "caption": "Figure 13: The integrated gradients values of the Base Temperature Sum parameter prediction for the 2024 growing season of the Chardonnay cultivar. Red values indicate positive attribution and blue values indicate negative attribution.",
+      "page": 17,
+      "index": 11,
+      "width": 508,
+      "height": 379
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15411v1/fig-012.webp",
+      "caption": "Table 2: The average seasonal error (RMSE in days for phenology and ◦C for cold hardiness) over all cultivars and five seeds in the testing set for grape phenology and cold hardiness. DMC-MTL is compared against two optimization procedures for the biophysical model, a deep learning approach, three hybrid models, and two DMC variants. Best-in-class results are reported in bold. A ∗ indicates that DMC-MTL yields a statistically significant improvement (p < 0.05) using the paired t-test relative to the corresponding baseline.",
+      "page": 5,
+      "index": 12,
+      "width": 762,
+      "height": 292
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15411v1/fig-013.webp",
+      "caption": "Figure 12: The performance of DMC-MTL with a sliding weather window. Results are averaged over five seeds.",
+      "page": 16,
+      "index": 13,
+      "width": 510,
+      "height": 258
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15411v1/fig-014.webp",
+      "caption": "Figure 11: The performance of DMC-MTL with decreased parameter smoothing. Results are averaged over five seeds",
+      "page": 16,
+      "index": 14,
+      "width": 508,
+      "height": 264
+    }
+  ]
+}

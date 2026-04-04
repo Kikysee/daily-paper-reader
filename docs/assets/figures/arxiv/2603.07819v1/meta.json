@@ -1,0 +1,78 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.07819v1/fig-001.webp",
+      "caption": "Fig. 10. Feature space analysis. (a)–(c) Image derived color indices versus biomass targets, colored by state. (d) NDVI×Height hexbin colored by mean Dry Total. (e) State level density in the NDVI–Height plane.",
+      "page": 6,
+      "index": 1,
+      "width": 474,
+      "height": 346
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07819v1/fig-002.webp",
+      "caption": "TABLE VIII STABILITY ANALYSIS (COEFFICIENT OF VARIATION, LOWER IS MORE STABLE).",
+      "page": 7,
+      "index": 2,
+      "width": 529,
+      "height": 372
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07819v1/fig-003.webp",
+      "caption": "Fig. 11. Spatial feature map visualizations from three backbone architectures.",
+      "page": 7,
+      "index": 3,
+      "width": 474,
+      "height": 500
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07819v1/fig-004.webp",
+      "caption": "Fig. 1. Architecture overview of the proposed dual-view biomass regression pipeline. Each input image is split into left/right halves, encoded by a weight-tied DINOv3-ViT-L backbone, and fused through two stacked GatedDepthwiseConv blocks before compositional prediction heads.",
+      "page": 3,
+      "index": 4,
+      "width": 872,
+      "height": 393
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07819v1/fig-005.webp",
+      "caption": "Fig. 13. Prediction quality analysis for the proposed model.",
+      "page": 8,
+      "index": 5,
+      "width": 474,
+      "height": 318
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07819v1/fig-006.webp",
+      "caption": "Fig. 4. NDVI and compressed height vs. biomass scatter plots, colored by pasture species.",
+      "page": 4,
+      "index": 6,
+      "width": 474,
+      "height": 393
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07819v1/fig-007.webp",
+      "caption": "Fig. 5. Dry Total biomass distributions by Australian state.",
+      "page": 4,
+      "index": 7,
+      "width": 474,
+      "height": 336
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07819v1/fig-008.webp",
+      "caption": "Fig. 3. Pearson correlation heatmap among biomass targets and metadata variables.",
+      "page": 4,
+      "index": 8,
+      "width": 474,
+      "height": 421
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07819v1/fig-009.webp",
+      "caption": "TABLE III MAIN RESULTS. ALL MODELS ARE EVALUATED THROUGH 5-FOLD STRATIFIED GROUP CROSS-VALIDATION ON THE CSIRO TRAINING SET (n = 357). WEIGHTED R2 ON log(1 + y) TARGETS IS REPORTED. BEST IN BOLD.",
+      "page": 5,
+      "index": 9,
+      "width": 529,
+      "height": 296
+    }
+  ]
+}

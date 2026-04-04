@@ -1,0 +1,304 @@
+Title: Retrieval-Augmented Multi-scale Framework for County-Level Crop Yield Prediction Across Large Regions
+
+URL Source: https://arxiv.org/pdf/2603.07305v1
+
+Published Time: Tue, 10 Mar 2026 00:54:38 GMT
+
+Number of Pages: 10
+
+Markdown Content:
+# Retrieval-Augmented Multi-scale Framework for County-Level Crop Yield Prediction Across Large Regions 
+
+# Yiming Sun 
+
+University of Pittsburgh Pittsburgh, PA, USA yimingsun@pitt.edu 
+
+# Qi Cheng 
+
+University of Pittsburgh Pittsburgh, PA, USA qic69@pitt.edu 
+
+# Licheng Liu 
+
+University of Wisconsin-Madison Madison, WI, USA licheng.liu@wisc.edu 
+
+# Runlong Yu 
+
+University of Alabama Tuscaloosa, AL, USA ryu5@ua.edu 
+
+# Yiqun Xie 
+
+University of Maryland College Park, MD, USA xie@umd.edu 
+
+# Xiaowei Jia 
+
+University of Pittsburgh Pittsburgh, PA, USA xiaowei@pitt.edu 
+
+## Abstract 
+
+This paper proposes a new method for crop yield prediction, which is essential for developing management strategies, informing in-surance assessments, and ensuring long-term food security. Al-though existing data-driven approaches have shown promise in this domain, their performance often degrades when applied across large geographic regions and long time periods. This limitation arises from two key challenges: (1) difficulty in jointly capturing short-term and long-term temporal patterns, and (2) inability to effectively accommodate spatial data variability in agricultural sys-tems. Ignoring these issues often leads to unreliable predictions for specific regions or years, which ultimately affects policy decisions and resource allocation. In this paper, we propose a new predictive framework to address these challenges. First, we introduce a new backbone model architecture that captures both short-term daily-scale crop growth dynamics and long-term dependencies across years. To further improve generalization across diverse spatial re-gions, we augment this model with a retrieval-based adaptation strategy. Recognizing the substantial yield variation across years, we design a novel retrieval-and-refinement pipeline that adjusts retrieved samples by removing cross-year bias not explained by input features. Our experiments on real-world county-level corn yield data over 630 counties in the US demonstrate that our method consistently outperforms different types of baselines. The results also verify the effectiveness of the retrieval-based augmentation method in improving model robustness under spatial heterogeneity. 
+
+## 1 Introduction 
+
+Agricultural monitoring is essential for understanding and manag-ing the complex interactions between crop growth and the cycling of carbon, nitrogen, and water in agroecosystems. Effective moni-toring enables reliable estimates of crop yields, provides insights into soil health and environmental impacts, and facilitates the quan-tification of greenhouse gas emissions [ 5 , 46 , 51 ]. These capabilities are increasingly important in the context of global challenges such as climate change, resource scarcity, and the need for sustainable intensification of food production given the growing population. Although crop yield is often reported for historical years (typi-cally at the county level or state level), a key practical need is to provide accurate estimates of crop yield promptly by the end of each current year, once that year’s meteorological, soil, and management data are available. Such current-year prediction provides a princi-pled way to generate yield estimates in regions with missing or delayed reporting, support post-season assessment of how climate and management shaped production, and enable analysis of envi-ronmental impacts and cross-region comparisons of management scenarios. More importantly, timely current-year estimates inform the development of policies and management planning, including next-season decisions (e.g., irrigation and nutrient planning and resource allocation across fields and regions), which helps conserve natural resources and ensure long-term food security [ 43 ]. At larger scales, these timely estimates improve commodity supply assess-ments, reduce market uncertainty, and improve food-security and disaster-response planning by identifying potential shortfalls early enough for intervention. Given the importance of this problem, scientists have developed different types of process-based physical models [ 14 , 48 , 68 ] and machine learning (ML) models [ 9, 18 , 31 , 53 ] for crop modeling. Process-based models are designed to simulate different compo-nents of crop growth based on known physical relationships, such as mass and energy conservation laws [ 15 , 25 , 47 , 68 ]. However, these models are necessarily approximations of reality due to in-complete knowledge of certain processes or omission of processes to maintain computational efficiency. More recently, ML models have gained significant attention in environmental monitoring due to their rapid inference capabilities and ability to automatically learn complex relationships from observational data. In particular, recurrent neural networks (RNNs), such as long short-term memory (LSTM) and gated recurrent unit (GRU), have demonstrated superior performance compared to other ML mod-els, such as decision tree-based models, fully connected neural networks, and Transformer-based models, in a wide range of en-vironmental ecosystem modeling tasks [ 1, 29 , 36 , 45 , 49 , 63 ]. The advantage of RNNs largely stems from their ability to capture the temporal dependencies inherent in physical systems, where the system states (e.g., soil moisture, crop biomass) evolve in response to external environmental drivers (e.g., weather conditions, fertil-ization). Despite their promise, their effectiveness at large-scale agricultural monitoring remains limited by two major challenges. First, although RNNs are effective at capturing short-term tempo-ral dynamics, they are not explicitly designed to model long-term dependencies in crop growth. In practice, crop growth can be in-fluenced by processes operating over multi-year timescales. For 
+
+> arXiv:2603.07305v1 [cs.LG] 7 Mar 2026 Sun et al.
+
+example, soil nutrient status may reflect accumulated effects of past farming practices, crop rotations, or residue management [ 8, 21 ]. These long-term factors are difficult to represent using standard RNNs applied to frequent data on a daily scale. Additionally, existing ML methods are typically trained globally across large regions, but their generalizability is often limited by substantial underlying data heterogeneity. In particular, data dis-tributions can vary substantially over space due to differences in environmental conditions and farming practices. For example, a global model trained across a large region of 630 counties in the US produces highly uneven prediction errors in a separate test-ing year (Figure 1 (a)). This suggests that crop response functions are non-stationary across space, which is mostly because of both environmental differences and variations in management and lo-cal farming practices. Figure 1 (b) further illustrates the spatial distribution of soil sand content, a key factor affecting the soil water-holding capacity, nutrient retention, and crop drought sen-sitivity. Such substantial spatial variation of soil sand content and many other environmental and management factors can affect crop responses even under similar weather conditions. Temporally, crop growth patterns may also shift across years as a result of tech-nological advancements in farming (e.g., seed quality, irrigation) and changes in environmental conditions (e.g., soil quality). Ignor-ing such spatial and temporal heterogeneity can lead to unreliable estimates for certain regions or years, which in turn results in un-even or suboptimal decision making (e.g., in resource allocation or insurance assessments). Prior work has explored spatial-explicit methods that build sep-arate models for different locations or train a subset of parameters independently for specific spatial regions [ 16 , 61 , 62 ]. However, these models often face data scarcity issues, as insufficient data may be collected from each spatial location. Alternatively, transfer learning [ 59 ] and domain generalization [ 50 , 67 ] have been widely studied in the machine learning community to learn generalizable data patterns using a unified model. Nonetheless, directly applying these techniques to agricultural monitoring remains challenging due to the substantial heterogeneity across many different regions. In particular, many factors that drive spatial variations (e.g., farm-ing practices, soil conditions) are unobservable and thus absent from available features, which makes it difficult to directly extract generalizable patterns. In this paper, we introduce a novel framework that integrates a new network architecture with a retrieval-based augmentation mechanism. The proposed model architecture, Long-term Year-spanning Recurrent Architecture (LYRA), is designed to capture both daily-scale crop growth dynamics and long-term temporal changes across years. At the short-term scale, LYRA employs the long short-term memory (LSTM) to model daily crop growth pat-terns, which naturally align with the inherent dynamical processes of agroecosystems, where ecosystem states are recurrently influ-enced by other fluxes over time. At the long-term scale, it uti-lizes a cross-attention structure to capture long-term dependencies for modeling temporal changes across years. To address spatial heterogeneity and data sparsity, we further enhance LYRA with a retrieval-based approach, inspired by the success of retrieval-augmented generation in natural language processing [ 10 ]. This retrieval-based approach aims to adapt LYRA to each location by 
+
+> (a)
+> (b)
+
+Figure 1: (a) County-level prediction errors (prediction – ground truth) from a single global model trained across all counties. (b) Spatial variability of soil sand content (TSAND) across all counties. 
+
+incorporating relevant historical samples. However, due to substan-tial inter-year variability, the retrieved samples may originate from conditions that differ markedly from those of the target year. As a result, directly using these samples may introduce bias and may not effectively support prediction in the target year. To mitigate this issue, we introduce a Retrieval-augmented Tun-ing And Refinement (RaTAR) approach, which adjusts the retrieved samples before incorporating them for augmentation. We observe that yearly differences in crop yield, which arise from changes in environmental conditions (e.g., soil properties) and farming tech-nology (e.g., seed quality), cannot be explained by available input features. To account for these unobserved variations, we first esti-mate pairwise yearly differences by evaluating models trained on Retrieval-Augmented Multi-scale Framework for County-Level Crop Yield Prediction Across Large Regions 
+
+one year against data in other years. The estimated yearly differ-ences are then used to correct biases in retrieved samples, which enables more effective augmentation. We evaluate the proposed method in the context of crop yield prediction over 630 counties spanning the U.S. Corn Belt States. The results demonstrate the effectiveness of the LYRA model and the RaTAR learning strategy. The proposed method opens new opportu-nities for a broad range of Earth science problems where sparse data are collected from large spatial regions with data heterogeneity. 
+
+## 2 Related Work 2.1 Spatio-temporal crop modeling 
+
+Precise accounting of crop-related variables, such as crop yield, biomass, carbon and nitrogen emissions, is important for ensur-ing food security, which becomes increasingly important given the growing population. Researchers have been extensively ex-ploring data-driven approaches for modeling crops. Crop growth typically exhibits temporal patterns in response to external drivers (e.g., weather and management practices) and spatial dependencies given the continuity of environmental conditions. To explicitly cap-ture such relationships, prior works have explored crop modeling using recurrent temporal models (e.g., LSTM or GRU) [ 6, 18 , 45 , 55 ], Transformer-based models [ 7, 28 , 41 ], and graph neural networks [ 9,23 , 44 ]. More recently, researchers have also started developing hy-brid modeling by integrating physical and biochemical knowledge into data-driven models [18, 30, 31]. There are two main challenges faced by data-driven crop mod-eling. First, crop growth is affected by both short-term weather and long-term temporal factors. Temporal convolutional networks (TCN) have been commonly used to capture such multi-scale tempo-ral patterns in crop modeling [ 11 , 12 , 37 ]. In contrast, we introduce a complementary design that explicitly decomposes temporal dy-namics: a GRU module is used to represent fine-grained, daily-scale variations, while an attention mechanism captures longer-term de-pendencies across yearly growth cycles. This architecture is more closely aligned with known crop phenological patterns and the dis-tinct temporal regimes governing yield formation. The second chal-lenge lies in the spatial variability of crop patterns due to different weather conditions and farming practices (e.g., fertilization, seed-ing, irrigation) in different regions. Hence, a global model trained over large regions may not fit each specific location [ 13 , 27 ]. Prior work has investigated explicit tuning of model parameters towards each location [ 16 , 61 , 62 ] and meta-learning approaches to facili-tate region-specific model adaptation [ 35 , 42 , 52 ]. However, these methods could suffer from limited data available for local tuning. 
+
+## 2.2 Retrieval-augmented generation in scientific problems 
+
+Effective task (location)-specific adaptation can help better align the learned model with the characteristics of the target task. Separate modeling of each individual task generally faces data scarcity be-cause of their restricted spatial and temporal scope and the practical limitations of in-situ measurement systems. One promising direc-tion is to leverage retrieval-augmented generation (RAG), where ex-ternal information can be retrieved and incorporated into the infer-ence process. RAG has demonstrated its capabilities in knowledge-intensive natural language processing tasks, particularly in open-domain question answering where retrieval and synthesis from large relevant text corpora are essential [ 17 , 20 ]. However, applying RAG in scientific problems requires addressing the challenges in effectively retrieving and referencing external knowledge, which are less explored by existing RAG methods [ 26 , 66 ]. In particular, retrieval needs to prioritize data points whose scientific relevance is consistent with the underlying physical processes. This often requires defining new relevance measures among different types of data representations, such as spatial data [ 65 ], time series [ 36 , 39 ], and knowledge graphs [24]. Moreover, due to measurement limitations, data collected from scientific systems are often incomplete and insufficient to capture all system characteristics. This incompleteness can reduce the re-liability of retrieval, as data embeddings and relevance scores are derived only from the available data. Knowledge refinement and editing [ 57 ] is a promising direction to further enhance the reliabil-ity of the retrieved data. Specifically, retrieved information can be further refined, e.g., through filtering [ 58 , 64 ], completion [ 38 ], and retriever adjustment [ 2, 3], to fit the target scientific system. Such refinement not only improves data quality but also enhances the coherence of the knowledge supporting the reasoning within RAG. 
+
+## 3 Problem Definition 
+
+Our objective is to learn a model F𝜃 that estimates the annual county-level corn yield 𝑦 𝑘 𝑖 for each county 𝑖 in year 𝑘 , based on its daily input features x𝑘 𝑖 = {x𝑘 𝑖,𝑡 }𝑡 =1: 𝑇 (𝑇 =365) within that year. Daily features x𝑘 𝑖,𝑡 include weather drivers (e.g., precipitation, solar radia-tion) and soil and crop properties. The feature values are obtained as the average across a set of randomly sampled farm locations in each county. More details are provided in Section 5.1. This year targets the current-year prediction problem, which aims to predict crop yield for a specific year assuming this year’s input features and historical yield records are available. This setting is practically important for informing policy and management deci-sions for upcoming seasons (e.g., irrigation and nutrient planning and resource allocation across fields and regions). The predictions can also help provide timely information to support food supply assessment and food-security planning. Specifically, we have ac-cess to crop yield labels from 630 counties in the US for previous years 𝑘 = 1, ..., 𝐾 , which serve as the training data. During testing, we apply the model to the next year 𝐾 + 1, where only the input features are available and the yield label is withheld for evaluation. 
+
+## 4 Method 
+
+Our proposed method consists of two key components, a backbone model (LYRA) and a retrieval-based adaptation strategy (RaTAR), as illustrated in Figure 2. The LYRA model is trained on the entire training dataset, and is designed to capture both short-term and long-term temporal dynamics in crop growth. During prediction in the testing year, we enhance LYRA using the retrieval-based ap-proach RaTAR. Specifically, for each county, we retrieve historical Sun et al. 
+
+Figure 2: The overall framework of LYRA-RaTAR. 
+
+data samples from other counties showing similar crop behaviors, refine these samples, and incorporate them to improve the predic-tion. In the following, we provide details for these two components. 
+
+## 4.1 Long-term Year spanning Recurrent Architecture 
+
+Environmental ecosystems are inherently dynamical physical sys-tems in which system states (e.g., soil water conditions, crop biomass, nutrient availability) evolve over time in response to dynamic ex-ternal forcings, which are often referred to as input drivers to the ecosystem (e.g., weather variables, management practices). During the system evolution, some system measurements can be collected, either for certain flux variables (e.g., latent heat flux, carbon dioxide) using instruments such as eddy covariance towers, or for accumu-lated quantities (e.g., crop yield) through large-scale field surveys. RNNs (e.g., LSTM and GRU) have been widely applied to envi-ronmental ecosystem modeling across many domains and have generally achieved better performance than many other ML mod-els [ 1 , 18 , 29 , 36 , 45 , 49 , 63 ]. This is because the recurrent network structure used in these models can naturally capture the temporal evolution of system states in a manner analogous to the dynamics in physical systems. However, RNNs remain limited in modeling long-term dependencies that characterize certain slow-evolving pro-cesses, especially when operating on high-frequency data (e.g., on a daily scale). In agricultural ecosystems, for example, crop growth depends on soil properties that are often shaped by the cumulative impacts of farming practices over multiple past years [8, 21]. Our proposed LYRA leverages the capacity of recurrent neural networks (e.g., LSTM and GRU) to embed the short-term temporal dynamics of crop growth. In addition, it captures long-term depen-dencies across years, which enables the model to account explicitly for the influence of conditions in previous years. 
+
+Generation of yearly embedding: For each year 𝑘 , LYRA employs GRU layers over the daily input sequence within this year, as {h𝑘 𝑖,𝑡 }𝑇 𝑡 =1 = GRU ({ x𝑘 𝑖,𝑡 }𝑇 𝑡 =1). Next, we aim to combine the obtained daily embeddings h𝑘 𝑖,𝑡 from different dates 𝑡 = {1, ...,𝑇 } to create a yearly embedding for year 𝑘 through an attention layer. The attention weights are estimated from the hidden representation through a multi-layer perceptron (MLP) and normalized across all time steps 𝑡 = 1, . . . ,𝑇 using a softmax function, as follows: 
+
+𝛼 𝑘 𝑖,𝑡 = MLP (h𝑘 𝑖,𝑡 ),
+
+¯𝛼 𝑘 𝑖,𝑡 = softmax (𝛼 𝑘 𝑖,𝑡 ). (1) We then aggregate the daily embeddings based on the attention weights and also incorporate the yield label 𝑦 𝑘 𝑖 and year index 𝑘 to create the yearly embedding z𝑘 𝑖 , as follows: 
+
+z𝑘 𝑖 = MLP ([ ∑︁ 
+
+> 𝑡
+
+¯𝛼 𝑘 𝑖,𝑡 h𝑘 𝑖,𝑡 , 𝑦 𝑘 𝑖 , Embed (𝑘 )]) , (2) where the function Embed (·) directly maps each year index to a trainable continuous embedding. During testing, as we do not have the yield label, we replace the 𝑦 𝑘 𝑖 in Eq. 2 by the predicted yield of a GRU model trained over the entire training set. This GRU-based structure enables capturing short-term dynam-ics of crop growth, such as the influence of weather changes (e.g., heavy rainfall) over a short period of time. The attention mechanism described in Eqs. 1 and 2 further enables the model to automatically identify the most informative time periods in a year that are most relevant for yield prediction, such as the key stages of the grow-ing season. However, crop growth could also be affected by many other factors over a longer time horizon, e.g., soil conditions in the current year may be shaped by farming practices in previous years or by how crop residues were managed. This motivates capturing long-term dependencies across years. Retrieval-Augmented Multi-scale Framework for County-Level Crop Yield Prediction Across Large Regions 
+
+Cross-year attention mechanism: For predicting the testing year 𝐾 + 1, we construct a look-back window consisting of previous 
+
+𝑤 years, i.e., from year 𝐾 − 𝑤 + 1 to 𝐾 , to serve as contextual information for predicting the yield in the testing year 𝐾 + 1. For each county 𝑖 , we generate the yearly embeddings z𝑘 𝑖 (following Eq. 2) for the testing year and each year in the look-back window. Then a cross-year attention is applied between the testing year and each year in the look-back window using their yearly embeddings. The attention weights are normalized over the historical years in the look-back window using a softmax function, as follows: 
+
+𝛽 = softmax ({ z𝑘 𝑖 · z𝐾 +1 
+
+> 𝑖
+
+}𝑘 =𝐾 −𝑤 +1: 𝐾 ). (3) Then we aggregate the influence from previous years based on their attention weights, and add such influence to the original yearly embedding of the testing year: 
+
+˜z𝐾 +1 
+
+> 𝑖
+
+= z𝐾 +1 
+
+> 𝑖
+
++∑︁  
+
+> 𝑘 =𝐾 −𝑤 +1: 𝐾
+
+𝛽 𝑘 z𝑘 𝑖 . (4) Finally, we generate the prediction ˆ𝑦 𝐾 +1 
+
+> 𝑖
+
+for county 𝑖 in the test-ing year 𝐾 + 1 using an MLP, as ˆ𝑦 𝐾 +1 
+
+> 𝑖
+
+= MLP ( ˜z𝐾 +1 
+
+> 𝑖
+
+). LYRA is trained globally on the entire training set Dtr , i.e., by minimizing the mean squared loss using data from all the counties in the training years. 
+
+## 4.2 Retrieval-augmented Tuning And Refinement (RaTAR) 
+
+Although the backbone model LYRA can capture multi-scale tem-poral dynamics, it remains limited for handling spatially heteroge-neous data across different counties. Intuitively, we can adapt the global LYRA model separately to each individual county through fine-tuning. However, this often leads to degraded performance due to limited data in each county (i.e., labeled data from a spe-cific county in previous 𝐾 years). We address this issue using a new retrieval-based approach RaTAR, which consists of three steps: retrieval, refinement, and integration. 
+
+Step 1. Residual-based retrieval: A major source of spatial heterogeneity is that certain influential factors, such as soil prop-erties or specific farming practices, are not directly observable or measurable, yet these hidden variables can substantially alter the relationship between input drivers and crop yield. Ideally, we would like to retrieve historical data from locations that share similar unob-served characteristics with the target location to improve prediction accuracy. Hence, to facilitate the learning of location-specific pat-terns, we propose a residual-based approach that emphasizes the components of temporal data variations not explained by a global model that learns the input-output relation. In particular, we construct a GRU-based global model 𝑓 (·) from all the training data. Then we apply the global model to each county and measure the residual, i.e., the difference 𝑟 𝑘 𝑖 = 𝑦 𝑘 𝑖 − 𝑓 (x𝑘 𝑖 ) for each training year 𝑘 = 1, 2, ..., 𝐾 , which quantifies the model’s unexplained error for county 𝑖 in year 𝑘 . Collecting these values forms a residual vector for each county r𝑖 = [𝑟 1 
+
+> 𝑖
+
+, 𝑟 2 
+
+> 𝑖
+
+, ..., 𝑟 𝐾 𝑖 ]. Next, we measure the similarity between two counties 𝑖 and 𝑗 using the cosine similarity, as sim (𝑖, 𝑗 ) = cosine (r𝑖 −mean (r𝑖 ), r𝑗 −mean (r𝑗 )) .For each target county 𝑖 , we retrieve counties whose similarity to county 𝑖 is greater than a threshold (set as 0.9 in our tests). Then we collect the data samples from these counties over the most recent five years during the augmentation process to enhance the learning of location-specific dynamics. 
+
+Step 2. Refining the retrieved samples: Due to the difference in crop yield across years, we aim to refine the crop yield labels of the retrieved samples before incorporating them into the prediction of the testing year. Specifically, for every pair of years 𝑠 (source) and 𝑘 (target), we train a model 𝑔 𝑠 (·) that directly predicts labels from z𝑠 to 𝑦 𝑠 on the source data, and then apply it to the embedding 
+
+z𝑘 𝑖 for each location 𝑖 in the target year 𝑘 and measure the model bias 𝑏 𝑠𝑘 𝑖 as 𝑦 𝑘 𝑖 − 𝑔 𝑠 (z𝑘 𝑖 ). Once we gather these values, we create a cross-year bias matrix B𝑖 = {𝑏 𝑠𝑘 𝑖 }𝑠 =1: 𝐾,𝑘 =1: 𝐾 . To refine a retrieved sample from year 𝑠 towards the testing year 𝐾 + 1, we perform a linear extrapolation on 𝐵 𝑖 [𝑠, :] to estimate the bias ˆ𝑏 𝑠,𝐾 +1 
+
+> 𝑖
+
+. Finally, we refine the label of retrieved 𝑦 𝑠 𝑖 as ˜𝑦 𝑠 𝑖 ∼ N ( 𝑦 𝑠 𝑖 + ˆ𝑏 𝑠,𝐾 +1 
+
+> 𝑖
+
+, 𝜎 2), where the Gaussian sampling with a pre-defined variance 𝜎 2 helps increase the diversity of the refined samples. 
+
+Step 3. Integration of retrieved samples: For each target location 𝑖 as the query, we use the set of retrieved samples and their refined labels R𝑖 = {x𝑠 𝑖 , ˜𝑦 𝑠 𝑖 } to enhance the prediction in the testing year. Specifically, we consider two approaches: 
+
+• Fine-tuning : we use the retrieved samples R𝑖 to fine-tune the LYRA model. 
+
+• Context augmentation : We add the retrieved samples R𝑖 to the context (i.e., the look-back window) of the LYRA model. Our experiments (Section 5.5) show that both approaches can effectively improve the predictive accuracy. 
+
+## 5 Experiments 5.1 Dataset 
+
+We use the corn yield data from 630 counties in the midwestern United States from the years 2000-2020 provided by USDA National Agricultural Statistics Service 1. These counties span the major U.S. Corn Belt states (e.g., Iowa, Illinois, Indiana, Minnesota, Missouri, Nebraska), covering diverse environmental and management con-ditions. They were selected using the USDA Cropland Data Layers and Corn-Soy Data Layer, retaining counties with a combined corn and soybean fraction greater than 0.2 [ 56 ]. The corn yield data (in gC m −2) are available for each county in each year. The input features have 19 dimensions, including NLDAS-2 climate data [ 60 ], 0-30 cm gSSURGO soil properties 2, crop type information, the 250 m Soil Adjusted Near-Infrared Reflectance of vegetation (SANIRv) based daily GPP product regridded to county level [ 22 ], and cal-endar year. Daily climate and GPP sequences are used directly as model inputs for each year, while soil variables are static. All continuous variables are standardized using z-score normalization. Comprehensive dataset descriptions are provided in Appendix A. 
+
+## 5.2 Experimental settings 
+
+We consider the yield prediction for the next unseen year. Hence, we treat the labeled data from previous years as training data and aim to predict the corn yield for the next year. In particular, we treat each year from 2016 to 2020 as a separate testing year. For each testing year, all labeled data from years prior to the testing 
+
+> 1https://quickstats.nass.usda.gov/
+> 2https://gdg.sc.egov.usda.gov/ Sun et al.
+
+Table 1: The prediction root mean squared errors (RMSE) by different approaches in each testing year. We report the mean and standard deviation over 3 runs with random model initialization. The best results are highlighted in bold. 
+
+Method 2016 2017 2018 2019 2020 LSTM 36.37 ±0.90 35.02 ±1.18 38.82 ±3.72 32.72 ±3.59 31.40 ±1.41 TCN 30.93 ±6.09 35.44 ±2.37 36.71 ±3.30 30.81 ±0.85 30.69 ±0.80 Transformer 43.10 ±1.53 48.79 ±3.55 53.80 ±6.44 45.20 ±1.71 39.55 ±2.61 Pyraformer 57.53 ±0.56 56.12 ±1.72 68.32 ±7.61 50.43 ±0.04 41.90 ±1.14 iTransformer 60.94 ±1.46 58.87 ±3.93 65.05 ±6.40 50.53 ±0.10 42.93 ±1.61 TS-RAG 45.54 ±6.25 41.48 ±2.09 46.38 ±3.37 36.80 ±3.12 34.39 ±1.50 LYRA-RaTAR 28.35 ±1.50 30.13 ±1.43 34.87 ±2.03 27.32 ±1.92 27.79 ±1.58 
+
+year are used for training. We compare the proposed method with a set of baselines described below. All baselines operate at the daily time scale, producing 365 daily outputs. To generate the annual yield prediction, we apply mean pooling over the daily embeddings followed by a multi-layer perceptron. 
+
+• RNN-based models: (a) LSTM: A recurrent neural network that captures temporal dependencies through gated memory units. Widely used in agricultural and environmental forecast-ing [ 19 ]. (b) TS-RAG (LSTM backbone): A retrieval-augmented model that retrieves semantically similar historical sequences under comparable environmental conditions [39]. 
+
+• CNN-based model: (a) TCN: A temporal convolutional network that models long-range temporal patterns using dilated causal convolutions [33]. 
+
+• Transformer-based models: (a) Transformer: A self-attention encoder-only architecture that captures global temporal de-pendencies without recurrence [ 54 ]. (b) Pyraformer: A hier-archical, multi-resolution Transformer that reduces attention complexity through pyramid-shaped attention patterns, en-abling efficient long-sequence modeling [ 32 ]. (c) iTransformer: An instance-centric Transformer that treats each variable as a token, enabling cross-variable interaction compared to stan-dard time-position encoding [34]. 
+
+## 5.3 Predictive performance 
+
+Table 1 shows the performance of LYRA-RaTAR and baseline meth-ods in each testing year. Here the proposed LYRA-RaTAR incor-porates the retrieved samples using the fine-tuning approach. We compare it with the context augmentation approach in Section 5.5. The results in Table 1 show that the proposed method significantly outperforms all the other methods in terms of predictive accuracy. LYRA-RaTAR’s performance is also highly reliable, consistently exhibiting low standard deviation among all testing years. Criti-cally, all methods perform worse in 2018, which is partially due to the distinct drought patterns in that year [ 40 ]. Such performance degradation verifies the negative impact of inter-annual climate variability on the performance, yet LYRA-RaTAR maintains the highest relative accuracy and stability even when confronted with these severe environmental shifts. Analyzing the architectural differences, LSTM generally per-forms better than Transformer-based models. This suggests that the recurrent structure of the LSTM is better suited for capturing the temporal evolution of crop growth, as it more closely resembles a dynamical system whose internal state evolves in response to external environmental forcings. The convolutional TCN, which also emphasizes local, time-ordered dependencies, aligns with this finding. Furthermore, LYRA-RaTAR’s performance advantage over the retrieval-augmented TS-RAG model validates the strength of its specialized augmentation approach. Crucially, TS-RAG, which relies on retrieval solely based on environmental similarity (using input features), performs significantly worse than even the base-line LSTM. This pronounced failure suggests that solely relying on environmental information is insufficient due to the non-stationary nature of the input-output relationship. In Figure 3, we show the spatial distribution of prediction er-rors produced by three different methods across all counties. The global baselines (LSTM and TCN) exhibit large errors in many re-gions, suggesting limited generalization under substantial spatial heterogeneity. In contrast, LYRA-RaTAR reduces several of these high-error regions by leveraging retrieved county-specific histori-cal patterns, yielding more spatially consistent predictions. While some counties remain challenging, the improvement highlights the value of incorporating retrieval to adapt models to spatially variable agricultural ecosystems. 
+
+## 5.4 Ablation studies 
+
+To evaluate the contribution of each component in the proposed method, we conduct ablation studies and report the performance of several variants of RaTAR in Table 2. These variants include: ‘w/o refine’, which directly uses the retrieved samples without re-finement for location-specific adaptation of LYRA; ‘LYRA’, which retains the same network architecture but does not perform re-trieval; and ‘GRU-ATT’, which removes the cross-year dependency modeling from LYRA. It can be seen that the largest performance gain comes from introducing the cross-year attention in LYRA. This demonstrates the importance of modeling long-term temporal dependencies, which complements the short-term modeling by RNNs for crop yield prediction. The retrieval and refinement modules provide additional improvements, with particularly notable gains in years 2018 to 2020. This is partly attributable to the higher spatial variability due to more frequent extreme events (e.g., floods and drought) in certain regions of the US in these years compared to 2016-2017 [ 4]. The retrieval-augmented prediction helps better capture distinct patterns for each location compared to a global model applied to all the locations. Retrieval-Augmented Multi-scale Framework for County-Level Crop Yield Prediction Across Large Regions 2016    
+
+> LSTM TCN LYRA-RaTAR
+> 2017
+> 20
+> 40
+> 60
+> 80
+> 100
+> 120 gC m ² year ¹
+
+Figure 3: Spatial patterns of prediction errors for LSTM, TCN, and LYRA-RaTAR evaluated on the 2016 and 2017 test years. Table 2: Performance (in RMSE) for different variants of the proposed method. Method 2016 2017 2018 2019 2020 LYRA-RaTAR 28.46 30.04 34.92 27.21 27.83 w/o refine 29.22 30.18 35.72 27.67 28.46 LYRA 29.97 31.15 37.37 30.84 29.88 GRU-ATT 34.38 37.25 39.97 34.52 31.90 
+
+## 5.5 Analysis of retrieval methods 
+
+Here we investigate the impact of different strategies for integrat-ing retrieved samples, as well as the effects of various relevance measures used during retrieval. Finally, we analyze the sensitivity of model performance to the number of retrieved samples. We test two different strategies for integrating retrieved samples, either using them for location-specific fine-tuning or including them in the context (i.e., look-back window), as described in Sec-tion 4.2. Figure 4 shows the performance of these two strategies across all the testing years. We can see that they achieve similar performance in all the testing years. We also investigate the effect of different relevance measures in retrieval. Besides the residual-based approach used in RaTAR (described in Section 4.2), we also consider two other ways of iden-tifying relevant samples: (1) selecting data from geographically ad-jacent counties (Neighboring) and (2) selecting data from counties with similar LYRA embeddings (Embedding). For both strategies, following the same setting with RaTAR, we retrieve the data sam-ples from the previous five years from the counties selected by Neighboring or Embedding. Figure 5 shows the predictive errors using the retrieved samples based on each relevance measure. The proposed residual-based relevance yields a better performance than both Neighboring and Embedding. Unlike the other two methods, 
+
+Figure 4: Performance (in RMSE) of different sample inte-gration methods (fine-tuning vs. context augmentation) in testing years from 2016 to 2020. 
+
+RaTAR retrieves samples based on similarity in temporal residuals, allowing it to capture meaningful environmental and management shifts specific to the target location. We further study how the number of retrieved samples affects model performance (Figure 6). Here x-axis shows the sum of the total number of counties retrieved across different target counties. When more samples are retrieved by relaxing the relevance thresh-old, we observe a performance degradation. This is largely because a greater proportion of irrelevant samples are included. Conversely, increasing the threshold from 0.9 to 0.95 also harms performance, as the resulting retrieved samples become too small to provide ef-fective augmentation. Comparing the variants with and without refinement shows that RaTAR’s refinement step can partially offset the negative effects of retrieving an excessive number of samples. 
+
+## 5.6 Analysis of LYRA 
+
+We now analyze the impact of the cross-year attention mechanism in LYRA. As shown in Figure 7, the performance exhibits similar Sun et al. 
+
+Figure 5: Comparison of three approaches for retrieving rel-evant samples: residual-based retrieval, neighboring-based retrieval, and embedding-based retrieval. For each approach, we show the results for the fine-tuned LYRA model using both the original retrieved samples (w/o refine) and the re-fined retrieved samples (w/refine) in testing year 2016. 
+
+Figure 6: Performance variation of the proposed method in the testing year 2016 with different numbers of retrieved samples, shown for two model versions: with refinement (w/ refine) and without refinement (w/o refine). 
+
+Figure 7: Performance of the proposed LYRA-RaTAR and LYRA (i.e., the same backbone model w/o retrieval) in 2016 with different numbers of years in the look-back window. 
+
+trends with and without retrieval (RaTAR vs. LYRA) as we vary the number of historical years included in the context. When the look-back window is short, performance declines due to insufficient historical information. As more historical years are incorporated, the model benefits from the richer long-term context, leading to improved predictive accuracy. The model performance slightly de-clines when the look-back window exceeds five years, which reveals that additional distant years may introduce more noise and less relevant information.   
+
+> (a) (b)
+> (c) (d)
+
+Figure 8: Attention weights over historical years in the look-back window for different target years. The curves show the attention weights for 20% randomly sampled counties. 
+
+In Figure 8, we show the attention weights assigned to past years for each target year from 2013 to 2016. In most cases, the model places higher attention weights on more recent years, as they are more likely to share similar environmental and management conditions with the target year. In contrast, years such as 2011 and 2012 consistently receive low attention across target years (even when we set the next year 2013 as the target year). This is largely because these years (2011 and 2012) experienced frequent extreme weather events, making their temporal patterns less representative and therefore less useful for prediction in a different year. 
+
+## 6 Conclusion 
+
+In this paper, we propose a new framework to address two funda-mental challenges in large-scale crop yield prediction: (1) capturing both short-term and long-term temporal dynamics of crop growth, and (2) adapting to heterogeneous spatial regions. Our framework integrates a multi-scale temporal network LYRA with a retrieval-based strategy RaTAR to enhance the adaptability. Our evaluation on real-world county-level corn yield data demonstrates the effec-tiveness of both LYRA and RaTAR in improving crop yield predic-tion. We further show that the cross-year attention mechanism successfully identifies the most relevant historical years for each prediction. In addition, our analysis of the retrieval process reveals the benefits of the residual-based retrieval strategy and highlights the importance of the refinement step in RaTAR. Although the proposed method has been developed in the con-text of crop modeling, it can be generally applied to many other real-world earth science problems (e.g., prediction of greenhouse gas emissions, water quality monitoring) that exhibit complex tem-poral dynamics and high spatial heterogeneity. Our future work will further explore the incorporation of domain knowledge (e.g., the mass balance of carbon cycles in each agricultural region) to further improve the retrieval and augmentation process. Retrieval-Augmented Multi-scale Framework for County-Level Crop Yield Prediction Across Large Regions 
+
+## References 
+
+[1] Khadijeh Alibabaei, Pedro D Gaspar, and Tânia M Lima. 2021. Crop yield esti-mation using deep learning based on climate big data and irrigation scheduling. 
+
+Energies 14, 11 (2021), 3004. [2] Raviteja Anantha and Danil Vodianik. 2024. Context tuning for retrieval aug-mented generation. In Proceedings of the 1st Workshop on Uncertainty-Aware NLP (UncertaiNLP 2024) . 15–22. [3] Mohammad Aghajani Asl, Majid Asgari-Bidhendi, and Behrooz Minaei-Bidgoli. 2025. FAIR-RAG: Faithful Adaptive Iterative Refinement for Retrieval-Augmented Generation. arXiv preprint arXiv:2510.22344 (2025). [4] AXIOS. [n. d.]. Corn plantings reach 40-year low as record flooding crushes farmers. https://www.axios.com/2019/06/18/corn-plantings-record-flooding-farmers [5] Inbal Becker-Reshef, Christina Justice, Brian Barker, Michael Humber, Felix Rembold, Rogerio Bonifacio, Mario Zappacosta, Mike Budde, Tamuka Magadzire, Chris Shitote, et al . 2020. Strengthening agricultural decisions in countries at risk of food insecurity: The GEOGLAM Crop Monitor for Early Warning. Remote Sensing of Environment 237 (2020), 111553. [6] Usharani Bhimavarapu, Gopi Battineni, and Nalini Chintalapudi. 2023. Improved optimization algorithm in LSTM to predict crop yield. Computers 12, 1 (2023), 10. [7] Luning Bi, Owen Wally, Guiping Hu, Albert U Tenuta, Yuba R Kandel, and Daren S Mueller. 2023. A transformer-based approach for early prediction of soybean yield using time-series images. Frontiers in Plant Science 14 (2023), 1173036. [8] KA Congreves, A Hayes, EA Verhallen, and LL Van Eerd. 2015. Long-term impact of tillage and crop rotation on soil health at four temperate agroecosystems. Soil and Tillage Research 152 (2015), 17–28. [9] Joshua Fan, Junwen Bai, Zhiyun Li, Ariel Ortiz-Bobea, and Carla P Gomes. 2022. A GNN-RNN approach for harnessing geospatial and temporal information: application to crop yield prediction. In Proceedings of the AAAI conference on artificial intelligence , Vol. 36. 11873–11881. [10] Wenqi Fan, Yujuan Ding, Liangbo Ning, Shijie Wang, Hengyun Li, Dawei Yin, Tat-Seng Chua, and Qing Li. 2024. A survey on RAG meeting LLMs: Towards retrieval-augmented large language models. In Proceedings of the 30th ACM SIGKDD conference on knowledge discovery and data mining . 6491–6501. [11] Keyhan Gavahi, Peyman Abbaszadeh, and Hamid Moradkhani. 2021. DeepYield: A combined convolutional neural network with long short-term memory for crop yield forecasting. Expert Systems with Applications 184 (2021), 115511. [12] Liyun Gong, Miao Yu, Shouyong Jiang, Vassilis Cutsuridis, and Simon Pearson. 2021. Deep learning based prediction on greenhouse crop yield combined TCN and RNN. Sensors 21, 13 (2021), 4537. [13] Michael F Goodchild and Wenwen Li. 2021. Replication across space and time must be weak in the social and environmental sciences. Proceedings of the National Academy of Sciences 118, 35 (2021), e2015759118. [14] RF Grant. 1998. Simulation of methanogenesis in the mathematical model ecosys. 
+
+Soil Biology and Biochemistry 30, 7 (1998), 883–896. [15] Robert F Grant, T Andrew Black, Rachhpal S Jassal, and Christian Bruemmer. 2010. Changes in net ecosystem productivity and greenhouse gas exchange with fertilization of Douglas fir: Mathematical modeling in ecosys. Journal of Geophysical Research: Biogeosciences 115, G4 (2010). [16] Jayant Gupta, Yiqun Xie, and Shashi Shekhar. 2020. Towards spatial variability aware deep neural networks (SVANN): A summary of results. arXiv preprint arXiv:2011.08992 (2020). [17] Shailja Gupta, Rajesh Ranjan, and Surya Narayan Singh. 2024. A comprehensive survey of retrieval-augmented generation (rag): Evolution, current landscape and future directions. arXiv preprint arXiv:2410.12837 (2024). [18] Erhu He, Yiqun Xie, Licheng Liu, Weiye Chen, Zhenong Jin, and Xiaowei Jia. 2023. Physics guided neural networks for time-aware fairness: an application in crop yield prediction. In Proceedings of the AAAI conference on artificial intelligence ,Vol. 37. 14223–14231. [19] Sepp Hochreiter and Jürgen Schmidhuber. 1997. Long Short-Term Memory. 
+
+Neural Computation 9, 8 (1997), 1735–1780. doi:10.1162/neco.1997.9.8.1735 [20] Yucheng Hu and Yuxing Lu. 2024. Rag and rau: A survey on retrieval-augmented language model in natural language processing. arXiv preprint arXiv:2404.19543 
+
+(2024). [21] Ashley B Jernigan, Kyle Wickings, Charles L Mohler, Brian A Caldwell, Christo-pher J Pelzer, Sandra Wayman, and Matthew R Ryan. 2020. Legacy effects of contrasting organic grain cropping systems on soil health indicators, soil invertebrates, weeds, and crop yield. Agricultural Systems 177 (2020), 102719. [22] Chongya Jiang, Kaiyu Guan, Genghong Wu, Bin Peng, and Sheng Wang. 2021. A daily, 250 m and real-time gross primary productivity product (2000–present) covering the contiguous United States. Earth System Science Data 13, 2 (2021), 281–298. [23] Honghua Jiang, Chuanyin Zhang, Yongliang Qiao, Zhao Zhang, Wenjing Zhang, and Changqing Song. 2020. CNN feature based graph convolutional network for weed and crop recognition in smart farming. Computers and electronics in agriculture 174 (2020), 105450. [24] Pengcheng Jiang, Siru Ouyang, Yizhu Jiao, Ming Zhong, Runchu Tian, and Jiawei Han. 2025. Retrieval and structuring augmented generation with large lan-guage models. In Proceedings of the 31st ACM SIGKDD Conference on Knowledge Discovery and Data Mining V. 2 . 6032–6042. [25] James W Jones, Gerrit Hoogenboom, Cheryl H Porter, Ken J Boote, William D Batchelor, L Allen Hunt, Paul W Wilkens, Upendra Singh, Arjan J Gijsman, and Joe T Ritchie. 2003. The DSSAT cropping system model. European journal of agronomy 18, 3-4 (2003), 235–265. [26] Anuj Karpatne, Aryan Deshwal, Xiaowei Jia, Wei Ding, Michael Steinbach, Aidong Zhang, and Vipin Kumar. 2025. AI-enabled scientific revolution in the age of generative AI: second NSF workshop report. npj Artificial Intelligence 
+
+1, 1 (2025), 18. [27] Anuj Karpatne, Imme Ebert-Uphoff, Sai Ravela, Hassan Ali Babaie, and Vipin Kumar. 2018. Machine learning for the geosciences: Challenges and opportunities. 
+
+IEEE Transactions on Knowledge and Data Engineering 31, 8 (2018), 1544–1554. [28] Fudong Lin, Summer Crawford, Kaleb Guillot, Yihe Zhang, Yan Chen, Xu Yuan, Li Chen, Shelby Williams, Robert Minvielle, Xiangming Xiao, et al . 2023. Mmst-vit: Climate change-aware crop yield prediction via multi-modal spatial-temporal vision transformer. In Proceedings of the IEEE/CVF International Conference on Computer Vision . 5774–5784. [29] Jiangtao Liu, Chaopeng Shen, Fearghal O’Donncha, Yalan Song, Wei Zhi, Hylke E Beck, Tadd Bindas, Nicholas Kraabel, and Kathryn Lawson. 2025. From RNNs to Transformers: benchmarking deep learning architectures for hydrologic predic-tion. EGUsphere 2025 (2025), 1–21. [30] Licheng Liu, Shaoming Xu, Jinyun Tang, Kaiyu Guan, Timothy J Griffis, Matthew D Erickson, Alexander L Frie, Xiaowei Jia, Taegon Kim, Lee T Miller, et al . 2022. KGML-ag: a modeling framework of knowledge-guided machine learning to simulate agroecosystems: a case study of estimating N 2 O emission using data from mesocosm experiments. Geoscientific model development 15, 7 (2022), 2839–2858. [31] Licheng Liu, Wang Zhou, Kaiyu Guan, Bin Peng, Shaoming Xu, Jinyun Tang, Qing Zhu, Jessica Till, Xiaowei Jia, Chongya Jiang, et al . 2024. Knowledge-guided machine learning can improve carbon cycle quantification in agroecosystems. 
+
+Nature communications 15, 1 (2024), 357. [32] Shizhan Liu, Hang Yu, Cong Liao, Jianguo Li, Weiyao Lin, Alex X Liu, and Schahram Dustdar. 2022. Pyraformer: Low-Complexity Pyramidal Attention for Long-Range Time Series Modeling and Forecasting. In International Conference on Learning Representations .[33] Yujie Liu, Hongbin Dong, Xingmei Wang, and Shuang Han. 2019. Time series prediction based on temporal convolutional network. In 2019 IEEE/ACIS 18th International conference on computer and information science (ICIS) . IEEE, 300– 305. [34] Yong Liu, Tengge Hu, Haoran Zhang, Haixu Wu, Shiyu Wang, Lintao Ma, and Mingsheng Long. 2023. itransformer: Inverted transformers are effective for time series forecasting. arXiv preprint arXiv:2310.06625 (2023). [35] Zhexiong Liu, Licheng Liu, Yiqun Xie, Zhenong Jin, and Xiaowei Jia. 2023. Task-adaptive meta-learning framework for advancing spatial generalizability. In 
+
+Proceedings of the AAAI Conference on Artificial Intelligence , Vol. 37. 14365–14373. [36] Shiyuan Luo, Runlong Yu, Chonghao Qiu, Rahul Ghosh, Robert Ladwig, Paul C Hanson, Yiqun Xie, and Xiaowei Jia. 2025. Learning to Retrieve for Environmental Knowledge Discovery: An Augmentation-Adaptive Self-Supervised Learning Framework. arXiv preprint arXiv:2509.14563 (2025). [37] Alkha Mohan, M Venkatesan, P Prabhavathy, and A Jayakrishnan. 2023. Tempo-ral convolutional network based rice crop yield prediction using multispectral satellite data. Infrared Physics & Technology 135 (2023), 104960. [38] Kenichirou Narita and Satoshi Munakata. 2025. Chunk-Link: Context-aware chunk completion. (2025). [39] Kanghui Ning, Zijie Pan, Yu Liu, Yushan Jiang, James Y Zhang, Kashif Rasul, Anderson Schneider, Lintao Ma, Yuriy Nevmyvaka, and Dongjin Song. 2025. TS-RAG: Retrieval-augmented generation based time series foundation models are stronger zero-shot forecaster. arXiv preprint arXiv:2503.07649 (2025). [40] NOAA. 2018. Monthly Climate Reports _ Drought Report _ Annual 2018 _ National Centers for Environmental Information (NCEI). https://www.ncei. noaa.gov/access/monitoring/monthly-report/drought/201813 [41] Benjamin Kwapong Osibo, Tinghuai Ma, Bright Bediako-Kyeremeh, Lorenzo Mamelona, and Kristina Darbinian. 2024. TCNT: a temporal convolutional network-transformer framework for advanced crop yield prediction. Journal of Applied Remote Sensing 18, 4 (2024), 044513–044513. [42] Joana Reuss, Jan Macdonald, Simon Becker, Lorenz Richter, and Marco Körner. 2025. The EuroCropsML time series benchmark dataset for few-shot crop type classification in Europe. Scientific Data 12, 1 (2025), 664. [43] David C Rose, William J Sutherland, Caroline Parker, Matt Lobley, Michael Winter, Carol Morris, Susan Twining, Charles Ffoulkes, Tatsuya Amano, and Lynn V Dicks. 2016. Decision support tools for agriculture: Towards effective design and delivery. Agricultural systems 149 (2016), 165–174. [44] Somrita Sarkar, Anamika Dey, Ritam Pradhan, Upendra Mohan Sarkar, Chan-dranath Chatterjee, Arijit Mondal, and Pabitra Mitra. 2024. Crop yield prediction using multimodal meta-transformer and temporal graph neural networks. IEEE Sun et al. 
+
+transactions on agrifood electronics (2024). [45] Sagarika Sharma, Sujit Rai, and Narayanan C Krishnan. 2020. Wheat crop yield prediction using deep LSTM model. arXiv preprint arXiv:2011.01498 (2020). [46] Pete Smith, Joanna I House, Mercedes Bustamante, Jaroslava Sobocká, Richard Harper, Genxing Pan, Paul C West, Joanna M Clark, Tapan Adhya, Cornelia Rumpel, et al . 2016. Global change pressures on soils from land use and manage-ment. Global change biology 22, 3 (2016), 1008–1028. [47] Raghavan Srinivasan, Xuesong Zhang, and Jeffrey Arnold. 2010. SWAT ungauged: hydrological budget and crop yield predictions in the Upper Mississippi River Basin. Transactions of the ASABE 53, 5 (2010), 1533–1546. [48] Elke Stehfest, Maik Heistermann, Joerg A Priess, Dennis S Ojima, and Joseph Alcamo. 2007. Simulation of global crop production with the ecosystem model DayCent. Ecological Modelling 209, 2-4 (2007), 203–219. [49] Yiming Sun, Shuo Chen, Shengyu Chen, Chonghao Qiu, Licheng Liu, Youmi Oh, Sparkle L Malone, Gavin McNicol, Qianlai Zhuang, Chris Smith, et al . 2025. X-MethaneWet: A Cross-scale Global Wetland Methane Emission Benchmark Dataset for Advancing Science Discovery with AI. arXiv preprint arXiv:2505.18355 
+
+(2025). [50] Yiming Sun, Runlong Yu, Runxue Bao, Yiqun Xie, Ye Ye, and Xiaowei Jia. 2025. Domain-Adaptive Continual Meta-Learning for Modeling Dynamical Systems: An Application in Environmental Ecosystems. In Proceedings of the 2025 SIAM International Conference on Data Mining (SDM) . SIAM, 297–306. [51] Hanqin Tian, Rongting Xu, Josep G Canadell, Rona L Thompson, Wilfried Wini-warter, Parvadha Suntharalingam, Eric A Davidson, Philippe Ciais, Robert B Jackson, Greet Janssens-Maenhout, et al . 2020. A comprehensive quantification of global nitrous oxide sources and sinks. Nature 586, 7828 (2020), 248–256. [52] Gabriel Tseng, Hannah Kerner, Catherine Nakalembe, and Inbal Becker-Reshef. 2021. Learning to predict crop type from heterogeneous sparse labels using meta-learning. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition . 1111–1120. [53] Thomas Van Klompenburg, Ayalew Kassahun, and Cagatay Catal. 2020. Crop yield prediction using machine learning: A systematic literature review. Com-puters and electronics in agriculture 177 (2020), 105709. [54] A Vaswani. 2017. Attention is all you need. Advances in Neural Information Processing Systems (2017). [55] Jian Wang, Haiping Si, Zhao Gao, and Lei Shi. 2022. Winter wheat yield prediction using an LSTM model from MODIS LAI products. Agriculture 12, 10 (2022), 1707. [56] Sherrie Wang, Stefania Di Tommaso, Jillian M Deines, and David B Lobell. 2020. Mapping twenty years of corn and soybean across the US Midwest using the Landsat archive. Scientific Data 7, 1 (2020), 307. [57] Song Wang, Yaochen Zhu, Haochen Liu, Zaiyi Zheng, Chen Chen, and Jundong Li. 2024. Knowledge editing for large language models: A survey. Comput. Surveys 57, 3 (2024), 1–37. [58] Zhiruo Wang, Jun Araki, Zhengbao Jiang, Md Rizwan Parvez, and Graham Neubig. 2023. Learning to filter context for retrieval-augmented generation. 
+
+arXiv preprint arXiv:2311.08377 (2023). [59] Karl Weiss, Taghi M Khoshgoftaar, and DingDing Wang. 2016. A survey of transfer learning. Journal of Big data 3, 1 (2016), 9. [60] Youlong Xia, Kenneth Mitchell, Michael Ek, Brian Cosgrove, Justin Sheffield, Lifeng Luo, Charles Alonge, Helin Wei, Jesse Meng, Ben Livneh, et al . 2012. Continental-scale water and energy flux analysis and validation for North Amer-ican Land Data Assimilation System project phase 2 (NLDAS-2): 2. Validation of model-simulated streamflow. Journal of Geophysical Research: Atmospheres 117, D3 (2012). [61] Yiqun Xie, Erhu He, Xiaowei Jia, Han Bao, Xun Zhou, Rahul Ghosh, and Praveen Ravirathinam. 2021. A statistically-guided deep network transformation and moderation framework for data with spatial heterogeneity. In 2021 IEEE interna-tional conference on data mining (ICDM) . IEEE, 767–776. [62] Yiqun Xie, Xiaowei Jia, Han Bao, Xun Zhou, Jia Yu, Rahul Ghosh, and Praveen Ravirathinam. 2021. Spatial-net: A self-adaptive and model-agnostic deep learn-ing framework for spatially heterogeneous datasets. In Proceedings of the 29th international conference on advances in geographic information systems . 313–323. [63] Zhenhua Xiong, Zhicheng Zhang, Hanliang Gui, Peng Zhu, Ying Sun, Xuewen Zhou, Kun Xiao, and Qinchuan Xin. 2024. Predicting time series of vegetation leaf area index across North America based on climate variables for land surface modeling using attention-enhanced LSTM. International Journal of Digital Earth 
+
+17, 1 (2024), 2372317. [64] Shi-Qi Yan, Jia-Chen Gu, Yun Zhu, and Zhen-Hua Ling. 2024. Corrective retrieval augmented generation. (2024). [65] Dazhou Yu, Riyang Bao, Gengchen Mai, and Liang Zhao. 2025. Spatial-rag: Spatial retrieval augmented generation for real-world spatial reasoning questions. arXiv preprint arXiv:2502.18470 (2025). [66] Runlong Yu, Shiyuan Luo, Rahul Ghosh, Lingyao Li, Yiqun Xie, and Xiaowei Jia. 2025. Rag for geoscience: What we expect, gaps and opportunities. arXiv preprint arXiv:2508.11246 (2025). [67] Kaiyang Zhou, Ziwei Liu, Yu Qiao, Tao Xiang, and Chen Change Loy. 2022. Domain generalization: A survey. IEEE transactions on pattern analysis and machine intelligence 45, 4 (2022), 4396–4415. 
+
+Figure 9: Study region of 630 counties across 14 U.S. states. 
+
+[68] Wang Zhou, Kaiyu Guan, Bin Peng, Jinyun Tang, Zhenong Jin, Chongya Jiang, Robert Grant, and Symon Mezbahuddin. 2021. Quantifying carbon budget, crop yields and their responses to environmental variability using the ecosys model for US Midwestern agroecosystems. Agricultural and Forest Meteorology 307 (2021), 108521. 
+
+## A Dataset Details 
+
+Variable Description Unit 
+
+Weather forcing 
+
+RADN Downward solar radiation MJ m −2 d−1
+
+TMAX_AIR Daily maximum temperature ◦CTDIF_AIR Diurnal temperature range ◦CHMAX_AIR Daily maximum humidity kPa HDIF_AIR Diurnal humidity range kPa WIND Wind speed km d −1
+
+PRECN Precipitation mm d −1
+
+Soil / plant properties (0–30 cm gSSURGO) 
+
+Crop_Type Crop type (1 = corn, 5 = soybean) –TBKDS Bulk density Mg m −3
+
+TSAND Sand content g kg −1
+
+TSILT Silt content g kg −1
+
+TFC Water content at field capacity m3 m−3
+
+TWP Water content at wilting point m3 m−3
+
+TKSat Saturated hydraulic conductivity mm h −1
+
+TSOC Soil organic carbon gC kg −1
+
+TPH Soil pH –TCEC Cation exchange capacity cmol + kg −1
+
+Other variables 
+
+GPP Daily gross primary productivity gC m −2 d−1
+
+Year Calendar year indicator –
+
+Table 3: Descriptions and units of the 19 input features used for county-level corn yield prediction. 
+
+Our study region spans 630 counties across 14 states in the U.S. Corn Belt and surrounding areas (Figure 9). The map shows the county-level spatial distribution and state boundaries, highlighting the geographical breadth and environmental diversity of the dataset. The counties encompass a wide range of soil, climate, and man-agement conditions, reflecting the substantial spatial heterogeneity that yield prediction models must handle. The dataset covers an-nual corn yield and corresponding environmental features from 2000 to 2020. Table 3 summarizes the 19 input features used in our experiments, including weather forcing variables, soil properties, vegetation productivity, and other auxiliary information.

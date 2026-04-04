@@ -1,0 +1,86 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.27519v1/fig-001.webp",
+      "caption": "Figure 3. Comparison of dense features. We employ Principal Component Analysis (PCA) to reduce the dimensionality of the feature maps to three dimensions, projecting them into RGB space (Rh×w×c → Rh×w×3). Size of all feature maps is 128 × 128. Compared to prior methods, SPROUT yields clearer features with less noise and distinct semantics.",
+      "page": 6,
+      "index": 1,
+      "width": 1035,
+      "height": 827
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27519v1/fig-002.webp",
+      "caption": "Figure 6. Scaling the Pre-training Dataset Size. Left, the downstream performance steadily improves as the unlabeled dataset scales up to 6.4 × 104 samples. After that, performance saturates, and adding more homogeneous data yields diminishing returns. Middle, model convergence under different dataset sizes. Right, convergence analysis of SPROUT-L across dataset scales. The required training steps scale linearly with the square root of dataset size, enabling estimation of the optimal number of training iterations.",
+      "page": 11,
+      "index": 2,
+      "width": 1035,
+      "height": 269
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27519v1/fig-003.webp",
+      "caption": "Figure 7. SPROUT exhibits strong label efficiency, outperforming DINOv2 with 1/50 of the annotated data.",
+      "page": 11,
+      "index": 3,
+      "width": 397,
+      "height": 377
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27519v1/fig-004.webp",
+      "caption": "Figure 1. Left: PCA visualization of SPROUT feature maps. In the SPROUT embedding space, different plant organs exhibit clear semantic separation, while the same organ shares consistent semantics. SPROUT captures and understands the structural information of plants. Right: SPROUT’s performance on agricultural vision tasks. Absolute Relative Error is the metric for depth estimation, Mean Square Error is the metric for counting, and Intersection over Union (IoU) is used for all other tasks. Metrics where lower values indicate better performance are inversely normalized. SPROUT significantly outperforms general-purpose VFMs across a wide range of tasks, particularly in structural understanding and dense prediction tasks.",
+      "page": 2,
+      "index": 4,
+      "width": 1035,
+      "height": 414
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27519v1/fig-005.webp",
+      "caption": "Table 1. Organ-level semantic segmentation Intersection-over-Union (IoU) across multiple crops and organ categories. SPROUT consistently achieves the highest IoU across all crops and organs.",
+      "page": 7,
+      "index": 5,
+      "width": 1029,
+      "height": 500
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27519v1/fig-006.webp",
+      "caption": "Figure 5. SPROUT demonstrates strong scaling behavior: downstream fine-tuning performance improves with increasing model size and pre-training compute, following a clear power-law relationship.",
+      "page": 10,
+      "index": 6,
+      "width": 495,
+      "height": 375
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27519v1/fig-007.webp",
+      "caption": "Table 2. Plant-level segmentation results on ten crop datasets. The table reports the mIoU averaged over three classes (background, crop, and weed) for each crop. Our SPROUT model consistently outperforms other foundation models across all crops, indicating strong generalization and robust plant representation.",
+      "page": 8,
+      "index": 7,
+      "width": 1027,
+      "height": 239
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27519v1/fig-008.webp",
+      "caption": "Figure 2. SPROUT Structure and Training. The model output is parameterized in the form of ϵ. The approach operates directly within pixel space.",
+      "page": 4,
+      "index": 8,
+      "width": 498,
+      "height": 347
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27519v1/fig-009.webp",
+      "caption": "Figure 4. Depth estimation performance comparison. Our method produces sharp, accurate depth maps.",
+      "page": 9,
+      "index": 9,
+      "width": 1035,
+      "height": 636
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27519v1/fig-010.webp",
+      "caption": "Table 7. Counting performance on wheat spike and soybean pod datasets.",
+      "page": 9,
+      "index": 10,
+      "width": 486,
+      "height": 459
+    }
+  ]
+}

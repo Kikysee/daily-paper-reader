@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.24552v1/fig-001.webp",
+      "caption": "Figure 2: Overview of the adapted Temporo-Spatial Vision Transformer (TSViT), Pixel are represented by grey grid lines, colored boxes represent sub-patches (1) Input patches are arranged into n sub-patches (PP) of size S. For each of the 36 time steps (T) 10 bands (B) are embedded into tokens of length d (2) In the temporal transformer stage, tokens interact across T and the concatenated class tokens (3) In the spatial transformer stage, class tokens interact only with their corresponding spatial class token. Final predictions for crop type and management system are produced via separate argmax layers.",
+      "page": 6,
+      "index": 1,
+      "width": 910,
+      "height": 358
+    },
+    {
+      "url": "assets/figures/arxiv/2603.24552v1/fig-002.webp",
+      "caption": "Figure 5: Crop type and management form predictions from model runs with different spatial input dimensions (30 x 30, 10 x 10, 2 x 2 pixel, as described in 2.3, IACS data as reference, Random Forest model predictions as described in 2.8)",
+      "page": 11,
+      "index": 2,
+      "width": 943,
+      "height": 606
+    },
+    {
+      "url": "assets/figures/arxiv/2603.24552v1/fig-003.webp",
+      "caption": "Figure 4: Crop type and management system predictions from model runs with different spatial input dimensions (30 x 30, 10 x 10, 2 x 2 pixel, as described in 2.3, IACS data as reference, Random Forest model predictions as described in 2.8)",
+      "page": 10,
+      "index": 3,
+      "width": 943,
+      "height": 1025
+    },
+    {
+      "url": "assets/figures/arxiv/2603.24552v1/fig-004.webp",
+      "caption": "Figure 3: Mean F1-score derived from validation data set during model training after each epoch.",
+      "page": 8,
+      "index": 4,
+      "width": 756,
+      "height": 456
+    },
+    {
+      "url": "assets/figures/arxiv/2603.24552v1/fig-005.webp",
+      "caption": "Figure 1: Location of our study area in Germany, Zoom-in (1): grid system with 30 × 30 km tiles, indicated are training, validation and test tiles; Zoom-in (2): Subdivision of tiles into 300 × 300 m patches (30 × 30 pixel); outlined are patches with more than 15% agricultural land as used for training and validation, further subdivision of the patches into 100 × 100 m (10 × 10 pixel) and 20× 20 m (2 × 2 pixel), Background: Google Earth",
+      "page": 4,
+      "index": 5,
+      "width": 964,
+      "height": 394
+    },
+    {
+      "url": "assets/figures/arxiv/2603.24552v1/fig-006.webp",
+      "caption": "Table 4: Accuracy measures for management system classification",
+      "page": 9,
+      "index": 6,
+      "width": 935,
+      "height": 189
+    },
+    {
+      "url": "assets/figures/arxiv/2603.24552v1/fig-007.webp",
+      "caption": "Table 3: Classification results, F1-scores, Recall and Precision values for single crop types",
+      "page": 9,
+      "index": 7,
+      "width": 939,
+      "height": 442
+    },
+    {
+      "url": "assets/figures/arxiv/2603.24552v1/fig-008.webp",
+      "caption": "Table 1: Total area, share of agricultural area and area under organic management per crop type in the study area",
+      "page": 5,
+      "index": 8,
+      "width": 604,
+      "height": 688
+    }
+  ]
+}

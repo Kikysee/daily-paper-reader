@@ -1,0 +1,46 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.28390v1/fig-001.webp",
+      "caption": "Figure 4: Simulated hyperspectral reflectance spectra from the four study regions, color-coded by chlorophyll a+b content (Cab).",
+      "page": 8,
+      "index": 1,
+      "width": 975,
+      "height": 197
+    },
+    {
+      "url": "assets/figures/arxiv/2603.28390v1/fig-002.webp",
+      "caption": "Figure 3: Representative examples of emulated hyperspectral image cubes and their corresponding chlorophyll a+b (Cab) maps from the four study regions. For each row, the left column shows the Cab map and the right column shows the associated HSI scene. All scenes are displayed using an RGB composite.",
+      "page": 8,
+      "index": 2,
+      "width": 976,
+      "height": 546
+    },
+    {
+      "url": "assets/figures/arxiv/2603.28390v1/fig-003.webp",
+      "caption": "Figure 2: Geographic distribution of the four study regions used for synthetic hyperspectral dataset generation. The regions span diverse climate zones and vegetation types across Europe (France, Spain), Africa (Tanzania), and Asia (India).",
+      "page": 6,
+      "index": 3,
+      "width": 976,
+      "height": 737
+    },
+    {
+      "url": "assets/figures/arxiv/2603.28390v1/fig-004.webp",
+      "caption": "Table 2: Parameter ranges for the combined leaf (PROSPECT-D) and canopy (4SAIL) RTM (PROSAIL).",
+      "page": 5,
+      "index": 4,
+      "width": 983,
+      "height": 1095
+    },
+    {
+      "url": "assets/figures/arxiv/2603.28390v1/fig-005.webp",
+      "caption": "Table 1: Summary of files provided for each tile",
+      "page": 4,
+      "index": 5,
+      "width": 976,
+      "height": 240
+    }
+  ]
+}

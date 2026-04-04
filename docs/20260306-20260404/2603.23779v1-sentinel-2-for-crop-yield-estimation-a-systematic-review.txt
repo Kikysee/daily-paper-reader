@@ -1,0 +1,682 @@
+Title: Sentinel-2 for Crop Yield Estimation: A Systematic Review
+
+URL Source: https://arxiv.org/pdf/2603.23779v1
+
+Published Time: Thu, 26 Mar 2026 00:26:16 GMT
+
+Number of Pages: 29
+
+Markdown Content:
+# Sentinel-2 for Crop Yield Estimation: A Systematic Review 
+
+## Mohammadreza Narimani a, Alireza Pourreza a,∗, Ali Moghimi a and Parastoo Farajpoor a
+
+> a
+
+University of California, Davis, Department of Biological and Agricultural Engineering, Davis, CA, USA 
+
+A R T I C L E I N F O 
+
+Keywords :Sentinel-2 crop yield estimation remote sensing machine learning data assimilation precision agriculture 
+
+A B S T R A C T 
+
+Accurate and timely crop yield estimation is fundamental for ensuring global food security, guiding agricultural policy, and optimizing farm management. The advent of the Copernicus Sentinel-2 satellite constellation, with its high spatial, temporal, and spectral resolutions, has catalyzed a paradigm shift in Earth observation for agriculture, enabling monitoring at the field and sub-field scale. This review synthesizes recent advancements in crop yield monitoring and estimation that leverage Sentinel-2 data. A dominant theme is the transition from regional-scale models to high-resolution, field-level assessments, driven by three primary methodological approaches: (i) empirical models using vegetation indices, increasingly coupled with machine and deep learning algorithms like Random Forest and Convolutional Neural Networks, which consistently outperform traditional regressions; (ii) the integration of process-based crop growth models (e.g., WOFOST, SAFY) through data assimilation of Sentinel-2 derived biophysical variables like Leaf Area Index (LAI); and (iii) data fusion techniques that combine Sentinel-2 optical data with weather-independent Sentinel-1 SAR imagery to overcome challenges like cloud cover. Beyond the growing use of multi-modal data, the synthesis shows that Sentinel-2-based machine learning, deep learning, and hybrid crop growth model frameworks can explain a large fraction of within-field yield variability across crops and regions, while performance is still constrained by limited and noisy ground-truth yield data, cloud-related gaps in optical imagery, and difficulties in transferring models across years and sites. Looking ahead, the review points to tighter integration of multi-modal data streams with hybrid modeling and improved in-season ground observations as a key pathway for turning Sentinel-2-based yield estimation into robust, operational decision-support tools. These advanced frameworks provide powerful tools for precision agriculture and sustainable intensification, offering practically relevant insights into crop performance from local to global scales. 
+
+Graphical Abstract 
+
+> ∗
+
+Corresponding author 
+
+apourreza@ucdavis.edu (A. Pourreza) Narimani et al.: Preprint Page 1 of 29 
+
+> arXiv:2603.23779v1 [eess.IV] 24 Mar 2026
+
+## 1. Introduction 
+
+Ensuring global food security for a growing population requires substantial increases in agricultural productivity, making timely and accurate crop yield information essential for farmers, policymakers, and global markets [1–3]. As climate variability, input costs, and resource constraints intensify, the need for timely, spatially explicit yield information has grown, particularly to support management at the field and sub-field scale [1–3]. Crop yield is therefore a central variable for food security planning, market stability, and on-farm decision-making. Remote sensing has long been recognized as a key technology for monitoring agricultural systems at scale and for providing consistent observations across space and time [3–6]. At the finest scale, the same spectral principles underpin handheld and proximal spectrometers, which enable detection of yield-related traits, plant diseases, and nutrient status at the leaf level with high precision [7, 8]; however, such point measurements are time-consuming to collect and difficult to generalize across entire farms. At an intermediate scale, drone-based multispectral imagery has been used for crop yield prediction, disease detection, and nutrient mapping, offering better scalability over field-sized areas [9, 10]. Yet at regional or national scales, drone operations are often not feasible or are limited to a small number of fields, and many applications require the broader coverage and acceptable accuracy that satellite-based monitoring can provide. Historically, however, operational yield-related monitoring relied on coarse-resolution sensors such as MODIS and AVHRR, which, despite high temporal frequency, could not adequately resolve the small and heterogeneous fields common in many agricultural landscapes [11–14]. While medium-resolution sensors such as Landsat improved spatial detail, long revisit intervals and frequent cloud contamination limited their ability to capture key phenological events consistently [11–13]. The launch of the Copernicus Sentinel-2 satellite constellation (Sentinel-2A in 2015 and Sentinel-2B in 2017) marked a turning point for agricultural remote sensing [11, 13, 15–17]. By providing freely accessible multispectral imagery with high spatial resolution (10–20 m), frequent revisit times (2–5 days at mid-latitudes), and unique spectral bands in the red-edge region, Sentinel-2 has enabled a shift from regional assessments to precise field-level and within-field yield monitoring [2, 12, 13]. This capability has spurred rapid methodological development and a growing body of literature. Despite this growth, the field remains fragmented across modeling paradigms, feature engineering strategies, and validation practices, making it challenging to compare findings across studies and to identify robust pathways toward operational yield estimation. No systematic review has yet synthesized this body of work with an explicit focus on crop yield estimation (rather than classification or biomass alone), leaving researchers, practitioners, and policy-makers without a consolidated reference to guide the selection of methods and future research. A systematic review that consolidates current approaches, clarifies what Sentinel-2 uniquely contributes, and highlights limitations and research gaps is therefore needed. A major theme in the Sentinel-2 era is the advancement of empirical and data-driven models beyond simple linear regressions. Numerous studies demonstrate the utility of vegetation indices (VIs) derived from Sentinel-2, particularly those using red-edge bands such as the Normalized Difference Red-Edge Index (NDRE) and the MERIS (Medium Resolution Imaging Spectrometer) Terrestrial Chlorophyll Index (MTCI), which are less susceptible to saturation in dense canopies than the traditional Normalized Difference Vegetation Index (NDVI) [4, 18–20]. These VIs are increasingly used as inputs for machine learning (ML) and deep learning (DL) algorithms, including Random Forest (RF), Support Vector Machines (SVM), and neural network architectures (e.g., CNNs and LSTMs), which often outperform conventional statistical methods by capturing complex, non-linear relationships between spectral data and yield [12, 21–23]. Another prominent research area is the integration of Sentinel-2 data with process-based crop growth models (CGMs) such as WOFOST, SAFY, APSIM, and CERES-Wheat [13, 14, 24–26]. Through data assimilation, satellite-derived biophysical variables—most commonly Leaf Area Index (LAI)—are used to calibrate and constrain CGM simulations, improving the accuracy of yield estimates by anchoring model dynamics to real-world observations at high spatial resolution [12, 26]. This hybrid approach combines mechanistic understanding of crop physiology with spatially explicit remote sensing information, enabling more robust estimations across diverse environmental conditions [3, 13, 15, 24, 26]. Finally, data fusion strategies have emerged to overcome the inherent limitations of any single sensor. A significant trend is the synergistic use of Sentinel-2 optical data with Sentinel-1 Synthetic Aperture Radar (SAR) data [18, 27–29]. Because SAR can penetrate clouds, this fusion supports more continuous monitoring throughout the growing season, which is particularly crucial in frequently overcast regions [13, 18, 30]. Studies also show improved model performance when combining satellite imagery with ancillary data (e.g., meteorological observations, soil properties, and topographic information) to better represent the drivers of yield variability [12, 13, 16, 21]. The objectives of this systematic review are to (i) summarize methodological trends in Sentinel-2-based crop yield estimation, (ii) compare the dominant modeling paradigms and their typical data inputs, and (iii) identify key challenges and future directions for improving accuracy, robustness, and scalability. This review synthesizes the literature around these objectives and compiles publication statistics from the papers reviewed to illustrate the rapid growth and focus of this research area (Figure 1). The methods used to conduct this systematic review are described in the next section.   
+
+> Narimani et al.: Preprint Page 2 of 29
+
+Figure 1: Global trends in Sentinel-2 crop yield estimation research. (A) Geographic distribution of publications by country, showing the number of studies conducted in each nation from 2015 to present. Countries are color-coded by publication count. (B) Temporal trends in crop study frequency, displaying the evolution of research focus across major crop types over time. The stacked bars show the relative contribution of different crops to the literature each year. (C) Continental distribution of publications over time, illustrating the geographic expansion of Sentinel-2 yield estimation research across different regions. In panels B and C, the first four years (2015–2018) are merged into a single bin for consistency with the remaining year ranges. 
+
+## 2. Methods 
+
+2.1. Literature Search Strategy 
+
+This systematic review synthesizes peer-reviewed literature published from 2015 to the present, coinciding with the launch of the Sentinel-2A satellite. A comprehensive search was conducted using the Web of Science Core Collection as the primary database, supplemented by searches in Scopus and Google Scholar to ensure comprehensive coverage. The search strategy employed a combination of keywords including "Sentinel-2", "crop yield", "yield estimation", "machine learning", "deep learning", "data assimilation", "wheat", "maize", "rice", "soybean", "remote sensing", and "precision agriculture". Boolean operators (AND, OR) were used to create targeted search strings that captured the intersection of Sentinel-2 satellite data and agricultural yield estimation applications. 
+
+Narimani et al.: Preprint Page 3 of 29 2.2. Inclusion and Exclusion Criteria 
+
+Articles were included if they met the following criteria: (i) peer-reviewed research articles published in English; (ii) use of Sentinel-2 data as a primary or significant input for quantitative yield estimation of agricultural crops; (iii) focus on field-scale or regional-scale yield estimation; (iv) availability of quantitative performance metrics (e.g., R ², RMSE, MAE); and (v) accessible full-text articles with valid DOIs. Studies were excluded if they: (i) focused solely on crop classification or mapping without yield estimation; (ii) examined only biomass estimation without establishing a direct link to yield; (iii) used exclusively other sensors without Sentinel-2 integration; (iv) were conference abstracts, dissertations, or non-peer-reviewed publications; or (v) were published in languages other than English. 
+
+2.3. Study Selection and Data Extraction 
+
+The initial search yielded 382 papers from Web of Science. A rigorous eight-step filtering process was applied to ensure quality and relevance: (1) document type screening to retain peer-reviewed research articles; (2) abstract availability verification; (3) duplicate removal based on DOI matching; (4) DOI validation and accessibility verification; (5-6) systematic accessibility screening through download attempts; (7) language filtering to retain English publications only; and (8) final quality assessment. This systematic approach resulted in 301 high-quality, accessible English research papers that form the final dataset, representing a 21.2% reduction from the initial search that ensured comprehensive coverage while maintaining rigorous quality standards. From each included study, the following information was systematically extracted and categorized: (i) modeling approach and algorithms used (e.g., machine learning, deep learning, statistical regression, process-based models); (ii) crop type and study region; (iii) Sentinel-2 data features utilized (e.g., spectral bands, vegetation indices, biophysical parameters); (iv) integration with other data sources (e.g., Sentinel-1 SAR, meteorological data, soil information); (v) temporal aspects (e.g., single-date vs. time-series analysis, phenological stages); (vi) reported accuracy metrics and model performance; and (vii) key findings, limitations, and recommendations. 
+
+2.4. Data Analysis and Synthesis 
+
+The extracted data were analyzed to identify major research themes, methodological trends, and geographic patterns. Quantitative analysis included frequency counts of modeling approaches, crop types, and geographic distribution of studies. Performance metrics were standardized where possible to enable cross-study comparisons. Temporal trends in publication patterns and methodological evolution were examined to understand the development trajectory of the field. The synthesis focused on three primary research themes: (i) empirical and machine learning approaches using vegetation indices and spectral data; (ii) integration of process-based crop growth models through data assimilation; and (iii) multi-sensor data fusion strategies combining Sentinel-2 with complementary data sources. 
+
+2.5. Quality Assessment 
+
+Study quality was assessed based on several criteria including: (i) clarity of methodology and reproducibility; (ii) adequacy of ground-truth data for model training and validation; (iii) appropriate use of cross-validation or independent test datasets; (iv) transparency in reporting performance metrics and limitations; and (v) consideration of spatial and temporal transferability. Studies with robust experimental designs, comprehensive validation approaches, and clear reporting of methods and results were given greater weight in the synthesis. 
+
+## 3. Literature Synthesis 
+
+Based on the search and synthesis approach described above, the following sections present the findings of the review. Abbreviations used in this review are listed in Appendix A. 
+
+3.1. Remote Sensing Platforms & Sentinel-2 Features 
+
+The foundation of modern crop monitoring is a fleet of Earth observation (EO) satellites, each with distinct capabilities. As outlined in the introduction, earlier operational sensors either lacked the spatial detail to resolve individual fields or the temporal frequency needed to capture key phenological stages; Sentinel-2 was designed to address this gap. The Copernicus Sentinel-2 mission, with its twin satellites (Sentinel-2A and Sentinel-2B), represents a paradigm shift for agricultural applications. Its multispectral instrument (MSI) provides data with a unique combination of technical specifications that are highly advantageous for crop monitoring [13, 25, 31–33]. Key features include: 
+
+• High Spatial Resolution: Sentinel-2 offers 10 m resolution for its blue, green, red, and broadband near-infrared (NIR) bands; 20 m for its red-edge, narrow NIR, and shortwave infrared (SWIR) bands; and 60 m for atmospheric correction bands. [13] This 10–20 m resolution is adequate for monitoring at the field and even sub-field level, a critical improvement for precision agriculture and for studying small, fragmented farms common in many parts of the world [11, 13, 14, 16, 34].   
+
+> Narimani et al.: Preprint Page 4 of 29
+
+• High Temporal Resolution: The two-satellite constellation (Sentinel-2A and Sentinel-2B) provides a combined revisit time of 2–5 days at mid-latitudes. A third satellite, Sentinel-2C, was launched in September 2024 and will further improve temporal resolution (shorter revisit time) as the constellation transitions to a three-satellite configuration. This significantly increases the probability of acquiring cloud-free images during critical crop growth stages compared to platforms like Landsat [2, 11, 14, 25, 35]. This high temporal frequency is essential for tracking rapid phenological changes, which are closely linked to final yield and thus support more accurate yield estimation [13, 36, 37]. 
+
+• Unique Spectral Bands: A key advantage of Sentinel-2 is its inclusion of multiple bands in the red-edge region (around 705 nm, 740 nm, and 783 nm) [18, 28, 38–40]. The red-edge is highly sensitive to vegetation chlorophyll and nitrogen content and is less prone to saturation in dense canopies compared to traditional red/NIR-based indices like NDVI [19, 20, 38, 39, 41]. This makes it particularly valuable for assessing nutrient status and estimating biomass and yield with greater accuracy [4, 18, 28, 39]. The availability of large-scale computational platforms for analysis, most notably Google Earth Engine (GEE), has been instrumental in enabling efficient access to and processing of the vast archives of Sentinel-2 data required for data-intensive yield estimation studies [18, 23]. While Sentinel-2 offers strong capabilities as a free and open data source [13, 16, 31, 33, 42], it is often used synergistically with other platforms. Data fusion with Sentinel-1’s weather-independent Synthetic Aperture Radar (SAR) is a common strategy to overcome cloud cover limitations and ensure continuous monitoring [18, 28, 29, 43, 44]. Fusion with very-high-resolution commercial sensors like PlanetScope ( 3 m, daily revisit) is also used to enhance spatial detail [45–47], and combining Sentinel-2 with Landsat-8 data creates denser time series for more robust phenological analysis through initiatives like the Harmonized Landsat Sentinel-2 (HLS) product [4, 43, 47, 48]. Tables 1 and 2 provide detailed comparisons of key satellite platforms and their spectral characteristics, while Figure 2 illustrates the spatial, spectral, and temporal trade-offs between these systems. Agricultural monitoring advantages of Sentinel-2, Landsat 9, and PlanetScope are summarized in Appendix B.                           
+
+> Table 1
+> Comparison of satellite platforms for crop monitoring [49–51].
+> Characteristic Sentinel-2 Landsat 9 PlanetScope
+> Spatial Resolution 10, 20, 60 m 15, 30, 100 m 3 m Temporal Resolution 10 days (single) 16 days ∼1 day 5 days (combined) 8 days (with L8) Spectral Bands 13 bands 11 bands 4 bands Key Spectral Features Red-edge Thermal IR RGB + NIR SWIR bands Panchromatic Swath Width 290 km 185 km 24 km Data Availability Free Free Commercial Launch Date 2015/2017 2021 2016-ongoing
+
+3.2. Modeling Approaches for Yield Estimation 
+
+The wealth of data from Sentinel-2 has catalyzed the development and application of diverse modeling frameworks for yield estimation, which can be broadly categorized into empirical, process-based (or hybrid), and data fusion approaches. A foundational method involves empirical statistical models, which establish direct relationships between remote sensing observations and ground-measured yield [4, 52]. Simple and multiple linear regressions using VIs as input features are common but are often limited by their inability to capture the complex, non-linear dynamics of crop growth [2, 23, 52, 53]. Consequently, there has been a significant shift towards machine learning (ML) and deep learning (DL) algorithms, which now dominate the literature [4, 23, 25, 28, 54]. These data-driven models excel at learning complex, non-linear patterns from large datasets [4, 52, 54]. Random Forest (RF) is among the most widely used algorithms, consistently demonstrating robust performance in estimating yield for various crops by integrating satellite data with environmental variables [2, 18, 23, 55, 56]. Other popular methods include Support Vector Machines (SVM) [2, 57], Boosted Regression Trees [2, 55], and various neural network architectures [58, 59]. Advanced deep learning models, such as Convolutional Neural Networks (CNNs), Recurrent Neural Networks (RNNs) like Long Short-Term Memory (LSTM), and Graph Neural Networks (GNNs), are increasingly being used to exploit the spatio-temporal nature of satellite image time series [21, 22, 25, 54, 60]. These models can process raw spectral bands directly, sometimes outperforming models based on pre-calculated VIs [19, 25, 33, 61, 62].                                                                  
+
+> Narimani et al.: Preprint Page 5 of 29 Table 2
+> Detailed spectral band comparison for agricultural applications [49–51].
+> Spectral Region Band Name Sentinel-2 Landsat 9 PlanetScope
+> Coastal Coastal/Aerosol 442.7 nm (60 m) 443 nm (30 m) –Visible Blue 492.7 nm (10 m) 482 nm (30 m) 490 nm (3 m) Green 559.8 nm (10 m) 562 nm (30 m) 565 nm (3 m) Red 664.6 nm (10 m) 655 nm (30 m) 665 nm (3 m) Red-Edge Red-Edge 1 704.1 nm (20 m) ––Red-Edge 2 740.5 nm (20 m) ––Red-Edge 3 782.8 nm (20 m) ––Near-Infrared NIR 832.8 nm (10 m) 865 nm (30 m) 865 nm (3 m) Narrow NIR 864.7 nm (20 m) ––Water Vapour Water Vapour 945.1 nm (60 m) ––Cirrus Cirrus 1373.5 nm (60 m) 1375 nm (30 m) –Shortwave IR SWIR 1 1613.7 nm (20 m) 1610 nm (30 m) –SWIR 2 2202.4 nm (20 m) 2200 nm (30 m) –Panchromatic Panchromatic –590 nm (15 m) –Thermal IR TIR 1 –10.8 𝜇 m (100 m) –TIR 2 –12.0 𝜇 m (100 m) –
+
+The implementation of these data-intensive approaches has been greatly facilitated by cloud computing platforms like GEE, which enable the processing of vast archives of Sentinel-2 data at scale [18, 19, 30, 56, 63]. Hybrid approaches combine the mechanistic insights of process-based crop growth models (CGMs) with the spatial explicitness of remote sensing data through data assimilation [1, 5, 12, 26, 64]. In this framework, Sentinel-2 derived biophysical variables, most commonly LAI [5, 26, 64–66], are used to calibrate or update the state variables of models like WOFOST, SAFY, APSIM, or AquaCrop [5, 12, 26, 64, 65]. This integration corrects the model’s simulation trajectory with real-world observations, improving the accuracy and spatial detail of yield estimations [12, 26, 65]. Some studies have also demonstrated a "hybrid-hybrid" approach, where the outputs from a data assimilation framework are fed into an ML model for a final yield estimation, which can further improve accuracy [29, 67]. Finally, a prominent trend is the use of multi-modal data fusion within a single model [21, 60]. The most common strategy involves fusing Sentinel-2 optical data with Sentinel-1 SAR data to ensure continuous observation regardless of cloud cover, which is critical in many agricultural regions [18, 28, 29, 43, 68]. Models also frequently integrate ancillary data such as weather and climate records (e.g., temperature, precipitation), soil properties (e.g., texture, organic carbon), and topographic information (e.g., elevation, slope) to provide a more holistic representation of the drivers of yield variability [12, 18, 21, 23, 56]. Figure 3 illustrates the distribution and co-occurrence patterns of these modeling approaches, while Table 3 provides a comprehensive summary of representative studies across different model categories. 
+
+3.3. Vegetation Indices, Data Features, & Regions 
+
+A wide array of features derived from Sentinel-2 and other sources are used as input features in yield estimation models. The most common are Vegetation Indices (VIs), which are mathematical combinations of spectral bands designed to enhance the vegetation signal [4, 6, 52, 69, 70]. The NDVI is the most widely used VI, often serving as a baseline for performance comparison [2, 12, 19, 59, 71]. However, its tendency to saturate in dense canopies is a well-documented limitation [2, 19, 32, 55]. To overcome this, researchers increasingly favor indices that leverage Sentinel-2’s red-edge bands, which are more sensitive to high levels of chlorophyll and biomass [20, 38, 39, 41, 72]. Prominent red-edge indices include the Normalized Difference Red-Edge Index (NDRE) [25, 56, 73–75], MERIS (Medium Resolution Imaging Spectrometer) Terrestrial Chlorophyll Index (MTCI) [76], and various forms of the Chlorophyll Index Red-Edge (CIred-edge) [4]. A novel index, the Triple Red-Edge Index (TREI), which utilizes all three of Sentinel-2’s red-edge bands, has also been proposed to better capture the slope of the red-edge region [20]. Other frequently used VIs include the Green NDVI (GNDVI) [2, 12, 16, 37, 71], which can be more sensitive than NDVI in certain conditions [16], and indices that adjust for soil background effects, such as the Soil-Adjusted Vegetation Index (SAVI) [6, 16, 75, 77] and its variants. Water-sensitive indices like the Normalized Difference Water Index (NDWI) or Moisture Index (NDMI) are also used, particularly for assessing drought stress [16, 19, 25, 56, 71]. Beyond VIs, models leverage a diverse set of input features. Many studies use the raw spectral reflectance bands directly as input features for ML/DL models, which can sometimes provide better performance than VIs by avoiding information loss    
+
+> Narimani et al.: Preprint Page 6 of 29 Figure 2: Satellite platform comparison for crop monitoring. (A) Spatial resolution comparison showing the same agricultural area near Scott City, Kansas (38.51838 °N, -100.91645 °W) as captured by Landsat 9 (30 m), Sentinel-2 (10 m), and PlanetScope (3 m), demonstrating the trade-offs between spatial detail and coverage. (B) Spectral band comparison illustrating the wavelength coverage and bandwidth of each platform overlaid on a typical healthy vegetation reflectance curve (order matches panels A and C). (C) Temporal resolution comparison showing the acquisition frequency of each platform over a year, emphasizing the different revisit capabilities for continuous crop monitoring.
+
+[19, 25, 60–62]. Biophysical parameters, especially LAI, are critical features, either used as direct inputs or assimilated into CGMs [5, 26, 64–66]. These are often retrieved using dedicated processors like the SNAP Biophysical Processor [2, 14, 25, 78, 79]. Some studies also incorporate texture features derived from high-resolution imagery to capture canopy structure [73]. A crucial component for many models is the extraction of phenological metrics from the time series of VIs or spectral bands, such as the timing of peak greenness, growing season length, or rates of green-up and senescence [18, 36, 43, 80]. A more recent feature, Solar-Induced Chlorophyll Fluorescence (SIF), is gaining attention as a more direct proxy for photosynthetic activity than traditional reflectance-based VIs [58, 81]. SIF is retrieved from the infilling of atmospheric oxygen absorption bands in the red–near-infrared region, notably the O2-A band at ∼760 nm and the O2-B band at ∼687 nm, where chlorophyll fluorescence adds to the radiance measured within these absorption features.   
+
+> Narimani et al.: Preprint Page 7 of 29
+
+The reviewed literature covers a broad geographic scope, with numerous studies focusing on major agricultural regions in North America (USA, Canada) [14, 21, 25, 26, 65], Europe (e.g., Spain, France, Germany, Italy) [2, 5, 13, 63, 82], Asia (e.g., China, India) [11, 23, 66, 69, 83], Australia [20, 84, 85], South America (Brazil, Argentina) [21, 86, 87], and Africa (e.g., Kenya, Ethiopia, Mali) [18, 34, 88–90]. The primary crops studied are cereals, particularly wheat [2, 13, 69, 82, 91] and maize (corn) [2, 5, 6, 19, 25], followed by rice [23, 30, 63, 75, 92], soybean [16, 21, 26, 65, 93], and other important commodity and forage crops like sugarcane [55, 85, 87, 94, 95], potato [96, 97], and alfalfa [32, 98]. A comprehensive overview of the most commonly used vegetation indices in Sentinel-2 agricultural applications, including their mathematical formulations and required spectral bands, is provided in Appendix C. 
+
+## 4. Discussion 
+
+4.1. Achievements, Gaps, and Challenges 
+
+The findings synthesized above point to both achievements and challenges. The integration of Sentinel-2 data into crop monitoring has marked a significant achievement in crop yield estimation, fundamentally shifting the paradigm from coarse, regional-scale assessments to high-resolution, field- and sub-field-level estimations [2, 13, 16, 99]. A primary success has been the demonstrated accuracy of models built on Sentinel-2 data. Across a wide range of crops and geographies, machine learning (ML) and deep learning (DL) models have consistently achieved high coefficients of determination (R ²) and low error rates, often explaining over 70–80% of yield variability when validated against ground-truth data from combine harvesters [2, 12, 21, 26, 29]. This capability enables the generation of detailed within-field yield maps, which are invaluable for precision agriculture applications like creating management zones for variable-rate fertilization and targeted irrigation [99, 100]. Furthermore, the global coverage and free data policy of the Copernicus program have democratized access, enabling robust yield monitoring not only in large-scale commercial farming systems in Europe and North America but also in complex, heterogeneous smallholder landscapes in Africa and Asia [11, 18, 34, 88]. Despite these successes, several critical gaps and challenges persist, limiting their translation into operational practice. Perhaps the most significant bottleneck is the scarcity of high-quality, high-resolution ground-truth yield data for model training and validation [18, 34, 60, 88]. Many studies rely on data from combine-harvester yield monitors, which are themselves prone to significant errors and require extensive, non-trivial cleaning and post-processing to be reliable [2, 34, 61, 101]. Alternative ground data, such as farmer surveys, can introduce bias, while precise crop cuts are labor-intensive and difficult to scale [18, 34]. Such data scarcity is a major constraint for data-hungry DL models, which require large datasets to perform optimally [11, 34, 63, 102]. Methodological challenges specific to machine learning and deep learning models, such as overfitting when training data are limited and the limited interpretability of black-box predictions, are also widely reported and limit the operational deployment of these approaches. Another challenge is the inherent limitation of optical sensors. Cloud cover frequently obstructs views during critical growth periods, creating temporal gaps in Sentinel-2 time series that can compromise the accuracy of phenological metrics and yield estimations [4, 11, 14, 35, 43]. Even with Sentinel-2’s high resolution, the mixed pixel problem remains a challenge in small, fragmented fields or intercropped systems common in smallholder agriculture, where a single pixel may contain multiple crops or non-crop elements, confounding the spectral signal [11, 13, 18, 34]. Furthermore, the timing and transferability of yield estimations remain key hurdles. The highest accuracies are typically achieved using data from late in the growing season (e.g., reproductive or grain-filling stages), which limits the utility of estimations for in-season management decisions [4, 25, 29, 85, 103]. Moreover, models often exhibit poor generalizability, performing well in the specific region and year for which they were trained but failing when extrapolated to new years or locations [25, 63]. This "domain mismatch" is driven by the complex interplay of genotype, environment, and management (G ×E×M) interactions that vary spatially and temporally [25], a challenge that purely data-driven models struggle to capture without diverse, multi-year training data. Figure 4 provides a comprehensive overview of these major challenges and the corresponding solution pathways that have emerged in the literature to address them.   
+
+> Narimani et al.: Preprint Page 8 of 29
+
+Figure 3: Overview of modeling approaches for yield estimation. (A) Hierarchical bar chart showing the frequency of different modeling approaches organized by category (Machine Learning, Statistical/Regression, Deep Learning, Process-Based/Data Assimilation, and Hybrid/Meta-learning) across the reviewed studies. (B) Category distribution showing the relative prevalence of each modeling approach family in Sentinel-2 yield estimation research. (C) Co-occurrence matrix displaying the frequency of joint usage of the top 10 modeling approaches, revealing common model combinations and co-occurrence patterns in the literature. 
+
+Table 3: Summary of Sentinel-2 yield estimation studies 
+
+Model Used Data Features Crop Region Performance Reference 
+
+Machine Learning Models 
+
+RF S2 bands/VIs, En-vironmental data Wheat UK RMSE = 0.61 t/ha [12] RF S2 VIs (Multi-temporal, Phenological) Sugarcane Ethiopia R² up to 0.84 [36] ANN, KNN, RF, SVM S2 bands, VIs, SDD Corn Brazil R² = 0.89; MAE = 0.33; RMSE = 0.42 t/ha [86] Continued on next page 
+
+Narimani et al.: Preprint Page 9 of 29 Table 3 – continued from previous page 
+
+Model Used Data Features Crop Region Performance Reference 
+
+RF, KNN, MLR, Decision Tree S1/S2 VIs, Topo-graphic data Soybean Hungary R² = 0.41-0.89; RMSE = 0.122-0.224 t/ha [16] RF, SVM, MLR S2 VIs, LAI (RTM-derived) Wheat Spain R² = 0.89; RMSE = 0.74 t/ha (RF) [2] RF S2 bands, VIs, SPAD values Carrot Saudi Ara-bia R² = 0.82; RMSE = 7.8 t/ha [104] RF Multi-temporal S2/L8 (NDVI primary) Wheat France R² ≥ 0.60; RMSE < 7q/ha [105] XGBoost S2 VIs (EVI, NDVI), spectral bands Legumes Italy R² = 0.8756 [106] Gaussian Kernel Re-gression S2 RDVI, SAR co-herence Rice China R² = 0.81; RMSE = 0.55 t/ha [27] MLR, SMR, PLS, RF, SVR Multi-temporal S2/L8 imagery Sugarcane Thailand R² = 0.79; RMSE = 3.93 t/ha (RFR) [107] Quantile Lasso, SVM, RF S2 red, red-edge, NIR bands Potato Spain RMSE =10.94-11.67%; R² = 0.88-0.93 [97] RF S2 VIs (GNDVI) Corn Italy R² = 0.48 (GNDVI); R²
+
+≥ 0.6 (RF) [108] Stepwise MLR, RF, GWR S2 VIs, Topogra-phy, Rainfall Wheat Spain R² = 0.83 [109] MLR, RF, KNN, Boosting S2 reflectance bands, VIs (EVI, NMDI) Durum Wheat Greece R² > 0.91; RMSE < 360 kg/ha (ML models) [110] Linear Regression, RF S2 VIs (MTCI, GCVI, NDVI) Maize Ethiopia R² up to 0.63 (RF with MTCI) [76] RF S1 SAR, S2 NDVI, SAR-NDVI Spinach Spain R² = 0.89; Er-ror = 1.4% [111] MLR, RF S2 bands, 52 VIs, PPI Potato Egypt R² = 0.734; RMSE = 1.71 kg/m ² (RFR) [41] 
+
+Statistical/Regression Models 
+
+Bayesian MLR S2 VIs, Cli-matic/Topographic data Wheat Iraq R² = 0.41; RMSE =0.698 t/ha [13] Stepwise Linear Re-gression, RF S2 time series, CWR, Climate data Winter Wheat Germany R² = 0.84; RMSE = 0.56 t/ha [19] Gaussian Process Regression S2 kNDVI time se-ries, GDD Winter cereal Switzerland RMSE =0.71 t/ha; Rel. RMSE = 7.60% [103] Continued on next page   
+
+> Narimani et al.: Preprint Page 10 of 29
+
+Table 3 – continued from previous page 
+
+Model Used Data Features Crop Region Performance Reference 
+
+MLR S2 RSIs (GNDVI) Wheat Morocco R² = 0.53-0.89; RMSE = 4.29-7.78 q/ha [112] AutoML (GLM) S2 VIs, S1 SAR in-dices Wheat Ethiopia R = 0.69; RMSE =0.84-0.98 t/ha [113] Empirical Regression S2 NDWI compos-ite Winter Wheat Sweden MAE = 0.40 t/ha [114] Empirical Regression S2 red-edge, NIR bands Durum wheat Tunisia R² = 0.55-0.73; RMSE = 3.80-4.90 q/ha [39] MLR NDVI (S2/L8) Cucumber, Bean, Corn Honduras Accuracy: 96.74-98.92% [115] Correlation-based Regression Models L8/S2 NDVI, SAVI Potato Saudi Ara-bia Error: 3.8-10.2% (S2); R = 0.47-0.65 [116] Empirical Regression with Phenological Fitting HLS VIs, Surface reflectances, AGDD Winter Wheat Ukraine RMSE =0.201 t/ha (5.4%); R² =0.73 [48] Empirical Regression S2 VIs (NDVI, MSAVI2, RCI, NDRE) Cotton Uzbekistan R² up to 0.96; RMSE = 0.21 (NDRE) [117] 
+
+Deep Learning Models 
+
+3D CNN + LSTM S2 bands, Weather, Soil, DEM Soybean Argentina, Uruguay, Germany R² = 0.86 [118] 3D CNN S2 Surface Reflectance (B2-B4, B8) Rice Spain R² = 0.92; MAE = 0.223 t/ha; MAPE = 5.78% [119] 3D-ResNet-BiLSTM S2 bands, VIs, S1 SAR, Weather Soybean United States R² = 0.791; RMSE = 5.56 Bu/Ac [120] 
+
+Process-Based/Data Assimilation Models 
+
+WOFOST + EnKF Data Assimilation S1 SAR, S2 NDVI, Soil moisture Winter Wheat China R² = 0.35; RMSE = 934 kg/ha (with DA) [121] SAFY + EnKF Data Assimilation S2 time-series, LAI (from EVI2) Winter Wheat Sweden R² = 0.80 (LAI); 70% yield improvement [122] 
+
+Hybrid/Meta-Learning Models 
+
+Hybrid (VIs + Crop Model Stress Index) S2 VIs, Crop Water Stress Index Dryland Wheat Australia R² = 0.91; RMSE =0.54 t/ha (combined) [123]     
+
+> Note: Full names of abbreviations are provided in Appendix A.
+> Narimani et al.: Preprint Page 11 of 29 Figure 4: Summary of challenges and solutions in Sentinel-2 yield estimation. A comprehensive table outlining major challenges (e.g., data availability, model transferability), their impact on model performance, and examples of solutions proposed in the literature (e.g., sensor fusion, hybrid modeling).
+
+4.2. Outlook and Future Directions 
+
+The future of Sentinel-2-based yield estimation is evolving towards more integrated, intelligent, and robust systems, driven by several converging trends. The continued advancement of deep learning is paramount, with a move beyond standard CNNs and LSTMs toward more sophisticated architectures. Novel approaches such as Graph Neural Networks (GNNs) are being explored to better model the irregular spatial structures of agricultural fields [22], while attention mechanisms [11, 21, 54, 124] and multi-task learning frameworks [102] are being used to enhance feature extraction and improve model efficiency, especially with limited ground data. Multi-modal data fusion will become standard practice. The synergistic use of Sentinel-2 optical data with cloud-penetrating Sentinel-1 SAR imagery is already a dominant strategy for ensuring continuous, all-weather monitoring [16, 18, 28, 30, 111]. The next frontier is the seamless integration of these satellite streams with ancillary data layers—including high-resolution weather forecasts, dynamic soil properties, topographic information, and management records—within unified modeling frameworks [19, 21, 63, 67, 77]. Adaptive fusion methods, such as gated fusion networks, are emerging to dynamically weigh the contribution of each data modality, optimizing estimations based on crop type and environmental context [21]. A significant paradigm shift is the move towards hybrid modeling, which couples the mechanistic understanding of process-based crop growth models (CGMs) with the pattern recognition capabilities of ML/DL [29, 67, 125]. Instead of relying on purely empirical relationships, these hybrid systems use Sentinel-2 data to calibrate and constrain CGM simulations   
+
+> Narimani et al.: Preprint Page 12 of 29
+
+through data assimilation [5, 12, 65, 126]. The outputs of these biophysically-grounded simulations (e.g., simulated biomass, water stress) can then serve as powerful, mechanistically-informed features for a final ML estimation model, enhancing both accuracy and interpretability [29]. This approach also promises to improve model transferability across different environments and years. 
+
+Figure 5: Evolution and future outlook of Sentinel-2 yield estimation methods. A schematic timeline illustrating the progression from early methods (c. 2016) like simple VI-regressions to current advanced approaches (c. 2020–2024) using ML/DL and data fusion, and projecting future trends (c. 2025+) such as operational SIF integration and hybrid CGM-ML systems. 
+
+Finally, the field will continue to benefit from the development of new data features and the sustained commitment to open data and cloud computing. There is growing interest in proxies more directly linked to plant function than traditional VIs, such as Solar-Induced Chlorophyll Fluorescence (SIF), which offers a direct measure of photosynthetic activity [58, 81]. As new satellite missions enhance SIF retrieval, its integration is expected to refine yield models further. All these advancements will be accelerated by platforms like GEE, which democratize access to petabyte-scale archives of satellite data and the computational power required for large-scale analytics, enabling innovation to continue at a substantial pace [18]. Figure 5 illustrates this evolutionary trajectory, showing the progression from early simple regression methods to current advanced approaches and projecting future trends toward operational SIF integration and hybrid systems. 
+
+## 5. Data Availability 
+
+The data that support the findings of this review are available in the articles cited in the reference list. 
+
+## 6. Funding 
+
+This research received no specific grant from any funding agency in the public, commercial, or not-for-profit sectors. 
+
+## 7. Declaration of Interests 
+
+The authors declare no competing interests. 
+
+## References   
+
+> [1] Weiguo Yu, Dong Li, Hengbiao Zheng, Xia Yao, Yan Zhu, Weixing Cao, Lin Qiu, Tao Cheng, Yongguang Zhang, and Yanlian Zhou. Hidym: A high-resolution gross primary productivity and dynamic harvest index based crop yield mapper. Remote sensing of environment , 311:114301, 2024.
+
+Narimani et al.: Preprint Page 13 of 29 [2] Joel Segarra, Jose Luis Araus, and Shawn C Kefauver. Farming and earth observation: Sentinel-2 data to estimate within-field wheat grain yield. 
+
+International Journal of Applied Earth Observation and Geoinformation , 107:102697, 2022. [3] Jianjian Song, Jianxi Huang, Hai Huang, Guilong Xiao, Xuecao Li, Li Li, Wei Su, Wenbin Wu, Peng Yang, and Shunlin Liang. Improving crop yield estimation by unified model parameters and state variable with bayesian inference. Agricultural and Forest Meteorology , 355:110101, 2024. [4] Haiyang Zhang, Yao Zhang, Fanghui Tong, and Minzan Li. A novel winter wheat yield prediction framework using fused spatial–temporal-spectral (sts) information from sentinel-2 and landsat 8 via improved pix2pix network. Computers and Electronics in Agriculture , 231:109982, 2025. [5] Marjorie Battude, Ahmad Al Bitar, David Morin, Jérôme Cros, Mireille Huc, Claire Marais Sicre, Valérie Le Dantec, and Valérie Demarez. Estimating maize biomass and yield over large areas using high spatial and temporal resolution sentinel-2 like remote sensing data. Remote Sensing of Environment , 184:668–681, 2016. [6] Riska Ayu Purnamasari, Ryozo Noguchi, and Tofael Ahamed. Land suitability assessments for yield prediction of cassava using geospatial fuzzy expert systems and remote sensing. Computers and Electronics in Agriculture , 166:105018, 2019. [7] Mohammadreza Narimani, Alireza Pourreza, Ali Moghimi, Parastoo Farajpoor, Hossein Jafarbiglu, and Mohsen B Mesgaran. Early detection of branched broomrape (phelipanche ramosa) infestation in tomato crops by using leaf spectral analysis and machine learning. IFAC-PapersOnLine ,59(23):114–119, 2025. [8] Parastoo Farajpoor, Alireza Pourreza, Mohammadreza Narimani, Ahmed El-kereamy, and Matthew W Fidelibus. Multi-trait spectral modeling for estimating grapevine leaf traits and nutrients. Plant Phenomics , 2025:100142, 2025. [9] Mohammadreza Narimani, Alireza Pourreza, Ali Moghimi, Mohsen Mesgaran, Parastoo Farajpoor, and Hossein Jafarbiglu. Drone-based multispectral imaging and deep learning for timely detection of branched broomrape in tomato farms. In Autonomous Air and Ground Sensing Systems for Agricultural Optimization and Phenotyping IX , volume 13053, pages 16–25. SPIE, 2024. [10] Stephan Nebiker, Norman Lack, Martin Abächerli, and Simon Läderach. Light-weight multispectral uav sensors and their capabilities for predicting grain yield and detecting plant diseases. The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences ,41:963–970, 2016. [11] Guilong Xiao, Xueyou Zhang, Quandi Niu, Xingang Li, Xuecao Li, Liheng Zhong, and Jianxi Huang. Winter wheat yield estimation at the field scale using sentinel-2 data and deep learning. Computers and Electronics in Agriculture , 216:108555, 2024. [12] Merryn L Hunt, George Alan Blackburn, Luis Carrasco, John W Redhead, and Clare S Rowland. High resolution wheat yield mapping using sentinel-2. Remote Sensing of Environment , 233:111410, 2019. [13] Sarchil Hama Qader, Chigozie Edson Utazi, Rhorom Priyatikanto, Peshawa Najmaddin, Emad Omer Hama-Ali, Nabaz R Khwarahm, Andrew J Tatem, and Jadu Dash. Exploring the use of sentinel-2 datasets and environmental variables to model wheat crop yield in smallholder arid and semi-arid farming systems. Science of The Total Environment , 869:161716, 2023. [14] Xijia Zhou, Pengxin Wang, Kevin Tansey, Shuyu Zhang, Hongmei Li, and Huiren Tian. Reconstruction of time series leaf area index for improving wheat yield estimates at field scales by fusion of sentinel-2,-3 and modis imagery. Computers and Electronics in Agriculture , 177:105692, 2020. [15] Jian Lu, Jian Li, Hongkun Fu, Wenlong Zou, Junrui Kang, Haiwei Yu, and Xinglei Lin. Estimation of rice yield using multi-source remote sensing data combined with crop growth model and deep learning algorithm. Agricultural and Forest Meteorology , 370:110600, 2025. [16] Khilola Amankulova, Nizom Farmonov, Khasan Omonov, Mokhigul Abdurakhimova, and László Mucsi. Integrating the sentinel-1, sentinel-2 and topographic data into soybean yield modelling using machine learning. Advances in Space Research , 73(8):4052–4066, 2024. [17] Mohammadreza Narimani, Alireza Pourreza, Ali Moghimi, Parastoo Farajpoor, Hossein Jafarbiglu, and Mohsen Mesgaran. Branched broomrape detection in tomato farms using satellite imagery and time-series analysis. In Autonomous Air and Ground Sensing Systems for Agricultural Optimization and Phenotyping X , volume 13475, pages 237–243. SPIE, 2025. [18] Zhenong Jin, George Azzari, Calum You, Stefania Di Tommaso, Stephen Aston, Marshall Burke, and David B Lobell. Smallholder maize area and yield mapping at national scales with google earth engine. Remote sensing of environment , 228:115–128, 2019. [19] Michael Marszalek, Marco Körner, and Urs Schmidhalter. Prediction of multi-year winter wheat yields at the field level with satellite and climatological data. Computers and Electronics in Agriculture , 194:106777, 2022. [20] Dhahi Al-Shammari, Brett M Whelan, Chen Wang, Robert GV Bramley, and Thomas FA Bishop. Assessment of red-edge based vegetation indices for crop yield prediction at the field scale across large regions in australia. European Journal of Agronomy , 164:127479, 2025. [21] Francisco Mena, Deepak Pathak, Hiba Najjar, Cristhian Sanchez, Patrick Helber, Benjamin Bischke, Peter Habelitz, Miro Miranda, Jayanth Siddamsetty, Marlon Nuske, et al. Adaptive fusion of multi-modal remote sensing data for optimal sub-field crop yield prediction. Remote Sensing of Environment , 318:114547, 2025. [22] Oskar Åström, Simon Månsson, Isac Lazar, Magnus Nilsson, Joakim Ekelöf, Andreas Oxenstierna, and Alexandros Sopasakis. Predicting intra-field yield variations for winter wheat using remote sensing and graph attention networks. Computers and Electronics in Agriculture , 237:110499, 2025. [23] Komal Choudhary, Wenzhong Shi, Y Dong, and R Paringer. Random forest for rice yield mapping and prediction using sentinel-2 data with google earth engine. Advances in Space Research , 70(8):2443–2457, 2022. [24] Yining Tang, Ruiheng Zhou, Ping He, Minglei Yu, Hengbiao Zheng, Xia Yao, Tao Cheng, Yan Zhu, Weixing Cao, and Yongchao Tian. Estimating wheat grain yield by assimilating phenology and lai with the wheatgrow model based on theoretical uncertainty of remotely sensed observation. 
+
+Agricultural and Forest Meteorology , 339:109574, 2023. [25] Johann Desloires, Dino Ienco, and Antoine Botrel. Out-of-year corn yield prediction at field-scale using sentinel-2 satellite imagery and machine learning methods. Computers and Electronics in Agriculture , 209:107807, 2023. [26] Deborah V Gaso, Allard de Wit, Andres G Berger, and Lammert Kooistra. Predicting within-field soybean yield variability by coupling sentinel-2 leaf area index with a crop growth model. Agricultural and forest meteorology , 308:108553, 2021. [27] Yeshanbele Alebele, Wenhui Wang, Weiguo Yu, Xue Zhang, Xia Yao, Yongchao Tian, Yan Zhu, Weixing Cao, and Tao Cheng. Estimation of crop yield from combined optical and sar imagery using gaussian kernel regression. IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing , 14:10520–10534, 2021. [28] Lanxiang Li, Shuai Fu, Jinlong Gao, Tiangang Liang, Senyao Feng, Yunhao Li, Yangjing Xiu, and Yongjia Hu. Improving the estimation of alfalfa yield based on multi-source satellite data and the synthetic minority oversampling strategy. Computers and Electronics in Agriculture , 236:110497, 2025. [29] Deborah V Gaso, Dilli Paudel, Allard de Wit, Laila A Puntel, Adugna Mullissa, and Lammert Kooistra. Beyond assimilation of leaf area index: Leveraging additional spectral information using machine learning for site-specific soybean yield prediction. Agricultural and Forest Meteorology ,351:110022, 2024. 
+
+Narimani et al.: Preprint Page 14 of 29 [30] Weiguo Yu, Gaoxiang Yang, Dong Li, Hengbiao Zheng, Xia Yao, Yan Zhu, Weixing Cao, Lin Qiu, and Tao Cheng. Improved prediction of rice yield at field and county levels by synergistic use of sar, optical and meteorological data. Agricultural and forest meteorology , 342:109729, 2023. [31] S Mahalakshmi, A Jose Anand, and Pachaivannan Partheeban. Soil and crop interaction analysis for yield prediction with satellite imagery and deep learning techniques for the coastal regions. Journal of Environmental Management , 380:125095, 2025. [32] Angie L Gámez, Joel Segarra, Thomas Vatter, Luis G Santesteban, Jose L Araus, and Iker Aranjuelo. Alfalfa yield estimation using the combination of sentinel-2 and meteorological data. Field Crops Research , 326:109857, 2025. [33] Nicoleta Darra, Borja Espejo-Garcia, Vassilis Psiroukis, Emmanouil Psomiadis, and Spyros Fountas. Spectral bands vs. vegetation indices: An automl approach for processing tomato yield predictions based on sentinel-2 imagery. Smart Agricultural Technology , 10:100805, 2025. [34] Akiko Elders, Mark L Carroll, Christopher SR Neigh, Anthony Louis D’Agostino, Christopher Ksoll, Margaret R Wooten, and Molly E Brown. Estimating crop type and yield of small holder fields in burkina faso using multi-day sentinel-2. Remote sensing applications: Society and environment ,27:100820, 2022. [35] Jesús Soriano-González, Eduard Angelats, Maite Martínez-Eixarch, and Carles Alcaraz. Monitoring rice crop and yield estimation with sentinel-2 data. Field Crops Research , 281:108507, 2022. [36] Dimo Dimov, Johannes H Uhl, Fabian Low, and Gezahagn Negash Seboka. Sugarcane yield estimation through remote sensing time series and phenology metrics. Smart Agricultural Technology , 2:100046, 2022. [37] Pavlo Kolodiy and Maryna Pidlypna. The improvement of the agricultural yields forecasting model using the software product "land viewer". 
+
+Geomatics and environmental engineering , 14(1), 2020. [38] Lukas Prey and Urs Schmidhalter. Simulation of satellite reflectance data using high-frequency ground based hyperspectral canopy measurements for in-season estimation of grain yield and grain nitrogen status in winter wheat. ISPRS Journal of Photogrammetry and Remote Sensing , 149:176–187, 2019. [39] Rim Mehdaoui and Makram Anane. Exploitation of the red-edge bands of sentinel 2 to improve the estimation of durum wheat yield in grombalia region (northeastern tunisia). International journal of remote sensing , 41(23):8986–9008, 2020. [40] Omer Gokberk Narin and Saygin Abdikan. Monitoring of phenological stage and yield estimation of sunflower plant using sentinel-2 satellite images. 
+
+Geocarto international , 37(5):1378–1392, 2022. [41] Mohamed ES Amin, Mohsen Nabil, Mahmoud A Abdelfattah, Elsayed S Mohamed, and Ali G Mahmoud. Exploitation of sentinel-2 spectral bands and vegetation indices in potato yield estimation. Journal of the Indian Society of Remote Sensing , pages 1–19, 2025. [42] Haiyang Zhang, Yao Zhang, Xiuhua Li, Minzan Li, and Zezhong Tian. Predicting banana yield at the field scale by combining sentinel-2 time series data and regression models. Applied Engineering in Agriculture , 39(1):81–94, 2023. [43] Keke Duan, Anton Vrieling, Michael Schlund, Uday Bhaskar Nidumolu, Christina Ratcliff, Simon Collings, and Andrew Nelson. Detection and attribution of cereal yield losses using sentinel-2 and weather data: A case study in south australia. ISPRS Journal of Photogrammetry and Remote Sensing , 213:33–52, 2024. [44] Natacha I Kalecinski, Sergii Skakun, Nathan Torbick, Xiaodong Huang, Belen Franch, Jean-Claude Roger, and Eric Vermote. Crop yield estimation at different growing stages using a synergy of sar and optical remote sensing data. Science of Remote Sensing , 10:100153, 2024. [45] Khilola Amankulova, Nizom Farmonov, Parvina Akramova, Ikrom Tursunov, and László Mucsi. Comparison of planetscope, sentinel-2, and landsat 8 data in soybean yield estimation within-field variability with random forest regression. Heliyon , 9(6), 2023. [46] Jumi Gogoi, Nathaniel K Newlands, Zia Mehrabi, Nicholas C Coops, and Navin Ramankutty. Assessing the performance of satellite-based models for crop yield estimation in the canadian prairies. Canadian Journal of Remote Sensing , 49(1):2252926, 2023. [47] Emily Myers, John Kerekes, Craig Daughtry, and Andrew Russ. Effects of satellite revisit rate and time-series smoothing method on throughout-season maize yield correlation accuracy. IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing , 14:12007–12021, 2021. [48] Sergii Skakun, Eric Vermote, Belen Franch, Jean-Claude Roger, Nataliia Kussul, Junchang Ju, and Jeffrey Masek. Winter wheat yield assessment from landsat 8 and sentinel-2 data: Incorporating surface reflectance, through phenological fitting, into regression yield models. Remote Sensing ,11(15):1768, 2019. [49] A Gatti and A Bertolini. Sentinel-2 products specification document. Rapport technique , pages 4–7, 2015. [50] Jeffrey G Masek, Michael A Wulder, Brian Markham, Joel McCorkel, Christopher J Crawford, James Storey, and Del T Jenstrom. Landsat 9: Empowering open science and applications through continuity. Remote Sensing of Environment , 248:111968, 2020. [51] David P Roy, Haiyan Huang, Rasmus Houborg, and Vitor S Martins. A global analysis of the temporal availability of planetscope high spatial resolution multi-spectral imagery. Remote Sensing of Environment , 264:112586, 2021. [52] Haiyang Zhang, Yao Zhang, Kaidi Liu, Shu Lan, Tinyao Gao, and Minzan Li. Winter wheat yield prediction using integrated landsat 8 and sentinel-2 vegetation index time-series data and machine learning algorithms. Computers and Electronics in Agriculture , 213:108250, 2023. [53] C Corbari, I Ben Charfi, A Al Bitar, Drazen Skokovic, JA Sobrino, C Perelli, G Branca, and M Mancini. A fully coupled crop-water-energy balance model based on satellite data for maize and tomato crops yield estimates: The fest-ewb-safy model. Agricultural Water Management , 272:107850, 2022. [54] Shalini Dangi, Surya Karthikeya Mullapudi, Chandravardhan Singh Raghaw, Shahid Shafi Dar, Mohammad Zia Ur Rehman, and Nagendra Kumar. A multi-temporal multi-spectral attention-augmented deep convolution neural network with contrastive learning for crop yield prediction. Computers and Electronics in Agriculture , 239:110895, 2025. [55] Lihong Zhu, Xiangnan Liu, Zheng Wang, and Lingwen Tian. High-precision sugarcane yield prediction by integrating 10-m sentinel-1 vod and sentinel-2 grvi indexes. European Journal of Agronomy , 149:126889, 2023. [56] Keltoum Khechba, Mariana Belgiu, Ahmed Laamrani, Alfred Stein, Abdelhakim Amazirh, and Abdelghani Chehbouni. The impact of spatiotemporal variability of environmental conditions on wheat yield forecasting using remote sensing data and machine learning. International Journal of Applied Earth Observation and Geoinformation , 136:104367, 2025. [57] Nguyen-Thanh Son, Chi-Farn Chen, Youg-Sin Cheng, Piero Toscano, Cheng-Ru Chen, Shu-Ling Chen, Kuo-Hsin Tseng, Chien-Hui Syu, Horng-Yuh Guo, and Yi-Ting Zhang. Field-scale rice yield prediction from sentinel-2 monthly image composites using machine learning algorithms. Ecological informatics , 69:101618, 2022. [58] Xiaoyan Kang, Changping Huang, Lifu Zhang, Huihan Wang, Ze Zhang, and Xin Lv. Regional-scale cotton yield forecast via data-driven spatio-temporal prediction (stp) of solar-induced chlorophyll fluorescence (sif). Remote Sensing of Environment , 299:113861, 2023. [59] Maheen Ayub, Najeed Ahmed Khan, and Rana Zeeshan Haider. Wheat crop field and yield prediction using remote sensing and machine learning. In 2022 2nd International Conference on Artificial Intelligence (ICAI) , pages 158–164. IEEE, 2022. 
+
+Narimani et al.: Preprint Page 15 of 29 [60] Hamid Kamangir, Brent S Sams, Nick Dokoozlian, Luis Sanchez, and J Mason Earles. Large-scale spatio-temporal yield estimation via deep learning using satellite and management data fusion in vineyards. Computers and Electronics in Agriculture , 216:108439, 2024. [61] Gregor Perich, Mehmet Ozgur Turkoglu, Lukas Valentin Graf, Jan Dirk Wegner, Helge Aasen, Achim Walter, and Frank Liebisch. Pixel-based yield mapping and prediction from sentinel-2 using spectral indices and neural networks. Field Crops Research , 292:108824, 2023. [62] Yafit Cohen, Amit Malka, Yonatan Goldwasser, Elia Scudiero, Eitan Goldshtein, Ohaliav Keisar, Guy Lidor, and Gilad Ravid. Leveraging satellite imagery and yield records to assess in-season maize field functionality with machine learning classification. Computers and Electronics in Agriculture ,238:110809, 2025. [63] Giorgio Impollonia, Michele Croci, and Stefano Amaducci. Upscaling and downscaling approaches for early season rice yield prediction using sentinel-2 and machine learning for precision nitrogen fertilisation. Computers and Electronics in Agriculture , 227:109603, 2024. [64] Yinfang Shi, Zhaoyang Wang, Cheng Hou, and Puhan Zhang. Yield estimation of lycium barbarum l. based on the wofost model. Ecological Modelling , 473:110146, 2022. [65] Deborah V Gaso, Allard de Wit, Sytze de Bruin, Laila A Puntel, Andres G Berger, and Lammert Kooistra. Efficiency of assimilating leaf area index into a soybean model to assess within-field yield variability. European journal of agronomy , 143:126718, 2023. [66] WANG Chao, HE Peng, JING Yao-dong, YANG Wu-de, et al. Winter wheat yield estimation based on assimilated sentinel-2 images with the ceres-wheat model. Journal of Integrative Agriculture , 20(7):1958–1968, 2021. [67] Deborah V Gaso, Laura Elena Cue La Rosa, Laila A Puntel, Juan I Rattalino Edreira, Allard de Wit, and Lammert Kooistra. Predicting spatial and temporal variability in soybean yield using deep learning and open source data. European Journal of Agronomy , 164:127498, 2025. [68] Pierre C Guillevic, Benjamin Aouizerats, Rogier Burger, Nadja Den Besten, Daniel Jackson, Margot Ridderikhoff, Ariel Zajdband, Rasmus Houborg, Trenton E Franz, G Philip Robertson, et al. Planet’s biomass proxy for monitoring aboveground agricultural biomass and estimating crop yield. Field Crops Research , 316:109511, 2024. [69] Enhui Cheng, Bing Zhang, Dailiang Peng, Liheng Zhong, Le Yu, Yao Liu, Chenchao Xiao, Cunjun Li, Xiaoyi Li, Yue Chen, et al. Wheat yield estimation using remote sensing data based on machine learning approaches. Frontiers in Plant Science , 13:1090970, 2022. [70] Md Monirul Islam, Shusuke Matsushita, Ryozo Noguchi, and Tofael Ahamed. Development of remote sensing-based yield prediction models at the maturity stage of boro rice using parametric and nonparametric approaches. Remote Sensing Applications: Society and Environment , 22:100494, 2021. [71] Maximilian Schwarz, Windpanga Aristide Ouedraogo, Issouf Traore, Charlotte Mueller, Ali Sie, Sandra Barteit, Isabel Mank, Florian Siegert, Rainer Sauerborn, and Jonas Franke. Satellite-based multi-annual yield models for major food crops at the household field level for nutrition and health research: a case study from the nouna hdss, burkina faso. International Journal of Applied Earth Observation and Geoinformation , 117:103203, 2023. [72] Yuki Hamada, Colleen R Zumpf, John J Quinn, and Maria Cristina Negri. Estimating field-level perennial bioenergy grass biomass yields using the normalized difference red-edge index and linear regression analysis for central virginia, usa. Energies , 16(21):7397, 2023. [73] Jiayi Zhang, Yuanyuan Pan, Xi Tao, Binbin Wang, Qiang Cao, Yongchao Tian, Yan Zhu, Weixing Cao, and Xiaojun Liu. In-season mapping of rice yield potential at jointing stage using sentinel-2 images integrated with high-precision uas data. European Journal of Agronomy , 146:126808, 2023. [74] Khilola Amankulova, Nizom Farmonov, Uzbekkhon Mukhtorov, and Laszlo Mucsi. Sunflower crop yield prediction by advanced statistical modeling using satellite-derived vegetation indices and crop phenology. Geocarto international , 38(1):2197509, 2023. [75] Marzhan Sadenova, Nail Beisekenov, Petar Sabev Varbanov, and Ting Pan. Application of machine learning and neural networks to predict the yield of cereals, legumes, oilseeds and forage crops in kazakhstan. Agriculture , 13(6):1195, 2023. [76] Zachary Mondschein, Ambica Paliwal, Tesfaye Shiferaw Sida, Jordan Chamberlin, Runzi Wang, and Meha Jain. Mapping field-level maize yields in ethiopian smallholder systems using sentinel-2 imagery. Remote Sensing , 16(18):3451, 2024. [77] Krishna Prasad Devkota, Abdelkrim Bouasria, Mina Devkota, and Vinay Nangia. Predicting wheat yield gap and its determinants combining remote sensing, machine learning, and survey approaches in rainfed mediterranean regions of morocco. European Journal of Agronomy , 158:127195, 2024. [78] Tomas Persson, Francisco Javier Ancin Murguzur, Corine Davids, Mats Höglind, and Marit Jørgensen. Combining satellite-sensed and ground data and the basgra model to predict grass yield in high-latitude regions. Field Crops Research , 318:109610, 2024. [79] Anna Pelosi, Oscar Rosario Belfiore, Guido D’Urso, and Giovanni Battista Chirico. Assessing crop water requirement and yield by combining era5-land reanalysis data with cm-saf satellite-based radiation data and sentinel-2 satellite imagery. Remote Sensing , 14(24):6233, 2022. [80] Dorijan Radovčaj, Ivan Plaščak, and Mladen Jurišić. Phenology-based maize and soybean yield potential prediction using machine learning and sentinel-2 imagery time-series. Applied Sciences , 2025. [81] Xiaoyan Kang, Changping Huang, Lifu Zhang, Ze Zhang, and Xin Lv. Downscaling solar-induced chlorophyll fluorescence for field-scale cotton yield estimation by a two-step convolutional neural network. Computers and electronics in agriculture , 201:107260, 2022. [82] Zdeněk Jelínek, Jitka Kumhálová, Jan Chyba, Marie Wohlmuthová, Mikuláš Madaras, and František Kumhála. Landsat and sentinel-2 images as a tool for the effective estimation of winter and spring cultivar growth and yield prediction in the czech republic. International Agrophysics , 34(3):391–406, 2020. [83] Akshar Tripathi, Reet Kamal Tiwari, and Surya Prakash Tiwari. A deep learning multi-layer perceptron and remote sensing approach for soil health based crop yield estimation. International Journal of Applied Earth Observation and Geoinformation , 113:102959, 2022. [84] James Brinkhoff, Allister Clarke, Brian W Dunn, and Mark Groat. Analysis and forecasting of australian rice yield using phenology-based aggregation of satellite and weather data. Agricultural and Forest Meteorology , 353:110055, 2024. [85] Yuri Shendryk, Robert Davy, and Peter Thorburn. Integrating satellite imagery and environmental data to predict field-level cane and sugar yields in australia using machine learning. Field Crops Research , 260:107984, 2021. [86] Antonio Alves Pinto, Cristiano Zerbato, Glauco de Souza Rolim, Marcelo Rodrigues Barbosa Júnior, Luis Fernando Vieira da Silva, and Romário Porto de Oliveira. Corn grain yield forecasting by satellite remote sensing and machine-learning models. Agronomy Journal , 114(5):2956–2968, 2022. [87] Tatiana Fernanda Canata, Marcelo Chan Fu Wei, Leonardo Felipe Maldaner, and José Paulo Molin. Sugarcane yield mapping using high-resolution imagery data and machine learning technique. Remote Sensing , 13(2):232, 2021. [88] Zhe Guo, Jordan Chamberlin, and Liangzhi You. Smallholder maize yield estimation using satellite data and machine learning in ethiopia. Crop and Environment , 2(4):165–174, 2023. [89] Gizachew Ayalew Tiruneh, Derege Tsegaye Meshesha, Enyew Adgo, Atsushi Tsunekawa, Nigussie Haregeweyn, Ayele Almaw Fenta, José Miguel Reichert, Temesgen Mulualem Aragie, and Kefyialew Tilahun. Monitoring impacts of soil bund on spatial variation of teff and finger millet yield with sentinel-2 and spectroradiometric data in ethiopia. Heliyon , 9(3), 2023. 
+
+Narimani et al.: Preprint Page 16 of 29 [90] David B Lobell, Stefania Di Tommaso, Calum You, Ismael Yacoubou Djima, Marshall Burke, and Talip Kilic. Sight for sorghums: Comparisons of satellite-and ground-based sorghum yield estimates in mali. Remote Sensing , 12(1):100, 2019. [91] Mohsen Yoosefzadeh-Najafabadi, Dan Tulpan, and Milad Eskandari. Using hybrid artificial intelligence and evolutionary optimization algorithms for estimating soybean yield and fresh biomass using hyperspectral vegetation indices. Remote Sensing , 13(13):2555, 2021. [92] Fatemeh Jafari Sayadi, Mohammad Ali Gholami Sefidkouhi, Hemmatollah Pirdashti, and Mojtaba Khoshravesh. Assimilating vegetation indices and canopy cover derived from remote sensing into the aquacrop model for estimating rice yield. Irrigation and Drainage , 74(3):1311–1325, 2025. [93] Walter T Dado, Jillian M Deines, Rinkal Patel, Sang-Zi Liang, and David B Lobell. High-resolution soybean yield mapping across the us midwest using subfield harvester data. Remote Sensing , 12(21):3471, 2020. [94] Rafaella Pironato Amaro, Pierre Todoroff, Mathias Christina, Daniel Garbellini Duft, and Ana Cláudia dos Santos Luciano. Performance evaluation of sentinel-2 imagery, agronomic and climatic data for sugarcane yield estimation. Computers and Electronics in Agriculture , 237:110522, 2025. [95] Rafaella Pironato Amaro, Mathias Christina, Pierre Todoroff, Guerric Le Maire, Peterson Ricardo Fiorio, Ester De Carvalho Pereira, and Ana Claudia dos Santos Luciano. Regional model to predict sugarcane yield using sentinel-2 imagery in são paulo state, brazil. Sugar Tech , 27(1):108–118, 2025. [96] Diego Gómez, Pablo Salvador, Julia Sanz, and José Luis Casanova. New spectral indicator potato productivity index based on sentinel-2 data to improve potato yield prediction: A machine learning approach. International Journal of Remote Sensing , 42(9):3426–3444, 2021. [97] Diego Gómez, Pablo Salvador, Julia Sanz, and José Luis Casanova. Potato yield prediction using machine learning techniques and sentinel 2 data. 
+
+Remote Sensing , 11(15):1745, 2019. [98] Jiang Chen, Tong Yu, Jerome H Cherney, and Zhou Zhang. Optimal integration of optical and sar data for improving alfalfa yield and quality traits prediction: new insights into satellite-based forage crop monitoring. Remote Sensing , 16(5):734, 2024. [99] Ahmed Kayad, Marco Sozzi, Simone Gatto, Brett Whelan, Luigi Sartori, and Francesco Marinello. Ten years of corn yield dynamics at field scale under digital agriculture solutions: A case study from north italy. Computers and Electronics in Agriculture , 185:106126, 2021. [100] AS Tsibart, J Dillen, L Van Craenenbroeck, A Elsen, A Postelmans, G van De Ven, and W Saeys. Scenarios for precision nitrogen management in potato: Impact on yield, tuber quality and post-harvest nitrate residues in the soil. Field Crops Research , 319:109648, 2024. [101] Andrei I Girz and Tuomas J Mattila. Within-field variation of crop yield loss from cover crops. Agronomy Journal , 116(6):2922–2933, 2024. [102] Shenzhou Liu, Di Wang, Haonan Guo, Chengxi Han, and Wenzhi Zeng. Mt-cyp-net: Multi-task network for pixel-level crop yield prediction under very few samples. arXiv preprint arXiv:2505.12069 , 2025. [103] Eatidal Amin, Luca Pipia, Santiago Belda, Gregor Perich, Lukas Valentin Graf, Helge Aasen, Shari Van Wittenberghe, José Moreno, and Jochem Verrelst. In-season forecasting of within-field grain yield from sentinel-2 time series data. International Journal of Applied Earth Observation and Geoinformation , 126:103636, 2024. [104] Rangaswamy Madugundu, Khalid A Al-Gaadi, ElKamil Tola, Mohamed K Edrris, Haroon F Edrees, and Ahmed A Alameen. Optimal timing of carrot crop monitoring and yield assessment using sentinel-2 images: A machine-learning approach. Applied Sciences , 14(9):3636, 2024. [105] Remy Fieuzal, Vincent Bustillo, David Collado, and Gerard Dedieu. Combined use of multi-temporal landsat-8 and sentinel-2 images for wheat yield estimates at the intra-plot spatial scale. Agronomy , 10(3):327, 2020. [106] Theodoros Petropoulos, Lefteris Benos, Remigio Berruto, Gabriele Miserendino, Vasso Marinoudi, Patrizia Busato, Chrysostomos Zisis, and Dionysis Bochtis. Interpretable machine learning for legume yield prediction using satellite remote sensing data. Applied Sciences , 15(13):7074, 2025. [107] Jaturong Som-ard, Savittri Ratanopad Suwanlee, Dusadee Pinasu, Surasak Keawsomsee, Kemin Kasa, Nattawut Seesanhao, Sarawut Ninsawat, Enrico Borgogno-Mondino, and Filippo Sarvia. Evaluating sugarcane yield estimation in thailand using multi-temporal sentinel-2 and landsat data together with machine-learning algorithms. Land , 13(9):1481, 2024. [108] Ahmed Kayad, Marco Sozzi, Simone Gatto, Francesco Marinello, and Francesco Pirotti. Monitoring within-field variability of corn yield using sentinel-2 and machine learning techniques. Remote Sensing , 11(23):2873, 2019. [109] Joel Segarra, Jon González-Torralba, Íker Aranjuelo, Jose Luis Araus, and Shawn C Kefauver. Estimating wheat grain yield using sentinel-2 imagery and exploring topographic features and rainfall effects on wheat performance in navarre, spain. Remote Sensing , 12(14):2278, 2020. [110] Maria Bebie, Chris Cavalaris, and Aris Kyparissis. Assessing durum wheat yield through sentinel-2 imagery: A machine learning approach. Remote Sensing , 14(16):3880, 2022. [111] Francisco-Javier Mesas-Carrascosa, Juan Tomás Arosemena-Jované, Susana Cantón-Martínez, Fernando Pérez-Porras, and Jorge Torres-Sánchez. Enhancing crop yield estimation in spinach crops using synthetic aperture radar-derived normalized difference vegetation index: A sentinel-1 and sentinel-2 fusion approach. Remote Sensing , 17(8):1412, 2025. [112] Hajar Saad El Imanni, Abderrazak El Harti, and Lahcen El Iysaouy. Wheat yield estimation using remote sensing indices derived from sentinel-2 time series and google earth engine in a highly fragmented and heterogeneous agricultural region. Agronomy , 12(11):2853, 2022. [113] Andualem Aklilu Tesfaye, Berhan Gessesse Awoke, Tesfaye Shiferaw Sida, and Daniel E Osgood. Enhancing smallholder wheat yield prediction through sensor fusion and phenology with machine learning and deep learning methods. Agriculture , 12(9):1352, 2022. [114] Omran Alshihabi, Kristin Persson, and Mats Søderstrøm. Easy yield mapping for precision agriculture. Acta Agriculturae Scandinavica, Section B—Soil & Plant Science , 74(1):2411950, 2024. [115] R Castro Castro. Prediction of yield and diseases in crops using vegetation indices through satellite image processing. In 2024 IEEE Technology and Engineering Management Society (TEMSCON LATAM) , pages 1–6. IEEE, 2024. [116] Khalid A Al-Gaadi, Abdalhaleem A Hassaballa, ElKamil Tola, Ahmed G Kayad, Rangaswamy Madugundu, Bander Alblewi, and Fahad Assiri. Prediction of potato crop yield using precision agriculture techniques. PloS one , 11(9):e0162219, 2016. [117] Shovkat Khodjaev, Ihtiyor Bobojonov, Lena Kuhn, and Thomas Glauben. An accuracy assessment of satellite-based cotton yield estimation using panel data regression: a case study of uzbekistan. Environment, Development and Sustainability , pages 1–32, 2024. [118] Miro Miranda, Deepak Pathak, Marlon Nuske, and Andreas Dengel. Multi-modal fusion methods with local neighborhood information for crop yield prediction at field and subfield levels. In IGARSS 2024-2024 IEEE International Geoscience and Remote Sensing Symposium , pages 4307–4311. IEEE, 2024. [119] Ruben Fernandez-Beltran, Tina Baidar, Jian Kang, and Filiberto Pla. Rice-yield prediction with multi-temporal sentinel-2 data and 3d cnn: A case study in nepal. Remote sensing , 13(7):1391, 2021. [120] Mahdiyeh Fathi, Reza Shah-Hosseini, and Armin Moghimi. 3d-resnet-bilstm model: a deep learning model for county-level soybean yield prediction with time-series sentinel-1, sentinel-2 imagery, and daymet data. Remote Sensing , 15(23):5551, 2023. [121] Wen Zhuo, Jianxi Huang, Li Li, Xiaodong Zhang, Hongyuan Ma, Xinran Gao, Hai Huang, Baodong Xu, and Xiangming Xiao. Assimilating soil moisture retrieved from sentinel-1 and sentinel-2 data into wofost model to improve winter wheat yield estimation. Remote Sensing , 11(13):1618, 
+
+Narimani et al.: Preprint Page 17 of 29 2019. [122] El houssaine Bouras, Per-Ola Olsson, Shangharsha Thapa, Jesús Mallol Díaz, Johannes Albertsson, and Lars Eklundh. Wheat yield estimation at high spatial resolution through the assimilation of sentinel-2 data into a crop growth model. Remote Sensing , 15(18):4425, 2023. [123] Yan Zhao, Andries B Potgieter, Miao Zhang, Bingfang Wu, and Graeme L Hammer. Predicting wheat yield at the field scale by combining high-resolution sentinel-2 satellite imagery and crop modelling. Remote Sensing , 12(6):1024, 2020. [124] Mahdiyeh Fathi, Reza Shah-Hosseini, Armin Moghimi, and Hossein Arefi. Mhra-ms-3d-resnet-bilstm: A multi-head-residual attention-based multi-stream deep learning model for soybean yield prediction in the us using multi-source remote sensing data. Remote Sensing , 17(1):107, 2024. [125] Garry Hayman, John W Redhead, Matthew Brown, Ewan Pinnington, France Gerard, Mike Brown, William Fincham, Emma L Robinson, Chris Huntingford, and Richard F Pywell. A framework for improved predictions of the climate impacts on potential yields of uk winter wheat and its applicability to other uk crops. Climate Services , 34:100479, 2024. [126] Liang Jiang, Feilong Zhang, Jianan Chi, Pingping Yan, Xiangxin Bu, Yong He, and Tiecheng Bai. Evaluation of pear orchard yield and water use efficiency at the field scale by assimilating remotely sensed lai and sm into the wofost model. Computers and Electronics in Agriculture , 233:110145, 2025. [127] Yuki Hamada, Colleen R Zumpf, Jules F Cacho, DoKyoung Lee, Cheng-Hsien Lin, Arvid Boe, Emily Heaton, Robert Mitchell, and Maria Cristina Negri. Remote sensing-based estimation of advanced perennial grass biomass yields for bioenergy. Land , 10(11):1221, 2021. [128] LGT Crusiol, Liang Sun, RNR Sibaldelli, V Felipe Junior, WX Furlaneti, R Chen, Z Sun, D Wuyun, Z Chen, MR Nanni, et al. Strategies for monitoring within-field soybean yield using sentinel-2 vis-nir-swir spectral bands and machine learning regression methods. Precision Agriculture ,23(3):1093–1123, 2022. [129] Muhammet Fatih Aslan, Kadir Sabanci, and Busra Aslan. Artificial intelligence techniques in crop yield estimation based on sentinel-2 data: A comprehensive survey. Sustainability , 16(18):8277, 2024. [130] Franciele Morlin Carneiro, Armando Lopes de Brito Filho, Francielle Morelli Ferreira, Getulio de Freitas Seben Junior, Ziany Neiva Brandão, Rouverson Pereira da Silva, and Luciano Shozo Shiratsuchi. Soil and satellite remote sensing variables importance using machine learning to predict cotton yield. Smart agricultural technology , 5:100292, 2023. [131] David Fita, Constanza Rubio, Antonio Uris, Sergio Castiñeira-Ibáñez, Belén Franch, Daniel Tarrazó-Serrano, and Alberto San Bautista. Remote sensor images and vegetation indices to optimize rice yield analysis for specific growth stages within extensive data. Applied Sciences , 15(7):3870, 2025. [132] LA Suarez, Melanie Robertson-Dean, J Brinkhoff, and A Robson. Forecasting carrot yield with optimal timing of sentinel 2 image acquisition. 
+
+Precision Agriculture , 25(2):570–588, 2024. [133] Nizom Farmonov, Khilola Amankulova, Jozsef Szatmari, Jamol Urinov, Zafar Narmanov, Jakhongir Nosirov, and Laszlo Mucsi. Combining planetscope and sentinel-2 images with environmental data for improved wheat yield estimation. International Journal of Digital Earth , 16(1):847– 867, 2023. [134] Nicoleta Darra, Borja Espejo-Garcia, Aikaterini Kasimati, Olga Kriezi, Emmanouil Psomiadis, and Spyros Fountas. Can satellites predict yield? ensemble machine learning and statistical analysis of sentinel-2 imagery for processing tomato yield prediction. Sensors , 23(5):2586, 2023. [135] Niwat Bhumiphan, Jurawan Nontapon, Siwa Kaewplang, Neti Srihanu, Werapong Koedsin, and Alfredo Huete. Estimation of rubber yield using sentinel-2 satellite data. Sustainability , 15(9):7223, 2023. [136] Carlos Alberto Matias de Abreu Júnior, George Deroco Martins, Laura Cristina Moura Xavier, Bruno Sérgio Vieira, Rodrigo Bezerra de Araújo Gallis, Eusimio Felisbino Fraga Junior, Rafaela Souza Martins, Alice Pedro Bom Paes, Rafael Cordeiro Pereira Mendonça, and João Victor do Nascimento Lima. Estimating coffee plant yield based on multispectral images and machine learning models. Agronomy , 12(12):3195, 2022. [137] Branislav Pejak, Predrag Lugonja, Aleksandar Antić, Marko Panić, Miloš Pandžić, Emmanouil Alexakis, Philip Mavrepis, Naweiluo Zhou, Oskar Marko, and Vladimir Crnojević. Soya yield prediction on a within-field scale using machine learning models trained on sentinel-2 and soil data. 
+
+Remote sensing , 14(9):2256, 2022. [138] Ashmitha Nihar, NR Patel, Ranjeet Singh, and Abhishek Danodia. Satellite-based light use efficiency model for sugarcane yield estimation at field scale. Journal of the Indian Society of Remote Sensing , 51(6):1357–1369, 2023. [139] Bryan Alemán-Montes, Alaitz Zabala, Carlos Henríquez, and Pere Serra. Modelling two sugarcane agro-industrial yields using sentinel/landsat time-series data and their spatial validation at different scales in costa rica. Remote Sensing , 15(23):5476, 2023. [140] Konstantinos Ntouros, Konstantinos Papatheodorou, Georgios Gkologkinas, and Vasileios Drimzakas-Papadopoulos. A python framework for crop yield estimation using sentinel-2 satellite data. Earth , 6(1):15, 2025. [141] Belen Franch, Alberto San Bautista, David Fita, Constanza Rubio, Daniel Tarrazó-Serrano, Antonio Sánchez, Sergii Skakun, Eric Vermote, Inbal Becker-Reshef, and Antonio Uris. Within-field rice yield estimation based on sentinel-2 satellite data. Remote Sensing , 13(20):4095, 2021. [142] Chengxiu Li, Ellasy Gulule Chimimba, Oscar Kambombe, Luke A Brown, Tendai Polite Chibarabada, Yang Lu, Daniela Anghileri, Cosmo Ngongondo, Justin Sheffield, and Jadunandan Dash. Maize yield estimation in intercropped smallholder fields using satellite data in southern malawi. 
+
+Remote Sensing , 14(10):2458, 2022. 
+
+## 8. Appendix 
+
+8.1. Abbreviations 
+
+Table 4: Appendix A: List of abbreviations used in this review 
+
+Abbreviation Full Name 
+
+Machine Learning Models 
+
+ANN Artificial Neural Networks CNN Convolutional Neural Network GLM Generalized Linear Model Continued on next page 
+
+Narimani et al.: Preprint Page 18 of 29 Table 4 – continued from previous page 
+
+Abbreviation Full Name 
+
+KNN K-Nearest Neighbors LSTM Long Short-Term Memory MLR Multiple Linear Regression RF Random Forest RFR Random Forest Regression SMR Stepwise Multiple Regression SVM Support Vector Machine SVR Support Vector Regression 
+
+Statistical Methods 
+
+DA Data Assimilation EnKF Ensemble Kalman Filter GWR Geographically Weighted Regression PLS Partial Least Squares RTM Radiative Transfer Model 
+
+Crop Growth Models 
+
+SAFY Simple Algorithm For Yield WOFOST World Food Studies 
+
+Satellite Platforms 
+
+HLS Harmonized Landsat Sentinel-2 L8 Landsat-8 S1 Sentinel-1 S2 Sentinel-2 SAR Synthetic Aperture Radar 
+
+Spectral Bands 
+
+NIR Near-Infrared RE1 Red-Edge 1 RE2 Red-Edge 2 RE3 Red-Edge 3 SWIR1 Shortwave Infrared 1 SWIR2 Shortwave Infrared 2 
+
+Biophysical Parameters 
+
+AGDD Accumulated Growing Degree Days CWR Crop Water Requirements DEM Digital Elevation Model GDD Growing Degree Days LAI Leaf Area Index PPI Potato Productivity Index RSIs Remote Sensing Indices SPAD Soil Plant Analysis Development 
+
+Performance Metrics 
+
+Bu/Ac Bushels per Acre MAE Mean Absolute Error MAPE Mean Absolute Percentage Error Rel. RMSE Relative Root Mean Square Error RMSE Root Mean Square Error 
+
+Vegetation Indices 
+
+EVI Enhanced Vegetation Index EVI2 Enhanced Vegetation Index 2 Continued on next page   
+
+> Narimani et al.: Preprint Page 19 of 29
+
+Table 4 – continued from previous page 
+
+Abbreviation Full Name 
+
+GCVI Green Chlorophyll Vegetation Index GNDVI Green Normalized Difference Vegetation Index kNDVI kernel Normalized Difference Vegetation Index MSAVI2 Modified Soil-Adjusted Vegetation Index 2 MTCI MERIS (Medium Resolution Imaging Spectrometer) Terrestrial Chlorophyll Index NDRE Normalized Difference Red-Edge Index NDVI Normalized Difference Vegetation Index NDWI Normalized Difference Water Index NMDI Normalized Multi-band Drought Index RCI Red-edge Chlorophyll Index RDVI Red-edge Difference Vegetation Index SAVI Soil-Adjusted Vegetation Index VIs Vegetation Indices ARVI Atmospherically Resistant Vegetation Index AWEI Automated Water Extraction Index BNDVI Blue Normalized Difference Vegetation Index CCCI Canopy Chlorophyll Content Index CIRE1 Chlorophyll Index with Red-edge 1 CIRE2 Chlorophyll Index with Red-edge 2 CIVE Color Index of Vegetation Extraction CVI Chlorophyll Vegetation Index DVI Difference Vegetation Index ExG Excess Green GARI Green Atmospherically Resistant Index GBM2 Green Biomass Index 2 GIPVI Green Infrared Percentage Vegetation Index GLI Green Leaf Index IPVI Infrared Percentage Vegetation Index IRECI Inverted Red Edge Chlorophyll Index ISR Inverse Simple Ratio LSWI Land Surface Water Index MCARI Modified Chlorophyll Absorption in Reflectance Index MGVRI Modified Green Red Vegetation Index MSI Moisture Stress Index MSR Modified Simple Ratio MTVI2 Modified Triangular Vegetation Index 2 NBR Normalized Burn Ratio NDBI Normalized Difference Built-Up Index NDI45 Normalized Difference Index NDII Normalized Difference Infrared Index NDII2 Normalized Difference Infrared Index 2 NDMI Normalized Difference Moisture Index NDRE1 Normalized Difference Red Edge 1 NDRE2 Normalized Difference Red Edge 2 NIRv Near-Infrared Reflectance of Vegetation NLI Non-linear Index NPCI Normalized Pigment Chlorophyll Ratio Index PSRI Plant Senescence Reflectance Index PVI Perpendicular Vegetation Index RE-PAP Red Edge Physiological & Architectural Parameter REIP Red-Edge Position Index RENDVI Red Edge Normalized Difference Vegetation Index RGBVI Red Green Blue Vegetation Index Continued on next page   
+
+> Narimani et al.: Preprint Page 20 of 29
+
+Table 4 – continued from previous page 
+
+Abbreviation Full Name 
+
+RGVI Rice Growth Vegetation Index RI Redness Index SAVI2 Soil Adjusted Vegetation Index 2 SR Simple Ratio SRre1 Simple Ratio Red-Edge 1 SRre2 Simple Ratio Red-Edge 2 SRre3 Simple Ratio Red-Edge 3 TCARI Transformed Chlorophyll Absorption in Reflectance Index TGI Triangular Greenness Index TVI Transformed Vegetation Index VARI Visible Atmospherically Resistant Index VDVI Visible Band Difference Vegetation Index WDRVI Wide Dynamic Range Vegetation Index WDVI Weighted Difference Vegetation Index 
+
+8.2. Agricultural Monitoring Advantages 
+
+Table 5: Appendix B: Agricultural monitoring advantages by satellite platform 
+
+Application Sentinel-2 Landsat 9 PlanetScope 
+
+Crop Monitoring Red-edge bands for Long-term data High spatial detail chlorophyll/LAI continuity (50+ years) for small fields Yield Estimation Optimal spectral Thermal data for Daily monitoring resolution for VIs stress detection capability Precision Agriculture Field-level mapping Regional assessments Sub-field variability (10-20 m resolution) (3 m resolution) Temporal Coverage Frequent revisits Consistent long-term Near-daily coverage (2-5 days) archive (∼1 day) Cost Effectiveness Free access Free access Commercial licensing required 
+
+8.3. Vegetation Indices 
+
+Table 6: Appendix C: Vegetation indices used in Sentinel-2 agricultural applications and yield estimation studies 
+
+Index Formula S2 Bands Reference 
+
+Basic Vegetation Indices 
+
+> (Normalized Difference Vegetation Index)
+
+NDVI NIR − RED NIR + RED B8, B4 [12] 
+
+> (Green Normalized Difference Vegetation Index)
+
+Continued on next page   
+
+> Narimani et al.: Preprint Page 21 of 29
+
+Table 6 – continued from previous page 
+
+Index Formula S2 Bands Reference 
+
+GNDVI NIR − GREEN NIR + GREEN B8, B3 [12] 
+
+> (Simple Ratio)
+
+SR NIR RED B8, B4 [12] 
+
+> (Difference Vegetation Index)
+
+DVI NIR − RED B8, B4 [127] 
+
+> (Blue Normalized Difference Vegetation Index)
+
+BNDVI NIR − BLUE NIR + BLUE B8, B2 [128] 
+
+> (Non-linear Index)
+
+NLI NIR 𝑛𝑎𝑟𝑟𝑜𝑤 − RED NIR 𝑛𝑎𝑟𝑟𝑜𝑤 + RED B8A, B4 [129] 
+
+> (Infrared Percentage Vegetation Index)
+
+IPVI NIR NIR + RED B8, B4 [130] 
+
+> (Inverse Simple Ratio)
+
+ISR RED NIR B4, B8 [130] 
+
+> (Green Infrared Percentage Vegetation Index)
+
+GIPVI NIR NIR + GREEN B8, B3 [41] 
+
+Red-Edge Indices 
+
+> (Normalized Difference Red-Edge Index)
+
+NDRE NIR − RE1 NIR + RE1 B8, B5 [19] 
+
+> (MERIS Terrestrial Chlorophyll Index)
+
+MTCI RE2 − RE1 RE1 − RED B6, B5, B4 [56] Continued on next page 
+
+Narimani et al.: Preprint Page 22 of 29 Table 6 – continued from previous page 
+
+Index Formula S2 Bands Reference 
+
+> (Chlorophyll Index with Red-edge 1)
+
+CIRE1 NIR RE1 − 1 B8, B5 [94] 
+
+> (Chlorophyll Index with Red-edge 2)
+
+CIRE2 NIR RE2 − 1 B8, B6 [94] 
+
+> (Red Edge Normalized Difference Vegetation Index)
+
+RENDVI NIR − RE2 NIR + RE2 B8, B6 [28] 
+
+> (Normalized Difference Index)
+
+NDI45 RE1 − RED RE1 + RED B5, B4 [40] 
+
+> (Simple Ratio Red-Edge 1)
+
+SRre1 NIR RE1 B8, B5 [40] 
+
+> (Simple Ratio Red-Edge 2)
+
+SRre2 NIR RE2 B8, B6 [40] 
+
+> (Simple Ratio Red-Edge 3)
+
+SRre3 NIR RE3 B8, B7 [40] 
+
+> (Normalized Difference Red Edge 1)
+
+NDRE1 RE2 − RE1 RE2 + RE1 B6, B5 [131] 
+
+> (Normalized Difference Red Edge 2)
+
+NDRE2 RE3 − RE1 RE3 + RE1 B7, B5 [131] 
+
+> (Green Biomass Index 2)
+
+GBM2 RE1 − GREEN RE1 + GREEN B5, B3 [41] Continued on next page 
+
+Narimani et al.: Preprint Page 23 of 29 Table 6 – continued from previous page 
+
+Index Formula S2 Bands Reference 
+
+> (Canopy Chlorophyll Content Index)
+
+CCCI 𝑁𝐷𝑅𝐸 𝑁𝐷𝑉 𝐼 B8, B4, B5 [132] 
+
+Soil-Adjusted Indices 
+
+> (Soil-Adjusted Vegetation Index)
+
+SAVI 1.5( NIR − RED )
+
+NIR + RED + 0 .5 B8, B4 [28] 
+
+> (Modified Soil-Adjusted Vegetation Index 2)
+
+MSAVI2 (NIR + 1) − 12
+
+√(2 NIR + 1) 2 − 8( NIR − RED ) B8, B4 [133] 
+
+> (Soil Adjusted Vegetation Index 2)
+
+SAVI2 NIR RED + 0 .0070 B8, B4 [41] 
+
+> (Atmospherically Resistant Vegetation Index)
+
+ARVI NIR − ( RED − BLUE )
+
+NIR + ( RED − BLUE ) B8, B4, B2 [127] 
+
+> (Perpendicular Vegetation Index)
+
+PVI NIR − 𝑎 × RED − 𝑏 
+
+√𝑎 2 + 1 
+
+B8, B4 [134] 
+
+> (Weighted Difference Vegetation Index)
+
+WDVI NIR − 𝑆 × RED B8, B4 [134] 
+
+Water/Moisture Indices 
+
+> (Normalized Difference Water Index)
+
+NDWI NIR − SWIR1 NIR + SWIR1 B8, B11 [19] 
+
+> (Normalized Difference Moisture Index)
+
+NDMI NIR − SWIR1 NIR + SWIR1 B8, B11 [94] Continued on next page 
+
+Narimani et al.: Preprint Page 24 of 29 Table 6 – continued from previous page 
+
+Index Formula S2 Bands Reference 
+
+> (Land Surface Water Index)
+
+LSWI NIR − SWIR1 NIR + SWIR1 B8, B11 [11] 
+
+> (Normalized Difference Infrared Index)
+
+NDII NIR − SWIR1 NIR + SWIR1 B8, B11 [128] 
+
+> (Normalized Difference Infrared Index 2)
+
+NDII2 NIR − SWIR2 NIR + SWIR2 B8, B12 [128] 
+
+> (Normalized Burn Ratio)
+
+NBR NIR − SWIR2 NIR + SWIR2 B8, B12 [135] 
+
+> (Normalized Multi-band Drought Index)
+
+NMDI NIR − ( SWIR1 − SWIR2 )
+
+NIR + ( SWIR1 − SWIR2 ) B8, B11, B12 [129] 
+
+> (Moisture Stress Index)
+
+MSI SWIR1 NIR B11, B8 [56] 
+
+> (Automated Water Extraction Index)
+
+AWEI 4( GREEN − SWIR2 ) − (0 .25 NIR + 2 .75 SWIR2 ) B3, B12, B8 [129] 
+
+Enhanced/Modified Indices 
+
+> (Enhanced Vegetation Index)
+
+EVI 2.5( NIR − RED )
+
+NIR + 6 RED − 7 .5BLUE + 1 B8, B4, B2 [28] 
+
+> (Enhanced Vegetation Index 2)
+
+EVI2 2.5( NIR − RED )
+
+NIR + 2 .4RED + 1 B8, B4 [123] 
+
+> (kernel Normalized Difference Vegetation Index)
+
+Continued on next page 
+
+Narimani et al.: Preprint Page 25 of 29 Table 6 – continued from previous page 
+
+Index Formula S2 Bands Reference 
+
+kNDVI tanh 
+
+(( NIR − RED NIR + RED 
+
+)2)
+
+B8, B4 [28] 
+
+> (Near-Infrared Reflectance of Vegetation)
+
+NIRv NIR (NIR − RED )
+
+NIR + RED B8, B4 [28] 
+
+> (Wide Dynamic Range Vegetation Index)
+
+WDRVI 0.1 × NIR − RED 
+
+0.1 × NIR + RED B8, B4 [124] 
+
+> (Red-edge Difference Vegetation Index)
+
+RDVI NIR − RED 
+
+√NIR + RED B8, B4 [104] 
+
+> (Modified Simple Ratio)
+
+MSR  
+
+> NIR RED
+
+− 1 
+
+√ NIR RED + 1 
+
+B8, B4 [32] 
+
+> (Modified Triangular Vegetation Index 2)
+
+MTVI2 1.5|1.2( NIR − GREEN ) − 2 .5( RED − GREEN )|√
+
+(2 NIR + 1) 2 − (6 NIR − 5 √RED ) − 0 .5
+
+B8, B3, B4 [45] 
+
+Chlorophyll/Biomass Indices 
+
+> (Green Chlorophyll Vegetation Index)
+
+GCVI NIR GREEN − 1 B8, B3 [12] 
+
+> (Chlorophyll Vegetation Index)
+
+CVI NIR × RED GREEN 2 B8, B4, B3 [129] 
+
+> (Modified Chlorophyll Absorption in Reflectance Index)
+
+MCARI (RE1 − RED − 0 .2( RE1 − GREEN )) × RE1 RED B5, B4, B3 [136] 
+
+> (Transformed Chlorophyll Absorption in Reflectance Index)
+
+Continued on next page 
+
+Narimani et al.: Preprint Page 26 of 29 Table 6 – continued from previous page 
+
+Index Formula S2 Bands Reference 
+
+TCARI 3(( RE1 − RED ) − 0 .2( RE1 − GREEN ) × RE1 RED ) B5, B4, B3 [136] 
+
+Visible Light Indices 
+
+> (Excess Green)
+
+ExG 2 × GREEN − RED − BLUE B3, B4, B2 [137] 
+
+> (Visible Atmospherically Resistant Index)
+
+VARI GREEN − RED GREEN + RED − BLUE B3, B4, B2 [127] 
+
+> (Triangular Greenness Index)
+
+TGI −0 .5(190( RED − GREEN ) − 120( RED − BLUE )) B4, B3, B2 [2] 
+
+> (Green Leaf Index)
+
+GLI (GREEN − RED )( GREEN − BLUE )2GREEN + RED + BLUE B3, B4, B2 [137] 
+
+> (Color Index of Vegetation Extraction)
+
+CIVE 0.441 RED − 0 .811 GREEN + 0 .385 BLUE + 18 .78745 B4, B3, B2 [137] 
+
+> (Visible Band Difference Vegetation Index)
+
+VDVI 2GREEN − BLUE − RED 
+
+2GREEN + BLUE + RED B3, B2, B4 [138] 
+
+> (Redness Index)
+
+RI RED − GREEN RED + GREEN B4, B3 [139] 
+
+> (Normalized Pigment Chlorophyll Ratio Index)
+
+NPCI RED − BLUE RED + BLUE B4, B2 [41] 
+
+> (Modified Green Red Vegetation Index)
+
+MGVRI GREEN 2 − RED 2
+
+GREEN 2 + RED 2 B3, B4 [41] Continued on next page 
+
+Narimani et al.: Preprint Page 27 of 29 Table 6 – continued from previous page 
+
+Index Formula S2 Bands Reference 
+
+> (Red Green Blue Vegetation Index)
+
+RGBVI GREEN 2 − ( BLUE × RED )
+
+GREEN 2 + ( BLUE × RED ) B3, B2, B4 [130] 
+
+Specialized Indices 
+
+> (Red-Edge Position Index)
+
+REIP 700 + 40 ×  
+
+> RED +RE3
+> 2
+
+− RE1 RE2 − RE1 B4, B7, B5, B6 [19] 
+
+> (Inverted Red Edge Chlorophyll Index)
+
+IRECI RE3 − RED RE1 ∕RE2 B7, B4, B5, B6 [11] 
+
+> (Red Edge Physiological & Architectural Parameter)
+
+RE-PAP RE3 − RE1 RE2 × NIR RED B7, B5, B6, B8, B4 [140] 
+
+> (Green Atmospherically Resistant Index)
+
+GARI NIR − [ GREEN − 1 .7( BLUE − RED )] 
+
+NIR + [ GREEN − 1 .7( BLUE − RED )] B8, B3, B2, B4 [127] 
+
+> (Rice Growth Vegetation Index)
+
+RGVI 1 − BLUE − RED NIR + SWIR1 + SWIR2 B2, B4, B8, B11, B12 [141] 
+
+> (Transformed Vegetation Index)
+
+TVI 0.5(120( NIR − GREEN ) − 200( RED − GREEN )) B8, B3, B4 [142] 
+
+> (Plant Senescence Reflectance Index)
+
+PSRI RED − BLUE RE2 B4, B2, B6 [129] 
+
+> (Normalized Difference Built-Up Index)
+
+Continued on next page 
+
+Narimani et al.: Preprint Page 28 of 29 Table 6 – continued from previous page 
+
+Index Formula S2 Bands Reference 
+
+NDBI SWIR1 − NIR SWIR1 + NIR B11, B8 [22]  
+
+> Note: Full names of abbreviations are provided in Appendix A.
+
+## Acknowledgement 
+
+The authors acknowledge the support of the University of California, Davis for providing the resources necessary to conduct this research. 
+
+## Declarations 
+
+The authors declare no conflicts of interest. 
+
+Narimani et al.: Preprint Page 29 of 29

@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.23779v1/fig-001.webp",
+      "caption": "Table 2 Detailed spectral band comparison for agricultural applications [49–51].",
+      "page": 6,
+      "index": 1,
+      "width": 1029,
+      "height": 497
+    },
+    {
+      "url": "assets/figures/arxiv/2603.23779v1/fig-002.webp",
+      "caption": "Table 5: Appendix B: Agricultural monitoring advantages by satellite platform",
+      "page": 21,
+      "index": 2,
+      "width": 1029,
+      "height": 342
+    },
+    {
+      "url": "assets/figures/arxiv/2603.23779v1/fig-003.webp",
+      "caption": "Figure 2: Satellite platform comparison for crop monitoring. (A) Spatial resolution comparison showing the same agricultural area near Scott City, Kansas (38.51838°N, -100.91645°W) as captured by Landsat 9 (30 m), Sentinel-2 (10 m), and PlanetScope (3 m), demonstrating the trade-offs between spatial detail and coverage. (B) Spectral band comparison illustrating the wavelength coverage and bandwidth of each platform overlaid on a typical healthy vegetation reflectance curve (order matches panels A and C). (C) Temporal resolution comparison showing the acquisition frequency of each platform over a year, emphasizing the different revisit capabilities for continuous crop monitoring.",
+      "page": 7,
+      "index": 3,
+      "width": 1029,
+      "height": 1023
+    },
+    {
+      "url": "assets/figures/arxiv/2603.23779v1/fig-004.webp",
+      "caption": "Figure 1: Global trends in Sentinel-2 crop yield estimation research. (A) Geographic distribution of publications by country, showing the number of studies conducted in each nation from 2015 to present. Countries are color-coded by publication count. (B) Temporal trends in crop study frequency, displaying the evolution of research focus across major crop types over time. The stacked bars show the relative contribution of different crops to the literature each year. (C) Continental distribution of publications over time, illustrating the geographic expansion of Sentinel-2 yield estimation research across different regions. In panels B and C, the first four years (2015–2018) are merged into a single bin for consistency with the remaining year ranges.",
+      "page": 3,
+      "index": 4,
+      "width": 1029,
+      "height": 950
+    },
+    {
+      "url": "assets/figures/arxiv/2603.23779v1/fig-005.webp",
+      "caption": "Figure 5: Evolution and future outlook of Sentinel-2 yield estimation methods. A schematic timeline illustrating the progression from early methods (c. 2016) like simple VI-regressions to current advanced approaches (c. 2020–2024) using ML/DL and data fusion, and projecting future trends (c. 2025+) such as operational SIF integration and hybrid CGM-ML systems.",
+      "page": 13,
+      "index": 5,
+      "width": 1029,
+      "height": 642
+    },
+    {
+      "url": "assets/figures/arxiv/2603.23779v1/fig-006.webp",
+      "caption": "Figure 4: Summary of challenges and solutions in Sentinel-2 yield estimation. A comprehensive table outlining major challenges (e.g., data availability, model transferability), their impact on model performance, and examples of solutions proposed in the literature (e.g., sensor fusion, hybrid modeling).",
+      "page": 12,
+      "index": 6,
+      "width": 1029,
+      "height": 896
+    },
+    {
+      "url": "assets/figures/arxiv/2603.23779v1/fig-007.webp",
+      "caption": "Figure 3: Overview of modeling approaches for yield estimation. (A) Hierarchical bar chart showing the frequency of different modeling approaches organized by category (Machine Learning, Statistical/Regression, Deep Learning, Process-Based/Data Assimilation, and Hybrid/Meta-learning) across the reviewed studies. (B) Category distribution showing the relative prevalence of each modeling approach family in Sentinel-2 yield estimation research. (C) Co-occurrence matrix displaying the frequency of joint usage of the top 10 modeling approaches, revealing common model combinations and co-occurrence patterns in the literature.",
+      "page": 9,
+      "index": 7,
+      "width": 1029,
+      "height": 886
+    },
+    {
+      "url": "assets/figures/arxiv/2603.23779v1/fig-008.webp",
+      "caption": "Table 1 Comparison of satellite platforms for crop monitoring [49–51].",
+      "page": 5,
+      "index": 8,
+      "width": 1029,
+      "height": 318
+    }
+  ]
+}

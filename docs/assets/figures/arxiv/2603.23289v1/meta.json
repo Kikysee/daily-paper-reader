@@ -1,0 +1,78 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.23289v1/fig-001.webp",
+      "caption": "Table 5: Thematic Synthesis of International Design Rules for India",
+      "page": 25,
+      "index": 1,
+      "width": 852,
+      "height": 231
+    },
+    {
+      "url": "assets/figures/arxiv/2603.23289v1/fig-002.webp",
+      "caption": "Fig. 5: Pathways to scalable AI implementation in Indian agriculture",
+      "page": 26,
+      "index": 2,
+      "width": 623,
+      "height": 350
+    },
+    {
+      "url": "assets/figures/arxiv/2603.23289v1/fig-003.webp",
+      "caption": "Fig. 3: Integrated Framework for Crop Area Estimation",
+      "page": 21,
+      "index": 3,
+      "width": 621,
+      "height": 373
+    },
+    {
+      "url": "assets/figures/arxiv/2603.23289v1/fig-004.webp",
+      "caption": "Table 1: Major Public Agricultural Data Sources in India",
+      "page": 7,
+      "index": 4,
+      "width": 787,
+      "height": 923
+    },
+    {
+      "url": "assets/figures/arxiv/2603.23289v1/fig-005.webp",
+      "caption": "Table 4: AI Applications: Essential Data Streams and Quality Requirements",
+      "page": 22,
+      "index": 5,
+      "width": 693,
+      "height": 717
+    },
+    {
+      "url": "assets/figures/arxiv/2603.23289v1/fig-006.webp",
+      "caption": "Table 2: Package of Practices: Comparison of Current and AI-Ready Formats",
+      "page": 14,
+      "index": 6,
+      "width": 723,
+      "height": 522
+    },
+    {
+      "url": "assets/figures/arxiv/2603.23289v1/fig-007.webp",
+      "caption": "Fig. 1: Layered architecture of digital agriculture infrastructure in India",
+      "page": 18,
+      "index": 7,
+      "width": 623,
+      "height": 469
+    },
+    {
+      "url": "assets/figures/arxiv/2603.23289v1/fig-008.webp",
+      "caption": "Fig. 4: Conceptual framework for multilingual AI-driven agricultural advisory infrastructure",
+      "page": 23,
+      "index": 8,
+      "width": 583,
+      "height": 409
+    },
+    {
+      "url": "assets/figures/arxiv/2603.23289v1/fig-009.webp",
+      "caption": "Table 3: Status of Major Digital Agriculture Infrastructure Initiatives in India",
+      "page": 16,
+      "index": 9,
+      "width": 735,
+      "height": 650
+    }
+  ]
+}

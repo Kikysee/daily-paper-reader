@@ -1,0 +1,118 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.14342v1/fig-001.webp",
+      "caption": "Fig. 3: Comprehensive statistics of the AgroOmni. (a) Classification of 14 finegrained agricultural tasks across four cognitive dimensions (b) Multi-view data scale and task distribution across UAV, Satellite, and Ground perspectives (c-d) Wordclouds for QA pairs, highlighting the high density of domain-specific agronomic terminology",
+      "page": 6,
+      "index": 1,
+      "width": 731,
+      "height": 257
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14342v1/fig-002.webp",
+      "caption": "Table 11: Detailed description of datasets used in the AgroOmni",
+      "page": 26,
+      "index": 2,
+      "width": 723,
+      "height": 1092
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14342v1/fig-003.webp",
+      "caption": "Table 9: Detailed performance comparison on the AgMMU [11] benchmark (MCQs). All scores are reported as accuracy (%). Bold and underlined values indicate the best and the second-best performance among all open-source and domain-specific models. By leveraging just 10% to 30% of AGBASE [11], AgroNVILA demonstrates robust adaptation, achieving exceptional performance in \"Symptom\" recognition (89.9%), significantly surpassing even proprietary models like GPT-o4-mini.",
+      "page": 21,
+      "index": 3,
+      "width": 714,
+      "height": 346
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14342v1/fig-004.webp",
+      "caption": "Fig. 1: Overview of AgroNVILA. Comparison of our framework with existing paradigms, and its comprehensive performance radar on the AgroMind benchmark",
+      "page": 2,
+      "index": 4,
+      "width": 723,
+      "height": 344
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14342v1/fig-005.webp",
+      "caption": "Table 1: Comparison of existing agricultural vision-language instruction datasets. SFT QA refers to the number of complex instruction-tuning samples used for the fine-tuning stage. Grounding strictly indicates support for region-level geometric localization (e.g., bounding boxes). Multi-View denotes the inclusion of macroscopic perspectives (UAV/Satellite) alongside standard Ground imagery.",
+      "page": 7,
+      "index": 5,
+      "width": 717,
+      "height": 302
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14342v1/fig-006.webp",
+      "caption": "Fig. 8: Qualitative Result on Scene Understanding. For macro-area coverage estimation, the baseline model suffers from severe visual illusions, drastically overestimating the tree coverage ratio to ∼86%. AgroNVILA bypasses verbose hallucinations and accurately outputs the calibrated target area of 12,200-12,300 square meters.",
+      "page": 33,
+      "index": 6,
+      "width": 723,
+      "height": 482
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14342v1/fig-007.webp",
+      "caption": "Fig. 9: Qualitative Result on Scene Reasoning. When measuring absolute crown diameter, the baseline lacks a physical scale prior and resorts to blind guessing based on bounding box margins. AgroNVILA demonstrates strong implicit scale awareness, successfully anchoring the visual representation to the precise metric scale of 6.96m.",
+      "page": 33,
+      "index": 7,
+      "width": 721,
+      "height": 483
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14342v1/fig-008.webp",
+      "caption": "Table 10: Global Hyperparameters for the two-stage training pipeline of AgroNVILA.",
+      "page": 23,
+      "index": 8,
+      "width": 677,
+      "height": 444
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14342v1/fig-009.webp",
+      "caption": "Fig. 5: Evolution of spatial cognition on a Satellite scene. Red (Baselines): Scale collapse and micro-texture hallucinations. Blue (+VCMN): Perspective anchoring for regional awareness. Green (+ARPO): Topological alignment for holistic landscape synthesis. Additional cases are provided in Suppl. 5.",
+      "page": 13,
+      "index": 9,
+      "width": 719,
+      "height": 344
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14342v1/fig-010.webp",
+      "caption": "Fig. 4: Architecture of AgroNVILA. Driven by a Perception-Reasoning Decoupling (PRD) paradigm, the framework sequentially integrates a View-Conditioned Meta-Net (VCMN) for multi-view spatial anchoring and an ARPO module for expert-aligned logical reasoning.",
+      "page": 8,
+      "index": 10,
+      "width": 723,
+      "height": 414
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14342v1/fig-011.webp",
+      "caption": "Fig. 6: Qualitative Result on Spatial Perception. When enclosing cultivated land, the baseline model (GPT-5.2) completely inverts the spatial mapping, incorrectly anchoring the target to the lower-left corner. AgroNVILA accurately grounds the semantic concept to the correct normalized spatial coordinates.",
+      "page": 32,
+      "index": 11,
+      "width": 723,
+      "height": 482
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14342v1/fig-012.webp",
+      "caption": "Fig. 7: Qualitative Result on Object Understanding. In fine-grained pathological diagnosis, the baseline relies on generic visual priors, misinterpreting the symptoms as Spider Mite Damage. AgroNVILA successfully captures high-frequency pathological details (e.g., black spots and red streaks) to correctly diagnose Black Measles Fungus.",
+      "page": 32,
+      "index": 12,
+      "width": 721,
+      "height": 483
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14342v1/fig-013.webp",
+      "caption": "Table 3: Performance comparison on the AgroMind benchmark. The overall score represents the average accuracy across all evaluation tasks. Bold and underlined values denote the best and second-best results respectively. Task abbreviations: AR (Anomaly Reasoning), AS (Area Statistics), BD (Boundary Detection), CO (Counting), CTR (Climate Type Reasoning), GSR (Growth Stage Recognition), OC (Object Classification), PDD (Pest/Disease Diagnosis), PL (Planning), SC (Scene Comparison), SL (Spatial Localization), SR (Spatial Relationship), and VPR (Visual Prompt Reasoning).",
+      "page": 12,
+      "index": 13,
+      "width": 728,
+      "height": 758
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14342v1/fig-014.webp",
+      "caption": "Fig. 2: The curation pipeline of AgroOmni training set contains three stages, i.e., data collection and pre-processing, question generation, and quality control.",
+      "page": 5,
+      "index": 14,
+      "width": 719,
+      "height": 395
+    }
+  ]
+}

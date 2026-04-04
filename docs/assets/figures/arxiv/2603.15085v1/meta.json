@@ -1,0 +1,78 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.15085v1/fig-001.webp",
+      "caption": "Figure 6: Privacy-preserving layered Edge AI deployment architecture for agriculture.",
+      "page": 11,
+      "index": 1,
+      "width": 871,
+      "height": 677
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15085v1/fig-002.webp",
+      "caption": "Figure 1: Visual representation of the proposed system uti- lizing EPS32-CAM, TFT display, and real-time interpreting tomato plant disease classes (Source: Samanta et al. (2025a)).",
+      "page": 3,
+      "index": 2,
+      "width": 527,
+      "height": 356
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15085v1/fig-003.webp",
+      "caption": "Table 1: Comparative positioning relative to existing reviews",
+      "page": 3,
+      "index": 3,
+      "width": 1079,
+      "height": 185
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15085v1/fig-004.webp",
+      "caption": "Figure 7: Summary of deployment-related characteristics: (a) hardware platform distribution, (b) optimization strategies adopted, and (c) reporting frequency of resource-related metrics.",
+      "page": 13,
+      "index": 4,
+      "width": 1087,
+      "height": 235
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15085v1/fig-005.webp",
+      "caption": "Table 3: System-Level Deployment Patterns in Edge AI and TinyML-Based Precision Agriculture",
+      "page": 8,
+      "index": 5,
+      "width": 1079,
+      "height": 287
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15085v1/fig-006.webp",
+      "caption": "Figure 2: Overview of the methodology, illustrating the training phase with DBLA-MobileNetV2 and the deployment phase on Jetson Nano for real-time rice leaf disease classifi- cation (Source: Tasci (2026)).",
+      "page": 4,
+      "index": 6,
+      "width": 527,
+      "height": 431
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15085v1/fig-007.webp",
+      "caption": "Figure 5: Effect of pruning inference complexity, for YOLOv8n, YOLOv10n and YOLOv11n (Source: Kouzinopoulos and Manna (2025)).",
+      "page": 9,
+      "index": 7,
+      "width": 527,
+      "height": 392
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15085v1/fig-008.webp",
+      "caption": "Table 4: Optimization Strategies Adopted in TinyML and Edge AI-Based Precision Agriculture Systems",
+      "page": 9,
+      "index": 8,
+      "width": 1079,
+      "height": 240
+    },
+    {
+      "url": "assets/figures/arxiv/2603.15085v1/fig-009.webp",
+      "caption": "Figure 3: System Prototype: TinyML-Enabled IoT for Sustainable Precision Irrigation (Source: Taueatsoala et al. (2026)).",
+      "page": 5,
+      "index": 9,
+      "width": 527,
+      "height": 440
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.27101v1/fig-001.webp",
+      "caption": "Table 5. Ablation results for controlled experiments on the FTW test set (excluding presence-only countries) in which each row varies a single design choice (data augmentations, class weighting, encoder, loss function, or architecture). Bold indicates best performance, underline indicates second-best.",
+      "page": 15,
+      "index": 1,
+      "width": 1036,
+      "height": 975
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27101v1/fig-002.webp",
+      "caption": "Table 1. Performance comparison across model families on FTW test set (excluding presence-only countries). Semantic baselines: Post-processed with connected components, using presence-only label masking in training [34]. Instance/panoptic models: Fine-tuned for 8-channel input and FTW-specific classes but without presence-only masking due to architecture constraints. GFM models: Frozen encoders with our trained convolutional decoder. Total parameter count includes both the frozen encoder (28M–300M) and our learnable components, which consist of a frames-fusion module and a convolutional decoder (an additional 30M–110M parameters, depending on the encoder’s output dimensionality). Bold indicates best performance, underline indicates second-best. Throughput measured on a V100-32GB GPU with batch size 64. *Galileo did not fit into VRAM at any batch size.",
+      "page": 7,
+      "index": 2,
+      "width": 1036,
+      "height": 533
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27101v1/fig-003.webp",
+      "caption": "Table 2. Ablation results for controlled experiments on FTW test set (excluding presence-only countries) in which each row varies a single design choice (data augmentations, class weighting, encoder, loss function, or architecture). The Combination rows report the best-performing joint configurations for the FCSiam and U-Net models. Bold indicates best performance, underline indicates second-best.",
+      "page": 7,
+      "index": 3,
+      "width": 1036,
+      "height": 294
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27101v1/fig-004.webp",
+      "caption": "Figure 4. PCA visualization of frozen GFM encoder features for a representative subset of image examples. The top 3 principal components of patch embeddings are displayed as RGB channels. Clay (8× 8 patch sizes) and Galileo (4× 4 patch size) capture finer spatial structure and more distinct field boundaries compared to models using 16× 16 patches, demonstrating how tokenization granularity affects feature quality for segmentation tasks. See Table 4 for quantitative performance.",
+      "page": 14,
+      "index": 4,
+      "width": 1025,
+      "height": 532
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27101v1/fig-005.webp",
+      "caption": "Table 4. GFM linear probing results using a lightweight decoder (1×1 convolution + bilinear upsampling), sorted by object-level F1. Clay (ViT-Large, 8×8 patches) and Galileo (ViT-Base, 4×4 patches) outperform other GFMs that use coarser 16×16 patch sizes, due to the finer patch resolutions as well as techniques intentionally designed to handle missing spectral bands.",
+      "page": 14,
+      "index": 5,
+      "width": 722,
+      "height": 295
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27101v1/fig-006.webp",
+      "caption": "Figure 7. Country-level consistency vs. object F1. Each point represents one FTW country. Dashed lines show linear fits for the FTW baseline (orange, R²=0.48) and PRUE-EF7 (blue, R²=0.30). Consistency is weakly correlated with performance, suggesting it may serve as a partial out-of-distribution signal but not a reliable sole predictor of model accuracy.",
+      "page": 18,
+      "index": 6,
+      "width": 492,
+      "height": 379
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27101v1/fig-007.webp",
+      "caption": "Table 3. Agricultural field statistics derived using PRUE. The table reports total land area, distributed inference cost, field counts, and median field area in hectares for five diverse countries.",
+      "page": 8,
+      "index": 7,
+      "width": 496,
+      "height": 263
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27101v1/fig-008.webp",
+      "caption": "Figure 6. Consistency dependence on overlap size. Consistency scores as a function of overlap window size for the FTW baseline (left) and PRUE (right). Larger overlaps measure intrinsic translation sensitivity, while smaller overlaps additionally capture context dependency. Shown: top 5 and bottom 5 countries by mean consistency for each model. PRUE achieves higher consistency across all countries and overlap sizes, with particularly strong improvements in challenging regions. Hard countries (Kenya, India) show low consistency even at large overlaps, while well-represented regions (Finland, Netherlands) have high consistency, suggesting consistency metrics can identify out-of-distribution samples at inference time.",
+      "page": 17,
+      "index": 8,
+      "width": 1036,
+      "height": 392
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27101v1/fig-009.webp",
+      "caption": "Table 6. Per-country performance comparison for the top-performing models of each architecture family: FTW baseline (semantic), Mask2Former with Swin-S (instance/panoptic), Clay (frozen GFM), Clay-FT (finetuned GFM), and PRUE (our optimized semantic model). Bold indicates best performance per country. PRUE achieves the highest or second-highest pixel IoU scores across nearly all countries. All models evaluated using the protocol in Section 3.4 on presence/absence labeled countries only.",
+      "page": 17,
+      "index": 9,
+      "width": 808,
+      "height": 581
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27101v1/fig-010.webp",
+      "caption": "Figure 8. Example visuals over each country in our large-scale inference set (Japan, Mexico, Rwanda, South Africa, and Switzerland). For each region of interest, we show: (1) the PRUE field boundary predictions from 2023; (2) the 2023 predictions with changes detected in 2024 highlighted in bright green; (3) Planet monthly basemaps from 2023 with the vectorized change mask outlined in red; and (4) Planet monthly basemaps from 2024 with the vectorized change mask outlined in red. The basemaps shown for each pair are from the same month in consecutive years.",
+      "page": 20,
+      "index": 10,
+      "width": 882,
+      "height": 829
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27101v1/fig-011.webp",
+      "caption": "Figure 5. Pareto front between Object F1 and Throughput for all Table 1 models, including PRUE-EF (B3/B5) throughput. PRUEEF3 is a Pareto improvement over the FTW baseline. The PRUE family forms a substantially stronger Pareto frontier than any prior model.",
+      "page": 16,
+      "index": 11,
+      "width": 492,
+      "height": 322
+    }
+  ]
+}

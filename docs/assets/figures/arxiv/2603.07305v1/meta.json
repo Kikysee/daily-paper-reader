@@ -1,0 +1,62 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.07305v1/fig-001.webp",
+      "caption": "Table 1: The prediction root mean squared errors (RMSE) by different approaches in each testing year. We report the mean and standard deviation over 3 runs with random model initialization. The best results are highlighted in bold.",
+      "page": 6,
+      "index": 1,
+      "width": 672,
+      "height": 187
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07305v1/fig-002.webp",
+      "caption": "Figure 1: (a) County-level prediction errors (prediction – ground truth) from a single global model trained across all counties. (b) Spatial variability of soil sand content (TSAND) across all counties.",
+      "page": 2,
+      "index": 2,
+      "width": 504,
+      "height": 818
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07305v1/fig-003.webp",
+      "caption": "Figure 3: Spatial patterns of prediction errors for LSTM, TCN, and LYRA-RaTAR evaluated on the 2016 and 2017 test years.",
+      "page": 7,
+      "index": 3,
+      "width": 907,
+      "height": 462
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07305v1/fig-004.webp",
+      "caption": "Table 3: Descriptions and units of the 19 input features used for county-level corn yield prediction.",
+      "page": 10,
+      "index": 4,
+      "width": 502,
+      "height": 506
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07305v1/fig-005.webp",
+      "caption": "Figure 9: Study region of 630 counties across 14 U.S. states.",
+      "page": 10,
+      "index": 5,
+      "width": 406,
+      "height": 357
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07305v1/fig-006.webp",
+      "caption": "Figure 8: Attention weights over historical years in the lookback window for different target years. The curves show the attention weights for 20% randomly sampled counties.",
+      "page": 8,
+      "index": 6,
+      "width": 422,
+      "height": 387
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07305v1/fig-007.webp",
+      "caption": "Figure 2: The overall framework of LYRA-RaTAR.",
+      "page": 4,
+      "index": 7,
+      "width": 1056,
+      "height": 461
+    }
+  ]
+}

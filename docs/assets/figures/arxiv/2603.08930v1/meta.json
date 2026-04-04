@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.08930v1/fig-001.webp",
+      "caption": "Figure 3. Synthetic dataset days after planting (DAP) effect on evaluation metrics. Orange colors represent [6] models, and green colors represent LoRA [24] fine-tuned Qwen3-VL models. Blue dotted lines represent mean guess baselines.",
+      "page": 6,
+      "index": 1,
+      "width": 1036,
+      "height": 427
+    },
+    {
+      "url": "assets/figures/arxiv/2603.08930v1/fig-002.webp",
+      "caption": "Figure 1. Overview of the data-driven synthetic data generation pipeline and real-to-sim evaluation framework. (1) Data-Driven Synthetic Dataset Generation: Spatial features and structural parameters were extracted from real-world field data to procedurally synthesize highfidelity cowpea plant plots. (2) Sim-to-Real Evaluation: The vision language model (VLM) was evaluated via few-shot in-context learning.",
+      "page": 2,
+      "index": 2,
+      "width": 932,
+      "height": 552
+    },
+    {
+      "url": "assets/figures/arxiv/2603.08930v1/fig-003.webp",
+      "caption": "Figure 4. Evaluations on the synthetic dataset, the real ortho dataset, and the blind baseline from the original and fine-tuned Qwen3VL model. Orange colors represent [6] models, and green colors represent LoRA [24] fine-tuned Qwen3-VL models. Blue dotted lines represent mean guess baselines.",
+      "page": 7,
+      "index": 3,
+      "width": 1036,
+      "height": 421
+    },
+    {
+      "url": "assets/figures/arxiv/2603.08930v1/fig-004.webp",
+      "caption": "Figure 5. Examples of simulated cowpea plot generation results based on in-context learning methods. Real images were given to Qwen3-VL 32B model to generate a cowpea plot simulation configuration, and the images were rendered by the simulation program.",
+      "page": 8,
+      "index": 4,
+      "width": 398,
+      "height": 734
+    },
+    {
+      "url": "assets/figures/arxiv/2603.08930v1/fig-005.webp",
+      "caption": "Table 1. In-context learning configurations and example texts added to the prompt. ’...(more)’ signifies abbreviated content for presentation purposes and was not part of the prompt input.",
+      "page": 4,
+      "index": 5,
+      "width": 1002,
+      "height": 431
+    },
+    {
+      "url": "assets/figures/arxiv/2603.08930v1/fig-006.webp",
+      "caption": "Figure 2. Multi-model evaluation metric comparisons. Blue colors represent Gemma3 [43] models, orange colors represent [6] models, and green colors represent LoRA [24] fine-tuned Qwen3-VL models. Blue dotted lines represent mean guess baselines.",
+      "page": 5,
+      "index": 6,
+      "width": 1036,
+      "height": 656
+    }
+  ]
+}
