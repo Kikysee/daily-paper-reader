@@ -1,0 +1,769 @@
+Title: Underdetermined Blind Source Separation via Weighted Simplex Shrinkage Regularization and Quantum Deep Image Prior
+
+URL Source: https://arxiv.org/pdf/2603.25384v1
+
+Published Time: Fri, 27 Mar 2026 01:11:21 GMT
+
+Number of Pages: 16
+
+Markdown Content:
+1
+
+# Underdetermined Blind Source Separation via Weighted Simplex Shrinkage Regularization and Quantum Deep Image Prior 
+
+Chia-Hsiang Lin, Senior Member, IEEE , and Si-Sheng Young, Student Member, IEEE 
+
+Abstract —As most optical satellites remotely acquire multi-spectral images (MSIs) with limited spatial resolution, multi-spectral unmixing (MU) becomes a critical signal processing technology for analyzing the pure material spectra for high-precision classification and identification. Unlike the widely investigated hyperspectral unmixing (HU) problem, MU is much more challenging as it corresponds to the underdetermined blind source separation (BSS) problem, where the number of sources is larger than the number of available multispectral bands. In this article, we transform MU into its overdetermined counterpart (i.e., HU) by inventing a radically new quantum deep image prior (QDIP), which relies on the virtual band-splitting task conducted on the observed MSI for generating the virtual hyperspectral image (HSI). Then, we perform HU on the virtual HSI to obtain the virtual hyperspectral sources. Though HU is overdetermined, it still suffers from the ill-posed issue, for which we employ the convex geometry structure of the HSI pixels to customize a weighted simplex shrinkage (WSS) regularizer to mitigate the ill-posedness. Finally, the virtual hyperspectral sources are spectrally downsampled to obtain the desired multispectral sources. The proposed geometry/quantum-empowered MU (GQ-μ) algorithm can also effectively obtain the spatial abundance distribution map for each source, where the geometric WSS regularization is adaptively and automatically controlled based on the sparsity pattern of the abundance tensor. Simulation and real-world data experiments demonstrate the practicality of our unsupervised GQ-μ algorithm for the challenging MU task. Ablation study demonstrates the strength of QDIP, not achieved by classical DIP, and validates the mechanics-inspired WSS geometry regularizer. The associated code will be available at https://github.com/IHCLab/GQ-mu. The Supplementary Material can be found at the provided link. 
+
+Index Terms— Multispectral unmixing, hyperspectral unmix-ing, multispectral image, underdetermined blind source sep-aration, hybrid quantum-classical computing, quantum deep learning, deep image prior, convex geometry. 
+
+I. I NTRODUCTION 
+
+Simplex-structured matrix/tensor factorization has emerged as a critical branch in the blind source separation (BSS) area 
+
+This study was supported by the Emerging Young Scholar Program (namely, the 2030 Cross-Generation Young Scholars Program) of National Science and Technology Council (NSTC), Taiwan, under Grant NSTC 114-2628-E-006-002. We thank the National Center for Theoretical Sciences (NCTS) and the National Center for High-performance Computing (NCHC) for providing the computing resources. 
+
+(Chia-Hsiang Lin and Si-Sheng Young contribute equally to this work.) (Corresponding author: Chia-Hsiang Lin.) 
+
+C.-H. Lin is with the Department of Electrical Engineering, Na-tional Cheng Kung University, Tainan, Taiwan (R.O.C.) (e-mail: chiah-siang.steven.lin@gmail.com). S.-S. Young is with the Institute of Computer and Communication Engineer-ing, Department of Electrical Engineering, National Cheng Kung University, Tainan, Taiwan (R.O.C.) (e-mail: q38121509@gs.ncku.edu.tw). 
+
+due to its wide applicability to solve numerous real-world problems, including the NP-hard spectrum unmixing [1]. In recent years, popular optical remote sensing satellites (e.g., Sentinel-2) capture multispectral images (MSIs) over different landscapes, enabling various crucial applications [2]. However, most optical satellites remotely acquire MSIs with limited spatial resolution; therefore, multispectral unmixing (MU) becomes a critical signal processing technique to resolve the so-called mixed pixel phenomenon [3], [4]. Although the MU technique can facilitate the analysis of pure material spectra for high-precision material classification and identification, it has been rarely investigated compared to the widely studied hyperspectral unmixing (HU) problem [5], [6]. Both MU and HU are BSS problems, aiming at separating the mixed pixel into pure endmember spectra (sources), while MU is much more challenging as it corresponds to the underdetermined BSS. Underdetermined BSS addresses the scenario wherein the number of sources is larger than the number of available multispectral bands. In this article, since MU is transformed into its overde-termined counterpart (i.e., HU), we recall some HU tech-niques in the following. Numerous NP-hard HU criteria (e.g., convex geometry-based criteria [7] and non-negative matrix factorization (NMF)-based criteria [8]) have been proposed in existing studies. Also, deep neural networks (DNN) have attracted significant attention recently, so a variety of DNN-based algorithms have demonstrated their effectiveness in the HU task [9], [10]. Existing literature rarely discusses the underdetermined MU problem; the only relevant work is [11], which tries to solve MU by extending several benchmark HU algorithms, including vertex component analysis (VCA) [12], N-FINDR [13], and NMF [14]. However, the experiments in [11] consider only the overdetermined cases, such as a scenario with P := 8 MSI bands and N := 4 materials/sources. In other words, there is no existing literature that fundamentally solves the underdetermined MU challenge, as far as we have observed. We remark that unlike the algebra-based NMF, both VCA and N-FINDR are geometry-based HU methods, and rely on the so-called pure-pixel assumption (PPA) [12], meaning that each source has at least one pixel exclusively composed of that source. Considering that PPA is often violated in remote sensing, hyperplane-based Craig-simplex-identification (HyperCSI) [5] algorithm has been proposed to conduct fast HU without relying on PPA, and the Craig criterion behind has theoretically guaranteed source identifiability [15]. To mitigate the NP-hardness, the polynomial-time conic HU criterion has 
+
+> © 2026 IEEE. Personal use of this material is permitted. Permission from IEEE must be obtained for all other uses, in any current or future media, including reprinting/republishing this material for advertising or promotional purposes, creating new collective works, for resale or redistribution to servers or lists, or reuse of any copyrighted component of this work in other works. This is the accepted version of the manuscript. The final, published version is available at IEEE Xplore via https://doi.org/10.1109/TIP.2026.3673957.
+> arXiv:2603.25384v1 [eess.IV] 26 Mar 2026 2
+
+also been proposed based on the L¨ owner-John ellipsoid in recent machine learning literature [16]. Beyond image processing, we briefly review some under-determined BSS literature, which are mostly developed for speech signals (thus unsuitable for image-type signals). First, a statistical approach based on Wigner-Ville distribution (WVD) is proposed for time-frequency signals underdetermined BSS in [17]. The modified mixing matrix estimation is proposed to consider the negative value of the auto WVD of the mixture signal in [17], thereby effectively resolving the underdeter-mined system. Another representative approach is proposed in [18], where singular spectrum analysis is leveraged for those statistically independent sources. However, the statistically independent assumption does not seem to be true for optical satellite image signals [19]. To understand the difficulty of the underdetermined MU, we mathematically formulate our target problem under the matrix/tensor factorization framework. Given a P -band MSI 
+
+Zm ∈ RL1×L2×P with L = L1L2 pixels, MU seeks to recover the pure endmember matrix B ∈ RP ×N and the three-way abundance tensor S ∈ RL1×L2×N from the observed MSI (i.e., Zm = S ×3 B ), where N and “ ×3” denote the number of sources and the tensor mode-3 multiplication [defined in the paragraph following (1)], respectively. In this work, we focus on the underdetermined scenario, i.e., P < N .This scenario is more practically relevant, because a typical multispectral satellite image has a much smaller number of bands P when compared with hyperspectral satellite ones. As mentioned, we will tackle this underdetermined MU problem in its counterpart domain (i.e., HU), where we obtain the hyperspectral sources that are subsequently downsampled back to the multispectral sources. Specifically, inspired by the prism embedded within the optical satellite sensor, we develop an effective yet efficient approach to split the MSI into a virtual HSI Zh ∈ RL1×L2×M ,where M > N denotes the number of hyperspectral bands. The MSI is first spectrally split into the hyperspectral domain by the proposed band-splitting (BSP) function, resulting in an auxiliary HSI-like variable with prism attributes. Considering the nonlinearity of the real-world prism, we employ an addi-tional deep regularization, leading to an efficient computing of the virtual HSI. Remarkably, this fully unsupervised approach is quite different from the existing spectral super-resolution (SSR) methods, because the mapping of MSI into HSI in typical SSR relies on a large amount of training data [20]. Be-sides, such mapping is adaptive for different real hyperspectral sensors (e.g., cooled CCD camera used in CAVE datasets [21]) while the approach should be general for any MSIs captured by optical sensors. Conversely, we just need a virtual HSI to gain the desired overdetermined system, and hence it does not need to be associated with a real HSI sensor; such a high flexibility enables a general framework to tackle the underdetermined MU problem. With the obtained virtual HSI, we perform HU on it to obtain the virtual hyperspectral sources. Although HU is overdetermined, it still suffers from ill-posedness, for which we employ the convex geometry structure of the HSI data pixels to design a weighted simplex shrinkage (WSS) regular-izer to mitigate this issue. Specifically, [15] demonstrates that the true spectral signatures are the vertices of the minimum-volume data-enclosing simplex under a rather mild sufficient condition (i.e., when the data purity γ > 1/√N − 1), thereby leading to various computationally efficient quadratic regular-izers for estimating the signatures; for example, the “Center” regularizer in [22] tries to minimize the distance between each signature and the simplex center. The proposed WSS regularizer enforces the signatures to the center but using different weights, which can be adaptively and automatically controlled based on the sparsity pattern of the abundance ten-sor. We further introduce the advanced quantum deep network (QUEEN) technique [23] rather than classical models to ad-dress the challenging abundance estimation task. Specifically, the depth of classical networks has been theoretically proven to induce a rank-diminishing issue [24]. Since multispectral endmembers are linearly dependent, which may refer to the same abundance in the low-dimensional space (to be shown in Section III-B). The classical deep layer selecting task-relevant features in a low-dimensional space [25], [26] hinders the abundance estimation in underdetermined cases. In contrast, quantum machine learning (e.g., QUEENs) adopts unitary-computing for quantum feature extraction, hence preserving the rank of input data unaltered (thanks to the full rank of unitary quantum operators) [27], [28], and is able to transform the data into higher-dimensional space [29]. The unitary feature learning significantly contributes to solving challenging inverse problems [27], [28]. These advantages motivate us to incorporate QUEENs to tackle the abundance estimation. More detailed explanation for adopting QUEEN is summarized in Section II-D. To ensure a fully unsupervised setting, we will implement QUEEN using the concept of deep image prior (DIP) [30] that considers the deep network itself as a regular-izer. Consequently, the aforementioned virtual hyperspectral sources are spectrally downsampled to obtain the desired multispectral sources. With a customized MU experimental protocol, the effectiveness of the proposed geometry/quantum-empowered MU (GQ-μ) algorithm will be demonstrated. The remaining parts of this paper are organized as below. The details of the proposed GQ-μ algorithm, including the cri-terion design, implementation tricks, as well as the architecture of the quantum DIP (QDIP), will be collectively presented in Section II. Next, the designed experimental protocol, experi-mental settings, and evaluations are presented and discussed in Section III. Finally, we conclude this paper in Section IV. Some notations are defined as follows. Z++ denotes the set of positive integers. Given N ∈ Z++ , we define 
+
+IN ≜ {1, . . . , N }. RN , RM ×N , and RM ×N ×L are the N -dimensional Euclidean space, (M × N )-dimensional real-valued matrix space, and (M × N × L)-dimensional real-valued 3-way tensor space, respectively. conv S is the convex hull of S. 1 (resp., 0) denotes the all-one vector/matrix (resp., all-zero matrix) with the dimensionality specified in its subscript. Im is the m × m identity matrix. [T]l1,l 2,...,l N
+
+represents the (li, l 2, . . . , l N )th entry of the N -way tensor T.
+
+M ≥ 0 and T ≥ 0 denote non-negative matrix and tensor, respectively. M T and M −1 denote the matrix transpose and inverse, respectively. vec (M ) denotes the vector obtained 3
+
+by sequentially stacking the columns M . | · | , ∥ · ∥ 2, and 
+
+∥ · ∥ F are the absolute value, ℓ2-norm, and Frobenius norm, respectively. ⊗ is the Kronecker product. Diag (w1, · · · , w N )
+
+denotes diagonal matrix with the nth diagonal entry being 
+
+wn, ∀n ∈ I N .II. T HE PROPOSED MULTISPECTRAL UNMIXING 
+
+FRAMEWORK 
+
+In this section, we describe how we tackle the challenging underdetermined MU problem. Our approach is outlined as follows. Initially, we propose an unsupervised approach with BSP function and deep regularization for obtaining the virtual HSI (cf. Section II-C). With this virtual HSI, we transform the MU problem to its overdetermined counterpart (i.e., HU). Thus, the data-fitting model in HU can be explicitly written as a non-negative tensor factorization problem for hyperspectral source recovery. Furthermore, as the HU task still suffers from ill-posedness, we design a WSS regularizer to mitigate the ill-posedness. Also, we incorporate the quantum abundance obtained from unsupervised QDIP into the regularization term to address the abundance estimation task. Details on designing the data-fitting and regularization terms are summarized in Section II-A. Then, the implementations of the overall MU algorithm (i.e., GQ-μ) are presented in Section II-B. Finally, the quantum architecture of QDIP is presented in Section II-D. 
+
+A. Criterion Design 
+
+Given a three-way MSI tensor Zm, it can be factorized into a non-negative endmember matrix B and a non-negative three-way abundance tensor S. Specifically, according to the well-known linear mixing model (LMM) [3], the (ℓ1, ℓ 2)th pixel of the MSI [Zm]ℓ1,ℓ 2,: can be expressed as a specific linear combination of the multispectral endmembers, i.e., 
+
+[Zm]ℓ1,ℓ 2,: =
+
+> N
+
+X
+
+> n=1
+
+[S]ℓ1,ℓ 2,n bn, ∀(ℓ1, ℓ 2) ∈ I L1 × I L2 ,
+
+where bn ∈ RP denotes the nth multispectral endmember (i.e., the nth column of B). We assume that the model-order 
+
+N is known a prior for MU or HU [31]. Thus, a natural MU criterion is to minimize the following data-fitting objective, DF (B, S) = 12 ∥Zm − S ×3 B∥2 
+
+> F
+
+, (1) where ×3 denotes the tensor mode-3 multiplication. More precisely, for a tensor T and a matrix M , the ten-sor mode-n multiplication (denoted by T ×n M ) is to left-multiply M to each vector along the dimen-sion n within T (i.e., [T ×n M ]i1,...,i n−1,j,i n+1 ,...,i N ≜P 
+
+> m
+
+Mj,m [T]i1,...,i n−1,m,i n+1 ,...,i N ). It can be observed that (1) refers to an underdetermined system in typical MU (P < N ), so directly solving (1) is ineffective. A natural idea for solving the underdetermined issue is to gain more observations/equations, probably virtually. The idea is inspired by the recent advances of the spectral super-resolution (SSR) technologies [32], [33] that map the MSI into its hyperspectral counterpart, and we will show that the idea is feasible. According to a typical SSR model, the relation between a MSI and its M -band hyperspectral counterpart Zh ∈
+
+RL1×L2×M can be modeled as Zm = Zh ×3 D with a spectral response matrix D ∈ RP ×M [32]. Moreover, the hyperspec-tral version of LMM can be formulated as Zh = S ×3 A,where A ≜ [a1, . . . , aN ] ∈ RM ×N with an being the nth hyperspectral endmember. Thus, we have Zm = S×3 A×3 D,and hence (1) can be equivalently reformulated as 
+
+12 ∥Zm − S ×3 B∥2 
+
+> F
+
+= 12 ∥Zm − S ×3 A ×3 D∥2 
+
+> F
+
+, (2) which enables us to estimate the hyperspectral signatures 
+
+A (overdetermined) rather than the multispectral ones B
+
+(underdetermined). Accordingly, we incorporate the HSI Zh
+
+into this underdetermined system, thereby yielding a new data-fitting model for the MU task, i.e. DF (A, S) ≜ 12 ∥Zm−S×3A×3D∥2 
+
+> F
+
++ 12 ∥Zh−S×3A∥2 
+
+> F
+
+. (3) We note that (3) is similar to a typical unmixing-based fusion problem [34], yet it is fundamentally different. Specifically, the MSI, HSI, spectral response, and spatial downsampling matrix are typically required for data fusion, while our MU framework requires only MSI as the input. The HSI Zh here is virtual, which is obtained by prism-inspired BSP function and deep regularization (cf. Section II-C), rather than real hyperspectral sensors. This design allows us to characterize their relations using a virtual D without considering resolution variability between Zm and Zh. Thus, Zm and Zh in the virtual framework are spatially-aligned and necessarily share the same abundances. Besides, the virtuality of Zh directly provides a derivable D (directly determined by BSP) without additional estimation, while the spectral response between two real sensors is typically unavailable (requiring estimation). Conversely, if we already have a real hyperspectral sensor with a real D, why would we still need to address the MU problem? In this case, we just have an overdetermined system, with no need to solve the underdetermined MU problem. Thus, adopting a virtual D is actually a natural approach for the MU problem. This practical limitation (unavailability of real hyperspectral sensors) also makes the typical data-driven SSR methods invalid for our target task. Hence, we obtain Zh by the unsupervised spectral augmentation method, resulting in a highly flexible, general, and unsupervised SSR stage, as detailed in Section II-C. Through (3), we are able to explore the spatial characteristics from Zm and spectral attributes from 
+
+Zh, thereby solving the challenging underdetermined MU. Nevertheless, the data-fitting model alone still suffers from the ill-posed issue, for which we design several regularization schemes to mitigate the ill-posedness of (3). First, based on the intrinsic properties of remote sensing images, a specific material is usually distributed only around certain regions of the image. Thus, a valid abundance tensor is often sparse [35], resulting in the ℓ1-norm regularization, i.e., 
+
+λ1∥S∥1 ≜ λ1
+
+> N
+
+X
+
+> n=1
+> L2
+
+X
+
+> ℓ2=1
+> L1
+
+X
+
+> ℓ1=1
+
+|[S]ℓ1,ℓ 2,n |, (4) where λ1 ≥ 0 controls the regularization strength. However, relying solely on the sparsity feature is not sufficient to 4             
+
+> Fig. 1. Graphical illustration of the proposed weighted simplex shrinkage (WSS) regularization. Unlike existing volume-minimization types of regular-ization that blindly promote the volume minimization without considering the sparsity pattern of the abundances, the proposed WSS regularization further takes the sparsity level into consideration. Intuitively, when an endmember akn
+> corresponds to a highly sparse abundance map at the kth algorithmic iteration, this endmember is geometrically very far away from the data center c. So, the endmember requires a larger force (i.e., a larger weight w3) to draw it to be closer to cat the (k+ 1) th iteration. By contrast, for the relatively dense abundance map (low sparsity), the corresponding endmember just needs to be slightly pushed to the center c, thus requiring a smaller weight (e.g., w1). A larger weight wnwill be associated with more orange arrows (denoting a higher force).
+
+regularize the challenging problem. Therefore, we further explore quantum features for the regularization of S. Once the quantum abundance feature Squ ∈ RL1×L2×N is extracted via QDIP (to be done in Section II-D), its information is incorporated into the final abundance solution S by minimizing this regularizer, 
+
+λ2
+
+2 ∥S − Squ ∥2 
+
+> F
+
+, (5) where λ2 ≥ 0 controls the regularization strength. As dis-cussed in Section II-D, the quantum abundance feature Squ 
+
+will be computed by QUEEN (rather than traditional deep networks, such as convolution neural network (CNN)), be-cause QUEEN can extract unique quantum unitary-computing features using very light-weight network architecture (thanks to the quantum full expressibility [36, Theorem 2]). Notably, for the first time, the unsupervised version of QUEEN is employed to solve the matrix/tensor factorization problem, and experimental results evidence the effectiveness of our customized quantum regularization (cf. Section III-C). Furthermore, we propose a geometry-based WSS regular-izer for endmember matrix estimation. It is known that the hyperspectral endmember matrix A = [ a1, · · · , aN ] can be perfectly recovered from the vertices of the minimum-volume data-enclosing simplex conv {a1, · · · , aN }, under a very mild sufficient condition (i.e., when the data purity γ > 1/√N − 1)[15]. Therefore, numerous regularization schemes have been proposed to minimize the volume of the corresponding end-member simplex conv {a1, · · · , aN }. Mathematically, the sim-plex volume can be formulated as 1(N −1)! 
+
+ det( ¯AT ¯A) 12 ,where ¯A ≜ [a1 − aN , · · · , aN −1 − aN ] [34]. However, the inherent non-convexity of the determinant-based simplex volume regularization may complicate the gradient descent procedure in NMF frameworks [37]. As an alternative, ex-isting literature adopts convex surrogates, sum-of-squared distance (SSD) between the endmembers, i.e., ψ(A) =
+
+> 12
+
+PN −1
+
+> i=1
+
+PNj=i+1 ∥ai − aj ∥22 [34], which enables an efficient implementation. In addition, quadratic minimum simplex vol-ume regularizations [22], [38] hold the general form, 
+
+12 ∥AZ − O∥2 
+
+> F
+
+, (6) where Z ∈ RN ×N and O ∈ RM ×N are some spe-cific matrices corresponding to different surrogates, including “Center”, “Boundary”, and “TV”. For example, the “Center” regularization refers to (Z, O) ≜ (IN , c1TN ) with c ≜
+
+> 1
+> L
+
+P
+
+> (ℓ1,ℓ 2)
+
+[Zh]ℓ1,ℓ 2,:, which minimizes the simplex volume by shrinking the vertices (i.e., the columns of A) toward the data center c (cf. Figure 1). Moreover, when (Z, O) ≜
+
+(IN − 1 
+
+> N
+
+1N ×N , 0M ×N ), the surrogate (6) shrinks the simplex volume by minimizing the total variations between vertices, i.e., “TV” regularization. However, these regularizations pro-mote volume minimization without considering the shrinkage “force” and “direction”, potentially resulting in less effective estimations. Conversely, we design a new mechanics-inspired WSS geometry regularizer to address these limitations. First, we conceptually explain the effect of the “force”. Intuitively, when an endmember akn corresponds to a highly sparse abundance map at the kth algorithmic iteration, the endmember is geometrically far away from the data center 
+
+c. Thus, this endmember should be forced more to the center at the (k + 1) th algorithmic iteration, as illustrated in Figure 1. In contrast, for a relatively dense abundance map, the corresponding endmember only needs to be slightly pushed to the center c (cf. Figure 1). Moreover, it is essential to consider the shrinkage directions. When the number of algorithmic iterations is large enough, akn is expected to recover the nth true simplex vertex. However, in a typical NMF problem, the endmember and abundance matrices are not jointly convex, which implies that the optimal endmember and abundance may not be simultaneously achieved. For instance, when the end-member matrix is well recovered at some iteration k (but not the abundance matrix), the simplex formed by the endmembers tends to be excessively shrunk by volume regularizers when further optimizing the abundances in the upcoming algorithmic iterations. Hence, the mechanics-inspired WSS regularization is proposed to simultaneously take the force and direction into account. We will experimentally demonstrate that the strategy of simultaneously considering force and direction (formulated below) does lead to a stronger regularization for the challenging MU task in Section III-C. In practice, we prefer to implement the aforementioned idea using a convex function like (6). Thus, we define the weighted simplex shrinkage (WSS) regularizer as WSS (A; w)
+
+≜ λ3
+
+2 ∥(A − c1TN )pDiag (w)∥2 
+
+> F
+
++ λ4
+
+2 ∥A − Ak∥2 
+
+> F
+
+, (7) where λ3 ≥ 0 and λ4 ≥ 0 control the corresponding regularization strengths, Ak denotes the updated endmember matrix at the kth iteration, and c := 1
+
+> N
+
+PNi=1 a0 
+
+> i
+
+(rather than the mean of all hyperspectral pixels, thereby avoiding potential outlier effects). Moreover, the weighting vector is defined as 5
+
+w ≜ softmax (L′
+
+> 1
+
+, . . . , L ′ 
+
+> N
+
+), where L′ 
+
+> n
+
+denotes the normalized sparsity level for the nth endmember (defined next), and softmax (·) is the softmax operator [4]. The sparsity level for the nth endmember can be naturally defined as the reciprocal 
+
+Ln := ∥[S0]:,:,n ∥−11 = ( PL2
+
+> ℓ2=1
+
+PL1 
+
+> ℓ1=1
+
+|[S0]ℓ1,ℓ 2,n |)−1, where 
+
+S0 is the initial abundance estimation (cf. Section II-B). Subsequently, the normalized sparsity level is given by L′ 
+
+> n
+
+:= 
+
+Ln/ max {L1, . . . , L N }. To have an in-depth understanding of our WSS regularization design, one may consider the gradient of our WSS regularization in the case of λ3 := 1 and λ4 := 1 ,which can be explicitly derived as, 
+
+∇AWSS (A; w) = ( A − c1TN )Diag (w) + ( A − Ak). (8) For the “force”, the first term in the RHS of (8) adaptively shrinks the endmembers to the center based on the sparse pattern w of their corresponding abundances. A higher sparsity level leads to a larger wn (i.e., the nth entry of w), and hence the first term of (7) will adaptively force an to the center 
+
+c, as desired (cf. Figure 1). Additionally, the second term in the RHS of (8) is responsible for regularizing the “direction” to prevent the over-shrinkage or biased issues. Therefore, the second term of (7) encourages a more stable update of the endmember matrix A (not too far away from the previous update Ak) during the optimization procedure. In summary, the proposed regularization strategy is explic-itly summarized as REG (A, S) ≜ λ1∥S∥1 + λ2
+
+2 ∥S − Squ ∥2 
+
+> F
+
++ WSS (A; w),
+
+resulting in the overall criterion, i.e., 
+
+min   
+
+> A≥0,S≥0
+
+DF (A, S) + REG (A, S), (9) in which the two non-negative constraints are to capture the natural properties of the endmembers and abundances. Once the criterion (9) is solved, its optimal solutions (A⋆, S⋆)
+
+directly yields the MU solutions, which are the multispectral endmember matrix B⋆ = DA ⋆ (multispectral sources) and the abundance tensor S⋆. The exhaustive implementations of (9) are summarized in Section II-B. Besides, the details for computing the virtual HSI Zh and for designing the QDIP are presented in Section II-C and Section II-D, respectively. 
+
+B. Algorithm Implementation 
+
+In this section, we present the GQ-μ algorithm (i.e., Al-gorithm 1) to implement the criterion (9). In the MU task, we pay more attention to the abundance tensor S because the abundance explicitly characterizes the distribution of the pure materials. Thus, we first update Sk+1 , and then Ak+1 .To this purpose, we initialize A0 and S0 by performing HU on the virtual HSI Zh using the highly-mixed/ill-conditioned spectrum unmixing (HISUN) algorithm [16], where Zh will be computed in Section II-C. Subsequently, we use A0, Zh, and the proposed QDIP to obtain the quantum abundance tensor (QAT) Squ , and this will be detailed in Section II-D. Once we have Squ , we can then update the Sk+1 by solving the first subproblem induced from (9), i.e., the subproblem for 
+
+Algorithm 1 GQ-μ Algorithm for Solving (9)  
+
+> 1:
+
+Given the MSI Zm. 
+
+> 2:
+
+Construct the virtual HSI Zh and spectral response matrix 
+
+D from Zm (cf. Section II-C). Set k := 0 . 
+
+> 3:
+
+Initialize Ak and Sk by conducting HU on Zh using HISUN [16].  
+
+> 4:
+
+Extract QAT Squ from Zh and Ak via QDIP (cf. Section II-D).  
+
+> 5:
+
+repeat  
+
+> 6:
+
+Update Sk+1 by Algotirhm 2.  
+
+> 7:
+
+Update Ak+1 by (17) using D, Ak, Sk+1 , Zm, and Zh. 
+
+> 8:
+
+k := k + 1 . 
+
+> 9:
+
+until the predefined stopping criterion is met.  
+
+> 10:
+
+Output multispectral endmember matrix B⋆ := DA k
+
+and abundance tensor S⋆ := Sk.
+
+Algorithm 2 ADMM Algorithm for Solving (12)  
+
+> 1:
+
+Given Zm, Zh, Squ , D, Sk, and Ak. Set q := 0 . 
+
+> 2:
+
+Initialize Yq := Sk and Vq := 0L1×L2×N 
+
+> 3:
+
+repeat  
+
+> 4:
+
+Update Sq+1 ∈ arg min S L(Yq , S, Vq ). 
+
+> 5:
+
+Update Yq+1 ∈ arg min Y L(Y, Sq+1 , Vq ). 
+
+> 6:
+
+Update Vq+1 := Vq − (Yq+1 − Sq+1 ). 
+
+> 7:
+
+q := q + 1 . 
+
+> 8:
+
+until the predefined stopping criterion is met.  
+
+> 9:
+
+Output Sk+1 := Sq .optimizing S (with fixed A), which can be derived based on (3), (4), (5) and (9) as 
+
+Sk+1 ∈ arg min  
+
+> S≥0
+
+DF (Ak, S)+ λ1∥S∥1 + λ2
+
+2 ∥S−Squ ∥2 
+
+> F
+
+, (10) which will be optimized using Algorithm 2 (to be introduced next). After we have Sk+1 , we subsequently update Ak+1 
+
+by solving the second subproblem induced from (9), i.e., the subproblem for optimizing A (with fixed S), which can be derived from (3), (7) and (9) as 
+
+Ak+1 ∈ arg min  
+
+> A≥0
+
+DF (A, Sk+1 )+ WSS (A; w). (11) Once the above altering optimization converges to (A, S), we have the multispectral endmember matrix B⋆ := DA ⋆ and the abundance tensor S⋆ as the final MU solution, as summarized in Algorithm 1. Next, we solve (10), which is now convex, using the power-ful convex optimization solver known as alternating direction method of multipliers (ADMM) [39]. To handle the non-differentiable ℓ1-norm term in (10), we employ an auxiliary variable Y to reformulate (10) as the standard ADMM form, 
+
+min  
+
+> S
+
+DF (Ak, S) + λ1∥Y∥1 + λ2
+
+2 ∥S − Squ ∥2 
+
+> F
+
++ I+(S),
+
+s.t. Y = S, (12) where I+(·) is the indicator function of the non-negative orthant defined as 
+
+I+(S) ≜
+
+(
+
+0, if S ≥ 0,
+
+∞, otherwise. 6
+
+According to the ADMM theory, we first write down the augmented Lagrangian of (12), i.e., 
+
+L(Y, S, V) = DF (Ak, S) + λ1∥Y∥1 + λ2
+
+2 ∥S − Squ ∥2
+
+> F
+
++ I+(S) + μ
+
+2 ∥Y − S − V∥2 
+
+> F
+
+, (13) where μ > 0 and V ∈ RL1×L2×N are the penalty parameter and the dual variable, respectively. Owing to the dual decom-posability of ADMM, it allows us to solve the non-differential term of Y separately, and the standard ADMM optimization procedure [39] is summarized in Algorithm 2. To complete Algorithm 2, we need to solve the two resulting optimization problems presented in Line 4 (for Sq+1 ) and Line 5 (for Yq+1 ) of Algorithm 2. For updating Sq+1 , the non-negative constraint (associated with the indicator function) leads to a slow optimization procedure, if the global optimum is pursued. To efficiently yet approximately compute Sq+1 , we first minimize L(Yq , S, Vq ) (with fixed Yq and Vq ) without considering the indicator term of I+, followed by projecting the minimizer back to the non-negative orthant. Regarding the initialization of the auxiliary variable Y0, we judiciously adopt the previous-stage abundance tensor (i.e., Sk) as a warm start strategy [40], resulting in the explicitly updated expression, 
+
+Sq+1 ≡ Sq+1 (3) = Π(( R+( λ2 +μ)IN )−1(P +μT q )) , (14) where R ≜ (Ak)T DT DA k + (Ak)T Ak, P ≜
+
+(Ak)T DT Zm(3) +( Ak)T Zh(3) +λ2Squ (3) , T q ≜ Yq 
+
+> (3)
+
+−Vq
+
+> (3)
+
+,and Π( ·) is the projector onto the non-negative orthant. Here, the subscript “ (n)” denotes the tensor mode-n matricization. Specifically, for the N -way tensor G ∈ RM1×M2×···× MN ,its mode-n matricization is denoted as G(n), and it maps 
+
+[G]ℓ1,··· ,ℓ N to [G(n)]ℓn,j (j ≜ 1 + PNt=1 ,t ̸=n(ℓt − 1) Jt and 
+
+Jt ≜ Qt−1 
+
+> m=1 ,m ̸=n
+
+Mm).To update Yq+1 in Line 5 of Algorithm 2 (with fixed 
+
+Sq+1 and Vq ), we employ the renowned “soft-threshold” (shrinkage) algorithm [41] to solve the ℓ1-norm regularization is defined as 
+
+Yq+1 = arg min  
+
+> Y
+
+L(Y, Sq+1 , Vq )= arg min  
+
+> Y
+
+λ1∥Y∥1 + μ
+
+2 ∥Y − Sq+1 − Vq ∥2 
+
+> F
+
+,
+
+= ηλ1/μ (Sq+1 + Vq ), (15) where ηc(·) denotes the shrinkage operator. In detail, given a three-way tensor T ∈ RL1×L2×N and a constant c ≥ 0, the 
+
+(ℓ1, ℓ 2, n )th element of the output three-way tensor ηc(T) is defined as 
+
+[ηc(T)] ℓ1,ℓ 2,n ≜
+
+
+
+[T]ℓ1,ℓ 2,n − c, if [T]ℓ1,ℓ 2,n ≥ c, 
+
+0, if |[T]ℓ1,ℓ 2,n | ≤ c, 
+
+[T]ℓ1,ℓ 2,n + c, if [T]ℓ1,ℓ 2,n ≤ − c. 
+
+The derivation of Algorithm 2 is thus completed, and conse-quently Line 6 of Algorithm 1 is done. The remaining task is to derive Line 7 of Algorithm 1, which is to update the endmember matrix Ak+1 by solving (11). To explicitly derive it, we equivalently reformulate (11) as 
+
+min 
+
+> a≥0
+
+12 ∥zm − (ST ⊗ D)a∥22 + 12 ∥zh − (ST ⊗ IM )a∥22
+
++ λ3
+
+2 ∥(√W ⊗ IM )( a − bc)∥22 + λ4
+
+2 ∥a − ak∥22, (16) where zm ≜ vec (Zm(3) ), S ≜ S(k+1) (3) , a ≜ vec (A),
+
+zh ≜ vec (Zh(3) ), W ≜ Diag (w), bc ≜ vec (c1TN ), and 
+
+ak ≜ vec (Ak). For the non-negative constraint of the signa-ture matrix, we adopt the same trick to first ignore it (followed by projecting the solution back to the non-negative orthant), thereby leading to an efficient update of (16), i.e., 
+
+Ak+1 ≡ ak+1 = Π( J−11 (J2zm +J3zh +λ3J4 bc+λ4ak)) , (17) where J1 ≜ (SS T ⊗DT D)+( SS T ⊗IM )+ λ3J4 +λ4IN M ,
+
+J2 ≜ (S ⊗ DT ), J3 ≜ (S ⊗ IM ), and J4 ≜ (W ⊗ IM ). Ac-cording to the above implementations, we already completed the proposed GQ-μ algorithm (cf. Algorithm 1). 
+
+C. Spectral Augmentation 
+
+In this section, we describe the approach for obtaining Zh.As emphasized before (cf. Section I), this approach should be general for any MSIs with different spectral responses, which implies that existing data-driven SSR methods [33] are unsuit-able for our target application. Accordingly, optimization cri-teria with sophisticated regularizations are inevitable to ensure that Zh preserves the natural properties (e.g., non-negativity, and spectral-spatial continuity) to be a valid HSI. To address this challenge, we develop a simple yet effective approach to obtain the virtual HSI. Specifically, the natural properties of real-world HSIs originate from the prism embedded within optical systems, meaning that the HSI can be obtained by further performing the light splitting on its counterpart MSI. Conversely, MSI can be considered as a weighted summation along the spectral dimension of its hyperspectral counterpart. This relation is the fundamental concept of the SSR technique. For example, in an M -time SSR, the green spectral band of an MSI can be approximated by a weighted summation of M
+
+hyperspectral bands within the green wavelength range, while these non-negative weights are determined by the spectral response function (SRF). Accordingly, we judiciously develop the prism-inspired BSP function to obtain a BSP variable 
+
+eZh ∈ RL1×L2×M , which entails the natural properties of HSIs. In other words, the physical meaning of BSP is an unsuper-vised (and virtual) SSR. Therefore, the design of our BSP ensures that the weighted sum of the two split bands is equal to the original bands, while preserving their spectral continuity. More details are presented in the following paragraph. With this BSP variable, we transform the challenging SSR problem to a simpler one, i.e., the least-squares problem ∥Z′ 
+
+> h
+
+− eZh∥2 
+
+> F
+
+,followed by incorporating a deep regularization (to be defined next) to compensate some non-linear effects during the BSP. Then, we derive the virtual HSI from the optimal solution of this deeply regularized problem [cf. (20)]. 7
+
+For this purpose, we first describe the implementation of the BSP function as follows. Given a P -band MSI Zm,the BSP function fBSP (·) splits each spectral band within the MSI into τ ∈ Z++ bands to obtain the M -band eZh
+
+(thus, τ P = M ), i.e., eZh = fBSP (Zm). To maintain the computational efficiency while resolving the underdetermined issue, τ can be determined as 
+
+τ ⋆ := arg min  
+
+> eτ∈Z++
+
+eτ s.t. eτ P ≥ N. (18) In practice, representative multispectral satellite images in-clude the 12-band European Space Agency (ESA)’s Sentinel-2 and the 4-band Systeme Probatoire d’Observation de la Terre (SPOT) (i.e., 4 ≤ P ≤ 12 ) [42], and usually the number of materials in a multispectral remote sensing image is about in the range of 4 ≤ N ≤ 7 [11]. Thus, according to (18), 
+
+eτ := 2 basically guarantees the overdetermined property of 
+
+eτ P ≥ N . Accordingly, we focus on the scenario of τ ⋆ := 2 ,for which the two split HSI bands (from a single MSI band 
+
+[Zm]:,:,q ) can always be represented as 0.5[ Zm]:,:,q + [ eH]:,:,q 
+
+and 0.5[ Zm]:,:,q −[ eH]:,:,q for some eH ∈ RL1×L2×P (to be built below) according to the nature of light splitting. Specifically, the rth HSI band can be explicitly written as 
+
+[eZh]:,:,r =
+
+
+
+0.5
+
+
+
+[Zm]:,:, r+1 2
+
+− [H]:,:, r+1 2
+
+
+
+, for odd r, 
+
+0.5
+
+
+
+[Zm]:,:, r
+
+> 2
+
++ [ H]:,:, r
+
+> 2
+
+
+
+, for even r, 
+
+(19) where we define [H]:,:,q := 14 ([ Zm]:,:,q +1 − [Zm]:,:,q ), ∀q ∈IP −1, for spectral continuity. For the boundary case [H]:,:,P ,we directly compute [H]:,:,P := 14 ([ Zm]:,:,P − [Zm]:,:,P −1). Therefore, the spectral response matrix can be determined as 
+
+D ≜ IP ⊗1Tτ to bridge the spectral relation of Zm = Zh×3D.As a result, if there is any negative entry in the BSP variable 
+
+eZh, it is set to zero to maintain the non-negativity of a valid HSI. Note that eZh is just a rough guess of the virtual HSI. In order to make it closer to the real situation, we refine its structure using the proximal mapping, i.e., 
+
+Zh = arg min 
+
+> Z′
+> h
+
+∥Z′ 
+
+> h
+
+− eZh∥2 
+
+> F
+
++ ϕ(Z′
+
+> h
+
+), (20) where ϕ promotes some desired structural properties of an image, such as the sparsity or the self-similarity [43]. To implement (20) efficiently, note that it is nothing but a de-noising problem. Thus, as the plug-and-play (PnP) strategy [44] suggests that ϕ can be implicit, we solve (20) to obtain the desired virtual HSI Zh, by denoising the image eZh using the fast and effective denoising CNN (DnCNN) function [45]. We notice that several DnCNN variants can be selected for our implementation. For the sake of user-friendliness, we employ the default pretrained DnCNN network provided in MATLAB’s “Deep Learning Toolbox” to conduct a single-step denoising for resolving (20). Moreover, since this default pretrained DnCNN is a scene-adaptive denoising network, the manual tuning for the trade-off parameter (i.e., noise level) is unnecessary in our implementation. Thus, there is no trade-off parameter in (20). With the above strategies, we can efficiently and effectively obtain Zh.           
+
+> Fig. 2. Graphical illustration of the proposed quantum deep image prior (QDIP), composed of a core quantum module, reshape operator, inverse quantum collapse (QC) module, and softmax operator. First, we use the core quantum module to obtain the quantum features. Specifically, the module is developed by the quantum full-expressibility (FE) layer “ RX−XX −
+> RZ−XX −RX”, with trainable real-valued parameters (i.e., αi, β i, δ i,and ρi). With the provable FE, it can perform any valid quantum operators (cf. Theorem 1). Also, we use the Toffoli (i.e., CCNOT) entangled layers for additional entanglement, and we employ the Pauli-Z measurement (cf. Sup-plementary Table I) to obtain the quantum statistics. Once the core quantum module holds the desired quantum states, the inverse-QC module is skillfully leveraged to prevent the valuable quantum information from being vanished during the reading-out stage. Eventually, the softmax operator guarantees that the output of QDIP satisfies the abundance sum-to-one property. More detailed configurations are summarized in Supplementary Table II.
+
+D. Quantum Deep Image Prior 
+
+This section presents the architectural design and training strategy of the proposed QDIP to extract the QAT Squ . Before proceeding, we provide the intuition for adopting the quantum network instead of its classical counterpart (e.g., CNN) to facilitate a better understanding. The network here (whether quantum or classical) aims to obtain a approximate solution and, hence, provide an informative prior for the proposed GQ-
+
+μ [cf. Eq. (5)]. In the underdetermined MU, the multispectral endmembers are linearly dependent (i.e., P < N ), which may refer to the same abundance in the low-dimensional space. For example, the pair of 1st and 6th abundances, the pair of 2nd and 3rd abundances, and the pair of 4th and 5th abundances obtained by the classical DIP (i.e., non-quantum DIP) appear nearly identical, as illustrated in Figure 4. Therefore, an encoder that can search for the desired abundance in the high-dimensional space potentially yields effective estimations. For intuition, considering a typical convolutional layer with kernel size of 1 × 1, the relation between a specific C-channel input noise N ∈ RC×L and H-channel output feature F ∈ RH×L
+
+can be generally expressed as F = σ(CN + b1TL ), where 
+
+CH×C , bH×1, and σ(·) are the convolutional weights (in matrix-multiplication form), bias vector, and the activation function, respectively. Typically, the default setting of b is an all-zeros vector, and the ReLU activation function is adopted in DIP. When a convolutional network is composed of K layers, it hardly guarantees that all convolutional kernel matrices remain full-rank during the training procedure, and may result in rank deficiency in classical convolutional networks. While the above analysis just shows an approximation for knowing the intuition, similar conclusions of the restrictions in classical networks have also been reported in the literature [24], [26], 8                                                                                                                                                                                               
+
+> TABLE I QUANTITATIVE EVALUATIONS OF THE BSS ALGORITHMS OVER VARIOUS SCENARIOS IN TERMS OF ϕEN (↓),ϕAB (↓),AND RMSE (↓). W E USE BOLDFACED AND UNDERLINED NUMBERS TO HIGHLIGHT THE BEST AND THE SECOND QUANTITATIVE PERFORMANCE ,RESPECTIVELY . B ESIDES ,
+> THE COMPUTATIONAL TIME WAS MEASURED IN SECONDS (SEC .). A LL QUANTITATIVE METRICS ARE REPORTED AS THE MEAN OF TEN INDEPENDENT RUNS ;THE CORRESPONDING STANDARD DEVIATIONS ARE PRESENTED IN SUPPLEMENTARY TABLE III. Methods Metrics Boulder Ottawa Hawaii Average VCA
+> ϕen (↓)24.442 17.450 15.663 19.185
+> ϕab (↓)71.227 75.748 54.124 67.033 RMSE (↓)35.581 114.802 19.146 56.510 Time (sec.) 0.009 0.016 0.009 0.011 NMF
+> ϕen (↓)31.424 22.056 27.048 26.843
+> ϕab (↓)48.784 44.366 47.464 46.871 RMSE (↓)28.306 27.223 25.616 27.048 Time (sec.) 14.463 14.674 14.463 14.533 MVC-NMF
+> ϕen (↓)29.007 33.669 37.489 33.388
+> ϕab (↓)53.958 51.863 62.907 56.243 RMSE (↓)26.458 22.790 28.952 26.067 Time (sec.) 462.671 472.424 465.071 466.722 R-CoNMF
+> ϕen (↓)71.392 63.839 63.460 66.230
+> ϕab (↓)50.608 48.348 53.670 50.875 RMSE (↓)24.847 21.852 26.597 24.432 Time (sec.) 44.579 39.475 40.865 41.640 UnDIP
+> ϕen (↓)26.364 3.870 17.701 15.978
+> ϕab (↓)55.474 42.573 51.956 50.001 RMSE (↓)31.487 13.389 16.021 20.299 Time (sec.) 57.733 58.001 57.497 57.744 MiSiCNet
+> ϕen (↓)28.693 11.192 19.481 19.789
+> ϕab (↓)60.524 49.966 65.380 58.623 RMSE (↓)28.944 21.848 31.973 27.588 Time (sec.) 151.434 140.646 152.659 148.246 DAAN
+> ϕen (↓)19.215 21.446 16.730 19.130
+> ϕab (↓)46.528 44.965 47.768 46.420 RMSE (↓)25.530 21.591 22.339 23.153 Time (sec.) 68.521 69.000 68.604 68.708 SSAFNet
+> ϕen (↓)22.979 15.110 19.397 19.162
+> ϕab (↓)59.917 41.666 68.099 56.561 RMSE (↓)32.336 18.962 34.441 28.580 Time (sec.) 39.043 80.182 79.030 66.085 GQ-μϕen (↓)11.885 5.491 8.191 8.522
+> ϕab (↓)26.659 25.215 34.482 28.785
+> RMSE (↓)10.069 8.033 6.477 8.193
+> Time (sec.) 51.766 50.194 50.225 50.728
+
+[46]. This explains why classical DIP hardly transfers the problem into an overdetermined one. Conversely, quantum machine learning (QML) provides a natural advantage in mapping classical data into a higher-dimensional space (e.g., Hilbert space) [29]. QML also excels at capturing the complex feature interactions to facilitate more abstract feature representations via quantum entangle-ment (which is also the key behind quantum small-data machine learning) [47]. By integrating these advantages with the provable full expressibility (FE, as shown in Theorem 1) of our quantum network, the proposed quantum FE module enables searching for the target state throughout the higher-dimensional superposition quantum space [47] under a single-data setting. The architecture of the QDIP is illustrated in Figure 2, where the detailed configuration is summarized in Supplemen-tary Table II due to space limitations. First, the QDIP consists of the core quantum module, which is developed with provable FE, followed by the entanglement and measurement layers. The mathematically guaranteed FE ensures that the quantum FE layer can realize any valid quantum unitary operators (cf. Theorem 1); note that all the valid quantum operators must be unitary. Accordingly, we believe that the core quantum module can represent any desired quantum image state Squ ; this is why the proposed QDIP needs no specific input, just like the conventional DIP [30]. Once the core quantum module holds the desired quantum state, we use the inverse quantum collapse (inverse-QC) module [36] composed of transposed convolution (TConv) blocks (cf. Supplementary Table II) to preserve the valuable quantum information from being collapsed during the quantum read-out procedure (cf. Figure 2). Finally, the softmax operator guarantees the output QAT to preserve the abundance sum-to-one nature. For completeness, the overall configurations of the QDIP are detailed in Supplementary Table II. Subsequently, we introduce the design of the core quantum module. We summarize the employed quantum gates along with their corresponding unitary operators in Supplementary Table I. As illustrated in Figure 2, the core quantum module is constructed based on the FE architecture “ RX − XX − RZ −
+
+XX − RX ”, i.e., the Rotation-Ising quantum FE layer. To exploit the quantum entanglement attribute, we also employ the Toffoli (i.e., CCNOT) entangled layers for additional entanglement, followed by the Pauli-Z quantum measurement. Notably, this light-weight design of the core quantum module is well aligned with the near-term quantum computers, because even some of the most advanced quantum computers (e.g., the 127-qubit IBM Eagle) have very limited qubit resources [48]. The core quantum module, even containing just a hundred-scale qubits, can express any valid quantum unitary function: 
+
+Theorem 1 The trainable quantum neurons deployed in the quantum FE layer embedded within the core quantum module (cf. Figure 2) can express any valid quantum unitary oper-ator U , with some real-valued trainable network parameters 
+
+{αi, β i, δ i, ρ i}. □
+
+The proof of Theorem 1 is provided in Supplementary Note 1 due to space limitations. Instead, we briefly discuss the key concept of quantum expressibility. For a specific parameterized quantum circuit (PQC), such as QUEENs, its expressibility is characterized by the ability to explore the target quantum states in the quantum space [49, Section 3.1]. In the single-qubit PQC case, the expressibility is the capability for exploring the Bloch sphere. A typical quantitative assessment of the expressibility is the comparison between the distribution of sampling states and the uniform distribution of states [49]. A higher expressibility may not necessarily yield a better performance, while restricted expressibility indeed results in limited performance. However, investigating the expressibility of all kinds of PQCs is impractical during architecture develop-ment. Therefore, we develop the QUEEN with the theoretically guaranteed full expressibility (FE). This design ensures that our QUEEN can realize any valid quantum operators for the challenging abundance estimation. Next, we discuss the training of QDIP. We explicitly express the output of QDIP as eSqu := Qθ (·), where Q θ (·) denotes the overall function of QDIP with θ being the network parameters. 9 
+
+> Fig. 3. False-color compositions (bands 25, 12, and 6 as RGB) of NASA’s HSIs captured by the AVIRIS sensor for different locations and landscapes.
+
+As discussed earlier, we can obtain the desired QAT Squ using the proposed QDIP, i.e., 
+
+θ⋆ ∈ arg min  
+
+> θ
+
+LQDIP (eSqu ); Squ := Qθ⋆ (·), (21) where LQDIP and θ⋆ denote the task-specific loss function and the optimal network parameters of QDIP, respectively. Inspired by [50] and LMM, we design the loss function as 
+
+LQDIP (eSqu ) = ∥Zh − eSqu ×3 A0∥2 
+
+> F
+
++ QREG (eSqu ), (22) where the regularization term QREG (·) is implicitly induced by QDIP network itself (cf. Figure 2) [30], while Zh and A0
+
+are specified in Section II-C and Section II-B, respectively. The quantum neurons are unitary operators (cf. Supplementary Ta-ble I) instead of affine mappings (e.g., convolution), so QDIP provides unique quantum features for abundance estimation [cf. (5)]. We employ the adaptive moment estimation (Adam) [51] to optimize (21)-(22), with detailed training settings summarized in Section III-A. For the first time, the quantum version of the seminal idea of DIP [30] is proposed above. For a more comprehensive introduction to quantum deep learning, including the Dirac notation system, barren plateaus (BP) effect (a.k.a. quantum gradient vanishing) and quantum measurement/collapse, we refer readers to [36, Section II.A] and [36, Section II.B]. III. E XPERIMENTAL EVALUATION 
+
+In this section, we conduct extensive experiments to evaluate the performance of the proposed GQ-μ. For this purpose, we design an experimental protocol (cf. Section III-A) for the underdetermined MU task due to the lack of reference datasets. Moreover, the experimental settings (including the proposed GQ-μ and baselines) are also described in Section III-A. Next, the qualitative and quantitative evaluations are presented in Section III-B. Section III-C reports ablation studies to substantiate the effectiveness of the proposed QDIP [cf. (5)] and WSS regularization [cf. (7)]. Section III-D presents the real-data analysis to demonstrate the practical applicability of our GQ-μ. Besides, parameter and convergence analysis are provided in Supplementary Note 2 due to space limitations. 
+
+A. Experimental Protocol Design and Settings 
+
+Initially, we observe that the previous MU studies do not consider the underdetermined issue; thus, experimental datasets or protocols for MU are unavailable. For system-atic evaluation, we design the experimental protocol for this challenging MU task, which is illustrated in Supplementary Figure 1 due to space limitations. Specifically, inspired by Wald’s protocol for hyperspectral restoration or image fusion [34], we adopt a similar approach to obtain the reference endmember matrix B and abundance tensor S. In this protocol (cf. Supplementary Figure 1), we first perform an effective BSS algorithm (e.g., HISUN [16]) on the reference HSI, thereby obtaining the reference hyperspectral signature Aref 
+
+and the reference abundance tensor S. Subsequently, we uniformly downsample the reference hyperspectral signature 
+
+Aref along the spectral dimension (to be described next) to obtain the reference endmember matrix B [52]. Accordingly, we synthesize the reference MSI, i.e., Zm = S ×3 B + eNde ,where Nde ∈ RL1×L2×P is the normally distributed LMM deviation tensor; and e := 1E-4 is the scaling factor determined by the energy of the LMM deviation of reference HSI. Once we have Zm, the estimated signature bB and abundance bS can be obtained by Algorithm 1 or other benchmarks. Eventually, the qualitative and quantitative evaluations between B and bB
+
+(resp. S and bS) can be readily conducted (cf. Supplementary Figure 1). Moreover, we also experimentally replace Nde 
+
+with a residual-based noise tensor. To approximate realistic sensor noise characteristics, we first perform spectrally down-sampling on the reference HSI (using the same approach as downsampling Aref ) to approximate the noisy MSI. Then, we apply the pretrained DnCNN denoiser on the noisy MSI and treat the residual as a real-world noise tensor. With the quantitative metrics (cf. Section III-B) and default parameter settings (to be detailed later), our GQ-μ achieves an average quantitative performance of ϕen = 8 .249 , ϕab = 28 .768 , and RMSE = 8 .166 with normally distributed LMM deviation tensor. In contrast, it achieves ϕen = 7 .266 , ϕab = 28 .080 ,and RMSE = 7 .385 with residual-based noise tensor. To implement the designed protocol, we adopt the HSIs captured by NASA’s Airborne Visible/Infrared Imaging Spec-trometer (AVIRIS) sensor [53]. These HSIs are originally composed of 224 contiguous bands, while we remove those water-vapor absorption bands (i.e., bands 1-10, 104-116, 152-170, and 215-224), followed by using the remaining 172 clean bands as the reference HSIs for the experimental protocol (cf. Supplementary Figure 1). For the spectral downsampling stage of Aref , we select the spectral ranges covering 450–520, 520–600, 630–690, and 760–900 nm for synthesizing the MSIs. These wavelength ranges correspond to the Landsat TM satellite bands 1–4 and are consistent with the red-green-blue (RGB) and near-infrared (NIR) bands provided by typical multispectral imagery systems. The NIR band exhibits distinct spectral characteristics compared to RGB [54, Table 3], thereby enabling the material identification of multispectral data to some extent. Furthermore, according to the spectral continuity, the reflectances in these hyperspectral bands are averaged (for each band range) to approximate the multispectral reflectance (of each band) instead of di-rectly choosing/quantizing a specific band. These approxi-mated multispectral reflectances enable us to consider the spectral reflectance of the objects, thereby obtaining the re-alistic reference endmember matrix B (P = 4 ). Remarkably, even if we have very few MSI bands, the literature often 10    
+
+> Fig. 4. The qualitative comparisons over the Boulder dataset. The corresponding multispectral endmembers (i.e., M-endmember) of the nth abundance are shown in the nth subfigure within the rightmost column, where the horizontal and vertical axes represent the spectral bands and reflectance values, respectively.
+
+used the “multispectral shape” to distinguish objects in, for example, precision agriculture. That said, for MSI, we still have the concept of reflectance endmember signatures [11]. In this experiment, we empirically set N := 6, and the comparisons of the multispectral endmembers within a single ROI are presented in Supplementary Figure 2. Despite the limited number of bands, the multispectral endmembers ex-hibit distinct reflectance with non-overlapping shapes, indicat-ing their material identifiability. However, when multispectral observations are insufficient for a more meticulous spectral analysis, converting them to their corresponding hyperspectral counterparts (cf. Supplementary Figure 3) via customized al-gorithms [55] can provide improved practicality. Subsequently, the descriptions of the used HSIs for data simulation are summarized below. For extensive evaluations, we select three HSIs captured over different locations (cf. Figure 3); and all datasets have L = 256 × 256 pixels. Specifically, the first dataset (i.e., Boulder) was acquired over Boulder, Colorado, with a spatial resolution (SR) of 10.7 m. The second dataset (i.e., Ottawa) was captured over Ottawa, Canada, with a SR of 17.1 m; and the third dataset (i.e., Hawaii) was captured over Hawaii County, Hawaii, with a SR of 2.2 m. Next, we describe the benchmarks and their parametric settings. Notably, this is a pioneering study for underdeter-mined MU; thus, there is no existing algorithm for this chal-lenging task. Accordingly, we extend several representative HU algorithms to compare with the proposed GQ-μ, and the details are described below. First, we adapt the representative approaches, i.e., VCA [12] and NMF [56], to compare with our approach [11]. Specifically, VCA originally performs the dimensional reduction (DR) for HU, while we directly conduct the algorithm in the original multispectral domain because of the underdetermined issue (i.e., P < N ). As VCA only estimates the signature bB, the abundance of VCA is obtained by left-multiplying the pseudo-inverse of the estimated sig-nature bB† on the MSI (i.e., bS = Zm ×3 bB†), as suggested in the original VCA paper. In NMF, we adopt HISUN [16] as a warm start strategy to initialize B and S; and we set the number of iterations to 1E+3 to improve convergence. After NMF converges, we refine the abundance by solving the non-negative least-squares optimization problem of the returned signature and the MSI, which yields an improved abundance than the returned one. Moreover, we additionally incorporate two well-known simplex-volume regularized NMF approaches, i.e., minimum volume constrained NMF (MVC-NMF) [37] and robust collaborative NMF (R-CoNMF) [38], with spectral augmentation to conduct the underdetermined BSS. In detail, these approaches are also designed for HU and, hence, inevitably require the DR basis matrix for the gradient descent procedure during the alternative optimization (AO). To address the underdetermined issue (i.e., P < N ), we first apply the BSP function defined in (19), followed by adding a small amount of normally distributed perturbation to resolve the rank deficiency. This yields the full-rank M -band (with M > N ) input for these methods (i.e., MVC-NMF and R-CoNMF). After estimating M -band signatures bA
+
+(also the corresponding abundance bS) using these methods, we consequently obtain the estimated multispectral endmembers by performing the spectral downsampling, i.e., bB = D bA.For the parameter settings, we set the trade-off parameters 
+
+τ := 1E-3, tolerance factor of 1E-6, and the maximum iteration number of 5E+2 for MVC-NMF. In R-CoNMF, we 11    
+
+> Fig. 5. The qualitative comparisons over the Ottawa dataset. The corresponding multispectral endmembers (i.e., M-endmember) of the nth abundance are shown in the nth subfigure within the rightmost column, where the horizontal and vertical axes represent the spectral bands and reflectance values, respectively.
+
+set the α := 1E-6 × p(N/ 1000) , β := 5E-1 × (N/ 1000) ,
+
+λt := ( N/ 1000) , μt := 1 , θ := N × 1E-3, and the number of AO to 2E+2, which are all the default settings from the official implementation. Beyond the conventional approaches, we also employ numerous representative and state-of-the-art deep learning approaches, including HU using DIP (UnDIP) [50], minimum simplex convolutional network for deep HU (MiSiCNet) [10], deep autoencoder-based augmented network (DAAN) [9], and spatial-spectral adaptive fusion network (SSAFNet) [57]; the corresponding experimental settings are described below. In UnDIP, we defaultly set the number of iterations to 3E+3; and we set the learning rate (LR) to 1E-5 for training stability. In MiSiCNet, we set the number of iterations, LR, and the trade-off parameter to 8E+3, 1E-3, and 1E+2, respectively, across all datasets. In DAAN, the LRs of the model encoder and decoder are set to 1E-4 and 1E-2, respectively, under 8E+2 training iterations. In SSAFNet, we set a small LR of 1E-4 to prevent the gradient vanishing, while the trade-off parameters of the loss function are defaultly set to λKL := 0 .001 , λSAD := 5 , and λvol := 10 . For the proposed GQ-μ, we first set the LR and the number of iterations of the QDIP (cf. Section II-D) to 5E-2 and 2E+2, respectively, to extract Squ ; and the parametric settings of Algorithm 1 are summarized below. First, one can notice that the number of pixels is much larger than the number of sources (i.e., 
+
+L ≫ N ), and hence we define λ† 
+
+> 3
+
+≜ λ3 
+
+> 1E4
+
+and λ† 
+
+> 4
+
+≜ λ4 
+
+> 1E4
+
+.Accordingly, we set λ1 := 1E-3, λ2 := 1E-2, and λ† 
+
+> 3
+
+:= 1E-1. As for λ†
+
+> 4
+
+, we first initialize it to 1E-2, followed by increasing 
+
+λ† 
+
+> 4
+
+by 1.2 times in each iteration for a stable optimization. Besides, we set the ADMM penalty parameter μ := 1 for Algorithm 2. Finally, we set the number of iterations to 5 for GQ-μ; and set it to 20 for Algorithm 2. All benchmarks are conducted on the computational equip-ment equipped with an NVIDIA RTX 3090 GPU, AMD Ryzen 5950X CPU operating at 3.40-GHz, 24-GB RAM, as well as with Core-i7-11700 CPU and 128 GB RAM. The soft-ware environments for this experiment are MATLAB R2023a, Python 3.10.9, and Torch 2.0.0. For the proposed approach, we train the QDIP on the same equipment as benchmarks, and subsequently perform the Algorithm 1 on a laptop with a Core-i7-11700 CPU 2.50-GHz and speed 24-GB RAM. 
+
+B. Qualitative and Quantitative Evaluations 
+
+This section presents comprehensive qualitative and quan-titative evaluations. First, we graphically illustrate the ref-erence abundances S (resp., estimated abundances bS) and the reference sources B (resp., estimated sources bB) for Boulder, Ottawa, and Hawaii datasets in Figure 4, Figure 5, and Supplementary Figure 4 (due to space limitation), respec-tively. In these figures, the nth row presents the qualitative comparisons for the nth abundance and the associated P -band sources, where the color legends are shown at the bottom of each abundance column. With these in mind, the qualitative evaluations are presented as follows. As mentioned earlier, we pay more attention to the abun-dances than the endmember signatures in typical MU. Conse-quently, we first conduct qualitative analysis for the abundance over the Boulder data, with results illustrated in Figure 4. As shown in Figure 4, the proposed GQ-μ yields the most precise abundance (cf. the last abundance column of Figure 4) among all benchmarks. Conversely, the benchmarks exhibit unsatisfactory performance for the abundance in the Boul-12 
+
+der data, characterized by indistinguishable abundances for distinct sources, severe noise-like patterns, and unexpected structural patterns. For example, this indistinguishability can be clearly observed in the 3rd and 5th abundances of VCA, the 2nd and 3rd abundances of UnDIP, the 1st and 5th abundances of DAAN, and the 1st and 6th abundances of SSAFNet. We further note that the qualitative performance of the simplex volume-based NMF approaches is severely affected by noise-like patterns; see, e.g., the 1st and 4th abundances of MVC-NMF, and the 1st, 2nd, and 4th abundances of R-CoNMF. This may be attributed to the fact that, even though the spectral augmentation addresses the rank deficiency issue, the theo-retical formulations of MVC-NMF and R-CoNMF primarily consider the hyperspectral structure and fail to exploit the spatial coherence of its multispectral counterpart. In addition, we note that the abundances of UnDIP have unexpected patterns (e.g., the 4th and 5th abundance of UnDIP), indicating the instability and unreliability of the “black-box” BSS model. Beyond abundance evaluations, we further conduct qualitative comparisons for the estimated multispectral signatures. As shown in the last column of Figure 4, the proposed GQ-μ has numerous signatures well-matched with reference signatures; e.g., see the 1st, 2nd, 3rd, and 6th signatures. In comparison, the signatures estimated from the benchmarks achieve severe shape and intensity discrepancies; e.g., see the 3rd and 6th signatures of R-CoNMF and the 1st signature of DAAN. From the above evaluations, both representative NMF and state-of-the-art deep learning HU approaches struggle with MU in the underdetermined scenarios. In contrast, the proposed GQ-μ can effectively tackle the underdetermined MU in its hyperspectral counterpart, i.e., HU (cf. Section II-A). Further-more, the proposed WSS and quantum regularizers effectively address the ill-posedness of HU. Consequently, the proposed GQ-μ outperforms the baselines on the Boulder dataset. Next, we further validate the effectiveness of our approach on the Ottawa dataset, where the qualitative results are pre-sented in Figure 5. The results indicate that both traditional and deep learning approaches remain limited in terms of performance (e.g., abundance indistinguishability) due to the underdetermined setting. For example, the 1st, 2nd, and 4th abundance of VCA, and the 2nd, 3rd, and 6th abundance of NMF, the 1st and 6th abundance of R-CoNMF, and the 2nd and 3rd abundance of SSAFNet. Although the baseline methods can partially yield relatively accurate estimations for abundance [see Figure 5(d)], the overall performance remains limited. Notably, the undesirable patterns are again observed in the 3rd abundance of UnDIP. Furthermore, the sum-to-one constraint within UnDIP may further propagate this distortion effect from the 3rd abundance to the 6th abundance. In contrast, the proposed GQ-μ yields substantially promising estimated abundances as shown in the last abundance column of Figure 5, which closely match the reference abundances. Additionally, the proposed GQ-μ provides numerous precise estimations for signatures on the Ottawa datasets; e.g., see the 1st, 3rd, 4th, and 6th signatures. We acknowledge that some of the signatures estimated by GQ-μ may occasionally exhibit obvious imperfections; however, severe shape and intensity deviations rarely occur, such as the 3rd signature of VCA and R-CoNMF. In summary, our GQ-μ yields the best performance compared to the baselines on the Ottawa dataset. Finally, we perform the qualitative comparisons for the Hawaii dataset, where the estimated abundance and signatures are illustrated in Supplementary Figure 4 due to space lim-itations. As expected, the proposed GQ-μ yields promising qualitative performance in abundance estimations. Nearly all estimated abundances from the proposed GQ-μ are closely matched to the reference abundance. Conversely, the tradi-tional benchmarks (i.e., VCA and NMF) still struggle with the underdetermined issue and fail in the abundance estimation. For example, the 1st, 3rd, and 5th abundance of VCA, and the 2nd, 3rd, 4th, and 5th abundance of NMF. Moreover, the noise-like patterns are observed in the estimated abundances from the simplex-volume regularized NMF approaches; e.g., see the 1st, 2nd, and 5th abundance of MVC-NMF and R-CoNMF. Beyond these approaches, the deep learning methods suffer from the underdetermined issue and result in similar abundances for different sources. For instance, the 3rd and 5th abundance of UnDIP, the 2nd, 3rd, 5th abundance of DAAN, and the 1st, 2nd, 3rd, and 5th abundance of SSAFNet. Ac-cording to the above evaluations, the results strongly support that our GQ-μ achieves the best qualitative performance on all the datasets. Furthermore, we conduct quantitative evaluations to fairly evaluate the results of MU. For this purpose, we first employ a representative metric for endmembers evaluation, i.e., root-mean-square (RMS) spectral angle mapper for endmember 
+
+ϕen , whose definition is given in [5, Eq. (32)]. This metric quantitatively measures the RMS angle between the reference signatures and estimated signatures. We further adopt two representative metrics for abundance evaluation, i.e., RMS error (RMSE) and RMS spectral angle mapper for abundance 
+
+ϕab , whose definitions are provided in [50, Eq. (14)] and [5, Eq. (33)], respectively. The RMSE and ϕab quantitatively measure the Euclidean and cosine distance, respectively, be-tween the reference and estimated abundance. To mitigate the randomness of each BSS approach from biasing the quantitative evaluation, the quantitative metrics summarized in Table I are reported as the average over ten independent runs. Furthermore, the standard deviations of the quantitative metrics are provided in the Supplementary Table III, and the quantitative evaluations are as summarized follows. According to Table I, the proposed GQ-μ achieves the best quantitative performance in both abundance and signatures on the Boulder and Hawaii datasets, aligning with the qualitative evaluations. Furthermore, we note that the quantitative per-formance of the runner-up methods (i.e., UnDIP and DAAN) is substantially inferior to our approach (cf. Table I). This observation indicates that, even with the state-of-the-art deep learning techniques, MU can not be effectively addressed with-out considering its “underdetermined” nature. In contrast, we effectively tackle the underdetermined MU in its hyperspectral counterpart, i.e., HU. Subsequently, the ill-posedness of HU is effectively resolved using novel quantum and WSS regular-izers. In the proposed GQ-μ, the WSS regularizer considers both “direction” and ”force” to recover the minimum volume data-enclosing simplex, instead of simply minimizing the data 13 
+
+volume, such as MVC-NMF and R-CoNMF. Additionally, the quantum regularizer effectively extracts the informative structure to estimate the true abundance rather than using merely the naive sparse prior (e.g., ℓ-1 norm regularization). These collectively yield the superior performance (cf. Table I) on the challenging MU applications. On the Ottawa dataset, the quantitative results show that UnDIP is slightly better than our approach in terms of ϕen , whereas its abundance estimation is unsatisfactory in terms of ϕab and RMSE, consistent with the qualitative evaluations. By comparison, the proposed GQ-
+
+μ achieves the best performance in terms of ϕab and RMSE on the Ottawa data (cf. Table I). Hence, the proposed GQ-μ
+
+still yields the best average quantitative performance compared to the representative baselines. As a pioneering study of underdetermined MU, we have demonstrated the feasibility of this task based on the above comprehensive experiments. In the next section, we present an ablation study to evaluate the effectiveness of the proposed quantum and WSS regularizers. 
+
+C. Ablation Study 
+
+In this section, we conduct the ablation studies to ex-amine the effectiveness of the quantum and WSS regular-izers (REGs). First, we replace the proposed WSS REG [see (7)] with various types of minimum volume (MV) REGs. Specifically, given the hyperspectral endmember ma-trix A = [ a1, . . . , aN ], the simplex volume representation can be expressed as vol (con (A)) = 1(N −1)! 
+
+ det( ¯AT ¯A)1/2
+
+with ¯A ≜ [a1 − aN , . . . , aN −1 − aN ] [34]. Considering the computational complexity of the determinant and potential gradient descent procedure [37], we instead adopt its convex surrogate, sum-of-squared distances (SSD) REG [34, Eq. (6)], as the first baseline MV REG. We additionally incorporate three additional quadratic baseline MV REGs referring to “Boundary”, “Center”, and “TV” into this comparison. The explicit formulations of these quadratic MV REGs can be found in [22, Table I]. Finally, by setting all the weights to one (i.e., w := 1N ), the proposed WSS REG is simplified to its non-weighted counterpart to evaluate the contribution of the weighting strategy. This baseline MV REG is denoted as “nWSS”. In summary, we comprehensively compare the proposed WSS REG with five different MV REGs, including SSD, Boundary, Center, TV, and nWSS. In addition, we replace the Squ in (5) with the estimated abundance bS from classical DIP, and maintain the same trade-off parameter 
+
+λ2 := 1E-2 to validate the effectiveness of our QDIP. Here, the widely used UnDIP is selected as the classical DIP. UnDIP first performs the geometry-based endmember extraction, fol-lowed by abundance estimation using a classical convolutional network. Accordingly, the entire implicit model prior of the classical DIP exclusively influences the resulting abundance maps, which aligns with the proposed QDIP and enables a fair comparison in terms of abundance regularization. More importantly, the quantitative performance of UnDIP is the second best in ϕeb and RMSE (cf. Table I). This representative classical DIP will facilitate a persuasive ablation study. Subsequently, we present details on the experimental set-tings of this ablation study below. In the following experiment,  
+
+> Fig. 6. True-color composition (left) of the real Sentinel-2 MSI acquired at Northern Alaska, United States; and the 6 estimated multispectral endmembers and their corresponding abundances (right) using the proposed GQ-μ.
+
+we select one type of MV REG and DIP to regularize the proposed GQ-μ framework, resulting in 12 combinations (6 types of MV REGs and 2 types of DIP). Due to space limita-tions, we summarize the quantitative results in Supplementary Table IV, where the selected MV REG/DIP will be marked by “ "”. Regarding the parameter settings of the trade-off parameters for MV REGs, since the SSD, Boundary, Center, and TV REGs involve only a single term in their formulation, we employ the same λ† 
+
+> 3
+
+:= 1E-1 as the proposed GQ-μ for these MV REGs. For the nWSS and WSS REGs, we retain the same settings, λ† 
+
+> 3
+
+:= 1E-1 and λ† 
+
+> 4
+
+:= 1E-2, as presented in Section III-A. All experiments in this ablation study are based on the averaged quantitative results (i.e., ϕen , ϕab , and RMSE) across the three datasets (see Figure 3). Since our GQ-
+
+μ demonstrates stable results across runs (cf. Supplementary Table III), the quantitative results are reported from a single inference. We now turn to the analysis. First, we employ the classical DIP and compare the effectiveness of the MV REGs, as presented in the first six rows of Supplementary Table IV. In these cases, we observe that the Boundary REG provides the most precise estimations for abundance and signatures. By comparison, the proposed WSS REG appears to be effective only in abundance estimation with the classical DIP; and the rest of the MV REGs seem to achieve competitive performance in terms of ϕen , ϕab , and RMSE. Based on this observation, we experimentally assume that the proposed WSS REG can effectively help the NMF procedure with a strong abundance REG (e.g., QDIP) since the shrinkage weights are related to abundance. Accordingly, we replace the classical DIP with the proposed QDIP and again evaluate the performance of each MV REGs. As demonstrated in the last 6 rows of Supplementary Table IV, the results show that the quantitative metrics for abundance (i.e., ϕab and RMSE) are significantly improved across all MV REGs. These improvements greatly substantiate the effectiveness and necessity of the proposed QDIP. Moreover, the proposed GQ-μ (with WSS REG and QIDP) further achieves remarkable improvements in both abundance and signature estimations. The quantitative per-formance substantially outperforms the other 11 cases. These experiments have accordingly demonstrated the effectiveness and necessity of our WSS REG and QDIP. 
+
+D. Real-World MU for Sentinel-2 Data 
+
+This section presents the real-data MU to demonstrate the practical applicability of our GQ-μ. In remote sensing 14  
+
+> Fig. 7. True-color composition (left) of the real Sentinel-2 MSI acquired at Mackenzie River Delta, Northwest Territories, Canada; and the 6 estimated multispectral endmembers and their corresponding abundances (right) using the proposed GQ-μ.
+
+applications, multispectral sensors typically acquire blue (B), green (G), red (R), and near-infrared (NIR) bands (e.g., SPOT-7 [42] and RapidEye [58]), facilitating agricultural monitoring, land cover detection, and vegetation index estimation (e.g., NDVI). In this analysis, we utilize MSIs acquired by Sentinel-2 imagery for cross-dataset validation. Specifically, Sentinel-2 provides 12 bands at multiple resolutions, where the B, G, R, and NIR bands share the highest spatial resolution [43]. We thus extract these bands as a 4-band MSI with 128 ×128 pixels and perform MU with the proposed GQ-μ. To preserve spatial consistency, we remove the upsample from the TConv Module 4 of QDIP (cf. Supplementary Table II), while retaining the other settings (cf. Section III-A) for the proposed GQ-μ.Owing to the lack of ground-truth abundances, the estimated abundance is rigorously evaluated with the high-resolution Google Earth imagery and relevant geomorphological refer-ences. The following analysis demonstrates that all estimated abundances exhibit consistent spatial coherence with geomor-phological patterns. Furthermore, we validate the estimated endmembers using full Sentinel-2 data and overdetermined endmember extraction (OEE). First, the resolutions of 12 bands are unified by Sentinel-2 super-resolution via scene-adapted self-similarity (SSSS) [43], followed by conducting the OEE using HyperCSI [5]. Subsequently, the B, G, R, and NIR spectra are treated as reference endmembers, which correspond to “Reference (HU)” in Figure 6 and Figure 7. The first real dataset (cf. Figure 6) was acquired over North-ern Alaska (NA), United States, in July 2019. The curvilinear feature in the upper-left region is the Dalton Highway, as identified from Google Earth imagery. The curve of the lower-right area corresponds to the inland branch of Sagavanirktok River. Besides, the distinct white blocks near the riverbank are potentially interpreted as the sedimentary packages [59]. Most of the land surface in this region is composed primar-ily of permanent permafrost, mineral, and vegetation of the tundra. The second real dataset (cf. Figure 7) was acquired over Mackenzie River Delta (MRD), Northwest Territories, Canada, in July 2019. The MRD is notable for the largest concentration of pingos (i.e., small ice-cored hills formed in a piecewise manner) in the world [60]. In this ROI, the dark irregular patches correspond to open-water inland lakes, while the yellow patch is identified as an ice-covered water body according to the high-resolution Google Earth imagery. The surrounding uplands are ice-rich, and the unambiguous white patterns likely represent the ice-pure tabular bodies formed at the beginning of ground freezing. The MU results for the NA dataset are illustrated in Figure 6. From left to right, the 2nd, 3rd, and 5th abundances characterize the spatial distributions of the background land coverage, sedimentary packages, and the main component of the river, respectively. The 4th and 6th abundances appear to correspond to mixed substances since this region is composed of multiple substances, including permanent permafrost, min-erals, and vegetation of the tundra. We further observe the yellow curve in the center of the river (cf. the ROI in Figure 6); the corresponding proportion is more significant in the 1st abundance instead of the 5th abundance. Although the 1st and 5th abundance seem similar, their endmembers are substantially distinct, indicating that they likely correspond to different materials. Moreover, in the 5th abundance, the locations of sedimentary packages and the yellow curve exhibit lower proportions, consistent with the 1st and 5th abundance. Since they share close locations (the reflectance may be affected by the water body), it is reasonable that these locations retain a moderate proportion in the 5th abundance. Addition-ally, the multispectral endmembers estimated by our GQ-μ
+
+are well aligned with the reference endmembers, implying the precise MU results of GQ-μ. The MU results for the MRD dataset are presented in Figure 7. The 1st and 2nd abundances characterize the spatial distribution of ice-pure tabular bodies and the background grounding, respectively. The 3rd, 4th, and 5th abundances correspond to the open-water lakes, edges of water bodies, and the ice-covered lakes, respectively. In the abundance of open water, the locations at ice-covered lakes retain low proportions since the ice coverages are floating on water. The estimated endmembers from the proposed GQ-μ are again consistent with those obtained by OEE. The above real MU analysis further supports the effectiveness of the proposed GQ-μ for the challenging MU. The MRD dataset is further used to investigate the multi-spectral identifiability. Specifically, the 4-band raw multispec-tral data is classified by K-means clustering with the clustering centers fixed as the MU-based endmember signatures (i.e., the orange curves in Figure 7). As shown in Supplementary Figure 6, the clustering results do exhibit a strong spatial coherence with the MRD dataset, alluding that the 4-band multispectral data still hold material identifiability to some extent. Nev-ertheless, in Supplementary Figure 6, the ice-covered water body (cf. the red box region) and the open-water inland lakes (cf. the blue box regions) are classified into the same cluster, mainly owing to the limited multispectral representation. In contrast, GQ-μ successfully separates the ice region and open-water lakes into two clearly distinguishable abundance maps (cf. Figure 7 and Supplementary Figure 6). In other words, while the multispectral data alone may provide preliminary material identifiability, our GQ-μ algorithm further improves the discriminability of homogeneous materials. IV. C ONCLUSIONS AND FUTURE WORKS 
+
+As current optical satellites mostly acquire MSIs with lim-ited spatial resolution, multispectral unmixing (MU) has be-come a critical signal processing technology. Hence, this work develops an unsupervised geometry/quantum-empowered MU 15 
+
+(GQ-μ) algorithm for solving this underdetermined blind source separation problem (i.e., MU). We first compute the counterpart HSI from a given MSI to transform the problem into a virtual overdetermined hyperspectral domain via the unsupervised band-splitting (BSP) function. In the BSP [cf. (19)], the spectral deviation variable for each splitting band plays a critical role. When it is set to excessively large, the resulting splitting bands may extend beyond their wavelength ranges. Conversely, an overly small deviation hardly provides sufficient spectral variation and hence fails to yield informative structures. Therefore, the deviation needs to be band-adaptive. In our work, we find that setting the deviation as one quarter of the difference between two adjacent bands yields promising results. On the other hand, we invent the first quantum version of the seminal deep image prior (DIP) technique to extract specific quantum features to regularize the abundance solution, and tailor a new simplex-geometry regularizer to estimate the hyperspectral endmembers, which are then spectrally down-sampled back to the MSI space to obtain the multispectral endmembers. Ablation study also validates the mechanics-inspired WSS geometry regularizer. The proposed quantum DIP has mathematically guaranteed FE (ensuring a light-weight QUEEN), and ablation study demonstrates the strength of quantum DIP (not achieved by classical DIP). All the above mechanisms can be done under a fully blind setting. In the future, we may further advance the unsupervised spectral augmentation, and hence facilitate a more precise endmember/abundance estimation in MU. In the proposed GQ-
+
+μ, the BSP function is designed to provide an initialization of virtual HSI. Then, the proximal mapping, implemented by DnCNN denoising (originally for grayscale images), refines its spatial structure to compute the virtual HSI. A natural improvement is to consider the spectral-spatial structure si-multaneously, such as incorporating spectral regularization or a spatial-spectral denoiser. Furthermore, inspired by the basis-learning strategy [43], designing a customized update strategy for the virtual HSI during AO can potentially yield a better endmember/abundance estimation. Regarding the com-plexity of QUEEN, a feasible direction is to explore a new unsupervised or weakly-supervised strategy for pretraining. Once trained, the quantum inference can be formulated as a multiplication of structural matrices (e.g., sparse or unitary) [36], offering a practical strategy for hardware acceleration and efficient quantum gate deployment. REFERENCES [1] C.-H. Lin, R. Wu, W.-K. Ma, C.-Y. Chi, and Y. Wang, “Maximum volume inscribed ellipsoid: A new simplex-structured matrix factoriza-tion framework via facet enumeration and convex optimization,” SIAM Journal on Imaging Sciences , vol. 11, no. 2, pp. 1651–1679, 2018. [2] P.-W. Tang and C.-H. Lin, “Transformer-driven inverse problem trans-form for fast blind hyperspectral image dehazing,” IEEE Trans. Geo-science and Remote Sensing , vol. 62, pp. 1–14, 2024. [3] D. Hong, N. Yokoya, J. Chanussot, and X. X. Zhu, “An augmented linear mixing model to address spectral variability for hyperspectral unmixing,” 
+
+IEEE Trans. Image Processing , vol. 28, no. 4, pp. 1923–1938, 2019. [4] S.-S. Young, C.-H. Lin, and Z.-C. Leng, “Unsupervised abundance matrix reconstruction transformer-guided fractional attention mechanism for hyperspectral anomaly detection,” IEEE Trans. Neural Networks and Learning Systems , pp. 1–15, 2024. [5] C.-H. Lin, C.-Y. Chi, Y.-H. Wang, and T.-H. Chan, “A fast hyperplane-based minimum-volume enclosing simplex algorithm for blind hyper-spectral unmixing,” IEEE Trans. Signal Processing , vol. 64, no. 8, pp. 1946–1961, 2016. [6] R. A. Borsoi, T. Imbiriba, and P. Closas, “Dynamical hyperspectral unmixing with variational recurrent neural networks,” IEEE Trans. on Image Processing , vol. 32, pp. 2279–2294, 2023. [7] S. Henrot, C. Soussen, M. Dossot, and D. Brie, “Does deblurring improve geometrical hyperspectral unmixing?” IEEE Trans. Image Pro-cessing , vol. 23, no. 3, pp. 1169–1180, 2014. [8] S. A. Vavasis, “On the complexity of nonnegative matrix factorization,” 
+
+SIAM Journal on Optimization , vol. 20, no. 3, pp. 1364–1377, 2010. [9] Y. Su, Z. Zhu, L. Gao, A. Plaza, P. Li, X. Sun, and X. Xu, “DAAN: A deep autoencoder-based augmented network for blind multilinear hyperspectral unmixing,” IEEE Trans. Geoscience and Remote Sensing ,vol. 62, pp. 1–15, 2024. [10] B. Rasti, B. Koirala, P. Scheunders, and J. Chanussot, “MiSiCNet: Min-imum simplex convolutional network for deep hyperspectral unmixing,” 
+
+IEEE Trans. Geoscience and Remote Sensing , vol. 60, pp. 1–15, 2022. [11] J. Cai, H. Chatoux, C. Boust, and et al., “Extending the unmixing methods to multispectral images,” arXiv Preprint arXiv:2111.11893 ,2021. [12] J. Nascimento and J. Dias, “Vertex component analysis: A fast algorithm to unmix hyperspectral data,” IEEE Trans. Geoscience and Remote Sensing , vol. 43, no. 4, pp. 898–910, 2005. [13] W. Xiong, C.-I. Chang, C.-C. Wu, K. Kalpakis, and H. M. Chen, “Fast algorithms to implement N-FINDR for hyperspectral endmember extrac-tion,” IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing , vol. 4, no. 3, pp. 545–564, 2011. [14] R. Rajabi and H. Ghassemian, “Spectral unmixing of hyperspectral imagery using multilayer NMF,” IEEE Geoscience and Remote Sensing Letters , vol. 12, no. 1, pp. 38–42, 2014. [15] C.-H. Lin, W.-K. Ma, W.-C. Li, C.-Y. Chi, and A. Ambikapathi, “Identifiability of the simplex volume minimization criterion for blind hyperspectral unmixing: The no-pure-pixel case,” IEEE Trans. Geo-science and Remote Sensing , vol. 53, no. 10, pp. 5530–5546, 2015. [16] C.-H. Lin and J. M. Bioucas-Dias, “Nonnegative blind source separation for ill-conditioned mixtures via John ellipsoid,” IEEE Trans. Neural Networks and Learning Systems , vol. 32, no. 5, pp. 2209–2223, 2021. [17] S. Xie, L. Yang, J.-M. Yang, G. Zhou, and Y. Xiang, “Time-frequency approach to underdetermined blind source separation,” IEEE Trans. Neural Networks and Learn. Sys. , vol. 23, no. 2, pp. 306–316, 2012. [18] H.-G. Ma, Q.-B. Jiang, Z.-Q. Liu, G. Liu, and Z.-Y. Ma, “A novel blind source separation method for single-channel signal,” Signal Processing ,vol. 90, no. 12, pp. 3232–3241, 2010. [19] J. M. Nascimento and J. M. Bioucas-Dias, “Does independent compo-nent analysis play a role in unmixing hyperspectral data?” IEEE Trans. Geoscience and Remote Sensing , vol. 43, no. 1, pp. 175–187, 2005. [20] Y. Cai, J. Lin, Z. Lin, H. Wang, Y. Zhang, H. Pfister, R. Timofte, and L. Van Gool, “MST++: Multi-stage spectral-wise transformer for efficient spectral reconstruction,” in Proc. IEEE Conf. on Computer Vision and Pattern Recognition , New Orleans, Louisiana, 2022, pp. 745– 755. [21] F. Yasuma, T. Mitsunaga, D. Iso, and S. Nayar, “Generalized assorted pixel camera: Post-capture control of resolution, dynamic range and spectrum,” Tech. Rep., Nov 2008. [22] L. Zhuang, C.-H. Lin, M. A. T. Figueiredo, and J. M. Bioucas-Dias, “Regularization parameter selection in minimum volume hyperspectral unmixing,” IEEE Trans. Geoscience and Remote Sensing , vol. 57, no. 12, pp. 9858–9877, 2019. [23] C.-H. Lin and S.-S. Young, “HyperKING: Quantum-classical generative adversarial networks for hyperspectral image restoration,” IEEE Trans. on Geoscience and Remote Sensing , vol. 63, pp. 1–19, 2025. [24] R. Feng, K. Zheng, Y. Huang, D. Zhao, M. Jordan, and Z.-J. Zha, “Rank diminishing in deep neural networks,” Advances in Neural Information Processing Systems , vol. 35, pp. 33 054–33 065, 2022. [25] L. Lu, P. Jin, G. Pang, Z. Zhang, and G. E. Karniadakis, “Learning nonlinear operators via deeponet based on the universal approximation theorem of operators,” Nature Machine Intelligence , vol. 3, no. 3, pp. 218–229, 2021. [26] A. Ansuini, A. Laio, J. H. Macke, and D. Zoccolan, “Intrinsic dimension of data representations in deep neural networks,” Advances in Neural Information Processing Systems , vol. 32, 2019. [27] C.-H. Lin, P.-W. Tang, and A. R. Huete, “Quantum feature-empowered deep classification for fast mangrove mapping,” IEEE Trans. on Geo-science and Remote Sensing , vol. 63, pp. 1–13, 2025. 16 
+
+[28] C.-H. Lin, T.-H. Lin, and J. Chanussot, “Quantum information-empowered graph neural network for hyperspectral change detection,” 
+
+IEEE Trans. Geoscience and Remote Sensing , vol. 62, pp. 1–15, 2024. [29] M. C. Caro, H.-Y. Huang, M. Cerezo, K. Sharma, A. Sornborger, L. Cincio, and P. J. Coles, “Generalization in quantum machine learning from few training data,” Nature Comm. , vol. 13, no. 1, p. 4919, 2022. [30] D. Ulyanov, A. Vedaldi, and V. Lempitsky, “Deep image prior,” in Proc. IEEE Conference on Computer Vision and Pattern Recognition , Salt Lake City, UT, USA, Jun. 18-23, 2018, pp. 9446–9454. [31] C.-H. Lin, C.-Y. Chi, L. Chen, D. J. Miller, and Y. Wang, “Detection of sources in non-negative blind source separation by minimum description length criterion,” IEEE Trans. Neural Networks and Learning Systems ,vol. 29, no. 9, pp. 4022–4037, 2018. [32] R. Hang, Q. Liu, and Z. Li, “Spectral super-resolution network guided by intrinsic properties of hyperspectral imagery,” IEEE Trans. Image Processing , vol. 30, pp. 7256–7265, 2021. [33] C.-H. Lin, S.-H. Huang, T.-H. Lin, and P. C. Wu, “Metasurface-empowered snapshot hyperspectral imaging with convex/deep (CODE) small-data learning theory,” Nature Comm. , vol. 14, no. 1, p. 6979, 2023. [34] C.-H. Lin, F. Ma, C.-Y. Chi, and C.-H. Hsieh, “A convex optimization-based coupled nonnegative matrix factorization algorithm for hyperspec-tral and multispectral data fusion,” IEEE Trans. Geoscience and Remote Sensing , vol. 56, no. 3, pp. 1652–1667, 2017. [35] J. B. Greer, “Sparse demixing of hyperspectral images,” IEEE Trans. Image Processing , vol. 21, no. 1, pp. 219–228, 2012. [36] C.-H. Lin and Y.-Y. Chen, “HyperQUEEN: Hyperspectral quantum deep network for image restoration,” IEEE Trans. Geoscience and Remote Sensing , vol. 61, pp. 1–20, 2023. [37] L. Miao and H. Qi, “Endmember extraction from highly mixed data using minimum volume constrained nonnegative matrix factorization,” 
+
+IEEE Trans. on Geoscience and Remote Sensing , vol. 45, no. 3, pp. 765–777, 2007. [38] J. Li, J. M. Bioucas-Dias, A. Plaza, and L. Liu, “Robust collaborative nonnegative matrix factorization for hyperspectral unmixing,” IEEE Trans. on Geoscience and Remote Sensing , vol. 54, no. 10, pp. 6076– 6090, 2016. [39] S. Boyd, N. Parikh, E. Chu, B. Peleato, J. Eckstein et al. , “Distributed optimization and statistical learning via the alternating direction method of multipliers,” Foundations and Trends® in Machine learning , vol. 3, no. 1, pp. 1–122, 2011. [40] C.-Y. Chi, W.-C. Li, and C.-H. Lin, Convex Optimization for Signal Processing and Communications: From Fundamentals to Applications .Boca Raton, FL, USA: CRC Press, 2017. [41] D. Donoho, “De-noising by soft-thresholding,” IEEE Trans. Information Theory , vol. 41, no. 3, pp. 613–627, 1995. [42] ESA, “SPOT-7 Instruments Details,” https://earth.esa.int/eogateway/ missions/spot-7#instruments-section, Accessed: Sep. 4, 2025. [43] C.-H. Lin and J. M. Bioucas-Dias, “An explicit and scene-adapted definition of convex self-similarity prior with application to unsuper-vised Sentinel-2 super-resolution,” IEEE Trans. Geoscience and Remote Sensing , vol. 58, no. 5, pp. 3352–3365, 2020. [44] C.-H. Lin and S.-S. Young, “Signal subspace identification for incom-plete hyperspectral image with applications to various inverse problems,” 
+
+IEEE Trans. Geoscience and Remote Sensing , vol. 62, pp. 1–16, 2024. [45] K. Zhang, W. Zuo, Y. Chen, D. Meng, and L. Zhang, “Beyond a Gaussian denoiser: Residual learning of deep CNN for image denoising,” 
+
+IEEE Trans. Image Processing , vol. 26, no. 7, pp. 3142–3155, 2017. [46] S. Recanatesi, M. Farrell, M. Advani, T. Moore, G. Lajoie, and E. Shea-Brown, “Dimensionality compression and expansion in deep neural networks,” arXiv Preprint arXiv:1906.00443 , 2019. [47] Z. Wang, F. Wang, L. Li, Z. Wang, T. van der Laan, R. C. Leon, J.-K. Huang, and M. Usman, “Quantum kernel learning for small dataset modeling in semiconductor fabrication: Application to ohmic contact,” 
+
+Advanced Science , p. e06213, 2024. [48] J. Gambetta, “IBM’s roadmap for scaling quantum technology,” IBM Research Blog (September 2020) , 2020. [49] S. Sim, P. D. Johnson, and A. Aspuru-Guzik, “Expressibility and entan-gling capability of parameterized quantum circuits for hybrid quantum-classical algorithms,” Advanced Quantum Technologies , vol. 2, no. 12, p. 1900070, 2019. [50] B. Rasti, B. Koirala, P. Scheunders, and P. Ghamisi, “UnDIP: Hyper-spectral unmixing using deep image prior,” IEEE Trans. Geoscience and Remote Sensing , vol. 60, pp. 1–15, 2021. [51] D. P. Kingma and J. Ba, “Adam: A method for stochastic optimization,” in Proc. International Conference for Learning Representations , San Diego, CA, USA, May. 7-9, 2015. [52] C.-H. Lin and J.-T. Lin, “PRIME: Blind multispectral unmixing using virtual quantum prism and convex geometry,” TGRS , 2025. [53] NASA Jet Propulsion Laboratory, “Airborne Visible/Infrared Imaging Spectrometer Data Portal,” https://aviris.jpl.nasa.gov/dataportal/. [54] W.-K. Baek, M.-J. Lee, and H.-S. Jung, “Land cover classification from RGB and NIR satellite images using modified U-net model,” IEEE Access , vol. 12, pp. 69 445–69 455, 2024. [55] C.-H. Lin, J.-T. Chen, Z.-C. Leng, and J.-T. Lin, “COS2A: Conversion from Sentinel-2 to AVIRIS hyperspectral data using interpretable algo-rithm with spectral–spatial duality,” IEEE Transactions on Geoscience and Remote Sensing , vol. 63, pp. 1–16, 2026. [56] R. Hennequin, B. David, and R. Badeau, “Beta-divergence as a subclass of Bregman divergence,” IEEE Signal Processing Letters , vol. 18, no. 2, pp. 83–86, 2011. [57] W. Gao, J. Yang, Y. Zhang, Y. Akoudad, and J. Chen, “SSAF-Net: A spatial-spectral adaptive fusion network for hyperspectral unmixing with endmember variability,” IEEE Trans. on Geoscience and Remote Sensing , vol. 63, pp. 1–15, 2025. [58] ESA Planet Laboratory, “RapidEye Mission Parameters,” https://earth. esa.int/eogateway/missions/rapideye, Accessed: Sep. 4, 2025. [59] R. Gillis, P. Decker, M. Wartes, A. Loveland, and T. Hubbard, “Geologic map of the south-central sagavanirktok quadrangle, north slope, alaska,” 
+
+Report of Investigations , p. 4, 2014. [60] C. R. Burn, “The mackenzie delta: an archetypal permafrost landscape,” in Geomorphological Landscapes of the World . Springer, 2009, pp. 1–12. 
+
+Chia-Hsiang Lin (S’10-M’18-SM’24) received the B.S. degree in electrical engineering and the Ph.D. degree in communications engineering from Na-tional Tsing Hua University (NTHU), Taiwan, in 2010 and 2016, respectively. From 2015 to 2016, he was a Visiting Student of Virginia Tech, Arlington, VA, USA. He is currently a Professor with the Department of Electrical Engineering, National Cheng Kung Uni-versity (NCKU), Taiwan. Before joining NCKU, he held research positions with The Chinese University of Hong Kong, HK (2014 and 2017), NTHU (2016-2017), and the University of Lisbon (ULisboa), Lisbon, Portugal (2017-2018). He was an Assistant Professor with the Center for Space and Remote Sensing Research, National Central University, Taiwan, in 2018, and a Visiting Professor with ULisboa, in 2019. His research interests include network science, quantum computing, convex geometry and optimization, blind signal processing, and imaging science. Dr. Lin received the Emerging Young Scholar Award (The 2030 Cross-Generation Program) from National Science and Technology Council (NSTC), from 2023 to 2027, the Future Technology Award from NSTC, in 2022, the Outstanding Youth Electrical Engineer Award from The Chinese Institute of Electrical Engineering (CIEE), in 2022, the Best Young Professional Member Award from IEEE Tainan Section, in 2021, the Prize Paper Award from IEEE Geoscience and Remote Sensing Society (GRS-S), in 2020, the Top Perfor-mance Award from Social Media Prediction Challenge at ACM Multimedia, in 2020, and The 3rd Place from AIM Real World Super-Resolution Challenge at IEEE International Conference on Computer Vision (ICCV), in 2019. He received the Ministry of Science and Technology (MOST) Young Scholar Fellowship, together with the EINSTEIN Grant Award, from 2018 to 2023. In 2016, he was a recipient of the Outstanding Doctoral Dissertation Award from the Chinese Image Processing and Pattern Recognition Society and the Best Doctoral Dissertation Award from the IEEE GRS-S. 
+
+Si-Sheng Young (S’23) is currently a Ph.D. student with the Intelligent Hyperspectral Computing Lab-oratory (IHCL), National Cheng Kung University (NCKU), Tainan, Taiwan. In 2023 to 2024, he received the Merit Award from The Grand Challenge “Computing for the Fu-ture”, Miin Wu School of Computing, NCKU, “Pan Wen Yuan Scholarship” from Industrial Technology Research Institute, Hsinchu, Taiwan, and “Scholar-ship Pilot Program to Cultivate Outstanding Doctoral Students” from National Science and Technology Council (NSTC), Taipei, Taiwan. His research interests include convex op-timization, deep learning, anomaly detection, and imaging inverse problems.

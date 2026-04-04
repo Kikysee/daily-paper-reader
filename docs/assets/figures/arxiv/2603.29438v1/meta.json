@@ -1,0 +1,158 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-001.webp",
+      "caption": "Figure 3: Processing chain to determine a polyhedral-cone partition of the spectral space. From left to right: observed data (A.) are pre-processed (B.) and classified into m classes (C.). Separation hyperplanes are then computed (D.), inducing k ≥ m polyhedral regions. Top row: image domain; bottom row: spectral space representation (3D view + 2D projection plane P (x⃗, y⃗) below, which allows a better visualization of the data and the three polyhedral regions). Each RGB color is associated with one class.",
+      "page": 6,
+      "index": 1,
+      "width": 945,
+      "height": 472
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-002.webp",
+      "caption": "Table 4: Evaluation of the method on different clustering algorithms (Avg. values, ×10−2).",
+      "page": 11,
+      "index": 2,
+      "width": 950,
+      "height": 200
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-003.webp",
+      "caption": "Table 5: Evaluation of the method robustness to uniform random noise (Avg. values, ×10−2).",
+      "page": 11,
+      "index": 3,
+      "width": 950,
+      "height": 187
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-004.webp",
+      "caption": "Figure 8: Visualizations of the endmember estimates on Samson given by the nine tested blind unmixing algorithms (columns). The ground-truth endmembers of the three materials (rows) are provided in the associated cells as light-gray line plots.",
+      "page": 15,
+      "index": 4,
+      "width": 950,
+      "height": 295
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-005.webp",
+      "caption": "Figure 9: Visualizations of the material abundance estimates on Samson given by the nine tested blind unmixing algorithms (columns). The ground-truth abundance maps of the three materials (rows) are provided in the left column as references.",
+      "page": 15,
+      "index": 5,
+      "width": 950,
+      "height": 294
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-006.webp",
+      "caption": "Figure 1: Bridge between semantic segmentation and hyperspectral unmixing. From the unmixing data, the dominant-material classification map is directly obtained by taking the arg max over the abundances for each pixel. In the opposite way, a model is needed.",
+      "page": 2,
+      "index": 6,
+      "width": 927,
+      "height": 360
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-007.webp",
+      "caption": "Figure 4: Processing chain for computing an abundance estimate. From left to right: given the spectral partition (D.), signed distances to each cone are computed (E.); a change of basis is then applied in the distance space (F.), and the resulting vectors are projected onto the probability simplex (G.). Top: image; middle: spectral space; bottom: distance space. The 2D RGB projection plane P (x⃗, y⃗) shows: polyhedral regions (D.), negative distances in each region (E.), transformed distance vectors (F.) and abundance vectors (G.). Each RGB color is associated with one class. Yellow, magenta and cyan represent separation planes between R-G, R-B and G-B pairs of classes, respectively.",
+      "page": 7,
+      "index": 7,
+      "width": 947,
+      "height": 685
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-008.webp",
+      "caption": "Table 3: The SADs and RMSEs (mean±std over 10 runs per experiment) on the Urban-6 dataset. The best results are shown in bold; the second best are underlined.",
+      "page": 10,
+      "index": 8,
+      "width": 950,
+      "height": 302
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-009.webp",
+      "caption": "Figure 7: The Urban-6 dataset (7a) with its ground-truth (GT) abundance map (7b) and endmembers (7c). In subfigures (7b) and (7c), red is associated with asphalt, green with grass, blue with trees, yellow with roofs, magenta with metal and cyan with dirt.",
+      "page": 14,
+      "index": 9,
+      "width": 949,
+      "height": 330
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-010.webp",
+      "caption": "Figure 14: Visualizations of the classification maps given by the five tested clustering algorithms (columns) over the three hyperspectral datasets (rows). The ground-truth classification maps are provided in the left column as references.",
+      "page": 18,
+      "index": 10,
+      "width": 950,
+      "height": 456
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-011.webp",
+      "caption": "Figure 5: The Samson dataset (5a) with its ground-truth (GT) abundance map (5b) and endmembers (5c). In subfigures (5b) and (5c), red is associated with the soil class, green with trees, and blue with water.",
+      "page": 13,
+      "index": 11,
+      "width": 950,
+      "height": 328
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-012.webp",
+      "caption": "Figure 6: The Jasper Ridge dataset (6a) with its ground-truth (GT) abundance map (6b) and endmembers (6c). In subfigures (6b) and (6c), red is associated with the soil class, green with trees, blue with water and black with roads.",
+      "page": 13,
+      "index": 12,
+      "width": 950,
+      "height": 338
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-013.webp",
+      "caption": "Figure 2: Illustration, in the spectral space, of the standard pipeline for blind linear umixing. 2D cross-sections of a 3D space.",
+      "page": 4,
+      "index": 13,
+      "width": 944,
+      "height": 255
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-014.webp",
+      "caption": "Figure 12: Visualizations of the endmember estimates on Urban-6 given by the nine tested blind unmixing algorithms (columns). The ground-truth endmembers of the six materials (rows) are provided in the associated cells as light-gray line plots.",
+      "page": 17,
+      "index": 14,
+      "width": 950,
+      "height": 556
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-015.webp",
+      "caption": "Figure 13: Visualizations of the material abundance estimates on Urban-6 given by the nine tested blind unmixing algorithms (columns). The ground-truth abundance maps of the six materials (rows) are provided in the left column as references.",
+      "page": 17,
+      "index": 15,
+      "width": 950,
+      "height": 556
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-016.webp",
+      "caption": "Table 1: The SADs and RMSEs (mean±std over 10 runs per experiment) on the Samson dataset. The best results are shown in bold; the second best are underlined.",
+      "page": 9,
+      "index": 16,
+      "width": 950,
+      "height": 212
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-017.webp",
+      "caption": "Table 2: The SADs and RMSEs (mean±std over 10 runs per experiment) on the Jasper Ridge dataset. The best results are shown in bold; the second best are underlined.",
+      "page": 9,
+      "index": 17,
+      "width": 950,
+      "height": 242
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-018.webp",
+      "caption": "Figure 11: Visualizations of the material abundance estimates on Jasper Ridge given by the nine tested blind unmixing algorithms (columns). The ground-truth abundance maps of the four materials (rows) are provided in the left column as references.",
+      "page": 16,
+      "index": 18,
+      "width": 950,
+      "height": 381
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29438v1/fig-019.webp",
+      "caption": "Figure 10: Visualizations of the endmember estimates on Jasper Ridge given by the nine tested blind unmixing algorithms (columns). The ground-truth endmembers of the four materials (rows) are provided in the associated cells as light-gray line plots.",
+      "page": 16,
+      "index": 19,
+      "width": 950,
+      "height": 383
+    }
+  ]
+}

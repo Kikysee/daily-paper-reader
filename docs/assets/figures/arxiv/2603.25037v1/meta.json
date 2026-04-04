@@ -1,0 +1,86 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.25037v1/fig-001.webp",
+      "caption": "Fig. 2: Architecture of the spatiotemporal embedding. A query point (x,y, t) from the original spatiotemporal data cube is processed through a decoupled dual-branch structure designed to address the intrinsic spatiotemporal anisotropy of Earth observations. To preserve high-frequency spatial boundaries, the spatial coordinates (x,y) are queried directly in a static high-resolution 2D HashGrid (bottom). To capture smoother regional spatiotemporal dynamics while reducing temporal striping artifacts, a spatial scaling factor s is applied to generate scaled coordinates (sx,sy, t), which are then fed into a coarse 3D HashGrid (top). The hierarchical descriptors extracted by interpolation, fxy and fT , are concatenated to form the final spatiotemporal mixed embedding vector.",
+      "page": 6,
+      "index": 1,
+      "width": 761,
+      "height": 444
+    },
+    {
+      "url": "assets/figures/arxiv/2603.25037v1/fig-002.webp",
+      "caption": "Fig. 5: High-resolution surface reconstruction under incomplete observations. (a) Mask-and-Restore experiment: Visual comparison between Sentinel-2 snapshots with simulated gaps of varying scales (small, medium, and large; left) and the corresponding GeoNDC reconstructions (right). (b) Reconstruction fidelity in valid regions: Density scatter plots for the Red (B4) and NIR (B8) bands, comparing GeoNDC reconstructions with the original observations in non-masked regions. (c) Recovery accuracy across gap sizes: Quantitative comparison between GeoNDC reconstructions and the ground-truth observations within masked regions for different gap scales. (d) Interpolation baseline comparison: Reconstruction performance of a traditional linear interpolation method over the same masked regions and spectral bands.",
+      "page": 11,
+      "index": 2,
+      "width": 950,
+      "height": 527
+    },
+    {
+      "url": "assets/figures/arxiv/2603.25037v1/fig-003.webp",
+      "caption": "Fig. 7: Planetary-scale compression and queryability. (a) Storage reduction at planetary scale: Storage comparison for the 20-year global MODIS archive. GeoNDC (0.44 GB) achieves an approximately 380 :1 compression ratio relative to the raw double-precision archive (168 GB), and an approximately 95:1 ratio relative to a theoretical Int16 raster baseline (42 GB). (b) Interactive query and visualization: The compressed model supports direct spatiotemporal access on consumer hardware (RTX 4080). The interface shows interactive retrieval of a multi-year phenological trajectory (inset) at a selected pixel in the Amazon. (c) Surface state reconstruction: A global snapshot of the reconstructed NDVI field on June 24, 2007, showing the large-scale vegetation state during Northern Hemisphere summer. (d) Illustrative temporal derivative field: An instantaneous temporal derivative field (∂NDVI/∂ t), computed from the learned neural representation via automatic differentiation. The map shows coherent latitudinal patterns consistent with expected phenological gradients, illustrating a capability inherent to continuous neural representations.",
+      "page": 15,
+      "index": 3,
+      "width": 950,
+      "height": 583
+    },
+    {
+      "url": "assets/figures/arxiv/2603.25037v1/fig-004.webp",
+      "caption": "Fig. 1: Overview of the GeoNDC representation paradigm. Conventional Earth observation archives are typically organized as discrete, file-based raster tiles or chunked arrays across space and time. GeoNDC reformulates such archives as a queryable spatiotemporal neural data cube, enabling unified point and region queries, arbitrary-time reconstruction, and web-based visualization from a single executable representation.",
+      "page": 2,
+      "index": 4,
+      "width": 950,
+      "height": 338
+    },
+    {
+      "url": "assets/figures/arxiv/2603.25037v1/fig-005.webp",
+      "caption": "Fig. 3: The GeoNDC architecture. The framework maps coordinates from the original spatiotemporal data cube into a high-dimensional feature space through spatiotemporal geometric embedding. The resulting mixed embedding vector F is decoded by an MLP to predict the surface state v̂. Model parameters are optimized through backpropagation by comparing the prediction v̂ with the ground-truth value v. To preserve localized high-frequency details, residuals r = v− v̂ whose magnitude exceeds a threshold τ are quantized and stored in a sparse residual package using entropy coding, forming an optional correction layer on top of the base neural representation.",
+      "page": 7,
+      "index": 5,
+      "width": 761,
+      "height": 463
+    },
+    {
+      "url": "assets/figures/arxiv/2603.25037v1/fig-006.webp",
+      "caption": "Fig. 6: Temporal gap-filling in a cloud-affected sub-region (southern China). Top: Two-year NDVI time series at a representative vegetation pixel. Pink shading indicates cloud-masked observation dates. GeoNDC (red curve) closely tracks the original observations (dark line) where data are available and provides continuous reconstruction through cloud-masked gaps. The seasonal phenological cycle is preserved without external gap-filling. Bottom: Spatial comparison on January 30, 2022, when only 16% of pixels are valid. The original NDVI map (left) shows extensive data loss due to winter cloud cover, while GeoNDC (right) reconstructs a spatially complete vegetation field.",
+      "page": 14,
+      "index": 6,
+      "width": 950,
+      "height": 671
+    },
+    {
+      "url": "assets/figures/arxiv/2603.25037v1/fig-007.webp",
+      "caption": "Fig. 4: The GeoNDC unified storage protocol and access pipeline. The GeoNDC Encoder compresses raw spatiotemporal data cubes into a compact .gndc file composed of three components: (1) a Global Geospatial Header that preserves geospatial metadata required for interoperability, including the coordinate reference system (CRS) and temporal indexing information; (2) a Neural Payload containing the quantized parameters of the learned neural field; and (3) an optional Physical Correction Layer that stores validity masks and sparse residuals. The GeoNDC Reader supports direct random access, allowing arbitrary points or regions in space and time, (x,y, t), to be queried without full-volume decompression.",
+      "page": 8,
+      "index": 7,
+      "width": 761,
+      "height": 431
+    },
+    {
+      "url": "assets/figures/arxiv/2603.25037v1/fig-008.webp",
+      "caption": "Table 1: Conceptual positioning of GeoNDC relative to existing geospatial storage, compression, and neural representation paradigms.",
+      "page": 4,
+      "index": 8,
+      "width": 950,
+      "height": 354
+    },
+    {
+      "url": "assets/figures/arxiv/2603.25037v1/fig-009.webp",
+      "caption": "Table 3: Query efficiency comparison between GeoNDC and conventional GeoTIFF raster access on the 2021 MODIS MCD43A4 archive (46 temporal frames). GeoNDC serves all queries from a single neural model covering the full 20-year archive (915 frames), preloaded into GPU memory. GeoTIFF queries read from individual float64 raster files stored on a local NVMe SSD.",
+      "page": 19,
+      "index": 9,
+      "width": 783,
+      "height": 201
+    },
+    {
+      "url": "assets/figures/arxiv/2603.25037v1/fig-010.webp",
+      "caption": "Fig. 8: Shared neural representation of multi-product biophysical variables (LAI and FPAR). (a) Joint representation workflow: Two large discrete GeoTIFF archives (2.32 GB for LAI and 4.88 GB for FPAR) are jointly parameterized into a single compact GeoNDC model (385 MB) through a shared spatiotemporal representation. (b) Interactive product serving: The GeoNDC Viewer interface demonstrates direct rendering and exploration of the compressed high-resolution (20m) HiGLASS tile. (c) Quantitative reconstruction accuracy: Density scatter plots for 4,000 randomly sampled points across diverse seasons show near-perfect agreement between the original and reconstructed values for both LAI (R2 = 0.9967) and FPAR (R2 = 0.9888). (d) Temporal consistency: Comparison of multi-year temporal trajectories shows that the reconstructed series preserves the seasonal amplitude, peak vegetation states, and fine temporal oscillations without introducing obvious smoothing artifacts.",
+      "page": 17,
+      "index": 10,
+      "width": 950,
+      "height": 725
+    }
+  ]
+}

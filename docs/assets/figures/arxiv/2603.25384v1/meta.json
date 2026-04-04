@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.25384v1/fig-001.webp",
+      "caption": "Fig. 5. The qualitative comparisons over the Ottawa dataset. The corresponding multispectral endmembers (i.e., M-endmember) of the nth abundance are shown in the nth subfigure within the rightmost column, where the horizontal and vertical axes represent the spectral bands and reflectance values, respectively.",
+      "page": 11,
+      "index": 1,
+      "width": 1044,
+      "height": 550
+    },
+    {
+      "url": "assets/figures/arxiv/2603.25384v1/fig-002.webp",
+      "caption": "Fig. 4. The qualitative comparisons over the Boulder dataset. The corresponding multispectral endmembers (i.e., M-endmember) of the nth abundance are shown in the nth subfigure within the rightmost column, where the horizontal and vertical axes represent the spectral bands and reflectance values, respectively.",
+      "page": 10,
+      "index": 2,
+      "width": 1044,
+      "height": 550
+    },
+    {
+      "url": "assets/figures/arxiv/2603.25384v1/fig-003.webp",
+      "caption": "Fig. 1. Graphical illustration of the proposed weighted simplex shrinkage (WSS) regularization. Unlike existing volume-minimization types of regularization that blindly promote the volume minimization without considering the sparsity pattern of the abundances, the proposed WSS regularization further takes the sparsity level into consideration. Intuitively, when an endmember ak n corresponds to a highly sparse abundance map at the kth algorithmic iteration, this endmember is geometrically very far away from the data center c. So, the endmember requires a larger force (i.e., a larger weight w3) to draw it to be closer to c at the (k+ 1)th iteration. By contrast, for the relatively dense abundance map (low sparsity), the corresponding endmember just needs to be slightly pushed to the center c, thus requiring a smaller weight (e.g., w1). A larger weight wn will be associated with more orange arrows (denoting a higher force).",
+      "page": 4,
+      "index": 3,
+      "width": 529,
+      "height": 273
+    }
+  ]
+}

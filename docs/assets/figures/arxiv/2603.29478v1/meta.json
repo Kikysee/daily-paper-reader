@@ -1,0 +1,126 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.29478v1/fig-001.webp",
+      "caption": "Table 4 uuantitative evaluation of the real experiment",
+      "page": 25,
+      "index": 1,
+      "width": 946,
+      "height": 223
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29478v1/fig-002.webp",
+      "caption": "Fig. 9 Radar charts of downscaling performance comparison for different land cover categories in the simulation experiment. \"Overall\" represents the aggregate statistics across all land cover categories combined.",
+      "page": 25,
+      "index": 2,
+      "width": 949,
+      "height": 333
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29478v1/fig-003.webp",
+      "caption": "Fig. 3 Main architecture of the CFDN-LST. Tlr denotes low resolution LST, V represents auxiliary variables and Tpred is the predicted LST.",
+      "page": 15,
+      "index": 3,
+      "width": 949,
+      "height": 508
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29478v1/fig-004.webp",
+      "caption": "Fig. 7 Density scatter plots of the official cubic and the proposed LST against SDGSAT-1 LST reference. uuantitative assessed using bias, Root Mean Square Error (RMSE), Spearman’s Rank Correlation (SpearR) and Cross Entropy (CrossENT).",
+      "page": 21,
+      "index": 4,
+      "width": 949,
+      "height": 363
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29478v1/fig-005.webp",
+      "caption": "Fig. 1 Study area and station locations, where 7 station locations are marked with solid black dots.",
+      "page": 7,
+      "index": 5,
+      "width": 956,
+      "height": 621
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29478v1/fig-006.webp",
+      "caption": "Table 7 uuantitative evaluation of components ablation experiments",
+      "page": 29,
+      "index": 6,
+      "width": 946,
+      "height": 248
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29478v1/fig-007.webp",
+      "caption": "Table 3 uuantitative evaluation of the 30 m downscaled results using in situ observations",
+      "page": 22,
+      "index": 7,
+      "width": 943,
+      "height": 617
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29478v1/fig-008.webp",
+      "caption": "Table 2 Detailed information of in situs sites",
+      "page": 10,
+      "index": 8,
+      "width": 946,
+      "height": 460
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29478v1/fig-009.webp",
+      "caption": "Table 6 uuantitative evaluation of the surface variables ablation experiments",
+      "page": 28,
+      "index": 9,
+      "width": 946,
+      "height": 389
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29478v1/fig-010.webp",
+      "caption": "Fig. 5 Large-area mapping of the proposed 30 m LST (left), along with enlarged views of four subregions (right (a)-(d)).",
+      "page": 19,
+      "index": 10,
+      "width": 972,
+      "height": 437
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29478v1/fig-011.webp",
+      "caption": "Fig. 2 Flowchart of the progressive self-training downscaling framework, where LR and HR denote the low- and high-resolution versions in the downscaling process, respectively.",
+      "page": 12,
+      "index": 11,
+      "width": 962,
+      "height": 565
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29478v1/fig-012.webp",
+      "caption": "Table 5 uuantitative assessment of the fine-tuning stages",
+      "page": 27,
+      "index": 12,
+      "width": 946,
+      "height": 310
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29478v1/fig-013.webp",
+      "caption": "Fig. 10 Visual evolution of downscaled LST maps across the three progressive stages. (a)–(c) represent three different subregions.",
+      "page": 27,
+      "index": 13,
+      "width": 947,
+      "height": 508
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29478v1/fig-014.webp",
+      "caption": "Fig. 8 Downscaling results of different methods. (a)–(c) correspond to results from three representative subregions.",
+      "page": 24,
+      "index": 14,
+      "width": 941,
+      "height": 635
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29478v1/fig-015.webp",
+      "caption": "Fig. 4 Schematic of (a) CDAF, (b) LDAR and (c) AHPB. Fx and Fy represent the initial features from two branches and serve as the inputs to CDAF. The outputs are denoted as Fx ′ and Fy ′ . uuery (u), Key(K), and Value(V) are vectors used in the attention mechanism computation.",
+      "page": 16,
+      "index": 15,
+      "width": 941,
+      "height": 693
+    }
+  ]
+}

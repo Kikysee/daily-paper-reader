@@ -1,0 +1,702 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-04T14:58:12.529013+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 9,
+    "deep_cap": 6,
+    "deep_selected": 6,
+    "quick_candidates": 22,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2603.28390v1",
+      "source": "arxiv",
+      "title": "SVH-BD : Synthetic Vegetation Hyperspectral Benchmark Dataset for Emulation of Remote Sensing Images",
+      "abstract": "This dataset provides a large collection of 10,915 synthetic hyperspectral image cubes paired with pixel-level vegetation trait maps, designed to support research in radiative transfer emulation, vegetation trait retrieval, and uncertainty quantification. Each hyperspectral cube contains 211 bands spanning 400--2500 nm at 10 nm resolution and a fixed spatial layout of 64 \\times 64 pixels, offering continuous simulated surface reflectance spectra suitable for emulator development and machine-learning tasks requiring high spectral detail. Vegetation traits were derived by inverting Sentinel-2 Level-2A surface reflectance using a PROSAIL-based lookup-table approach, followed by forward PROSAIL simulations to generate hyperspectral reflectance under physically consistent canopy and illumination conditions. The dataset covers four ecologically diverse regions -- East Africa, Northern France, Eastern India, and Southern Spain -- and includes 5th and 95th percentile uncertainty maps as well as Sentinel-2 scene classification layers. This resource enables benchmarking of inversion methods, development of fast radiative transfer emulators, and studies of spectral--biophysical relationships under controlled yet realistic environmental variability.",
+      "authors": [
+        "Chedly Ben Azizi",
+        "Claire Guilloteau",
+        "Gilles Roussel",
+        "Matthieu Puigt"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "eess.SP"
+      ],
+      "published": "2026-03-30T13:02:42+00:00",
+      "link": "https://arxiv.org/pdf/2603.28390v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "vegetation trait retrieval and PROSAIL simulations",
+      "llm_evidence_cn": "植被性状反演与PROSAIL模拟",
+      "llm_evidence": "植被性状反演与PROSAIL模拟",
+      "canonical_evidence": "植被性状反演与PROSAIL模拟",
+      "llm_tldr_en": "Provides a synthetic hyperspectral dataset for vegetation trait retrieval using radiative transfer models.",
+      "llm_tldr_cn": "提供了一个用于植被性状反演和辐射传输模拟的合成高光谱数据集。",
+      "llm_tldr": "提供了一个用于植被性状反演和辐射传输模拟的合成高光谱数据集。",
+      "llm_tags": [
+        "query:q2"
+      ],
+      "matched_query_tag": "query:q2",
+      "matched_query_text": "crop parameter estimation",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2603.27519v1",
+      "source": "arxiv",
+      "title": "SPROUT: A Scalable Diffusion Foundation Model for Agricultural Vision",
+      "abstract": "Vision Foundation Models (VFM) pre-trained on large-scale unlabeled data have achieved remarkable success on general computer vision tasks, yet typically suffer from significant domain gaps when applied to agriculture. In this context, we introduce $SPROUT$ ($S$calable $P$lant $R$epresentation model via $O$pen-field $U$nsupervised $T$raining), a multi-crop, multi-task agricultural foundation model trained via diffusion denoising. SPROUT leverages a VAE-free Pixel-space Diffusion Transformer to learn rich, structure-aware representations through denoising and enabling efficient end-to-end training. We pre-train SPROUT on a curated dataset of 2.6 million high-quality agricultural images spanning diverse crops, growth stages, and environments. Extensive experiments demonstrate that SPROUT consistently outperforms state-of-the-art web-pretrained and agricultural foundation models across a wide range of downstream tasks, while requiring substantially lower pre-training cost. The code and model are available at https://github.com/UTokyo-FieldPhenomics-Lab/SPROUT.",
+      "authors": [
+        "Shuai Xiang",
+        "Wei Guo",
+        "James Burridge",
+        "Shouyang Liu",
+        "Hao Lu",
+        "Tokihiro Fukatsu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-29T04:55:52+00:00",
+      "link": "https://arxiv.org/pdf/2603.27519v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "agricultural foundation model for multi-crop and multi-task vision",
+      "llm_evidence_cn": "多作物、多任务视觉的农业基础模型",
+      "llm_evidence": "多作物、多任务视觉的农业基础模型",
+      "canonical_evidence": "多作物、多任务视觉的农业基础模型",
+      "llm_tldr_en": "A scalable diffusion foundation model pre-trained on 2.6M images for diverse agricultural vision tasks.",
+      "llm_tldr_cn": "一种在260万张图像上预训练的农业基础模型，适用于多种作物视觉任务。",
+      "llm_tldr": "一种在260万张图像上预训练的农业基础模型，适用于多种作物视觉任务。",
+      "llm_tags": [
+        "query:profile-1:composite"
+      ],
+      "matched_query_tag": "query:profile-1:composite",
+      "matched_query_text": "Papers central to 请帮我查利用遥感技术进行作物参数估计和土壤水分的文章, especially work that connects or combines: soil moisture retrieval; crop parameter estimation; remote sensing technology applications; agricultural remote sensing; Soil moisture retrieval from microwave remote sensing; Using SAR backscatter to estimate crop biophysical parameters like LAI and biomass; Methods for soil moisture retrieval using remote sensing; Applications of remote sensing in agriculture for crop and soil monitoring.",
+      "matched_requirement_id": "req-composite-profile-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.00940v1",
+      "source": "arxiv",
+      "title": "YieldSAT: A Multimodal Benchmark Dataset for High-Resolution Crop Yield Prediction",
+      "abstract": "Crop yield prediction requires substantial data to train scalable models. However, creating yield prediction datasets is constrained by high acquisition costs, heterogeneous data quality, and data privacy regulations. Consequently, existing datasets are scarce, low in quality, or limited to regional levels or single crop types, hindering the development of scalable data-driven solutions. In this work, we release YieldSAT, a large, high-quality, and multimodal dataset for high-resolution crop yield prediction. YieldSAT spans various climate zones across multiple countries, including Argentina, Brazil, Uruguay, and Germany, and includes major crop types, including corn, rapeseed, soybeans, and wheat, across 2,173 expert-curated fields. In total, over 12.2 million yield samples are available, each with a spatial resolution of 10 m. Each field is paired with multispectral satellite imagery, resulting in 113,555 labeled satellite images, complemented by auxiliary environmental data. We demonstrate the potential of large-scale and high-resolution crop yield prediction as a pixel regression task by comparing various deep learning models and data fusion architectures. Furthermore, we highlight open challenges arising from severe distribution shifts in the ground truth data under real-world conditions. To mitigate this, we explore a domain-informed Deep Ensemble approach that exhibits significant performance gains. The dataset is available at https://yieldsat.github.io/.",
+      "authors": [
+        "Miro Miranda",
+        "Deepak Pathak",
+        "Patrick Helber",
+        "Benjamin Bischke",
+        "Hiba Najjar",
+        "Francisco Mena",
+        "Cristhian Sanchez",
+        "Akshay Pai",
+        "Diego Arenas",
+        "Matias Valdenegro-Toro",
+        "Marcela Charfuelan",
+        "Marlon Nuske",
+        "Andreas Dengel"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-01T14:13:23+00:00",
+      "link": "https://arxiv.org/pdf/2604.00940v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "multimodal crop yield prediction dataset",
+      "llm_evidence_cn": "多模态作物产量预测数据集",
+      "llm_evidence": "多模态作物产量预测数据集",
+      "canonical_evidence": "多模态作物产量预测数据集",
+      "llm_tldr_en": "YieldSAT provides a large-scale multimodal dataset for high-resolution crop yield prediction.",
+      "llm_tldr_cn": "YieldSAT提供了一个用于高分辨率作物产量预测的大规模多模态数据集。",
+      "llm_tldr": "YieldSAT提供了一个用于高分辨率作物产量预测的大规模多模态数据集。",
+      "llm_tags": [
+        "query:profile-1:composite"
+      ],
+      "matched_query_tag": "query:profile-1:composite",
+      "matched_query_text": "Papers central to 请帮我查利用遥感技术进行作物参数估计和土壤水分的文章, especially work that connects or combines: soil moisture retrieval; crop parameter estimation; remote sensing technology applications; agricultural remote sensing; Soil moisture retrieval from microwave remote sensing; Using SAR backscatter to estimate crop biophysical parameters like LAI and biomass; Methods for soil moisture retrieval using remote sensing; Applications of remote sensing in agriculture for crop and soil monitoring.",
+      "matched_requirement_id": "req-composite-profile-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.01531v1",
+      "source": "arxiv",
+      "title": "A Conditional Denoising Diffusion Probabilistic Model for RFI Mitigation in Synthetic Aperture Interferometric Radiometer",
+      "abstract": "In Earth remote sensing, spatial-frequency domain visibility samples are inversely transformed into spatial-domain brightness temperature (BT) images through the signal processing pipeline of synthetic aperture interferometric radiometers (SAIR). However, L-band radio-frequency interference (RFI) contaminates the measured visibilities and severely degrades BT image quality, thereby impairing geophysical parameter retrieval. To address this issue, we propose VFDM, a Visibility-Function Diffusion Model based on Denoising Diffusion Probabilistic Models (DDPM), to mitigate RFI in the spatial-frequency domain while preserving fine-scale structures consistent with natural scene statistics. Furthermore, we construct a comprehensive dataset comprising more than ten thousand pairs of RFI-free natural scene visibility sample sets and their corresponding simulated contaminated counterparts, categorized by varying RFI intensities, numbers, and distributions. Finally, comprehensive experiments on both simulated and real-world data demonstrate the effectiveness and robustness of the proposed VFDM-based approach.",
+      "authors": [
+        "Yuankai Luo",
+        "Han Zhou",
+        "Jinlong Hao",
+        "Dong Zhu",
+        "Fei Hu"
+      ],
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "published": "2026-04-02T02:05:46+00:00",
+      "link": "https://arxiv.org/pdf/2604.01531v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "RFI mitigation in L-band radiometer for geophysical parameter retrieval",
+      "llm_evidence_cn": "L波段辐射计射频干扰抑制以进行地球物理参数反演",
+      "llm_evidence": "L波段辐射计射频干扰抑制以进行地球物理参数反演",
+      "canonical_evidence": "L波段辐射计射频干扰抑制以进行地球物理参数反演",
+      "llm_tldr_en": "A diffusion model to mitigate RFI in L-band radiometers, improving the quality of geophysical parameter retrieval.",
+      "llm_tldr_cn": "一种用于L波段辐射计射频干扰抑制的扩散模型，可提高地球物理参数反演的质量。",
+      "llm_tldr": "一种用于L波段辐射计射频干扰抑制的扩散模型，可提高地球物理参数反演的质量。",
+      "llm_tags": [
+        "query:q5"
+      ],
+      "matched_query_tag": "query:q5",
+      "matched_query_text": "Soil moisture retrieval from microwave remote sensing",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2603.25070v1",
+      "source": "arxiv",
+      "title": "An Explainable Ensemble Learning Framework for Crop Classification with Optimized Feature Pyramids and Deep Networks",
+      "abstract": "Agriculture is increasingly challenged by climate change, soil degradation, and resource depletion, and hence requires advanced data-driven crop classification and recommendation solutions. This work presents an explainable ensemble learning paradigm that fuses optimized feature pyramids, deep networks, self-attention mechanisms, and residual networks for bolstering crop suitability predictions based on soil characteristics (e.g., pH, nitrogen, potassium) and climatic conditions (e.g., temperature, rainfall). With a dataset comprising 3,867 instances and 29 features from the Ethiopian Agricultural Transformation Agency and NASA, the paradigm leverages preprocessing methods such as label encoding, outlier removal using IQR, normalization through StandardScaler, and SMOTE for balancing classes. A range of machine learning models such as Logistic Regression, K-Nearest Neighbors, Support Vector Machines, Decision Trees, Random Forest, Gradient Boosting, and a new Relative Error Support Vector Machine are compared, with hyperparameter tuning through Grid Search and cross-validation. The suggested \"Final Ensemble\" meta-ensemble design outperforms with 98.80% accuracy, precision, recall, and F1-score, compared to individual models such as K-Nearest Neighbors (95.56% accuracy). Explainable AI methods, such as SHAP and permutation importance, offer actionable insights, highlighting critical features such as soil pH, nitrogen, and zinc. The paradigm addresses the gap between intricate ML models and actionable agricultural decision-making, fostering sustainability and trust in AI-powered recommendations",
+      "authors": [
+        "Syed Rayhan Masud",
+        "SK Muktadir Hossain",
+        "Md. Ridoy Sarkar",
+        "Mohammad Sakib Mahmood",
+        "Md. Kishor Morol",
+        "Rakib Hossain Sajib"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-03-26T06:13:34+00:00",
+      "link": "https://arxiv.org/pdf/2603.25070v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "crop classification based on soil characteristics and climate",
+      "llm_evidence_cn": "基于土壤特征和气候的作物分类",
+      "llm_evidence": "基于土壤特征和气候的作物分类",
+      "canonical_evidence": "基于土壤特征和气候的作物分类",
+      "llm_tldr_en": "An ensemble learning framework for crop classification and suitability prediction using soil and climate data.",
+      "llm_tldr_cn": "一种利用土壤和气候数据进行作物分类和适宜性预测的集成学习框架。",
+      "llm_tldr": "一种利用土壤和气候数据进行作物分类和适宜性预测的集成学习框架。",
+      "llm_tags": [
+        "query:profile-1:composite"
+      ],
+      "matched_query_tag": "query:profile-1:composite",
+      "matched_query_text": "Papers central to 请帮我查利用遥感技术进行作物参数估计和土壤水分的文章, especially work that connects or combines: soil moisture retrieval; crop parameter estimation; remote sensing technology applications; agricultural remote sensing; Soil moisture retrieval from microwave remote sensing; Using SAR backscatter to estimate crop biophysical parameters like LAI and biomass; Methods for soil moisture retrieval using remote sensing; Applications of remote sensing in agriculture for crop and soil monitoring.",
+      "matched_requirement_id": "req-composite-profile-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2603.27101v1",
+      "source": "arxiv",
+      "title": "PRUE: A Practical Recipe for Field Boundary Segmentation at Scale",
+      "abstract": "Large-scale maps of field boundaries are essential for agricultural monitoring tasks. Existing deep learning approaches for satellite-based field mapping are sensitive to illumination, spatial scale, and changes in geographic location. We conduct the first systematic evaluation of segmentation and geospatial foundation models (GFMs) for global field boundary delineation using the Fields of The World (FTW) benchmark. We evaluate 18 models under unified experimental settings, showing that a U-Net semantic segmentation model outperforms instance-based and GFM alternatives on a suite of performance and deployment metrics. We propose a new segmentation approach that combines a U-Net backbone, composite loss functions, and targeted data augmentations to enhance performance and robustness under real-world conditions. Our model achieves a 76\\% IoU and 47\\% object-F1 on FTW, an increase of 6\\% and 9\\% over the previous baseline. Our approach provides a practical framework for reliable, scalable, and reproducible field boundary delineation across model design, training, and inference. We release all models and model-derived field boundary datasets for five countries.",
+      "authors": [
+        "Gedeon Muhawenayo",
+        "Caleb Robinson",
+        "Subash Khanal",
+        "Zhanpei Fang",
+        "Isaac Corley",
+        "Alexander Wollam",
+        "Tianyi Gao",
+        "Leonard Strnad",
+        "Ryan Avery",
+        "Lyndon Estes",
+        "Ana M. Tárano",
+        "Nathan Jacobs",
+        "Hannah Kerner"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-03-28T02:47:46+00:00",
+      "link": "https://arxiv.org/pdf/2603.27101v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "agricultural field boundary segmentation",
+      "llm_evidence_cn": "农田边界分割",
+      "llm_evidence": "农田边界分割",
+      "canonical_evidence": "农田边界分割",
+      "llm_tldr_en": "PRUE offers a practical approach for large-scale satellite-based field boundary mapping.",
+      "llm_tldr_cn": "PRUE为大规模卫星农田边界制图提供了一种实用的分割方法。",
+      "llm_tldr": "PRUE为大规模卫星农田边界制图提供了一种实用的分割方法。",
+      "llm_tags": [
+        "query:profile-1:composite"
+      ],
+      "matched_query_tag": "query:profile-1:composite",
+      "matched_query_text": "Papers central to 请帮我查利用遥感技术进行作物参数估计和土壤水分的文章, especially work that connects or combines: soil moisture retrieval; crop parameter estimation; remote sensing technology applications; agricultural remote sensing; Soil moisture retrieval from microwave remote sensing; Using SAR backscatter to estimate crop biophysical parameters like LAI and biomass; Methods for soil moisture retrieval using remote sensing; Applications of remote sensing in agriculture for crop and soil monitoring.",
+      "matched_requirement_id": "req-composite-profile-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2603.25006v1",
+      "source": "arxiv",
+      "title": "Improving Fine-Grained Rice Leaf Disease Detection via Angular-Compactness Dual Loss Learning",
+      "abstract": "Early detection of rice leaf diseases is critical, as rice is a staple crop supporting a substantial share of the world's population. Timely identification of these diseases enables more effective intervention and significantly reduces the risk of large-scale crop losses. However, traditional deep learning models primarily rely on cross entropy loss, which often struggles with high intra-class variance and inter-class similarity, common challenges in plant pathology datasets. To tackle this, we propose a dual-loss framework that combines Center Loss and ArcFace Loss to enhance fine-grained classification of rice leaf diseases. The method is applied into three state-of-the-art backbone architectures: InceptionNetV3, DenseNet201, and EfficientNetB0 trained on the public Rice Leaf Dataset. Our approach achieves significant performance gains, with accuracies of 99.6%, 99.2% and 99.2% respectively. The results demonstrate that angular margin-based and center-based constraints substantially boost the discriminative strength of feature embeddings. In particular, the framework does not require major architectural modifications, making it efficient and practical for real-world deployment in farming environments.",
+      "authors": [
+        "Md. Rokon Mia",
+        "Rakib Hossain Sajib",
+        "Abdullah Al Noman",
+        "Abir Ahmed",
+        "B M Taslimul Haque"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-03-26T04:07:08+00:00",
+      "link": "https://arxiv.org/pdf/2603.25006v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "fine-grained rice leaf disease detection",
+      "llm_evidence_cn": "细粒度水稻叶片病害检测",
+      "llm_evidence": "细粒度水稻叶片病害检测",
+      "canonical_evidence": "细粒度水稻叶片病害检测",
+      "llm_tldr_en": "A dual-loss framework to improve the accuracy of fine-grained rice leaf disease detection in agriculture.",
+      "llm_tldr_cn": "一种双损失框架，用于提高农业中细粒度水稻叶片病害检测的准确性。",
+      "llm_tldr": "一种双损失框架，用于提高农业中细粒度水稻叶片病害检测的准确性。",
+      "llm_tags": [
+        "query:q4"
+      ],
+      "matched_query_tag": "query:q4",
+      "matched_query_text": "agricultural remote sensing",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2603.27504v1",
+      "source": "arxiv",
+      "title": "Transferring Physical Priors into Remote Sensing Segmentation via Large Language Models",
+      "abstract": "Semantic segmentation of remote sensing imagery is fundamental to Earth observation. Achieving accurate results requires integrating not only optical images but also physical variables such as the Digital Elevation Model (DEM), Synthetic Aperture Radar (SAR) and Normalized Difference Vegetation Index (NDVI). Recent foundation models (FMs) leverage pre-training to exploit these variables but still depend on spatially aligned data and costly retraining when involving new sensors. To overcome these limitations, we introduce a novel paradigm for integrating domain-specific physical priors into segmentation models. We first construct a Physical-Centric Knowledge Graph (PCKG) by prompting large language models to extract physical priors from 1,763 vocabularies, and use it to build a heterogeneous, spatial-aligned dataset, Phy-Sky-SA. Building on this foundation, we develop PriorSeg, a physics-aware residual refinement model trained with a joint visual-physical strategy that incorporates a novel physics-consistency loss. Experiments on heterogeneous settings demonstrate that PriorSeg improves segmentation accuracy and physical plausibility without retraining the FMs. Ablation studies verify the effectiveness of the Phy-Sky-SA dataset, the PCKG, and the physics-consistency loss.",
+      "authors": [
+        "Yuxi Lu",
+        "Kunqi Li",
+        "Zhidong Li",
+        "Xiaohan Su",
+        "Biao Wu",
+        "Chenya Huang",
+        "Bin Liang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-29T03:55:11+00:00",
+      "link": "https://arxiv.org/pdf/2603.27504v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "integrating SAR and NDVI for remote sensing segmentation",
+      "llm_evidence_cn": "整合SAR和NDVI进行遥感分割",
+      "llm_evidence": "整合SAR和NDVI进行遥感分割",
+      "canonical_evidence": "整合SAR和NDVI进行遥感分割",
+      "llm_tldr_en": "Integrates physical priors like SAR and NDVI into remote sensing segmentation using LLMs.",
+      "llm_tldr_cn": "利用大语言模型将SAR和NDVI等物理先验整合到遥感图像分割中。",
+      "llm_tldr": "利用大语言模型将SAR和NDVI等物理先验整合到遥感图像分割中。",
+      "llm_tags": [
+        "query:profile-1:composite"
+      ],
+      "matched_query_tag": "query:profile-1:composite",
+      "matched_query_text": "Papers central to 请帮我查利用遥感技术进行作物参数估计和土壤水分的文章, especially work that connects or combines: soil moisture retrieval; crop parameter estimation; remote sensing technology applications; agricultural remote sensing; Soil moisture retrieval from microwave remote sensing; Using SAR backscatter to estimate crop biophysical parameters like LAI and biomass; Methods for soil moisture retrieval using remote sensing; Applications of remote sensing in agriculture for crop and soil monitoring.",
+      "matched_requirement_id": "req-composite-profile-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.25037v1",
+      "source": "arxiv",
+      "title": "GeoNDC: A Queryable Neural Data Cube for Planetary-Scale Earth Observation",
+      "abstract": "Satellite Earth observation has accumulated massive spatiotemporal archives essential for monitoring environmental change, yet these remain organized as discrete raster files, making them costly to store, transmit, and query. We present GeoNDC, a queryable neural data cube that encodes planetary-scale Earth observation data as a continuous spatiotemporal implicit neural field, enabling on-demand queries and continuous-time reconstruction without full decompression. Experiments on a 20-year global MODIS MCD43A4 reflectance record (7 bands, 5\\,km, 8-day sampling) show that the learned representation supports direct spatiotemporal queries on consumer hardware. On Sentinel-2 imagery (10\\,m), continuous temporal parameterization recovers cloud-free dynamics with high fidelity ($R^2 > 0.85$) under simulated 2-km cloud occlusion. On HiGLASS biophysical products (LAI and FPAR), GeoNDC attains near-perfect accuracy ($R^2 > 0.98$). The representation compresses the 20-year MODIS archive to 0.44\\,GB -- approximately 95:1 relative to an optimized Int16 baseline -- with high spectral fidelity (mean $R^2 > 0.98$, mean RMSE $= 0.021$). These results suggest GeoNDC offers a unified AI-native representation for planetary-scale Earth observation, complementing raw archives with a compact, analysis-ready data layer integrating query, reconstruction, and compression in a single framework.",
+      "authors": [
+        "Jianbo Qi",
+        "Mengyao Li",
+        "Baogui Jiang",
+        "Yidan Chen",
+        "Qiao Wang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "physics.geo-ph"
+      ],
+      "published": "2026-03-26T05:16:42+00:00",
+      "link": "https://arxiv.org/pdf/2603.25037v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "planetary-scale Earth observation data cube",
+      "llm_evidence_cn": "行星级地球观测数据立方体",
+      "llm_evidence": "行星级地球观测数据立方体",
+      "canonical_evidence": "行星级地球观测数据立方体",
+      "llm_tldr_en": "Creates a neural data cube for efficient storage and querying of global Earth observation archives.",
+      "llm_tldr_cn": "构建了一个神经数据立方体，用于高效存储和查询全球地球观测档案。",
+      "llm_tldr": "构建了一个神经数据立方体，用于高效存储和查询全球地球观测档案。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.25935v1",
+      "source": "arxiv",
+      "title": "DenseSwinV2: Channel Attentive Dual Branch CNN Transformer Learning for Cassava Leaf Disease Classification",
+      "abstract": "This work presents a new Hybrid Dense SwinV2, a two-branch framework that jointly leverages densely connected convolutional features and hierarchical customized Swin Transformer V2 (SwinV2) representations for cassava disease classification. The proposed framework captures high resolution local features through its DenseNet branch, preserving the fine structural cues and also allowing for effective gradient flow. Concurrently, the customized SwinV2 models global contextual dependencies through the idea of shifted-window self attention, which enables the capture of long range interactions critical in distinguishing between visually similar lesions. Moreover, an attention channel-squeeze module is employed for each CNN Transformer stream independently to emphasize discriminative disease related responses and suppress redundant or background driven activations. Finally, these discriminative channels are fused to achieve refined representations from the dense local and SwinV2 global correlated strengthened feature maps, respectively. The proposed Dense SwinV2 utilized a public cassava leaf disease dataset of 31000 images, comprised of five diseases, including brown streak, mosaic, green mottle, bacterial blight, and normal leaf conditions. The proposed Dense SwinV2 demonstrates a significant classification accuracy of 98.02 percent with an F1 score of 97.81 percent, outperforming well-established convolutional and transformer models. These results underline the fact that Hybrid Dense SwinV2 offers robustness and practicality in the field level diagnosis of cassava disease and real world challenges related to occlusion, noise, and complex backgrounds.",
+      "authors": [
+        "Shah Saood",
+        "Saddam Hussain Khan"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-03-26T22:03:44+00:00",
+      "link": "https://arxiv.org/pdf/2603.25935v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "cassava leaf disease classification using CNN and Transformer",
+      "llm_evidence_cn": "利用CNN和Transformer进行木薯叶片病害分类",
+      "llm_evidence": "利用CNN和Transformer进行木薯叶片病害分类",
+      "canonical_evidence": "利用CNN和Transformer进行木薯叶片病害分类",
+      "llm_tldr_en": "A hybrid CNN-Transformer framework for accurate classification of cassava leaf diseases in agricultural monitoring.",
+      "llm_tldr_cn": "一种结合CNN和Transformer的混合框架，用于农业监测中木薯叶片病害的准确分类。",
+      "llm_tldr": "一种结合CNN和Transformer的混合框架，用于农业监测中木薯叶片病害的准确分类。",
+      "llm_tags": [
+        "query:q4"
+      ],
+      "matched_query_tag": "query:q4",
+      "matched_query_text": "agricultural remote sensing",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2603.29271v1",
+      "source": "arxiv",
+      "title": "ConInfer: Context-Aware Inference for Training-Free Open-Vocabulary Remote Sensing Segmentation",
+      "abstract": "Training-free open-vocabulary remote sensing segmentation (OVRSS), empowered by vision-language models, has emerged as a promising paradigm for achieving category-agnostic semantic understanding in remote sensing imagery. Existing approaches mainly focus on enhancing feature representations or mitigating modality discrepancies to improve patch-level prediction accuracy. However, such independent prediction schemes are fundamentally misaligned with the intrinsic characteristics of remote sensing data. In real-world applications, remote sensing scenes are typically large-scale and exhibit strong spatial as well as semantic correlations, making isolated patch-wise predictions insufficient for accurate segmentation. To address this limitation, we propose ConInfer, a context-aware inference framework for OVRSS that performs joint prediction across multiple spatial units while explicitly modeling their inter-unit semantic dependencies. By incorporating global contextual cues, our method significantly enhances segmentation consistency, robustness, and generalization in complex remote sensing environments. Extensive experiments on multiple benchmark datasets demonstrate that our approach consistently surpasses state-of-the-art per-pixel VLM-based baselines such as SegEarth-OV, achieving average improvements of 2.80% and 6.13% on open-vocabulary semantic segmentation and object extraction tasks, respectively. The implementation code is available at: https://github.com/Dog-Yang/ConInfer",
+      "authors": [
+        "Wenyang Chen",
+        "Zhanxuan Hu",
+        "Yaping Zhang",
+        "Hailong Ning",
+        "Yonghang Tai"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-31T05:12:02+00:00",
+      "link": "https://arxiv.org/pdf/2603.29271v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "open-vocabulary remote sensing segmentation",
+      "llm_evidence_cn": "开放词汇遥感分割",
+      "llm_evidence": "开放词汇遥感分割",
+      "canonical_evidence": "开放词汇遥感分割",
+      "llm_tldr_en": "Improves remote sensing image segmentation using context-aware inference and vision-language models.",
+      "llm_tldr_cn": "利用上下文感知推理和视觉语言模型改进遥感图像分割。",
+      "llm_tldr": "利用上下文感知推理和视觉语言模型改进遥感图像分割。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.25037v2",
+      "source": "arxiv",
+      "title": "GeoNDC: A Queryable Neural Data Cube for Planetary-Scale Earth Observation",
+      "abstract": "Satellite Earth observation has accumulated massive spatiotemporal archives essential for monitoring environmental change, yet these remain organized as discrete raster files, making them costly to store, transmit, and query. We present GeoNDC, a queryable neural data cube that encodes planetary-scale Earth observation data as a continuous spatiotemporal implicit neural field, enabling on-demand queries and continuous-time reconstruction without full decompression. Experiments on a 20-year global MODIS MCD43A4 reflectance record ($8016 \\times 4008$ pixels, 7 bands, 915 temporal frames) show that the learned representation supports direct spatiotemporal queries on consumer hardware. On Sentinel-2 imagery (10 m), continuous temporal parameterization recovers cloud-free dynamics with high fidelity ($R^2 > 0.85$) under simulated 2-km cloud occlusion. On HiGLASS biophysical products (LAI and FPAR), GeoNDC attains near-perfect accuracy ($R^2 > 0.98$). The representation compresses the 20-year MODIS archive to 0.44\\,GB -- approximately 95:1 relative to an optimized Int16 baseline -- with high spectral fidelity (mean $R^2 > 0.98$, mean RMSE $= 0.021$). These results suggest GeoNDC offers a unified AI-native representation for planetary-scale Earth observation, complementing raw archives with a compact, analysis-ready data layer integrating query, reconstruction, and compression in a single framework.",
+      "authors": [
+        "Jianbo Qi",
+        "Mengyao Li",
+        "Baogui Jiang",
+        "Yidan Chen",
+        "Xihan Mu",
+        "Qiao Wang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "physics.geo-ph"
+      ],
+      "published": "2026-03-26T05:16:42+00:00",
+      "link": "https://arxiv.org/pdf/2603.25037v2",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "planetary-scale Earth observation data cube",
+      "llm_evidence_cn": "行星级地球观测数据立方体",
+      "llm_evidence": "行星级地球观测数据立方体",
+      "canonical_evidence": "行星级地球观测数据立方体",
+      "llm_tldr_en": "Presents a neural data cube for efficient storage and querying of massive Earth observation archives.",
+      "llm_tldr_cn": "提出一种神经数据立方体，用于高效存储和查询海量地球观测档案。",
+      "llm_tldr": "提出一种神经数据立方体，用于高效存储和查询海量地球观测档案。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.29630v2",
+      "source": "arxiv",
+      "title": "BigEarthNet.txt: A Large-Scale Multi-Sensor Image-Text Dataset and Benchmark for Earth Observation",
+      "abstract": "Vision-langugage models (VLMs) have shown strong performance in computer vision (CV), yet their performance on remote sensing (RS) data remains limited due to the lack of large-scale, multi-sensor RS image-text datasets with diverse textual annotations. Existing datasets predominantly include aerial Red-Green-Blue imagery, with short or weakly grounded captions, and provide limited diversity in annotation types. To address this limitation, we introduce BigEarthNet$.$txt, a large-scale, multi-sensor image-text dataset designed to advance instruction-driven image-text learning in Earth observation across multiple tasks. BigEarthNet$.$txt contains 464044 co-registered Sentinel-1 synthetic aperture radar and Sentinel-2 multispectral images with 9.6M text annotations, including: i) geographically anchored captions describing land-use/land-cover (LULC) classes, their spatial relations, and environmental context; ii) visual question answering pairs relevant for different tasks; and iii) referring expression detection instructions for bounding box prediction. Through a comparative statistical analysis, we demonstrate that BigEarthNet$.$txt surpasses existing RS image-text datasets in textual richness and annotation type variety. We further establish a manually-verified benchmark split to evaluate VLMs in RS and CV. The results show the limitations of these models on tasks that involve complex LULC classes, whereas fine-tuning using BigEarthNet$.$txt results in consistent performance gains across all considered tasks.",
+      "authors": [
+        "Johann-Ludwig Herzog",
+        "Mathis Jürgen Adler",
+        "Leonard Hackel",
+        "Yan Shu",
+        "Angelos Zavras",
+        "Ioannis Papoutsis",
+        "Paolo Rota",
+        "Begüm Demir"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-31T11:52:49+00:00",
+      "link": "https://arxiv.org/pdf/2603.29630v2",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "multi-sensor RS dataset including Sentinel-1 SAR and Sentinel-2",
+      "llm_evidence_cn": "包含Sentinel-1 SAR和Sentinel-2的多传感器遥感数据集",
+      "llm_evidence": "包含Sentinel-1 SAR和Sentinel-2的多传感器遥感数据集",
+      "canonical_evidence": "包含Sentinel-1 SAR和Sentinel-2的多传感器遥感数据集",
+      "llm_tldr_en": "A large-scale multi-sensor Earth observation dataset supporting SAR and multispectral analysis for various tasks.",
+      "llm_tldr_cn": "一个大规模多传感器地学观测数据集，支持SAR和多光谱数据的多种任务分析。",
+      "llm_tldr": "一个大规模多传感器地学观测数据集，支持SAR和多光谱数据的多种任务分析。",
+      "llm_tags": [
+        "query:profile-1:composite"
+      ],
+      "matched_query_tag": "query:profile-1:composite",
+      "matched_query_text": "Papers central to 请帮我查利用遥感技术进行作物参数估计和土壤水分的文章, especially work that connects or combines: soil moisture retrieval; crop parameter estimation; remote sensing technology applications; agricultural remote sensing; Soil moisture retrieval from microwave remote sensing; Using SAR backscatter to estimate crop biophysical parameters like LAI and biomass; Methods for soil moisture retrieval using remote sensing; Applications of remote sensing in agriculture for crop and soil monitoring.",
+      "matched_requirement_id": "req-composite-profile-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2603.29438v1",
+      "source": "arxiv",
+      "title": "Polyhedral Unmixing: Bridging Semantic Segmentation with Hyperspectral Unmixing via Polyhedral-Cone Partitioning",
+      "abstract": "Semantic segmentation and hyperspectral unmixing are two central problems in spectral image analysis. The former assigns each pixel a discrete label corresponding to its material class, whereas the latter estimates pure material spectra, called endmembers, and, for each pixel, a vector representing material abundances in the observed scene. Despite their complementarity, these two problems are usually addressed independently. This paper aims to bridge these two lines of work by formally showing that, under the linear mixing model, pixel classification by dominant materials induces polyhedral-cone regions in the spectral space. We leverage this fundamental property to propose a direct segmentation-to-unmixing pipeline that performs blind hyperspectral unmixing from any semantic segmentation by constructing a polyhedral-cone partition of the space that best fits the labeled pixels. Signed distances from pixels to the estimated regions are then computed, linearly transformed via a change of basis in the distance space, and projected onto the probability simplex, yielding an initial abundance estimate. This estimate is used to extract endmembers and recover final abundances via matrix pseudo-inversion. Because the segmentation method can be freely chosen, the user gains explicit control over the unmixing process, while the rest of the pipeline remains essentially deterministic and lightweight. Beyond improving interpretability, experiments on three real datasets demonstrate the effectiveness of the proposed approach when associated with appropriate clustering algorithms, and show consistent improvements over recent deep and non-deep state-of-the-art methods. The code is available at: https://github.com/antoine-bottenmuller/polyhedral-unmixing",
+      "authors": [
+        "Antoine Bottenmuller",
+        "Etienne Decencière",
+        "Petr Dokládal"
+      ],
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV"
+      ],
+      "published": "2026-03-31T08:46:09+00:00",
+      "link": "https://arxiv.org/pdf/2603.29438v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "hyperspectral unmixing for material abundance",
+      "llm_evidence_cn": "高光谱解混以估计物质丰度",
+      "llm_evidence": "高光谱解混以估计物质丰度",
+      "canonical_evidence": "高光谱解混以估计物质丰度",
+      "llm_tldr_en": "Bridges semantic segmentation and hyperspectral unmixing to improve material classification and abundance estimation.",
+      "llm_tldr_cn": "将语义分割与高光谱解混相结合，以改进物质分类和丰度估计。",
+      "llm_tldr": "将语义分割与高光谱解混相结合，以改进物质分类和丰度估计。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.25384v1",
+      "source": "arxiv",
+      "title": "Underdetermined Blind Source Separation via Weighted Simplex Shrinkage Regularization and Quantum Deep Image Prior",
+      "abstract": "As most optical satellites remotely acquire multispectral images (MSIs) with limited spatial resolution, multispectral unmixing (MU) becomes a critical signal processing technology for analyzing the pure material spectra for high-precision classification and identification. Unlike the widely investigated hyperspectral unmixing (HU) problem, MU is much more challenging as it corresponds to the underdetermined blind source separation (BSS) problem, where the number of sources is larger than the number of available multispectral bands. In this article, we transform MU into its overdetermined counterpart (i.e., HU) by inventing a radically new quantum deep image prior (QDIP), which relies on the virtual band-splitting task conducted on the observed MSI for generating the virtual hyperspectral image (HSI). Then, we perform HU on the virtual HSI to obtain the virtual hyperspectral sources. Though HU is overdetermined, it still suffers from the ill-posed issue, for which we employ the convex geometry structure of the HSI pixels to customize a weighted simplex shrinkage (WSS) regularizer to mitigate the ill-posedness. Finally, the virtual hyperspectral sources are spectrally downsampled to obtain the desired multispectral sources. The proposed geometry/quantum-empowered MU (GQ-$μ$) algorithm can also effectively obtain the spatial abundance distribution map for each source, where the geometric WSS regularization is adaptively and automatically controlled based on the sparsity pattern of the abundance tensor. Simulation and real-world data experiments demonstrate the practicality of our unsupervised GQ-$μ$ algorithm for the challenging MU task. Ablation study demonstrates the strength of QDIP, not achieved by classical DIP, and validates the mechanics-inspired WSS geometry regularizer.",
+      "authors": [
+        "Chia-Hsiang Lin",
+        "Si-Sheng Young"
+      ],
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV"
+      ],
+      "published": "2026-03-26T12:34:35+00:00",
+      "link": "https://arxiv.org/pdf/2603.25384v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "multispectral unmixing for high-precision classification",
+      "llm_evidence_cn": "用于高精度分类的多光谱解混",
+      "llm_evidence": "用于高精度分类的多光谱解混",
+      "canonical_evidence": "用于高精度分类的多光谱解混",
+      "llm_tldr_en": "A quantum deep image prior method for multispectral unmixing to improve material identification.",
+      "llm_tldr_cn": "一种用于多光谱解混的量子深度图像先验方法，旨在提高物质识别精度。",
+      "llm_tldr": "一种用于多光谱解混的量子深度图像先验方法，旨在提高物质识别精度。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.29478v1",
+      "source": "arxiv",
+      "title": "30-meter Land Surface Temperature from Landsat via Progressive Self-Training Downscaling",
+      "abstract": "Land surface temperature (LST) is a critical parameter for characterizing surface energy balance and hydrothermal processes. While Landsat provides invaluable LST observations at medium spatial resolution for over 40 years, its native spatial resolution of thermal bands (e.g., 100 m) remains insufficient compared to its 30 m optical bands, failing to meet the demands of fine-scale studies. To address this issues, this study proposes a progressive self-training framework for downscaling Landsat LST to 30 m without relying on fine-scale ground truth, while maintaining minimal data dependence. The framework progressively optimizes a cross-modal fusion network to refine thermal details in a coarse-to-fine manner, characterized by one pre-training and two fine-tuning stages. Spatial validation against SDGSAT-1 30 m LST and temporal validation using in situ measurements confirm its reliability and accuracy, with both station-averaged MAE and RMSE outperforming the official cubic product by approximately 0.4 K. Further performance comparison experiments demonstrate that the proposed framework consistently reconstructs coherent fine-scale thermal patterns while preserving spatial heterogeneity. Multi spatial resolution evaluations and ablation studies verify the effectiveness of the proposed strategy and network design. Overall, the framework provides a stable pathway for enhancing the spatial resolution of Landsat LST, providing fine-resolution data support for fine-scale surface process studies and localized environmental monitoring.",
+      "authors": [
+        "Huanfeng Shen",
+        "Chan Li",
+        "Menghui Jiang",
+        "Penghai Wu",
+        "Guanhao Zhang",
+        "Tian Xie"
+      ],
+      "primary_category": "physics.ao-ph",
+      "categories": [
+        "physics.ao-ph"
+      ],
+      "published": "2026-03-31T09:24:58+00:00",
+      "link": "https://arxiv.org/pdf/2603.29478v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "land surface temperature downscaling for hydrothermal processes",
+      "llm_evidence_cn": "用于水热过程的地表温度降尺度",
+      "llm_evidence": "用于水热过程的地表温度降尺度",
+      "canonical_evidence": "用于水热过程的地表温度降尺度",
+      "llm_tldr_en": "A self-training framework to downscale Landsat LST to 30m for fine-scale hydrothermal studies.",
+      "llm_tldr_cn": "一种将Landsat地表温度降尺度至30米的自训练框架，用于精细尺度水热研究。",
+      "llm_tldr": "一种将Landsat地表温度降尺度至30米的自训练框架，用于精细尺度水热研究。",
+      "llm_tags": [
+        "query:profile-1:composite"
+      ],
+      "matched_query_tag": "query:profile-1:composite",
+      "matched_query_text": "Papers central to 请帮我查利用遥感技术进行作物参数估计和土壤水分的文章, especially work that connects or combines: soil moisture retrieval; crop parameter estimation; remote sensing technology applications; agricultural remote sensing; Soil moisture retrieval from microwave remote sensing; Using SAR backscatter to estimate crop biophysical parameters like LAI and biomass; Methods for soil moisture retrieval using remote sensing; Applications of remote sensing in agriculture for crop and soil monitoring.",
+      "matched_requirement_id": "req-composite-profile-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.29630v1",
+      "source": "arxiv",
+      "title": "BigEarthNet.txt: A Large-Scale Multi-Sensor Image-Text Dataset and Benchmark for Earth Observation",
+      "abstract": "Vision-langugage models (VLMs) have shown strong performance in computer vision (CV), yet their performance on remote sensing (RS) data remains limited due to the lack of large-scale, multi-sensor RS image-text datasets with diverse textual annotations. Existing datasets predominantly include aerial Red-Green-Blue imagery, with short or weakly grounded captions, and provide limited diversity in annotation types. To address this limitation, we introduce BigEarthNet.txt, a large-scale, multi-sensor image-text dataset designed to advance instruction-driven image-text learning in Earth observation across multiple tasks. BigEarthNet.txt contains 464044 co-registered Sentinel-1 synthetic aperture radar and Sentinel-2 multispectral images with 9.6M text annotations, including: i) geographically anchored captions describing land-use/land-cover (LULC) classes, their spatial relations, and environmental context; ii) visual question answering pairs relevant for different tasks; and iii) referring expression detection instructions for bounding box prediction. Through a comparative statistical analysis, we demonstrate that BigEarthNet.txt surpasses existing RS image-text datasets in textual richness and annotation type variety. We further establish a manually-verified benchmark split to evaluate VLMs in RS and CV. The results show the limitations of these models on tasks that involve complex LULC classes, whereas fine-tuning using BigEarthNet.txt results in consistent performance gains across all considered tasks.",
+      "authors": [
+        "Johann-Ludwig Herzog",
+        "Mathis Jürgen Adler",
+        "Leonard Hackel",
+        "Yan Shu",
+        "Angelos Zavras",
+        "Ioannis Papoutsis",
+        "Paolo Rota",
+        "Begüm Demir"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-31T11:52:49+00:00",
+      "link": "https://arxiv.org/pdf/2603.29630v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Multi-sensor dataset including Sentinel-1 SAR and Sentinel-2 multispectral for Earth observation",
+      "llm_evidence_cn": "包含用于地球观测的Sentinel-1 SAR和Sentinel-2多光谱数据的多传感器数据集",
+      "llm_evidence": "包含用于地球观测的Sentinel-1 SAR和Sentinel-2多光谱数据的多传感器数据集",
+      "canonical_evidence": "包含用于地球观测的Sentinel-1 SAR和Sentinel-2多光谱数据的多传感器数据集",
+      "llm_tldr_en": "Introduces BigEarthNet.txt, a large-scale multi-sensor dataset to advance VLM performance in Earth observation.",
+      "llm_tldr_cn": "引入BigEarthNet.txt，这是一个大规模多传感器数据集，旨在提升视觉语言模型在地球观测中的性能。",
+      "llm_tldr": "引入BigEarthNet.txt，这是一个大规模多传感器数据集，旨在提升视觉语言模型在地球观测中的性能。",
+      "llm_tags": [
+        "query:profile-1:composite"
+      ],
+      "matched_query_tag": "query:profile-1:composite",
+      "matched_query_text": "Papers central to 请帮我查利用遥感技术进行作物参数估计和土壤水分的文章, especially work that connects or combines: soil moisture retrieval; crop parameter estimation; remote sensing technology applications; agricultural remote sensing; Soil moisture retrieval from microwave remote sensing; Using SAR backscatter to estimate crop biophysical parameters like LAI and biomass; Methods for soil moisture retrieval using remote sensing; Applications of remote sensing in agriculture for crop and soil monitoring.",
+      "matched_requirement_id": "req-composite-profile-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
