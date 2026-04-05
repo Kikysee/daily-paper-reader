@@ -1,0 +1,78 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.27645v1/fig-001.webp",
+      "caption": "Figure 1. (a) Our analysis reveals that category identification errors are the primary bottleneck in OVCD. (b) OpenDPR performs prototype retrieval with change proposals in the visual space to enhance category identification, while OpenDPR-W further improves change localization with additional weak supervision.",
+      "page": 1,
+      "index": 1,
+      "width": 503,
+      "height": 433
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27645v1/fig-002.webp",
+      "caption": "Table 1. Comparison of unsupervised methods on building change detection datasets. “—” denotes data missing. Best and secondbest scores are marked in bold and in underline, respectively.",
+      "page": 6,
+      "index": 2,
+      "width": 460,
+      "height": 337
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27645v1/fig-003.webp",
+      "caption": "Table 2. Comparison of weakly supervised methods on building change detection datasets. “Params” denotes trainable parameters.",
+      "page": 6,
+      "index": 3,
+      "width": 498,
+      "height": 257
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27645v1/fig-004.webp",
+      "caption": "Table 3. Comparison of OVCD methods on the semantic change detection dataset Hi-UCD mini. “—” denotes that the score is close to 0.",
+      "page": 7,
+      "index": 4,
+      "width": 1046,
+      "height": 317
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27645v1/fig-005.webp",
+      "caption": "Figure 5. Prototype sensitivity analysis on OpenDPR and OpenDPR-W. Only OpenDPR is evaluated on SECOND.",
+      "page": 8,
+      "index": 5,
+      "width": 501,
+      "height": 327
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27645v1/fig-006.webp",
+      "caption": "Table 5. Ablation study on (mean) IoU of different components in OpenDPR. L, W , H, and S denote the LEVIR-CD, WHU-CD, Hi-UCD mini, and SECOND datasets, respectively.",
+      "page": 8,
+      "index": 6,
+      "width": 492,
+      "height": 329
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27645v1/fig-007.webp",
+      "caption": "Table 6. Ablation study on (mean) IoU of S2C and its integration with training-free OVCD models. L, W , and H denote the LEVIR-CD, WHU-CD, and Hi-UCD mini datasets, respectively.",
+      "page": 8,
+      "index": 7,
+      "width": 498,
+      "height": 259
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27645v1/fig-008.webp",
+      "caption": "Figure 2. Overview of the proposed training-free OpenDPR and its weakly supervised variant OpenDPR-W. OpenDPR constructs a semantically diverse prototype set offline and identifies categories by retrieving change proposals against prototypes in the visual space during inference. OpenDPR-W further improves change localization by integrating the weakly supervised S2C module.",
+      "page": 4,
+      "index": 8,
+      "width": 1044,
+      "height": 579
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27645v1/fig-009.webp",
+      "caption": "Figure 3. Overview of the proposed S2C, which refines CAMbased change pseudo-labels using spatial priors from VFMs and adapts them to binary change localization through pre-training.",
+      "page": 5,
+      "index": 9,
+      "width": 496,
+      "height": 252
+    }
+  ]
+}

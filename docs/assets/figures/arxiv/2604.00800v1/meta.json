@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.00800v1/fig-001.webp",
+      "caption": "Figure 4. Domain distribution shifts. We show the histograms of input (top) and predicted (bottom) variables on the train, validation, and test sets for each of the three dataset splits. We plot the histogram of annual temperature in the top row to represent the climatic distribution, and the date of Larch needle emergence in the bottom row to illustrate the shift in predicted variables.",
+      "page": 6,
+      "index": 1,
+      "width": 1036,
+      "height": 356
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00800v1/fig-002.webp",
+      "caption": "Figure 2. Phenology modeling (conceptual illustration). A phenology model takes a set of climatic and environmental covariates and predicts phenological dates. In this paper we consider models operating on daily meteorological time series to predict the date of 50% leaf development of 5 different tree species.",
+      "page": 2,
+      "index": 2,
+      "width": 1036,
+      "height": 354
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00800v1/fig-003.webp",
+      "caption": "Figure 5. Per-species performance Histogram of R2 per species for PhenoFormer and our model. Five species are: horse chestnut (HCH), European beech (BEE), European larch (LAR), common spruce (SPR), and hazel (HZL).",
+      "page": 7,
+      "index": 3,
+      "width": 1036,
+      "height": 354
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00800v1/fig-004.webp",
+      "caption": "Table 1. Main results of three data splits. We compare MIRANDA with PhenoFormer and five domain adaptation baselines across three data splits representing progressively stronger distribution shifts: Chronological, Annual Temperature, and Elevation. For reference, we also report the performance of the process-based model (M1), highlighted in blue. Evaluation metrics include R2 (↑), RMSE (↓), and MAE (↓). Results are averaged over 10 repetitions and 5 tree species, and we also report the standard deviation of R2 in brackets.",
+      "page": 7,
+      "index": 4,
+      "width": 1026,
+      "height": 226
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00800v1/fig-005.webp",
+      "caption": "Figure 3. Method overview. Our framework addresses domain shifts in phenology modelling via two key components: rank-based adversarial training on intermediate features and hybrid layer normalization. Purple elements correspond to the main phenology prediction pathway: the learnable tokens L are concatenated with the input time series Ei and processed by two transformer encoder layers (t1 and t2). The resulting global embeddings of the learnable tokens, denoted as Gi, are then fed into the decoder d to predict the target date using the regression loss LMSE. We apply rank-based adversarial learning on the mid-level features Zi (green), where a discriminator p is trained with a ranking loss Lrank through a gradient reversal layer to encourage domain-invariant mid-level features. Meanwhile, we replace the standard layer normalization in t2 with our hybrid layer normalization (blue), which preserves domain-dependent variations in high-level representations.",
+      "page": 4,
+      "index": 5,
+      "width": 1036,
+      "height": 356
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00800v1/fig-006.webp",
+      "caption": "Figure 1. Scatter plot of predicted (y-axis) vs true dates (x-axis) before (left, with R2 = 24%) and after (right, with R2 = 26%) adaptation for phenology task leaf unholding of horse chestnut in elevation data split.",
+      "page": 12,
+      "index": 6,
+      "width": 1036,
+      "height": 356
+    }
+  ]
+}

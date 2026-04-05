@@ -1,0 +1,94 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.00495v1/fig-001.webp",
+      "caption": "Figure 3: Generation process of MP and MN .",
+      "page": 6,
+      "index": 1,
+      "width": 575,
+      "height": 571
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00495v1/fig-002.webp",
+      "caption": "Figure 6: Visualization of the segmentation process of PC-SAM across different datasets, where red points denote negative point prompts and green points denote positive point prompts.",
+      "page": 11,
+      "index": 2,
+      "width": 968,
+      "height": 595
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00495v1/fig-003.webp",
+      "caption": "Figure 7: Ablation studies on the erosion kernel size in the morphological opening operation and the point prompt sampling density.",
+      "page": 11,
+      "index": 3,
+      "width": 968,
+      "height": 327
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00495v1/fig-004.webp",
+      "caption": "Figure 1: PC-SAM not only integrates fully automatic segmentation and interactive segmentation within a unified framework, but also, by explicitly constraining the refinement range of point prompts to their corresponding patches, enables local road segmentation.",
+      "page": 2,
+      "index": 4,
+      "width": 968,
+      "height": 402
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00495v1/fig-005.webp",
+      "caption": "Figure 4: Visualization of the model’s performance. In the figure, red points represent negative prompts, and green points represent positive prompts.",
+      "page": 7,
+      "index": 5,
+      "width": 976,
+      "height": 270
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00495v1/fig-006.webp",
+      "caption": "Figure 5: Pipeline of morphological opening and point prompt sampling for segmentation refinement.",
+      "page": 7,
+      "index": 6,
+      "width": 965,
+      "height": 334
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00495v1/fig-007.webp",
+      "caption": "Table 4: Quality of high-recall masks across different datasets.",
+      "page": 10,
+      "index": 7,
+      "width": 960,
+      "height": 225
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00495v1/fig-008.webp",
+      "caption": "Table 3: Quantitative performance of PC-SAM for removing local erroneous road regions with negative point prompts on the DeepGlobe, Massachusetts Roads, and CHN6-CUG datasets.",
+      "page": 10,
+      "index": 8,
+      "width": 964,
+      "height": 314
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00495v1/fig-009.webp",
+      "caption": "Figure 2: Overall pipeline. Stage 1 performs fully automatic road segmentation, producing both a high-recall road mask and a standard road mask. Stage 2 performs mask removal: based on the image and the fully automatic segmentation mask, users can select regions of no interest and false positive areas using negative point prompts, and the model removes the corresponding road mask regions according to these negative prompts. Stage 3 performs mask addition: based on the high-recall road mask and the mask produced in Stage 2, users can select regions of interest and false negative areas using positive point prompts, and the model segments these regions according to the positive prompts. Finally, the masks from Stage 2 and Stage 3 are fused to obtain the final segmentation result.",
+      "page": 3,
+      "index": 9,
+      "width": 877,
+      "height": 550
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00495v1/fig-010.webp",
+      "caption": "Table 5: Experimental results of different mask fusion strategies.",
+      "page": 12,
+      "index": 10,
+      "width": 960,
+      "height": 335
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00495v1/fig-011.webp",
+      "caption": "Table 2: Quantitative performance of PC-SAM for segmenting difficult local road regions missed by automatic segmentation using positive point prompts on the DeepGlobe, Massachusetts Roads, and CHN6-CUG datasets.",
+      "page": 9,
+      "index": 11,
+      "width": 960,
+      "height": 224
+    }
+  ]
+}

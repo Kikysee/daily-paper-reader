@@ -1,0 +1,86 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.00082v1/fig-001.webp",
+      "caption": "Figure 1: Example of CRTM BTs, observed BTs, and innovations in Kelvin. These observations are for channel 1 of the ATMS sensor (23.8 GHz) on January 4, 2023 and were obtained directly from the UFS replay repository.",
+      "page": 6,
+      "index": 1,
+      "width": 943,
+      "height": 242
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00082v1/fig-002.webp",
+      "caption": "Figure 5: Percent change in RMSE by channel for different input features on the ocean",
+      "page": 15,
+      "index": 2,
+      "width": 943,
+      "height": 316
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00082v1/fig-003.webp",
+      "caption": "Table 1: The number of input and output features used for each deep-learned model formulation.",
+      "page": 7,
+      "index": 3,
+      "width": 943,
+      "height": 781
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00082v1/fig-004.webp",
+      "caption": "Figure 2: Model level vs. pressure level for model states with sparser vertical levels.",
+      "page": 7,
+      "index": 4,
+      "width": 529,
+      "height": 529
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00082v1/fig-005.webp",
+      "caption": "Table 4: RMSE on the test set for different input features. All results shown are for",
+      "page": 14,
+      "index": 5,
+      "width": 943,
+      "height": 487
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00082v1/fig-006.webp",
+      "caption": "Figure 4: RMSE on the test set for different number of model levels. All results shown are for models trained to predict innovations on the ‘all’ scene and are in Kelvin. The temperature sounding bands (channels 5-15) have the lowest errors, while the surface sounding bands (channels 1-4 and 16-17) have the highest errors and the humidity sounding bands (channels 18-22) have errors of medium magnitudes.",
+      "page": 13,
+      "index": 6,
+      "width": 876,
+      "height": 296
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00082v1/fig-007.webp",
+      "caption": "Table 3: RMSE between the predicted innovations and the actual innovations for each",
+      "page": 12,
+      "index": 7,
+      "width": 943,
+      "height": 274
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00082v1/fig-008.webp",
+      "caption": "Figure 3: Predicted innovations for each of the three deep-learned model formulations on ATMS channel 1 on January 4, 2023. Top: true innovations, Middle: predicted innovations, Bottom: predicted minus true. Models were trained with 127 model levels on the “all” scene and results are shown in Kelvin.",
+      "page": 12,
+      "index": 8,
+      "width": 974,
+      "height": 762
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00082v1/fig-009.webp",
+      "caption": "Table 2: Number of samples in each scene for training/validation/testing split in 2022 and one representative day, January 4, 2023.",
+      "page": 9,
+      "index": 9,
+      "width": 943,
+      "height": 183
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00082v1/fig-010.webp",
+      "caption": "Table 5: RMSE on the test set for different model sizes and architectures. All results",
+      "page": 16,
+      "index": 10,
+      "width": 946,
+      "height": 558
+    }
+  ]
+}
