@@ -1,0 +1,276 @@
+Title: FSKD: Monocular Forest Structure Inference via LiDAR-to-RGBI Knowledge Distillation
+
+URL Source: https://arxiv.org/pdf/2604.01766v1
+
+Published Time: Fri, 03 Apr 2026 00:45:38 GMT
+
+Number of Pages: 18
+
+Markdown Content:
+# FSKD : Monocular F orest S tructure Inference via LiDAR-to-RGBI K nowledge Distillation 
+
+Taimur Khan 1,2⋆, Hannes Feilhauer 2, and Muhammad Jazib Zafar 3 
+
+> 1
+
+Helmholtz Centre for Environmental Research – UFZ, Halle (Saale), Germany 
+
+taimur.khan@ufz.de  
+
+> 2
+
+Leipzig University, Leipzig, Germany  
+
+> 3
+
+Georg-August University of G¨ ottingen, G¨ ottingen, Germany 
+
+Abstract. Very High Resolution (VHR) forest structure data at individual-tree scale is essential for carbon, biodiversity, and ecosystem monitor-ing. Still, airborne LiDAR remains costly and infrequent despite be-ing the reference for forest structure metrics like Canopy Height Model (CHM), Plant Area Index (PAI), and Foliage Height Diversity (FHD). We propose FSKD : a LiDAR-to-RGB-Infrared (RGBI) knowledge distil-lation (KD) framework in which a multi-modal teacher fuses RGBI im-agery with LiDAR-derived planar metrics and vertical profiles via cross-attention, and an RGBI-only SegFormer student learns to reproduce these outputs. Trained on 384 km 2 of forests in Saxony, Germany (20 cm ground sampling distance (GSD)) and evaluated on eight geographically distinct test tiles, the student achieves state-of-the-art (SOTA) zero-shot CHM performance (MedAE 4.17 m, R2=0.51, IoU 0.87), outperforming HRCHM/DAC baselines by 29–46% in MAE (5.81 m vs. 8.14–10.84 m) with stronger correlation coefficients (0.713 vs. 0.166–0.652). Ablations show that multi-modal fusion improves performance by 10–26% over RGBI-only training, and that asymmetric distillation with appropriate model capacity is critical. The method jointly predicts CHM, PAI, and FHD, a multi-metric capability not provided by current monocular CHM estimators, although PAI/FHD transfer remains region-dependent and benefits from local calibration. The framework also remains effective un-der temporal mismatch (winter LiDAR, summer RGBI), removing strict co-acquisition constraints and enabling scalable 20 cm operational moni-toring for workflows such as Digital Twin Germany and national Digital Orthophoto programs. 
+
+Code + Models: TBA upon publication. 
+
+Data: TBA upon publication. 
+
+Keywords: Forest structure · Knowledge distillation · LiDAR · RGBI orthoimages · Monocular dense prediction 
+
+# 1 Introduction 
+
+Forest structure mapping is a 3D perception problem that underpins carbon ac-counting, biodiversity monitoring, and ecosystem analysis [22,27]. Airborne Li- 
+
+> ⋆
+
+Corresponding author.  
+
+> arXiv:2604.01766v1 [cs.CV] 2 Apr 2026 2T. Khan et al.
+
+DAR remains the reference source for fine-scale canopy geometry, but repeated campaigns are costly and typically infrequent [13,33]. In contrast, very-high-resolution (VHR) aerial RGBI imagery is collected routinely (e.g., 20 cm DOP coverage in Germany [4]) (Figure 1). This creates a clear computer vision ques-tion: how much 3D forest structure can be recovered from single-view optical imagery alone [2]? Recent work has shown that monocular canopy height mapping is feasible. Two representative and directly comparable estimators are HRCHM [38] and DAC [34,43], both designed for CHM prediction from RGB imagery. These are important advances, but they remain height-only methods and do not explicitly target richer vertical structure descriptors. Specifically, HRCHM couples a DINOv2-style representation with a dense prediction decoder for high-resolution CHM mapping [38,31], while DAC adapts Depth Anything v2 representations to canopy height estimation with substan-tially lower model complexity [34,43]. Together, they establish strong monocular CHM baselines, but neither is designed to predict multi-metric vertical structure. That limitation is operationally important. Forest monitoring needs canopy height (CHM), but also metrics such as Plant Area Index (PAI) and Foliage Height Diversity (FHD), which reflect canopy layering and ecosystem function [22]. These quantities are only weakly observable in a single nadir image, so direct RGBI-only supervision is underconstrained for robust transfer. We therefore use learning with privileged information [40] and knowledge dis-tillation [21,18]. During training, a multi-modal teacher uses RGBI plus LiDAR-derived planar and vertical cues; during inference, a student runs on RGBI only. The design is motivated by cross-modal transfer results in autonomous driving, where LiDAR-aware teachers improve monocular students on geometric tasks [9,8,24,26,15]. Our framework predicts CHM, PAI, and FHD at 20 cm resolution from RGBI input. We train and evaluate on public data [17] with geographically separated splits to test zero-shot regional transfer. The intended use is practical: frequent structure-map refreshes between LiDAR campaigns for operational workflows such as Digital Twin Germany [3]. This paper makes three contributions: 
+
+– A LiDAR-to-RGBI teacher–student distillation framework for dense forest structure prediction. 
+
+– A multi-target monocular setup (CHM, PAI, FHD), extending beyond height-only inference. 
+
+– A CV-oriented evaluation against strong monocular CHM baselines. 
+
+# 2 Data and Methods 3 Study Area 
+
+Our experiments are conducted in Saxony (Germany), where forests cover roughly 28% of the state (about 520,000 ha) and include both conifer-dominated and FSKD 3
+
+Fig. 1: Multi-modal data acquisition and forest structure derivation framework. (a) RGBI orthophotos and LiDAR are acquired at different times. (b) Inputs are spatially aligned in 2 km × 2 km tiles. (c) LiDAR provides privi-leged structural supervision (CHM, PAI, FHD, PAD) for teacher training, while the deployed student uses RGBI only. broadleaf systems [12,20]. This diversity makes the region suitable for testing both dense structural prediction and cross-region transfer behavior. We use ninety-six paired RGBI–LiDAR tiles (2 km × 2 km each; 384 km 2 to-tal). To reduce spatial leakage, we enforce a geographic split into eighty training, eight validation, and eight test tiles, with test locations held out from training regions (Figure 2). Sampling is stratified by CORINE forest composition [11], yielding a mix dominated by conifer and broadleaf classes with a smaller mixed-forest fraction. 
+
+# 4 Data Sources 
+
+Aerial Orthophotos (RGBI) We use 20 cm GSD four-band orthophotos (R, G, B, NIR) from GeoSN DOP products [17]. These images represent the operational modality that is available at high refresh rate and large area coverage under national orthophoto programs [4]. The selected tiles are primarily leaf-on (2022– 2023). 
+
+Airborne LiDAR Point Clouds Co-registered LiDAR (LAS/LAZ) is taken from GeoSN products [16]. Acquisition dates are not fully aligned with RGBI (mostly leaf-off LiDAR, typically 2017–2023), which reflects realistic deployment con-ditions rather than ideal co-acquisition. The LiDAR tiles have a mean point density of 15.82 points/m 2, ranging from 0.98 to 24.47 points/m 2.4 T. Khan et al. 
+
+Fig. 2: Study area and dataset split. Spatial distribution of the 96 RGBI– LiDAR tile pairs in Saxony and neighboring areas with geographically separated train/validation/test regions. 
+
+# 5 Data Preprocessing and Spatial Alignment 
+
+Training uses 224 ×224 patches (about 45 m × 45 m at 20 cm GSD) sampled from forested areas. This patch-based setup keeps training tractable while preserving local canopy structure, as shown in Figure 3. For each patch we prepare: 
+
+– RGBI imagery (4 channels), 
+
+– planar LiDAR-derived targets (CHM, PAI, FHD) using equations from Ta-ble 1, 
+
+– vertical Plant Area Density (PAD) profiles. LiDAR point clouds are processed with PyForestScan [32]. Metrics are first computed on a 1 m grid, then aligned to the RGBI reference grid (EPSG:25833), and resampled to 20 cm where required [6,35]. PAD profiles are retained as ver-tical supervision and stored at lower effective spatial resolution for memory-efficient training [19]. A validity mask removes invalid pixels before loss compu-tation so supervision is restricted to spatially reliable regions. FSKD 5
+
+A sample pre-processing log file is provided in the supplementary material. Table 1: Common canopy structure metrics and their equations[22,32]. 
+
+Metric Equation 
+
+CHM - planar H canopy = max(HAG points )PAD - vertical PAD i−1,i = ln 
+
+ Se
+
+> St
+
+ 1
+
+> k∆z
+
+PAI - planar PAI = Pni=1 PAD i−1,i 
+
+FHD - planar FHD = − Pni=1 pi ln( pi)P05, P50, P95 Pxx is the height below which xx % of all points lie. 
+
+Fig. 3: Preprocessing and alignment overview. RGBI and LiDAR products are transformed into pixel-aligned multi-modal training tensors for distillation. 
+
+# 6 Model Architecture 
+
+As shown in Figure 4, we train a multi-modal teacher and an RGBI-only student. Both output dense CHM, PAI, and FHD maps. 
+
+6.1 Teacher Model (Multi-Branch Fusion) 
+
+The teacher fuses three streams: RGBI features (Swin), planar LiDAR features (ViT), and vertical PAD features (MLP encoder), followed by cross-attention fusion and an FPN decoder [30,10,25,28]. This model is used as a privileged-information supervisor during distillation. Figure 5 illustrates the teacher feature maps and fusion flow. 6 T. Khan et al. 
+
+Fig. 4: Teacher–student architecture. A LiDAR-aware teacher supervises an RGBI-only student for CHM/PAI/FHD prediction. 
+
+6.2 Student Model (Monocular RGBI Estimator) 
+
+The student uses SegFormer (MiT-B2/B5) with four-channel RGBI input and a lightweight regression head [42]. Multi-scale encoder features are fused, then mapped to the three output metrics. A 1 ×1 adapter projects student features into the teacher fusion space for feature distillation. Figure 6 illustrates the feature hierarchy and flow. Student(RGBI) → [ ˜CHM , ˜PAI , ˜FHD] .
+
+# 7 Knowledge Distillation & Training 
+
+Training protocol Training is two-stage: (1) train the teacher on multi-modal inputs, then (2) freeze the teacher and train the student with supervised and distillation losses. 
+
+7.1 Stage 1: Teacher 
+
+Teacher optimization uses robust regression over CHM/PAI/FHD plus a CHM gradient term: 
+
+Lteacher = X
+
+> c∈{ CHM ,PAI ,FHD }
+
+Lrobust (Y tc , Y c) + λgrad Lgrad (Y t
+
+> CHM
+
+, Y CHM ). (1) FSKD 7
+
+Fig. 5: Teacher feature flow. Multi-modal feature extraction, fusion, and de-coding in the teacher network. Here, Lrobust is a masked Smooth L1 (Huber) regression loss applied per channel with equal weighting across CHM/PAI/FHD. It is quadratic for small residuals and linear for large residuals, improving robustness to outliers while preserving fine-structure sensitivity. 
+
+Lgrad = ∇xY t 
+
+> CHM
+
+− ∇ xYCHM 1 + ∇y Y t 
+
+> CHM
+
+− ∇ y YCHM 1 , (2) where ∇x and ∇y are finite-difference gradients. We include this term because CHM contains the strongest spatial gradient information among the targets; matching CHM gradients improves edge and transition fidelity (e.g., canopy boundaries) and reduces over-smoothing [39]. We use λgrad = 0 .1. The teacher is optimized with AdamW (lr=1 × 10 −4, weight decay=1 × 10 −4). 8 T. Khan et al. 
+
+Fig. 6: Student feature flow. Multi-scale RGBI encoding and dense regression in the RGBI-only student. 
+
+7.2 Stage 2: Student with KD 
+
+Student training combines supervised output fitting, output distillation from the frozen teacher, feature matching, and vertical-proxy alignment: 
+
+Lout = ∥Y s − Y ∥1 ,LKD = SmoothL1( Y s, Y t),Lfeat = Proj( F s
+
+> fused
+
+) − F t 
+
+> fused
+> 22
+
+,Lvert = Proj( F s 
+
+> fused
+
+↓) − F t 
+
+> fused
+> 22
+
+.
+
+(3) 
+
+Lstudent = wsup Lout + wKD LKD + wfeat Lfeat + wvert Lvert . (4) We keep wsup = 1 and use auxiliary weights in a low range (0–0.5). The selected setting is wKD = 0 .5, wfeat = 0 .1, and wvert = 0 .1, with KD warm-up ( wKD = 0 in early epochs). The student is optimized with AdamW (lr=2 × 10 −4, weight decay=1 × 10 −4). 
+
+Teacher symbols Y : LiDAR-derived targets; Y t: teacher predictions; Lrobust :masked Smooth L1 regression; Lgrad : CHM gradient consistency; λgrad : gradient-loss weight. 
+
+Student symbols Y s: student predictions; F t
+
+> fused
+
+, F s
+
+> fused
+
+: teacher/student fused features; ↓: downsampling to teacher fusion scale; Proj: 1 ×1 adapter; w·: student loss weights. We use standard geometric/color augmentation (random patch sampling/crop-ping only) and spatially separated train/validation/test splits (Tile-pairs:80/8/8). A sample training log file is provided in the supplementary material. FSKD 9
+
+# 8 Evaluation 
+
+8.1 Metrics 
+
+On validation tiles, we report MAE, RMSE, Bias, and R2 to track fit quality and systematic error during model selection. On held-out test tiles, we additionally report MedAE, Pearson R, IoU, F1, and rMAE to characterize zero-shot transfer in both continuous-value accuracy and spatial agreement. 
+
+8.2 Ablations 
+
+We run comprehensive targeted ablations (Table 2) to measure the contribu-tion of distillation, fusion, backbone scale, and optimization choices [36]. The model weights for each ablation are provided in the supplementary material for reproducibility and further analysis. Table 2: Ablation studies for model architecture and training parameters              
+
+> Study What to remove/test Why
+> No distillation loss Remove KD loss →only RGBI supervision. Does distillation actually help? Asymmetric learning 1. Train teacher for fewer epochs than student. 2. Train teacher for more epochs than student. Does symmetry matter in learn-ing representations? Without multimodal fusion (no cross-attention) Remove multi-modal fusion. Does multi-stage feature fusion via cross-attention matter? Batch size sensitivity Try batch size 8 vs 64. Important for generalization vs. memory. Backbone size Try MiT-B2 vs B5. Smaller vs larger (impact on ca-pacity).
+
+8.3 SOTA CHM Baselines 
+
+For CHM, we compare against two monocular SOTA families: HRCHM [38] and DAC [34,43]. We use the model weights provided with the original papers for inference on test tiles. Following the setup in the full paper, HRCHM is evaluated in both native 20 cm and scale-matched 60 cm variants, and DAC outputs are converted to metric CHM before scoring. All baseline outputs are then reprojected to the same 20 cm evaluation grid for pixel-wise comparison. 10 T. Khan et al. 
+
+8.4 Inference Pipeline 
+
+At deployment, the student performs sliding-window inference over full RGBI tiles and stitches predictions into seamless georeferenced CHM/PAI/FHD rasters. 
+
+# 9 Results 10 Quantitative Performance 
+
+All results are provided as tables in the supplementary material. 
+
+10.1 Core Outcomes 
+
+We report compact headline metrics here, then interpret what they imply for transfer behavior. 
+
+Validation summary On validation data, the student retained most of the teacher signal for CHM (teacher/student MAE: 3.88/4.95 m; R2: 0.69/0.61) while re-ducing bias magnitude. For FHD, teacher and student were nearly identical (R2 = 0 .54 for both), indicating that this target transfers stably under the training distribution. For PAI, the student outperformed the teacher (MAE: 0.48 vs 0.59; R2: 0.31 vs 0.05), which suggests that distillation helped suppress teacher-specific noise and regularize the final predictor. 
+
+Zero-shot test summary On the geographically held-out test set, CHM general-ized best. It reached MAE 5.81 m, MedAE 4.17 m, R = 0 .713, R2 = 0 .509, IoU 0.870, and F1 0.930. The main residual error mode is underestimation in taller canopies (bias -2.57 m), but overall spatial structure remains robust. FHD and PAI transferred less reliably (FHD: MAE 0.42, R = 0 .391, rMAE 29.7%; PAI: MAE 0.46, R = 0 .361, rMAE 44.0%). This gap relative to CHM is consistent with domain shift for vertically complex descriptors: height cues transfer more readily across regions than canopy-layer composition cues. 
+
+Fig. 7: Quantitative agreement on held-out test tiles. CHM shows the strongest correlation; PAI and FHD remain harder under zero-shot transfer. FSKD 11 
+
+10.2 Ablation Summary 
+
+Ablations reveal three stable effects. First, multi-modal fusion is a primary driver: removing it degrades all targets, with the largest relative drop for FHD. Second, asymmetric distillation with synchronized teacher/student schedules performs best; extended student training against a weak teacher leads to instabil-ity. Third, MiT-B2 is more reliable than MiT-B5 in this data regime, indicating that capacity must match supervision density rather than simply scale upward. The full ablation results table is provided in the supplementary material. 
+
+10.3 SOTA CHM Comparison 
+
+Against HRCHM and DAC baselines, our model achieved the best CHM accu-racy on the same test tiles (Table 3): MAE 5.81 m versus 8.14 m (HRCHM-60cm), 9.88 m (HRCHM-full-res), and 10.84 m (DAC-B). Correlation was also strongest ( R = 0 .713 vs 0.652/0.452/0.166), with lower systematic underestima-tion. These results support the central claim: LiDAR-informed distillation trans-fers stronger structural priors than purely monocular baselines in this setting, even when all methods are evaluated on the same 20 cm target grid. Importantly, this is a stringent comparison: the baselines are strong CHM-focused monocular methods, whereas our model is trained for joint CHM/-PAI/FHD prediction and evaluated in a geographically held-out regime. Table 3: Comparison of evaluation metrics with state-of-the-art methods on CHM prediction.                                                          
+
+> Model MAE (m) MedAE (m) RMSE (m) Bias (m) RIoU F1
+> FSKD (MiT-B2/b64) 5,81 ±1,44 4,17 ±1,62 7,90 -2,57 0,713 0,870 0,930 HRCHM-aerial (Full Res) 9,88 ±2,49 8,83 ±3,93 12,89 -8,55 0,452 0,733 0,842 HRCHM-aerial (60cm) 8,14 ±2,64 7,46 ±3,01 10,34 -6,94 0,652 0,834 0,907 DAC-B 10 ,84 ±2,38 10 ,99 ±3,09 12,56 -6,49 0,166 0,801 0,888
+
+# 11 Qualitative Performance 
+
+Qualitative maps match the quantitative pattern. CHM predictions preserve stand boundaries and canopy gradients robustly, while PAI/FHD preserve broad structure but compress dynamic range in difficult regions. Figure 8 illustrates tile-scale behavior, whereas Figure 9 and Figure 10 highlights fine-structure transfer at patch scale for different forest types. 12 T. Khan et al. 
+
+Fig. 8: Representative tile. Normalised (for comparison) student CHM/-PAI/FHD maps are spatially coherent with LiDAR-derived references, with strongest agreement for CHM. 
+
+# 12 Discussion 
+
+What works The teacher–student setup reliably transfers LiDAR-informed ge-ometry into an RGBI-only model. The strongest and most stable signal is CHM, where both quantitative and qualitative evidence indicates usable cross-region performance at 20 cm output resolution. 
+
+Where it breaks PAI and FHD are more sensitive to regional canopy composition and acquisition mismatch. Their weaker transfer indicates that monocular cues alone are insufficient for universally calibrated vertical-structure inference with-out broader training coverage, stronger priors, or explicit adaptation [14,37,5]. 
+
+Operational implications The student is lightweight at inference and can refresh structural layers whenever new RGBI imagery is available, which is useful for workflows such as Digital Twin Germany [3]. In practice, this is best treated as a LiDAR-complement strategy: frequent optical updates between less frequent Li-DAR campaigns, with periodic recalibration to maintain vertical-metric fidelity. 
+
+Near-term extensions Priority next steps are: (1) expand training coverage across more Saxony tiles/years/seasons (leaf-on vs. leaf-off), (2) add uncertainty FSKD 13 
+
+Fig. 9: Broadleaved patch comparison. Ground truth (top), teacher (mid-dle), and student (bottom) show close CHM agreement with clear crown delin-eation; PAI/FHD preserve major spatial gradients but appear smoother. estimation for map-level confidence, (3) test additional modalities (e.g., Syn-thetic Aperture Radar - SAR or multi-temporal RGBI) and feature extractors (e.g. DINO), and (4) integrate crown-level products for downstream workflows [1,7,29,23,41], as demonstrated in Figure 11. 
+
+# 13 Conclusion 
+
+This work shows that LiDAR-to-RGBI knowledge distillation can produce a practical monocular forest-structure estimator with strong CHM performance and useful first-order PAI/FHD signals. The key result is operational: LiDAR-informed structure can be propagated to routine aerial imagery without LiDAR at inference time. The method contributes: (1) a cross-modal teacher–student pipeline for CHM/-PAI/FHD at 20 cm, (2) stable gains from privileged multi-modal fusion over RGBI-only training, and (3) a deployment path for frequent large-area updates between LiDAR acquisitions. The remaining gap is generalization of vertical structure indices (PAI/FHD). Closing that gap likely requires broader regional training, uncertainty-aware pre-14 T. Khan et al. 
+
+Fig. 10: Coniferous patch comparison. Ground truth (top), teacher (middle), and student (bottom) show strong CHM transfer; PAI/FHD remain directionally correct with compressed amplitude. diction, and targeted domain adaptation rather than architectural scaling alone. Beyond direct mapping, FSKD outputs can also serve as inputs for downstream deep learning tasks, including tree-crown segmentation, tree vitality estimation, species classification, and biomass estimation. Overall, FSKD establishes a practical computer-vision blueprint for convert-ing routine RGBI imagery into actionable 3D forest structure at scale. FSKD 15 
+
+Fig. 11: Metric-wise ITC masking. Tree-crown masks derived with DeepTrees [23] can be applied consistently to CHM, PAI, and FHD outputs for per-tree summaries. 16 T. Khan et al. 
+
+# References 
+
+1. Alidoost, F., Arefi, H., Tombari, F.: 2d image-to-3d model: Knowledge-based 3d building reconstruction (3dbr) using single aerial images and convolutional neural networks (cnns). Remote sensing 11 (19), 2219 (2019) 2. Brandt, M., Chave, J., Li, S., Fensholt, R., Ciais, P., Wigneron, J.P., Gieseke, F., Saatchi, S., Tucker, C., Igel, C.: High-resolution sensors and deep learning models for tree resource monitoring. Nature Reviews Electrical Engineering 2(1), 13–26 (2025) 3. Bundesamt f¨ ur Kartographie und Geod¨ asie (BKG): BKG - Digital Twin — bkg.bund.de. https://www.bkg.bund.de/EN/Topics/Digital-Twin/ digital-twin.html , [Accessed 06-12-2025] 4. Bundesamt f¨ ur Kartographie und Geod¨ asie (BKG): Digitale orthophotos (dop20) der bundesrepublik deutschland, bodenaufl¨ osung 20 cm. https://gdz.bkg.bund. de/ , quellenvermerk: © GeoBasis-DE / BKG (JAHR DER AUFNAHME). Abruf ¨uber das Geodatenzentrum (GDZ). [Accessed 06-12-2025] 5. Burns, P., Hakkenberg, C.R., Goetz, S.J.: Multi-resolution gridded maps of vege-tation structure from gedi. Scientific Data 11 (1), 881 (2024) 6. Candan, A.T., Kalkan, H.: U-net-based rgb and lidar image fusion for road seg-mentation. Signal, Image and Video Processing 17 (6), 2837–2843 (2023) 7. Chen, K., Wang, C., Lu, M., Dai, W., Fan, J., Li, M., Lei, S.: Integrating topo-graphic skeleton into deep learning for terrain reconstruction from gdem and google earth image. Remote Sensing 15 (18), 4490 (2023) 8. Chen, Z., Li, Z., Zhang, S., Fang, L., Jiang, Q., Zhao, F.: Bevdistill: Cross-modal bev distillation for multi-view 3d object detection. arXiv preprint arXiv:2211.09386 (2022) 9. Chong, Z., Ma, X., Zhang, H., Yue, Y., Li, H., Wang, Z., Ouyang, W.: Monodis-till: Learning spatial features for monocular 3d object detection. arXiv preprint arXiv:2201.10830 (2022) 10. Dosovitskiy, A.: An image is worth 16x16 words: Transformers for image recogni-tion at scale. arXiv preprint arXiv:2010.11929 (2020) 11. European Environment Agency (EEA): Corine Land Cover 2018 (vector), version 20. https://sdi.eea.europa.eu/catalogue/copernicus/api/records/ 960998c1-1870-4e82-8051-6485205ebbac?language=all (2019). https://doi. org/10.2909/71c95a07-e296-44fc-b22b-415f42acfdf0 , https://doi.org/10. 2909/960998c1-1870-4e82-8051-6485205ebbac , Accessed on 10-11-2025 12. European State Forest Association: European State Forest Association - Staatsbetrieb Sachsenforst — eustafor.eu. https://eustafor.eu/members/ sachsenforst-state-forests-of-saxony/ , [Accessed 04-12-2025] 13. Fassnacht, F.E., Mager, C., Waser, L.T., Kanjir, U., Sch¨ afer, J., Buhvald, A.P., Shafeian, E., Schiefer, F., Stanˇ ciˇ c, L., Immitzer, M., et al.: Forest practitioners’ requirements for remote sensing-based canopy height, wood-volume, tree species, and disturbance products. Forestry: An International Journal of Forest Research 
+
+98 (2), 233–252 (2025) 14. Flynn, W., Grieve, S., Henshaw, A., Owen, H., Buggs, R., Metheringham, C., Plumb, W., Stocks, J., Lines, E.: Uav-derived greenness and within-crown spatial patterning can detect ash dieback in individual trees. Ecological Solutions and Evidence 5(2), e12343 (2024) 15. Gao, H., Yu, X., Xu, Y., Ran, Q., Hussain, W.: Monofg: Monocular 3d object de-tection with knowledge distillation for human-centric autonomous driving systems. ACM Transactions on Autonomous and Adaptive Systems (2024) FSKD 17 16. GeoSN: Fachliche details (geobasisinformation). https://www.landesvermessung. sachsen.de/fachliche-details-8645.html , [Accessed 2025-12-10] 17. GeoSN: Luftbild-produkte (offene geodaten). https://www.geodaten.sachsen. de/luftbild-produkte-3995.html , [Accessed 2025-12-10] 18. Gou, J., Yu, B., Maybank, S.J., Tao, D.: Knowledge distillation: A survey. Inter-national journal of computer vision 129 (6), 1789–1819 (2021) 19. Harris, C.R., Millman, K.J., van der Walt, S.J., Gommers, R., Virtanen, P., Cour-napeau, D., Wieser, E., Taylor, J., Berg, S., Smith, N.J., Kern, R., Picus, M., Hoyer, S., van Kerkwijk, M.H., Brett, M., Haldane, A., del R´ ıo, J.F., Wiebe, M., Peterson, P., G´ erard-Marchant, P., Sheppard, K., Reddy, T., Weckesser, W., Ab-basi, H., Gohlke, C., Oliphant, T.E.: Array programming with NumPy. Nature 
+
+585 (7825), 357–362 (Sep 2020). https://doi.org/10.1038/s41586-020-2649-2 ,
+
+https://doi.org/10.1038/s41586-020-2649-2 
+
+20. Hering, S., Irrgang, S.: Conversion of substitute tree species stands and pure spruce stands in the ore mountains in saxony. Journal of Forest Science 51 (11), 519–525 (2005) 21. Hinton, G., Vinyals, O., Dean, J.: Distilling the knowledge in a neural network. arXiv preprint arXiv:1503.02531 (2015) 22. Kamoske, A.G., Dahlin, K.M., Stark, S.C., Serbin, S.P.: Leaf area density from airborne lidar: Comparing sensors and resolutions in a temperate broadleaf forest ecosystem. Forest Ecology and Management 433 , 364–375 (2019) 23. Khan, T., Arnold, C., Grover, H.: Deeptrees: Tree crown segmentation and anal-ysis in remote sensing imagery with pytorch. Journal of Open Source Software 
+
+10 (114), 8056 (2025). https://doi.org/10.21105/joss.08056 , https://doi. org/10.21105/joss.08056 
+
+24. Lan, Q., Tian, Q.: Instance, scale, and teacher adaptive knowledge distillation for visual detection in autonomous driving. IEEE Transactions on Intelligent Vehicles 
+
+8(3), 2358–2370 (2022) 25. Li, H., Wu, X.J.: Crossfuse: A novel cross attention mechanism based infrared and visible image fusion approach. Information Fusion 103 , 102147 (2024) 26. Li, Z., Liang, H., Wang, H., Zhao, M., Wang, J., Zheng, X.: Mkd-cooper: Coop-erative 3d object detection for autonomous driving via multi-teacher knowledge distillation. IEEE Transactions on Intelligent Vehicles 9(1), 1490–1500 (2023) 27. Lim, K., Treitz, P., Wulder, M., St-Onge, B., Flood, M.: Lidar remote sensing of forest structure. Progress in physical geography 27 (1), 88–106 (2003) 28. Lin, T.Y., Doll´ ar, P., Girshick, R., He, K., Hariharan, B., Belongie, S.: Feature pyramid networks for object detection. In: Proceedings of the IEEE conference on computer vision and pattern recognition. pp. 2117–2125 (2017) 29. Lin, Y., Li, H., Jing, L., Ding, H., Tian, S.: Individual tree crown delineation using airborne lidar data and aerial imagery in the taiga–tundra ecotone. Remote Sensing 
+
+16 (21), 3920 (2024) 30. Liu, Z., Lin, Y., Cao, Y., Hu, H., Wei, Y., Zhang, Z., Lin, S., Guo, B.: Swin transformer: Hierarchical vision transformer using shifted windows. In: Proceedings of the IEEE/CVF international conference on computer vision. pp. 10012–10022 (2021) 31. Oquab, M., Darcet, T., Moutakanni, T., Vo, H., Szafraniec, M., Khalidov, V., Fernandez, P., Haziza, D., Massa, F., El-Nouby, A., et al.: Dinov2: Learning robust visual features without supervision. arXiv preprint arXiv:2304.07193 (2023) 32. Percival, J.E.H., Leamon, B.P.: Pyforestscan: A python library for calculating for-est structural metrics from lidar point cloud data. Journal of Open Source Software 
+
+10 (106), 7314 (2025) 18 T. Khan et al. 33. Puletti, N., Grotti, M., Ferrara, C., Chianucci, F.: Lidar-based estimates of above-ground biomass through ground, aerial, and satellite observation: a case study in a mediterranean forest. Journal of Applied Remote Sensing 14 (4), 044501–044501 (2020) 34. Rege Cambrin, D., Corley, I., Garza, P.: Depth any canopy: Leveraging depth foun-dation models for canopy height estimation. In: European Conference on Computer Vision. pp. 71–86. Springer (2024) 35. Ressl, C., Pfeifer, N., Mandlburger, G.: Applying 3d affine transformation and least squares matching for airborne laser scanning strips adjustment without gnss/imu trajectory data. The International Archives of the Photogrammetry, Remote Sens-ing and Spatial Information Sciences 38 , 67–72 (2012) 36. Sheikholeslami, S.: Ablation programming for machine learning (2019) 37. Tan, S., Zhang, Y., Qi, J., Su, Y., Ma, Q., Qiu, J.: Exploring the potential of gedi in characterizing tree height composition based on advanced radiative transfer model simulations. Journal of Remote Sensing 4, 0132 (2024) 38. Tolan, J., Yang, H.I., Nosarzewski, B., Couairon, G., Vo, H.V., Brandt, J., Spore, J., Majumdar, S., Haziza, D., Vamaraju, J., et al.: Very high resolution canopy height maps from rgb imagery using self-supervised vision transformer and convolutional decoder trained on aerial lidar. Remote Sensing of Environment 300 , 113888 (2024) 39. Tong, H.: Functional linear regression with huber loss. Journal of Complexity 74 ,101696 (2023) 40. Vapnik, V., Izmailov, R., et al.: Learning using privileged information: Similarity control and knowledge transfer. J. Mach. Learn. Res. 16 (1), 2023–2049 (2015) 41. Xiang, B., Wielgosz, M., Puliti, S., Kr´ al, K., Kr˚ uˇ cek, M., Missarov, A., Astrup, R.: Forestformer3d: A unified framework for end-to-end segmentation of forest lidar 3d point clouds. arXiv preprint arXiv:2506.16991 (2025) 42. Xie, E., Wang, W., Yu, Z., Anandkumar, A., Alvarez, J.M., Luo, P.: Segformer: Simple and efficient design for semantic segmentation with transformers. Advances in neural information processing systems 34 , 12077–12090 (2021) 43. Yang, L., Kang, B., Huang, Z., Zhao, Z., Xu, X., Feng, J., Zhao, H.: Depth anything v2. Advances in Neural Information Processing Systems 37 , 21875–21911 (2024)

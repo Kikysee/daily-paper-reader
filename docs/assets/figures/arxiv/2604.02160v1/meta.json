@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.02160v1/fig-001.webp",
+      "caption": "Table 2: Open-vocabulary change detection results on the six SECOND classes under the per-class OR-rule evaluation, where",
+      "page": 6,
+      "index": 1,
+      "width": 1048,
+      "height": 408
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02160v1/fig-002.webp",
+      "caption": "Figure 3: Open-vocabulary query substitution on SECOND. Each panel reports F1𝐶 (%) for semantically related query words of one class. Bold bars denote the default query, and the hatched bar denotes a prompt set.",
+      "page": 7,
+      "index": 2,
+      "width": 498,
+      "height": 290
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02160v1/fig-003.webp",
+      "caption": "Figure 2: Overview of CoRegOVCD. Given bi-temporal images and a queried concept, the framework first constructs dense concept confidence scores from prompt-conditioned Segment Anything Model 3 (SAM 3) outputs and calibrates them with Competitive Posterior Calibration (CPC). It then computes the Semantic Posterior Delta (SPD) as the semantic change signal. For structural verification, Geometry-Token Consistency Gate (GeoGate) employs a Geometric Encoder instantiated with Depth Anything 3 (DA3) to extract geometry tokens and derive the gate map 𝐺 . Finally, Regional Consensus Discrepancy (RCD) fuses SPD and the gate map 𝐺 and imposes SLIC-based regional consensus, after which a lightweight final mask inference stage converts the resulting score map into the final change mask.",
+      "page": 3,
+      "index": 3,
+      "width": 1052,
+      "height": 439
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02160v1/fig-004.webp",
+      "caption": "Figure 5: Qualitative comparison on SECOND with DynamicEarth (MCI/IMC), AdaptOVCD, and CoRegOVCD across six semantic categories. CoRegOVCD yields more complete masks with fewer unsupported responses.",
+      "page": 8,
+      "index": 4,
+      "width": 498,
+      "height": 468
+    }
+  ]
+}

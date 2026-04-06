@@ -1,0 +1,126 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.02742v1/fig-001.webp",
+      "caption": "Fig. 1: Conceptual comparison of different RSIR paradigms. (a) Examples of real-world degradations across diverse modalities, including optical (RGB/Multispectral), Synthetic Aperture Radar (SAR), and Thermal Infrared (TIR). (b) Conventional single-task restoration relies on specialized networks (e.g., EN , DN for denoising) for each degradation type. (c) Our unified approach employs a single, prompt-guided network (Eall, Dall) to handle diverse tasks, including denoising, deshadowing, declouding, despeckling, and deblurring. (d) The corresponding high-quality restored images.",
+      "page": 1,
+      "index": 1,
+      "width": 481,
+      "height": 498
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02742v1/fig-002.webp",
+      "caption": "TABLE II: Detail of our TGPNet architecture.",
+      "page": 6,
+      "index": 2,
+      "width": 500,
+      "height": 910
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02742v1/fig-003.webp",
+      "caption": "TABLE III: Comparisons for unified remote sensing image restoration (RSIR) across two and three degradation types (PSNR/SSIM; higher = better; best in bold).",
+      "page": 7,
+      "index": 3,
+      "width": 1060,
+      "height": 242
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02742v1/fig-004.webp",
+      "caption": "TABLE IV: Comparisons for unified remote sensing image restoration (RSIR) across four degradation types (PSNR/SSIM; higher = better; best in bold).",
+      "page": 7,
+      "index": 4,
+      "width": 1060,
+      "height": 213
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02742v1/fig-005.webp",
+      "caption": "TABLE VII: Quantitative comparison on out-of-distribution three-composite-degradation tasks. Evaluated methods include RSIR baselines, our direct approach (task embedding averaging), and our sequential approach (ordered task-specific subtasks).",
+      "page": 10,
+      "index": 5,
+      "width": 1060,
+      "height": 198
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02742v1/fig-006.webp",
+      "caption": "Fig. 6: Visual comparison of restoration results for out-of-distribution composite degradations: direct vs. sequential processing. Direct approach (task embedding averaging) performs suboptimally. Sequential processing achieves effective restoration by decomposing composite degradations into ordered stepwise subtasks. Row 1: Denoising + Declouding; Row 2: Denoising + Deshadowing. Zoom in for details.",
+      "page": 10,
+      "index": 6,
+      "width": 1042,
+      "height": 336
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02742v1/fig-007.webp",
+      "caption": "TABLE VI: Quantitative comparison on out-of-distribution two-composite-degradation tasks. Evaluated methods include RSIR baselines, our direct approach (task embedding averaging), and our sequential approach (ordered task-specific subtasks).",
+      "page": 10,
+      "index": 7,
+      "width": 1060,
+      "height": 211
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02742v1/fig-008.webp",
+      "caption": "Fig. 11: t-SNE visualization of decoder stage 2 features before and after application of the TGP module, shown for both 4- task and 5-task settings.",
+      "page": 14,
+      "index": 8,
+      "width": 524,
+      "height": 502
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02742v1/fig-009.webp",
+      "caption": "Fig. 9: Visualization of ablation study results comparing the baseline model and our TGP-enhanced unified architecture. Zooming in facilitates better visualization and comparison.",
+      "page": 13,
+      "index": 9,
+      "width": 519,
+      "height": 390
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02742v1/fig-010.webp",
+      "caption": "Fig. 10: t-SNE visualization of decoder stage 2 features for the baseline vs. TGPNet across four degradation tasks.",
+      "page": 13,
+      "index": 10,
+      "width": 529,
+      "height": 279
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02742v1/fig-011.webp",
+      "caption": "Fig. 3: Visual comparison of restored images for four degradation types on our URSIR benchmark. Key local details (in green boxes) are highlighted in red boxes, and zooming in is recommended for detailed inspection.",
+      "page": 8,
+      "index": 11,
+      "width": 1049,
+      "height": 927
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02742v1/fig-012.webp",
+      "caption": "Fig. 2: Architecture of the proposed Task-Guided Prompting Network (TGPNet) for unified remote sensing image restoration. (a) The overall architecture consists of an encoder-decoder backbone augmented by our Task-Guided Prompting (TGP) module, which is composed of Learnable Task-Specific Embedding (LTSE) and Hierarchical Feature Modulation (HFM). (b) The LTSE module processes a task-specific prompt (FTP ) to produce a degradation-aware embedding (FE). (c) The HFM module uses this embedding to generate stage-wise affine parameters (scaling factors γ and shifting offsets β), which modulate the hierarchical features (FDi) at each stage of the decoder.",
+      "page": 4,
+      "index": 12,
+      "width": 1034,
+      "height": 409
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02742v1/fig-013.webp",
+      "caption": "Fig. 8: Visual comparison of restored images for single-degradation declouding on RICE2. Key local details (in green boxes) are highlighted in red boxes, and zooming in is recommended for detailed inspection.",
+      "page": 12,
+      "index": 13,
+      "width": 960,
+      "height": 444
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02742v1/fig-014.webp",
+      "caption": "Fig. 4: Visual comparison of restored images for multispectral declouding on SEN12MS-CR and thermal deblurring on HITUAV. Key local details (in green boxes) are highlighted in red boxes, and zooming in is recommended for detailed inspection.",
+      "page": 9,
+      "index": 14,
+      "width": 1044,
+      "height": 525
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02742v1/fig-015.webp",
+      "caption": "Fig. 5: Visual evaluation of TGPNet on unseen real-world imagery from the WHU-Shadow dataset [57], demonstrating generalization to authentic remote sensing shadows.",
+      "page": 9,
+      "index": 15,
+      "width": 1010,
+      "height": 271
+    }
+  ]
+}

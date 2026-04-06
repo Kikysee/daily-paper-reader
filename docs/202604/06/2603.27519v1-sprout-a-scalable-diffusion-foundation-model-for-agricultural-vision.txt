@@ -1,0 +1,268 @@
+Title: SPROUT: A Scalable Diffusion Foundation Model for Agricultural Vision
+
+URL Source: https://arxiv.org/pdf/2603.27519v1
+
+Published Time: Tue, 31 Mar 2026 01:27:29 GMT
+
+Number of Pages: 13
+
+Markdown Content:
+# SPROUT: A Scalable Diffusion Foundation Model for Agricultural Vision 
+
+## Shuai Xiang, Wei Guo, James Burridge Graduate School of Agricultural and Life Sciences, The University of Tokyo 1-1-1 Midori-cho, Nishitokyo City, Tokyo, Japan 
+
+> guowei@g.ecc.u-tokyo.ac.jp
+
+## Shouyang Liu Engineering Research Center of Plant Phenotyping, Ministry of Education , Jiangsu Collaborative Innovation Center for Modern Crop Production, Academy for Advanced Interdisciplinary Studies, Nanjing Agricultural University Nanjing, 210095, China 
+
+> shouyang.liu@njau.edu.cn
+
+## Hao Lu National Key Laboratory of Multispectral Information Intelligent Processing Technology, School of Artificial Intelligence and Automation, Huazhong University of Science and Technology Wuhan, 430074, China 
+
+> hlu@hust.edu.cn
+
+## Tokihiro Fukatsu Institute of Agricultural Machinery, NARO 3-1-3, Kannondai, Tsukuba-shi, Ibaraki, 305-8604, Japan Institute of Life and Environmental Sciences, University of Tsukuba 1-1-1 Tennodai, Tsukuba, Ibaraki 305-8572 
+
+> fukatsu.tokihiro604@naro.go.jp
+
+## Abstract 
+
+Vision Foundation Models (VFM) pre-trained on large-scale unlabeled data have achieved remarkable success on general computer vision tasks, yet typically suffer from significant domain gaps when applied to agricul-ture. In this context, we introduce SPROUT (Scalable 
+
+Plant Representation model via Open-field Unsupervised 
+
+Training), a multi-crop, multi-task agricultural founda-tion model trained via diffusion denoising. SPROUT leverages a VAE-free Pixel-space Diffusion Transformer to learn rich, structure-aware representations through de-noising and enabling efficient end-to-end training. We pre-train SPROUT on a curated dataset of 2.6 million high-quality agricultural images spanning diverse crops, growth stages, and environments. Extensive experiments demonstrate that SPROUT consistently outperforms state-of-the-art web-pretrained and agricultural foundation mod-els across a wide range of downstream tasks, while re-quiring substantially lower pre-training cost. The code and model are available at https://github.com/UTokyo-FieldPhenomics-Lab/SPROUT. 
+
+## 1. Introduction 
+
+Deep learning has fundamentally reshaped computer vision, largely due to the reliance of supervised learning on massive amounts of manually labeled data. While supervised meth-ods excel in many areas, the high cost of annotation and the need for specialized knowledge make the acquisition of large-scale labeled data a bottleneck. Furthermore, super-vised methods often struggle to utilize orders of magnitude 1     
+
+> arXiv:2603.27519v1 [cs.CV] 29 Mar 2026 Figure 1. Left: PCA visualization of SPROUT feature maps. In the SPROUT embedding space, different plant organs exhibit clear semantic separation, while the same organ shares consistent semantics. SPROUT captures and understands the structural information of plants. Right: SPROUT’s performance on agricultural vision tasks. Absolute Relative Error is the metric for depth estimation, Mean Square Error is the metric for counting, and Intersection over Union (IoU) is used for all other tasks. Metrics where lower values indicate better performance are inversely normalized. SPROUT significantly outperforms general-purpose VFMs across a wide range of tasks, particularly in structural understanding and dense prediction tasks.
+
+larger amounts of unlabeled data, limiting further improve-ments in model generalization capabilities. Unsupervised and weakly-supervised learning offer a compelling alternative by learning visual representations directly from unlabeled data. Recent advances have led to powerful Vision Foundation Models (VFMs), such as CLIP [36], DINOv2 [30], and DINOv3 [42], which are pre-trained on massive collections of internet images and exhibit strong transferability and zero-shot performance on standard benchmarks like ImageNet. These models signifi-cantly reduce reliance on labeled data and have become the backbone of modern vision systems. Despite their success, general-purpose VFMs often suf-fer from substantial domain gaps when applied to highly specialized vertical domains. In such settings, extensive fine-tuning on domain-specific labeled data is typically re-quired, undermining the original motivation for using foun-dation models. Consequently, fields such as biomedicine [8, 35], remote sensing [47], and astronomy [31] have in-creasingly turned toward training domain-specific founda-tion models tailored to their unique data characteristics and task requirements. In contrast, the development of agricultural foundation models remains comparatively underexplored. While sev-eral recent works have begun to investigate agricultural pre-training [3, 13, 41], existing approaches are often restricted to a single crop or a narrow set of tasks. More importantly, they largely adopt self-supervised learning paradigms orig-inally designed for web-scale, object-centric imagery, with-out accounting for the unique visual properties of agricul-tural scenes. Current unsupervised representation learning predomi-nantly follows three paradigms: (1) Contrastive Learning (e.g., SimCLR [7]), which aligns representations of aug-mented views while pushing apart negative samples; (2) Self-Distillation (e.g., DINO [5]), which employs a teacher-student framework to match teacher and student embed-dings; and (3) Masked Image Modeling (MIM) (e.g., MAE [16], BEiT [2], iBOT [53]), which reconstructs masked patches from visible context. Contrastive learning and self-distillation rely heavily on random cropping to form posi-tive and negative pairs or whole-part views. These cropped views enable models to learn the semantic distinctions be-tween objects and their constituent parts. Masked im-age modeling, in contrast, operates within a single view. However, existing formulations either introduce substan-tial architectural complexity (e.g., the discrete variational autoencoder in BEiT) or fall short of state-of-the-art self-supervised methods Agricultural images differ fundamentally from natural internet images. They are predominantly texture-centric and characterized by densely packed plants with repetitive patterns, subtle structural variations, and strong correlations across spatial scales. While random cropping is effective for isolated objects, this strategy often becomes ineffective in agricultural scenes because it captures visually similar textures from different plants, thereby influencing semantic and structural representation learning. 2Motivated by these challenges, we revisit diffusion-based generative models as an alternative approach to agri-cultural representation learning. Diffusion models learn to reverse a noise corruption process through denoising, a label-free objective that naturally encourages the model to capture fine-grained structure. Recent progress in Transformer-based diffusion architectures (DiT) [34] has revealed strong scaling behavior in generative modeling, suggesting their potential as powerful unsupervised rep-resentation learners. Unlike contrastive objectives, diffu-sion denoising does not depend on cropping-based view construction, making it particularly well suited for texture-dominated agricultural imagery. Building on this insight, we propose SPROUT (Scalable 
+
+Plant Representation model via Open-field Unsupervised 
+
+Training), the first multi-crop, multi-task agricultural vision foundation model pre-trained via diffusion denoising. We introduce a VAE-free Diffusion Transformer (UDiT) that operates directly in pixel space, enabling end-to-end opti-mization and significantly improving training efficiency by avoiding the computational overhead of latent VAEs. To further tailor diffusion models for discriminative represen-tation learning, we systematically study design choices such as noise parameterization and architecture scaling. In addition, we address a key practical challenge in diffusion-based representation learning: timestep selection. Instead of relying on exhaustive downstream evaluation or heuristic choices, we propose a simple, training-free cri-terion based on the effective rank of diffusion features to identify the most informative timesteps. This principled selection strategy consistently yields representations with stronger transferability. To support large-scale agricultural pre-training, we cu-rate a diverse dataset of 2.6 million high-quality agricultural images, distilled from an initial pool of 4 million samples collected over a decade across multiple locations, years, and crop varieties. This dataset captures rich variations in plant structure, growth stages, and environmental conditions, pro-viding a strong foundation for learning general plant repre-sentations. Extensive experiments demonstrate that SPROUT learns powerful and transferable representations across a wide range of agricultural tasks. In particular, SPROUT ex-cels at dense prediction problems such as organ-level and plant-level segmentation, depth estimation, and counting, where structural understanding is critical. It consistently outperforms state-of-the-art foundation models pre-trained on web-scale data, while also achieving competitive results on classification tasks. Notably, SPROUT delivers these gains with substantially lower pre-training cost compared to existing agricultural foundation models. Our main contributions are summarized as follows: • We propose a novel pre-training framework based on Pixel-space Diffusion Transformers. By eliminating the VAE and introducing an Effective Rank-based timestep selection method, we enable efficient learning of robust, structurally aware representations. • We present a rigorous data curation pipeline and release a large-scale agricultural dataset consisting of 2.6 million high-quality images, covering diverse crops, regions, and environmental conditions. • We introduce SPROUT , the first scalable, diffusion-based agricultural vision foundation model capable of multi-crop and multi-task transfer. • Through extensive experimentation, we demonstrate that SPROUT achieves state-of-the-art performance on a vari-ety of agricultural benchmarks, especially for dense and structure-sensitive tasks, while significantly reducing the computational cost. 
+
+## 2. SPROUT 
+
+2.1. Preliminaries 
+
+2.1.1 Denoising Diffusion Models 
+
+The essence of diffusion-based generative models is to transform one distribution into another, typically by trans-forming a random Gaussian distribution into an image dis-tribution. Specifically, they construct a parametrized pro-cess that gradually perturbs data samples into noise, and then use a neural network to learn to reverse this process for generation. Formally, given a data point x sampled from the a data distribution p(x) and noise ϵ sampled from a Gaussian dis-tribution N (0, I), the forward diffusion process produces a noisy sample z at a given timestep t:
+
+xt = a(t)x0 + b(t)ϵ (1) where a(t) and b(t) are method-specific schedule func-tions governing the signal-to-noise ratio. As t increases, 
+
+a(t) → 0 and b(t) → 1, driving the distribution towards pure Gaussian noise. To reverse this corruption, a denoising neural network 
+
+Dθ is trained to regress a target variable r(x, ϵ, t ) [45]. The general optimization objective of Dθ is given by: 
+
+θ∗ = arg min 
+
+> θ
+
+Et∼U (0 ,T ) Ex0∼p(x0) Eϵ∼N (0,I)
+
+[λ(t)∥Dθ (z, t ) − r(x, ϵ, t )∥2]
+
+(2) where λ(t) is a weighting term. The regression tar-get r(x, ϵ, t ) is conceptually a combination of the data and noise: 
+
+r = c(t)x + d(t)ϵ (3) The choice of c(t) and d(t) leads to three parameterizations: 31. ϵ-prediction [17, 33, 38]: c(t) = 0 , d (t) = 1 , r = ϵ.In this setting, the network is trained to estimate the added noise directly. 2. x-prediction [10, 17, 22]: c(t) = 1 , d (t) = 0 , r =
+
+x. The network attempts to reconstruct the clean data x
+
+directly from the noisy input z:3. v-prediction [26]: c(t) = −1, d (t) = 1 , r = v =
+
+ϵ − x. This objective targets a velocity vector that combines both the data and the noise. 
+
+2.2. Removing DiT’s Dependency on VAE 
+
+Following LDM [38], DiT [33] encodes the image from the pixel space to the latent space using a VAE [19], and then trains within the latent space. However, VAEs lead to the separation of the model training: the latency of VAE is not optimal for subsequent image generation or downstream tasks, and VAE cannot be jointly optimized end-to-end with diffusion models. Several recent works have explored the feasibility of training DiT end-to-end directly in pixel space. JiT [22] discovered that, when training DiT in pixel space, convergence is only achieved through the x0 parame-terization. Predicting either the ϵ or the v leads to optimiza-tion instability. This is because x0 lies on a low-dimensional manifold, while the ϵ and v span the full high-dimensional pixel space. This makes them harder to model. However, this conclusion is drawn from a generative modeling perspective and does not extend to representation learning. We contend that ϵ is a more effective representa-tion learning objective because it has a full-rank distribution over pixel space. The task of predicting ϵ therefore neces-sitates high-rank internal representations, serving as a regu-larizer that retains fine-grained details and boosts capacity. Thus, our goal is to utilize ϵ parameterization in pixel space without sacrificing stability. To enable stable training with ϵ or v parameterization in pixel space, recent methods have proposed different strate-gies. DSD stabilizes the joint training of the pixel en-coder and diffusion model via a self-distillation mechanism. DeCo, on the other hand, augments DiT with a pixel de-coder: while the former adopts 16 × 16 patches, the latter uses 1 × 1 patches to directly encode noisy images, preserv-ing high-frequency information through fine-grained patch-ing and long-range interactions, which leads to stable con-vergence. To this end, prior work introduces stabilization strate-gies. DSD [49] employs self-distillation to jointly train the pixel encoder and diffusion model, while DeCo [27] aug-ments DiT with a pixel decoder and fine-grained 1×1 patch-ing to preserve high-frequency information and ensure con-vergence. Despite their effectiveness, these methods rely on patchify/unpatchify operations to map between spatial lay-outs and token channels. We argue that forcing the DiT to map token channels back to spatial layouts wastes model   
+
+> Figure 2. SPROUT Structure and Training. The model output is parameterized in the form of ϵ.The approach operates directly within pixel space.
+
+capacity. Our experiments show that simply removing the unpatchify step significantly improves representation qual-ity. Furthermore, by inspecting attention maps, we observe that early and late layers exhibit noisy patterns, while in-termediate layers capture coherent semantics. Motivated by this, we replace patchify/unpatchify with CNN-based downsampling and upsampling modules. These CNNs spe-cialize in modeling high-frequency details, allowing the ViT backbone to focus on semantic representation learning. The resulting SPROUT architecture is illustrated in Fig. 2. 
+
+2.3. Efficient Timestep Selection via Effective Rank 
+
+When applying diffusion models to discriminative tasks, the timestep t is a critical hyperparameter that determines the characteristics of the learned representations. Early timesteps (high noise levels) typically produce abstract but blurry features, while later timesteps (low noise levels) em-phasize fine-grained structure and high-frequency textures, often at the cost of semantic abstraction. Selecting an ap-propriate timestep is therefore essential for obtaining high-quality representations. Despite its importance, most existing work often lacks guidance on the choice of t. Existing strategies are typically either: 1. Exhaustive Search: Evaluating the model on down-stream datasets across all timesteps, which is computation-ally slow and costly. 2. Heuristic Selection: Fixing a specific timestep based on empirical intuition, which fails to generalize across dif-ferent data distributions. To address these limitations, we propose a simple, training-free method for timestep selection based on the ef-fective rank (erank) [39] of diffusion features. 4Given a pre-trained (but not finetuned) diffusion model, we extract feature matrices Ft ∈ RN ×D at candidate timesteps t, where N denotes the number of samples and D
+
+the feature dimension. Let σi(t)Qi=1 be the singular values of Ft, with Q = min( N, D ). We normalize the spectrum as pi = σi 
+
+> PQj=1 σj
+
+.The effective rank of Ft is defined as 
+
+erank( Ft) = exp −
+
+> Q
+
+X
+
+> i=1
+
+pi(t) log pi(t)
+
+!
+
+(4) Intuitively, erank measures the intrinsic dimensionality of the representation by quantifying how uniformly infor-mation is distributed across singular directions. Prior work in self-supervised learning has shown that higher erank cor-relates strongly with richer and more transferable represen-tations [12]. We leverage this property to select the timestep that yields the most informative diffusion features. Specifically, the optimal timestep is chosen by maximizing the effective rank: 
+
+t∗ = arg max  
+
+> t
+
+(erank( Ft)) (5) This procedure requires no additional training or labeled data. By simply iterating this calculation over candidate timesteps, our method effectively locates the optimal time step based on the intrinsic dimension of the feature itself. 
+
+2.4. Dataset Construction and Curation 
+
+We curate a large-scale agricultural dataset of 4.3 million images, combining 2.4 million proprietary samples col-lected over a decade with the web-crawled data. Inspired by recent approaches (DINO V2, MOVIEGEN), we imple-ment a three-stage filtration pipeline: Visual Quality Filtering. We apply a series of filters to remove images with low visual fidelity, eliminating approx-imately 250K samples. This stage eliminates exposure and utilizes binary classifiers to remove samples exhibiting sig-nificant fog or blur. Feature-based Filtering. To ensure dataset diversity and informational density, we employ embedding-based tech-niques. We utilize SSCD model to compute image embed-dings and remove near-duplicates based on cosine similar-ity. Furthermore, to eliminate samples with low semantic content (e.g., clear skies or uniform backgrounds), we ex-tract patch-level features using DINOv2, and filter based on the variance of the features. In this stage, 1.2M images were filtered out. Content Filtering. Finally, we ensure domain consis-tency by training a classifier to exclude non-biological arti-facts (e.g., machinery, infrastructure), restricting the dataset to relevant crop features. 335k 
+
+## 3. Experiments 
+
+To thoroughly assess SPROUT’s performance in agricul-tural vision, we assemble a large collection of publicly available agricultural datasets spanning diverse tasks and crop species, and compare it against representative base-lines. 
+
+3.1. SPROUT Produces Outstanding Dense Repre-sentations 
+
+In this section, we assess the quality of the dense representa-tions learned by SPROUT. We compare SPROUT with the most advanced visual encoders trained on large-scale web datasets. These models fall into three categories: Masked Image Modeling (MAE, MSN), self-distillation (DINOv2, DINOv3), and contrastive learning (CLIP, SigLIP). Ad-ditionally, we include FOMO4Wheat, a DINOv2-based model specifically trained on wheat images, as a domain-specific baseline. In the quantitative evaluation, all models except FOMO4Wheat do not use auxiliary decoders. Instead, a sin-gle convolutional layer is applied to project the final output features of each model. During fine-tuning, all model pa-rameters are updated. For FOMO4Wheat, a Mask2Former decoder was adopted. FFine-tuning and inference are per-formed at a resolution of 256 × 256 , and sliding window inference is used for high-resolution images. 
+
+3.1.1 Qualitative Analysis of Dense Features 
+
+We first conduct a qualitative analysis of the dense fea-tures produced by SPROUT. In the resulting RGB visualiza-tions, similar colors indicate similar semantic information, while distinct colors represent semantically distinguishable regions. As illustrated in Fig. 3, compared to visual en-coders trained in web data, SPROUT maintains high seman-tic consistency within the same organ type while effectively differentiating between distinct organs (e.g. leaves, stems, and fruits), demonstrates a superior understanding of plant structure, 
+
+3.1.2 Organ-level Segmentation 
+
+Organ-level segmentation, which aims to identify individ-ual plant organs such as leaves, stems, spikes, flowers and fruits, plays a critical role in crop breeding. A core objective of breeding is to select optimal plant architectures with de-sired traits, including organ size, spatial layout, and biomass distribution. Since these traits are defined at the organ level, reliable quantification requires accurate organ-level under-standing. In this section, we evaluate the performance of different vision encoders in organ-level semantic segmentation. Ta-ble 1 reports the segmentation IoU of models pre-trained 5Figure 3. Comparison of dense features. We employ Principal Component Analysis (PCA) to reduce the dimensionality of the feature maps to three dimensions, projecting them into RGB space ( Rh×w×c → Rh×w×3). Size of all feature maps is 128 × 128 . Compared to prior methods, SPROUT yields clearer features with less noise and distinct semantics. 
+
+with different strategies, including masked image model-ing, self-distillation, and contrastive learning, together with SPROUT. Across all crop and organ categories, SPROUT consis-tently achieves the best performance. This indicates that its representations capture plant structure prior rather than re-lying only on color or texture cues. This observation aligns with our qualitative results, where SPROUT’s dense fea-tures show strong semantic consistency within the same or-gan class while remaining well separated across different organs. By enabling accurate and transferable organ-level analysis across diverse crops, SPROUT provides a solid ba-sis for plant architecture selection and related downstream applications. 
+
+3.1.3 Plant-level Segmentation 
+
+Accurate plant-level segmentation is a prerequisite for pre-cision weeding. Precision weeding enables targeted inter-vention on weeds while avoiding crops, thereby reducing herbicide usage and mitigating environmental impact. We evaluate the performance of different models on crop-weed segmentation across a variety of crop fields. The Carrot dataset is from [21], Rice is sourced from [54], and the remaining datasets are all from the CropAndWeed dataset [43]. As shown in Table 2, SPROUT consistently demonstrates superior accuracy in distinguishing crops. Notably, several crops, such as Carrot, Pea, Potato, and Pumpkin, do not appear in the pre-training dataset. Despite this, SPROUT still delivers strong performance. This result 6Table 1. Organ-level semantic segmentation Intersection-over-Union (IoU) across multiple crops and organ categories. SPROUT consis-tently achieves the highest IoU across all crops and organs.                                                                                                                                                                                                    
+
+> Method Dataset Model Apple Peach [44] Pear [44] Grape [40] Wheat [50] Rice [54] Flower [44] Fruit [14] Flower Flower Fruit Spike Stem Leaf Green Veg Senescent Veg Panicle Self-Distillation DINOv2 [30] LVD-142M ViT-S-16 55.71 67.90 57.86 63.12 88.48 80.25 32.22 80.71 80.71 47.54 72.77 ViT-B-16 58.44 69.18 56.96 63.23 88.85 81.05 34.80 80.96 80.74 47.77 73.67 ViT-L-16 54.91 69.43 55.16 61.70 88.72 81.77 37.05 81.46 81.19 48.74 75.04 DINOv3 [42] LVD-1689M ViT-S-16 45.71 64.97 58.18 59.43 87.64 76.47 25.17 77.09 78.88 46.84 71.73 ViT-B-16 52.37 64.47 59.38 61.11 88.18 79.44 31.21 79.98 79.38 46.75 72.92 ViT-L-16 54.44 69.22 57.72 61.86 88.66 81.02 36.17 80.78 79.96 47.52 73.87 Masked Image Modeling MAE [16] ImageNet-1K ViT-B-16 3.98 7.54 2.71 8.69 35.40 21.28 2.08 59.86 44.86 17.86 20.06 ViT-L-16 8.19 7.97 2.10 11.85 37.35 22.06 4.99 59.23 44.82 17.54 24.43 MSN [1] ImageNet-1K ViT-S-16 46.95 65.73 53.31 59.47 65.73 77.7 25.06 78.44 79.39 45.53 71.07 ViT-B-16 52.57 65.75 47.14 59.57 65.75 76.81 24.01 78.16 79.25 46.06 71.10 ViT-L-16 52.78 60.87 56.50 59.04 60.87 76.17 20.63 77.00 78.78 43.78 69.70 Contrastive Learning CLIP [36] WIT-4M ViT-B-16 55.39 67.08 59.61 59.72 88.10 78.3 26.32 78.88 79.40 44.96 70.05 ViT-L-14 57.71 70.20 57.22 62.40 89.00 81.3 32.43 81.51 82.01 50.06 74.77 SigLIP [52] WebLI-10B ViT-B-16 54.86 66.57 57.73 59.93 87.78 76.77 25.2 78.52 78.99 45.51 71.31 ViT-L-16 55.32 66.99 56.79 60.71 87.81 77.49 26.36 79.02 79.48 45.74 71.92 Diffusion Denoising SPROUT (ours) MCD-2.6M UDiT-S 56.61 71.92 34.34 51.19 89.72 82.43 38.23 83.52 86.80 51.18 78.60 UDiT-B 59.26 73.10 51.71 71.01 90.06 84.37 44.31 85.00 86.82 53.12 80.06 UDiT-L 65.92 74.28 62.09 73.03 90.63 85.54 51.58 86.44 87.11 55.29 81.15
+
+indicates that SPROUT learns general plant representations that transfer well across species. 
+
+3.1.4 Comparison with Single-crop Foundational Model 
+
+We compare our proposed method, SPROUT, with the FOMO4Wheat[13], a recently introduced agricultural foun-dation model focusing on wheat. FOMO4Wheat directly uses the DINOv2 framework and is pre-trained on 2.5 mil-lion wheat images. To ensure a fair comparison, we use the same evaluation protocol as FOMO4Wheat. This involves re-splitting the GWFSS dataset [50] an 8:2 training and test-ing set, rather than using the official competition split. Fur-thermore, all models were initialized randomly prior to pre-training to avoid reliance on external weights. As shown in Table 3, our smallest variant, UDiT-S, achieves performance comparable to the largest FOMO4Wheat model (ViT-G) while utilizing approxi-mately 1/22 of the parameters. As model capacity in-creases, UDiT-L significantly outperforms FOMO4Wheat, with particularly clear improvements on the most challeng-ing category, Stem , which requires fine-grained understand-ing of plant structure. Moreover, our approach requires a substantially lower computational cost. These results un-derscore both the efficiency and effectiveness of our pre-training strategy for agricultural data. 
+
+3.1.5 Depth Estimation 
+
+Depth estimation provides dense geometric information about crops, which is essential for understanding canopy structure and monitoring growth dynamics. Depth cues are also a key component for enabling agricultural robots to perceive their environment. We evaluate the proposed model on the sugar beet depth dataset [6], which provides real depth maps captured by Kinect v2. Quantitative results are reported in Table 4. SPROUT achieves the lowest error across all evaluation metrics, indicating more accurate depth prediction. Qual-itative visualization results are shown in Fig. 4. Predictions from other models tend to exhibit less coherent geometric structure, especially around thin leaf edges. In contrast, SPROUT produces depth maps with sharper boundaries and more detailed plant structures. 
+
+3.2. SPROUT Learns Competitive Discriminative Representations 
+
+3.2.1 Disease Classification and Fruit Grading 
+
+Classification is another important category of agricultural tasks. In this study, we evaluate the efficacy of SPROUT on two main types of applications: disease identification and automatic fruit grading. For disease identification, the model is tasked with diagnosing specific pathologies to fa-cilitate timely intervention and reduce yield loss. In the fruit grading, the objective is to categorize produce based on ripeness stages or quality tiers, a critical process for stan-7Table 2. Plant-level segmentation results on ten crop datasets. The table reports the mIoU averaged over three classes (background, crop, and weed) for each crop. Our SPROUT model consistently outperforms other foundation models across all crops, indicating strong generalization and robust plant representation. 
+
+Method Bean Carrot Maize Pea Potato Pumpkin Rice Soybean SugarBeet Sunflower Crop Weed Crop Weed Crop Weed Crop Weed Crop Weed Crop Weed Crop Weed Crop Weed Crop Weed Crop Weed DINOv2-L 79.98 63.50 82.97 71.07 78.91 41.59 61.15 29.71 86.33 29.47 99.43 47.60 79.56 36.34 67.71 25.15 78.32 52.52 86.49 51.28 DINOv3-L 78.31 62.28 83.00 70.74 77.10 36.22 60.00 23.92 85.53 30.31 84.33 47.63 79.23 40.30 64.27 19.36 79.03 44.90 85.97 51.36 MSN-L 74.09 55.92 75.94 60.04 72.00 29.32 54.77 14.60 81.45 23.60 80.32 31.82 77.17 30.01 58.44 9.90 71.67 23.04 78.14 41.57 CLIP-L 80.96 64.67 84.20 73.02 79.88 42.22 61.53 30.72 87.41 34.46 86.63 51.03 80.70 39.54 68.33 28.87 80.96 51.84 86.65 51.35 SigLIP-L 77.49 59.23 81.46 68.93 74.43 35.71 58.23 19.90 84.70 25.80 81.82 40.15 77.87 36.68 62.75 20.81 77.75 43.08 84.46 49.09 SPROUT-S 84.40 64.47 85.69 74.85 87.70 51.44 72.22 32.49 91.87 25.62 92.54 59.02 85.77 37.24 79.47 27.14 87.08 49.63 89.83 53.60 SPROUT-B 85.42 68.46 85.58 74.53 87.69 51.23 70.54 33.41 91.72 28.17 92.57 60.61 86.48 40.71 80.15 31.14 85.67 50.30 89.08 51.39 SPROUT-L 85.67 68.65 87.10 76.35 88.49 53.19 72.34 39.02 92.94 31.21 92.80 65.22 86.80 43.40 80.67 35.36 87.92 58.18 91.42 61.37 
+
+Table 3. Comparison with the wheat foundational model FOMO4Wheat on wheat organ segmentation. One A100 hour refers to one hour of compute time using a single NVIDIA A100 GPU. Our SPROUT models obtain significantly higher performance with markedly lower pre-training cost. 
+
+Method dataset Model Params Pre-training cost ↓ Stem IoU ↑ mIoU ↑
+
+FOMO4Wheat ImAg4Wheat-2.5M ViT-G-16 1100 M 9216 A100 Hours 46.85 74.63 SPROUT MCD-2.6M UDiT-S 51 M 245 A100 Hours 48.84 74.77 UDiT-B 112 M 525 A100 Hours 52.88 76.46 UDiT-L 361 M 1440 A100 Hours 58.55 78.38 
+
+Table 4. Quantitative comparison of depth estimation performance on the Sugar Beet dataset. 
+
+Method AbsRel ↓ MAE ↓ RMSE ↓
+
+DINOv2-L 0.0060 0.0066 0.0103 DINOv3-L 0.0062 0.0068 0.0110 CLIP-L 0.0074 0.0078 0.0139 
+
+SPROUT-L 0.0045 0.0050 0.0071 
+
+dardizing market value and minimizing waste. As shown in Tables 5 and 6, SPROUT consistently outperforms baselines such as DINOv2 and ResNet [15], achieving competitive performance across most datasets. On several benchmarks, CLIP and DINOv3 obtain slightly higher accuracy. We attribute this gap mainly to differences in training objectives. SPROUT is trained through diffusion denoising, which places stronger emphasis on local struc-tures and fine-grained visual patterns. In contrast, image-level classification relies more on highly abstract and global discriminative representations, which are directly encour-aged by contrastive or classification-oriented pre-training. As a result, SPROUT does not always show a clear advan-tage on classification benchmarks. However, considering the huge difference in annotation costs between classifica-tion and dense prediction tasks, we believe this trade-off is worthwhile. 
+
+Table 5. Performance comparison on disease classification. We report the Accuracy (%) metric as the result. SPROUT achieves competitive performance.                             
+
+> Method Cassava [28] Pear [11] Coffee [32] Sugarcane [46] ResNet101 47.13 68.66 50.11 41.43 DINOv2-L 90.34 92.21 79.62 94.22 DINOv3-L 92.62 92.87 80.89 94.52 MAE-L 89.97 91.71 75.37 95.11
+> CLIP-L 90.43 92.37 77.28 93.47
+> SPROUT-L 91.61 93.03 80.25 94.52
+
+Table 6. Accuracy on fruit grading tasks. SPROUT outperform-ing baselines on the Banana dataset while maintaining parity on others.                             
+
+> Method Banana [20] Dragon Fruit [18] Oil Palm [29] Guava [20] ResNet101 74.42 99.95 65.26 90.00 DINOv2-L 83.47 99.95 97.89 98.37 DINOv3-L 86.06 100 97.89 99.39
+> MAE-L 87.53 100 97.89 95.92 CLIP-L 86.15 100 96.84 99.18
+> SPROUT-L 90.77 100 97.89 96.97
+
+3.2.2 Counting 
+
+In crop science, yield is often determined by the product of key organ counts. Counting yield organs such as spikes, pods, or grains from images is a direct and widely used ap-proach for yield estimation. We evaluated our model’s yield 8Figure 4. Depth estimation performance comparison. Our method produces sharp, accurate depth maps. 
+
+estimation performance using wheat [9] and soybean [51] datasets. As shown in Table 7, our method outperforms contempo-rary baselines, achieving the lowest MAE and MSE for both crops. These results indicate that SPROUT offers superior accuracy compared to standard object detection or density estimation methods, proving its reliability for agricultural counting. 
+
+3.3. SPROUT is A Scalable and Efficient Unsuper-vised Learning Framework 
+
+In this section, we investigate the scalability of SPROUT pre-training and its impact on downstream task perfor-mance, as well as the overall efficiency of SPROUT as a un-supervised learning framework. Specifically, we fine-tune the pre-trained models on the official competition training split and evaluate them on the validation set using 1-mIoU as the evaluation metric. All hyperparameters are kept con-sistent across experiments during fine-tuning. 
+
+3.3.1 Scaling Model Size and Pre-training Compute 
+
+As shown in Fig. 5, when model size and dataset size are not limiting factors, we observe a clear power-law relationship 
+
+> Table 7. Counting performance on wheat spike and soybean pod datasets.
+
+Method Supervision MAE ↓ MSE ↓
+
+Wheat Spikes Faster R-CNN [37] Box 5.46 95.26 DETR [4] Box 8.41 262.44 YOLOv8 [48] Box 8.96 180.36 CSRNet [23] Density Map 5.88 66.10 TransCrowd [25] Density Map 10.09 207.07 CSNet [24] Count 3.87 31.36 ResNet101 [15] Count 7.54 94.94 DINOv3-L [42] Count 6.44 126.97 MSN-L [1] Count 6.65 82.56 CLIP-L [36] Count 5.60 54.17 
+
+SPROUT-L Count 3.62 24.23 
+
+Soybean Pods ResNet101 [15] Count 4.98 48.89 CLIP-L [36] Count 9.89 231.00 
+
+SPROUT-L Count 3.58 28.84 
+
+between pre-training compute and downstream fine-tuning performance. 9Figure 5. SPROUT demonstrates strong scaling behavior: down-stream fine-tuning performance improves with increasing model size and pre-training compute, following a clear power-law rela-tionship. 
+
+By simply scaling up the model size, fine-tuning perfor-mance on downstream tasks improves rapidly. This demon-strates that SPROUT exhibits strong scalability, making it well-suited for large-scale unsupervised learning. At equivalent computational budgets, larger models outper-form smaller ones. However, extending the training dura-tion for smaller models can also reduce the performance gap. This suggests that, for practical deployment, a smaller model with an extended training schedule might be prefer-able. 
+
+3.3.2 Scaling the Pre-training Dataset Size 
+
+We further study how fine-tuning performance evolves as the volume of unlabeled pre-training data increases. Fig.6 demonstrates that, as the unlabeled dataset is scaled up, downstream performance improves steadily when the dataset size is below 64K samples. However, once the dataset reaches approximately 64K, a clear satura-tion point emerges: further increasing the amount of homo-geneous data yields diminishing returns. This observation suggests that future dataset construction should prioritize data diversity over simply increasing volume. In practice, more aggressive deduplication strategies can be adopted, and efforts should be made to collect data from diverse en-vironments, crop types, and acquisition conditions. 
+
+3.3.3 Estimation of the Optimal Number of Training Iterations 
+
+To identify optimal training strategies, we explore the iter-ations required for SPROUT-L to reach convergence across different dataset sizes. As shown in the rightmost plot of Fig. 6, we find that the convergence training steps scale lin-early with the square root of the dataset size. Therefore: 
+
+For every four-fold increase in dataset size, the pre-training computational budget should be doubled. 
+
+This empirical scaling rule offers practical guidance for allocating computing resources. For a new dataset, we can first extract a very small subset, calculate the number of steps required for convergence, and estimate the computa-tional cost for convergence of the entire dataset. 
+
+3.3.4 Comparison with Other Unsupervised Learning Methods 
+
+For comparison, we pre-train models on the MCD 2.6M dataset using MAE and DINOv2. Under the same ex-perimental settings, SPROUT converges significantly faster than both MAE and DINOv2, highlighting its superior training efficiency. 
+
+3.3.5 Efficient Utilization of Labeled Data 
+
+Finally, we evaluate how effectively SPROUT leverages labeled data during fine-tuning. As illustrated in Fig. 7, SPROUT surpasses DINOv2 while using only 1/50 of the labeled data, demonstrating its strong label efficiency and practical advantage in low-annotation regimes. 
+
+## 4. Conclusion 
+
+We develop a diffusion-based pre-training framework tai-lored to agricultural imagery. Building on this framework, we introduce SPROUT, an agricultural vision foundation model pre-trained via pixel-space denoising. Extensive ex-periments demonstrate consistent improvements over exist-ing VFMs across a wide range of agricultural tasks, particu-larly for dense and structure-sensitive predictions, while re-quiring substantially lower pre-training cost. SPROUT thus provides a practical foundation for accurate, scalable, and label-efficient agricultural vision systems. 
+
+## References               
+
+> [1] Mahmoud Assran, Mathilde Caron, Ishan Misra, Piotr Bo-janowski, Florian Bordes, Pascal Vincent, Armand Joulin, Mike Rabbat, and Nicolas Ballas. Masked siamese networks for label-efficient learning. In European conference on com-puter vision , pages 456–473. Springer, 2022. 7, 9 [2] Hangbo Bao, Li Dong, Songhao Piao, and Furu Wei. Beit: Bert pre-training of image transformers. arXiv preprint arXiv:2106.08254 , 2021. 2 [3] Leire Benito-Del-Valle, Artzai Pic´ on, Daniel Mugica, Manuel Ramos, Eva Portillo, Javier Romero, Carlos Javier Jimenez, and Ram´ on Navarra-Mestre. Vision founda-tion models in agriculture: Toward domain-specific adap-tation for weed herbicide trials assessment. arXiv preprint arXiv:2511.04288 , 2025. 2
+
+10 Figure 6. Scaling the Pre-training Dataset Size. Left, the downstream performance steadily improves as the unlabeled dataset scales up to 6.4 × 10 4 samples. After that, performance saturates, and adding more homogeneous data yields diminishing returns. Middle, model convergence under different dataset sizes. Right, convergence analysis of SPROUT-L across dataset scales. The required training steps scale linearly with the square root of dataset size, enabling estimation of the optimal number of training iterations. 
+
+Figure 7. SPROUT exhibits strong label efficiency, outperforming DINOv2 with 1/50 of the annotated data. [4] Nicolas Carion, Francisco Massa, Gabriel Synnaeve, Nicolas Usunier, Alexander Kirillov, and Sergey Zagoruyko. End-to-end object detection with transformers. In European confer-ence on computer vision , pages 213–229. Springer, 2020. 9 [5] Mathilde Caron, Hugo Touvron, Ishan Misra, Herv´ e J´ egou, Julien Mairal, Piotr Bojanowski, and Armand Joulin. Emerg-ing properties in self-supervised vision transformers. In Pro-ceedings of the IEEE/CVF international conference on com-puter vision , pages 9650–9660, 2021. 2 [6] Nived Chebrolu, Philipp Lottes, Alexander Schaefer, Wera Winterhalter, Wolfram Burgard, and Cyrill Stachniss. Agri-cultural robot dataset for plant classification, localization and mapping on sugar beet fields. The International Journal of Robotics Research , 36(10):1045–1052, 2017. 7 [7] Ting Chen, Simon Kornblith, Mohammad Norouzi, and Ge-offrey Hinton. A simple framework for contrastive learning of visual representations. In International conference on ma-chine learning , pages 1597–1607. PmLR, 2020. 2 [8] Gaole Dai, Chenghao Zhou, Yu Zhou, Rongyu Zhang, Yuan Zhang, Chengkai Hou, Tiejun Huang, Jianxu Chen, and Shanghang Zhang. Orochi: Versatile biomedical image pro-cessor. arXiv preprint arXiv:2509.22583 , 2025. 2 [9] Etienne David, Mario Serouart, Daniel Smith, Simon Madec, Kaaviya Velumani, Shouyang Liu, Xu Wang, Francisco Pinto, Shahameh Shafiee, Izzat SA Tahir, et al. Global wheat head detection 2021: An improved dataset for benchmarking wheat head detection methods. Plant Phenomics , 2021. 9 [10] Mauricio Delbracio and Peyman Milanfar. Inversion by di-rect iteration: An alternative to denoising diffusion for image restoration. arXiv preprint arXiv:2303.11435 , 2023. 4 [11] Gianni Fenu and Francesca Maridina Malloci. Diamos plant: A dataset for diagnosis and monitoring plant disease. Agron-omy , 11(11):2107, 2021. 8 [12] Quentin Garrido, Randall Balestriero, Laurent Najman, and Yann Lecun. Rankme: Assessing the downstream perfor-mance of pretrained self-supervised representations by their rank. In International conference on machine learning ,pages 10929–10974. PMLR, 2023. 5 [13] Bing Han, Chen Zhu, Dong Han, Rui Yu, Songliang Cao, Jianhui Wu, Scott Chapman, Zijian Wang, Bangyou Zheng, Wei Guo, et al. Fomo4wheat: Toward reliable crop vision foundation models with globally curated data. arXiv preprint arXiv:2509.06907 , 2025. 2, 7 [14] Nicolai H¨ ani, Pravakar Roy, and Volkan Isler. Minneapple: a benchmark dataset for apple detection and segmentation. 
+
+IEEE Robotics and Automation Letters , 5(2):852–858, 2020. 7[15] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for image recognition. In Proceed-ings of the IEEE conference on computer vision and pattern recognition , pages 770–778, 2016. 8, 9 [16] Kaiming He, Xinlei Chen, Saining Xie, Yanghao Li, Piotr Doll´ ar, and Ross Girshick. Masked autoencoders are scalable vision learners. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pages 16000– 16009, 2022. 2, 7 [17] Jonathan Ho, Ajay Jain, and Pieter Abbeel. Denoising dif-fusion probabilistic models. Advances in neural information processing systems , 33:6840–6851, 2020. 4 
+
+11 [18] Tania Khatun, Md Asraful Sharker Nirob, Prayma Bishshash, Morium Akter, and Mohammad Shorif Uddin. A comprehensive dragon fruit image dataset for detecting the maturity and quality grading of dragon fruit. Data in Brief ,52:109936, 2024. 8 [19] Diederik P Kingma and Max Welling. Auto-encoding varia-tional bayes. arXiv preprint arXiv:1312.6114 , 2013. 4 [20] Abiban Kumari and Jaswinder Singh. Banana and guava dataset for machine learning and deep learning-based quality classification. Data in Brief , 57:111025, 2024. 8 [21] Petre Lameski, Eftim Zdravevski, Vladimir Trajkovik, and Andrea Kulakov. Weed detection dataset with rgb images taken under variable light conditions. In International Con-ference on ICT Innovations , pages 112–119. Springer, 2017. 6[22] Tianhong Li and Kaiming He. Back to basics: Let denoising generative models denoise. arXiv preprint arXiv:2511.13720 , 2025. 4 [23] Yuhong Li, Xiaofan Zhang, and Deming Chen. Csrnet: Di-lated convolutional neural networks for understanding the highly congested scenes. In Proceedings of the IEEE con-ference on computer vision and pattern recognition , pages 1091–1100, 2018. 9 [24] Yaoxi Li, Xingcai Wu, Qi Wang, Zhixun Pei, Kejun Zhao, Panfeng Chen, and Gefei Hao. Csnet: A count-supervised network via multiscale mlp-mixer for wheat ear counting. 
+
+Plant Phenomics , 6:0236, 2024. 9 [25] Dingkang Liang, Xiwu Chen, Wei Xu, Yu Zhou, and Xiang Bai. Transcrowd: weakly-supervised crowd counting with transformers. Science China Information Sciences , 65(6): 160104, 2022. 9 [26] Yaron Lipman, Ricky TQ Chen, Heli Ben-Hamu, Maximil-ian Nickel, and Matt Le. Flow matching for generative mod-eling. arXiv preprint arXiv:2210.02747 , 2022. 4 [27] Zehong Ma, Longhui Wei, Shuai Wang, Shiliang Zhang, and Qi Tian. Deco: Frequency-decoupled pixel diffusion for end-to-end image generation. arXiv preprint arXiv:2511.19365 ,2025. 4 [28] Ernest Mwebaze, Timnit Gebru, Andrea Frome, Solomon Nsumba, and Jeremy Tusubira. icassava 2019 fine-grained visual categorization challenge. arXiv preprint arXiv:1908.02900 , 2019. 8 [29] Zaid Omar, Anwar PP Abdul Majeed, Munirah Rosbi, Shuwaibatul Aslamiah Ghazalli, and Hazlina Selamat. Out-door oil palm fruit ripeness dataset. Data in brief , 55:110667, 2024. 8 [30] Maxime Oquab, Timoth´ ee Darcet, Th´ eo Moutakanni, Huy Vo, Marc Szafraniec, Vasil Khalidov, Pierre Fernandez, Daniel Haziza, Francisco Massa, Alaaeldin El-Nouby, et al. Dinov2: Learning robust visual features without supervision. 
+
+arXiv preprint arXiv:2304.07193 , 2023. 2, 7 [31] Liam Parker, Francois Lanusse, Siavash Golkar, Leopoldo Sarra, Miles Cranmer, Alberto Bietti, Michael Eickenberg, Geraud Krawezik, Michael McCabe, Rudy Morel, et al. Astroclip: a cross-modal foundation model for galaxies. 
+
+Monthly Notices of the Royal Astronomical Society , 531(4): 4990–5011, 2024. 2 [32] Jorge Parraga-Alava, Kevin Cusme, Ang´ elica Loor, and Es-neider Santander. Rocole: A robusta coffee leaf images dataset for evaluation of machine learning based methods in plant diseases recognition. Data in brief , 25:104414, 2019. 8[33] William Peebles and Saining Xie. Scalable diffusion models with transformers. In Proceedings of the IEEE/CVF inter-national conference on computer vision , pages 4195–4205, 2023. 4 [34] William Peebles and Saining Xie. Scalable diffusion models with transformers. In Proceedings of the IEEE/CVF inter-national conference on computer vision , pages 4195–4205, 2023. 3 [35] Fernando Perez-Garcia, Harshita Sharma, Sam Bond-Taylor, Kenza Bouzid, Valentina Salvatelli, Maximilian Ilse, Shruthi Bannur, Daniel C Castro, Anton Schwaighofer, Matthew P Lungren, et al. Exploring scalable medical image encoders beyond text supervision. Nature Machine Intelligence , 7(1): 119–130, 2025. 2 [36] Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark, et al. Learning transferable visual models from natural language supervi-sion. In International conference on machine learning , pages 8748–8763. PmLR, 2021. 2, 7, 9 [37] Shaoqing Ren, Kaiming He, Ross Girshick, and Jian Sun. Faster r-cnn: Towards real-time object detection with region proposal networks. IEEE transactions on pattern analysis and machine intelligence , 39(6):1137–1149, 2016. 9 [38] Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser, and Bj¨ orn Ommer. High-resolution image synthesis with latent diffusion models. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pages 10684–10695, 2022. 4 [39] Olivier Roy and Martin Vetterli. The effective rank: A mea-sure of effective dimensionality. In 2007 15th European sig-nal processing conference , pages 606–610. IEEE, 2007. 4 [40] Thiago T Santos, Leonardo L De Souza, Andreza A dos San-tos, and Sandra Avila. Grape detection, segmentation, and tracking using deep neural networks and three-dimensional association. Computers and Electronics in Agriculture , 170: 105247, 2020. 7 [41] Yanben Shen, Timilehin T Ayanlade, Venkata Naresh Bodde-palli, Mojdeh Saadati, Ashlyn Rairdin, Zi K Deng, Muham-mad Arbab Arshad, Aditya Balu, Daren Mueller, Asheesh K Singh, et al. Weednet: A foundation model-based global-to-local ai approach for real-time weed species identification and classification. arXiv preprint arXiv:2505.18930 , 2025. 2[42] Oriane Sim´ eoni, Huy V Vo, Maximilian Seitzer, Federico Baldassarre, Maxime Oquab, Cijo Jose, Vasil Khalidov, Marc Szafraniec, Seungeun Yi, Micha¨ el Ramamonjisoa, et al. Dinov3. arXiv preprint arXiv:2508.10104 , 2025. 2, 7, 9 [43] Daniel Steininger, Andreas Trondl, Gerardus Croonen, Julia Simon, and Verena Widhalm. The cropandweed dataset: A multi-modal learning approach for efficient crop and weed 
+
+12 manipulation. In Proceedings of the IEEE/CVF Winter Con-ference on Applications of Computer Vision , pages 3729– 3738, 2023. 6 [44] Kaiqiong Sun, Xuan Wang, Shoushuai Liu, and ChangHua Liu. Apple, peach, and pear flower detection using semantic segmentation network and shape constraint level set. Com-puters and Electronics in Agriculture , 185:106150, 2021. 7 [45] Qiao Sun, Zhicheng Jiang, Hanhong Zhao, and Kaiming He. Is noise conditioning necessary for denoising genera-tive models? arXiv preprint arXiv:2502.13129 , 2025. 3 [46] Sandip Thite, Yogesh Suryawanshi, Kailas Patil, and Prawit Chumchu. Sugarcane leaf dataset: A dataset for disease de-tection and classification for machine learning applications. 
+
+Data in Brief , 53:110268, 2024. 8 [47] Jamie Tolan, Hung-I Yang, Benjamin Nosarzewski, Guil-laume Couairon, Huy V Vo, John Brandt, Justine Spore, Sayantan Majumdar, Daniel Haziza, Janaki Vamaraju, et al. Very high resolution canopy height maps from rgb imagery using self-supervised vision transformer and convolutional decoder trained on aerial lidar. Remote Sensing of Environ-ment , 300:113888, 2024. 2 [48] Rejin Varghese and M Sambath. Yolov8: A novel object detection algorithm with enhanced performance and robust-ness. In 2024 International conference on advances in data engineering and intelligent computing systems (ADICS) ,pages 1–6. IEEE, 2024. 9 [49] Xiyuan Wang and Muhan Zhang. Diffusion as self-distillation: End-to-end latent diffusion in one model. arXiv preprint arXiv:2511.14716 , 2025. 4 [50] Zijian Wang, Radek Zenkl, Latifa Greche, Benoit De Solan, Lucas Bernigaud Samatan, Safaa Ouahid, Andrea Visioni, Carlos A Robles-Zazueta, Francisco Pinto, Ivan Perez-Olivera, et al. The global wheat full semantic organ seg-mentation (gwfss) dataset. Plant Phenomics , 7(3):100084, 2025. 7 [51] Shuai Xiang, Siyu Wang, Mei Xu, Wenyan Wang, and Weiguo Liu. Yolo pod: a fast and accurate multi-task model for dense soybean pod counting. Plant methods , 19(1):8, 2023. 9 [52] Xiaohua Zhai, Basil Mustafa, Alexander Kolesnikov, and Lucas Beyer. Sigmoid loss for language image pre-training. In Proceedings of the IEEE/CVF international conference on computer vision , pages 11975–11986, 2023. 7 [53] Jinghao Zhou, Chen Wei, Huiyu Wang, Wei Shen, Cihang Xie, Alan Yuille, and Tao Kong. ibot: Image bert pre-training with online tokenizer. arXiv preprint arXiv:2111.07832 ,2021. 2 [54] Junchi Zhou, Haozhou Wang, Yoichiro Kato, Tejasri Nam-pally, P Rajalakshmi, M Balram, Keisuke Katsura, Hao Lu, Yue Mu, Wanneng Yang, et al. Global rice multi-class seg-mentation dataset (riceseg): A comprehensive and diverse high-resolution rgb-annotated images for the development and benchmarking of rice segmentation algorithms. arXiv preprint arXiv:2504.02880 , 2025. 6, 7 
+
+13

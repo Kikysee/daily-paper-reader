@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.02010v1/fig-001.webp",
+      "caption": "Figure 1: Comparison of DINO fusion paradigms in RS openvocabulary semantic segmentation. (a) Existing methods apply non-selective structural enhancement, resulting in diffused responses and coarse boundaries. (b) DR-Seg decouples the representation and selectively injects structural priors into the structure-dominated subspace, producing sharper boundaries while preserving semantic integrity.",
+      "page": 1,
+      "index": 1,
+      "width": 498,
+      "height": 348
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02010v1/fig-002.webp",
+      "caption": "Table 1: Comparison with state-of-the-art methods on the training dataset of DLRSD and iSAID. We report mIoU(%) and mACC (%) for every method. The best-performing results are presented in bold, while the second-best results are underlined.",
+      "page": 6,
+      "index": 2,
+      "width": 1052,
+      "height": 709
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02010v1/fig-003.webp",
+      "caption": "Figure 2: Channel-wise impact analysis of CLIP representations on Potsdam. Top & Middle: The mIoU drop is highly uneven when individual channels are independentlymasked. By ranking the channels based on these drops, we categorize them into \"positive\" and \"negative\". Bottom: Activation maps further reveal distinct channel roles: dropping the top 20% negative channels sharpens spatial responses, whereas dropping the top 20% positive ones severely weakens discriminative activations.",
+      "page": 2,
+      "index": 3,
+      "width": 506,
+      "height": 381
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02010v1/fig-004.webp",
+      "caption": "Figure 5: Qualitative comparison with GSNet and RSKT-Seg. DR-Seg yields more accurate boundaries, cleaner category assignments, and better recovery of small or thin structures. The ViT-L model trained on DLRSD produces the results.",
+      "page": 7,
+      "index": 4,
+      "width": 500,
+      "height": 607
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02010v1/fig-005.webp",
+      "caption": "Table 3: Impact of structural priors.",
+      "page": 8,
+      "index": 5,
+      "width": 464,
+      "height": 259
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02010v1/fig-006.webp",
+      "caption": "Figure 3: Overall framework of DR-Seg. The proposed pipeline consists of three stages: Decouple, which uses SPSD separating CLIP features into semantics-dominated and structure-dominated subspaces via SPSD; Rectify, which selectively rectifies the structure-dominated subspace under DINO structural guidance through PDGR; and Fusion, which adaptively integrates the original multi-rotation CLIP branch and the refined branch via UGAF for final segmentation prediction.",
+      "page": 4,
+      "index": 6,
+      "width": 1052,
+      "height": 497
+    }
+  ]
+}
