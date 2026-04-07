@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.03874v1/fig-001.webp",
+      "caption": "Table 1: Performance of spatiotemporal ANP versus baselines across three study regions (mean ± std over 10 seeds). Train years: 2019–2023 excluding 2021; test year: 2021.",
+      "page": 10,
+      "index": 1,
+      "width": 794,
+      "height": 1152
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03874v1/fig-002.webp",
+      "caption": "Figure 1: Temporal progression of biomass change for a tile in Guaviare, Colombia. Left: 2019 AGBD. Remaining panels show year-to-year change (∆ AGBD), with red indicating biomass gain and blue indicating loss. The central 2021 panel (red border) is the model’s prediction from surrounding years.",
+      "page": 9,
+      "index": 2,
+      "width": 801,
+      "height": 229
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03874v1/fig-003.webp",
+      "caption": "Table 2: Disturbance-stratified performance (pooled across 10 seeds). Disturbance strata defined by relative biomass deviation δ between the held-out test year and surrounding training years.",
+      "page": 11,
+      "index": 3,
+      "width": 814,
+      "height": 458
+    }
+  ]
+}

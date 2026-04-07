@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.02074v1/fig-001.webp",
+      "caption": "Figure 5. Fraction of observations per pixel affected by negative NDVI anomalies (“browning”) over the entire observation period. Fractions are relative to the number of valid observations at a pixel. The histogram on the right shows the distribution of anomaly fraction values across all pixels. The three panels on the left show a magnified view of the anomaly fractions at the indicated regions on the map.",
+      "page": 6,
+      "index": 1,
+      "width": 1008,
+      "height": 604
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02074v1/fig-002.webp",
+      "caption": "Figure 6. Aggregated anomaly scores (top row) and fraction of anomalous pixels (bottom row) for each of the five cases (one case per column). Coloured curves denote the cases and dashed grey lines denote the reference areas. The vertical dashed lines indicate the date of the event for the fire and storm, the start and end of drought impact determined with the anomaly data for the drought event, and the start of the year for the clearcut harvest and beetle outbreak. In addition to the median, the 25th and 75th percentiles of the anomaly scores are shown by the shaded area.",
+      "page": 6,
+      "index": 2,
+      "width": 1008,
+      "height": 404
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02074v1/fig-003.webp",
+      "caption": "Figure 7. Visualisation of forest embeddings, projected to two dimensions with t-SNE. Points are labelled with their TypoCH habitat names and associated hierarchical codes, and coloured according to the highest hierarchy level.",
+      "page": 7,
+      "index": 3,
+      "width": 717,
+      "height": 600
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02074v1/fig-004.webp",
+      "caption": "Table 1. Variables used in the NDVI seasonal cycle model.",
+      "page": 3,
+      "index": 4,
+      "width": 440,
+      "height": 358
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02074v1/fig-005.webp",
+      "caption": "Figure 1. Exemplary predicted NDVI ranges and anomalies for 4 forest pixels. Green curves denote the upper quartiles (f0.75(t)), red curves denote the lower quartiles (f0.25(t)). Interquartile ranges are shaded in red. Dashed lines indicate the anomaly thresholds derived from those curves. NDVI observations that fall within the anomaly thresholds are coloured black, observations labelled as anomalies are coloured by their anomaly score, with lighter colour denoting more negative scores (larger deviations from the normal range).",
+      "page": 4,
+      "index": 5,
+      "width": 490,
+      "height": 498
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02074v1/fig-006.webp",
+      "caption": "Figure 2. Example anomaly map for forest pixels based on NDVI observations from 22/08/2023 and 24/08/2023 combined. A pixel is flagged if it is detected as anomalous on either of the days. The three panels on the left show a magnified view of the anomalies at the indicated regions on the map. Normal pixels are coloured in black and anomalous pixels are shaded in red according to their anomaly score.",
+      "page": 4,
+      "index": 6,
+      "width": 487,
+      "height": 294
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02074v1/fig-007.webp",
+      "caption": "Figure 4. Daily fraction of forest pixels affected by negative NDVI anomalies. The negative anomaly fractions are computed per day of the year and smoothed with a 7-day rolling average. The dashed horizontal line indicates the overall fraction of anomalies detected at forest pixels. Fractions are relative to the number of valid observations at a pixel. The vertical lines indicate the season starts on March 1 (spring), June 1 (summer), September 1 (autumn) and December 1 (winter).",
+      "page": 5,
+      "index": 7,
+      "width": 487,
+      "height": 270
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02074v1/fig-008.webp",
+      "caption": "Figure 3. D2 pinball per day of the year for each of the predicted quartiles. The daily values are shown alongside the 7-day rolling mean. For each day of the year, the value of D2 pinball expresses the fraction of pinball loss explained when compared to a model that uses the empirical quantile at that day of the year (the",
+      "page": 5,
+      "index": 8,
+      "width": 490,
+      "height": 270
+    }
+  ]
+}

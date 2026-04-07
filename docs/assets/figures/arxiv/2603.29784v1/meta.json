@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.29784v1/fig-001.webp",
+      "caption": "Figure 4: Hierarchical semantic initialization using the Sentence Transformer on a CORINE-derived path. Left: subgraph with the active node (ship) highlighted. Right: instantiated prompts for parent and leaf nodes used for semantic embedding generation.",
+      "page": 11,
+      "index": 1,
+      "width": 770,
+      "height": 222
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29784v1/fig-002.webp",
+      "caption": "Figure 7: Leaf-level confusion matrix comparison for AID dataset. Left: baseline model confusions, Center: MAPLE confusions, Right: difference matrix (MAPLE − Baseline). Blue cells indicate reduced confusions (improvements), red cells indicate increased confusions. MAPLE achieves a 12.1% reduction in total leaf-level confusions, with notable improvements in semantically challenging pairs such as trees→water and buildings→bare-soil.",
+      "page": 15,
+      "index": 2,
+      "width": 814,
+      "height": 363
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29784v1/fig-003.webp",
+      "caption": "Figure 6: Evolution of node embeddings throughout MAPLE training stages visualized using UMAP dimensionality reduction on the AID dataset. (a) Initial embeddings show random spatial distribution. (b) Learned embeddings after hierarchical semantic initialization demonstrate clear semantic clustering. (c) GNN embeddings after graph neural network refinement exhibit enhanced separation between semantic groups. (d) Visual-fused embeddings after multimodal fusion achieve sophisticated organization, integrating both visual and semantic information while respecting hierarchical structure.",
+      "page": 14,
+      "index": 3,
+      "width": 1050,
+      "height": 743
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29784v1/fig-004.webp",
+      "caption": "Figure 5: Few-shot learning performance comparison between MAPLE (in green) and flat MLC baseline (in red) across representative datasets. Results show AUPRC performance (µ± σ across three experimental repeats) for varying numbers of shots per category (K ∈ {4, 8, 12, 16}). MAPLE consistently outperforms the baseline, with particularly pronounced benefits in low-data regimes.",
+      "page": 13,
+      "index": 4,
+      "width": 564,
+      "height": 560
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29784v1/fig-005.webp",
+      "caption": "Figure 2: Examples of constructed label hierarchies for (a) the AID dataset, derived from the CORINE Land Cover (CLC) nomenclature, and (b) the MuRed dataset, with abbreviations in leaf labels corresponding to ICD-10 codes of disease names.",
+      "page": 8,
+      "index": 5,
+      "width": 826,
+      "height": 547
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29784v1/fig-006.webp",
+      "caption": "Figure 9: Comparison of embedding initialization strategies.",
+      "page": 17,
+      "index": 6,
+      "width": 816,
+      "height": 238
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29784v1/fig-007.webp",
+      "caption": "Table 5: Complete performance comparison across hierarchical levels using AUPRC (%). This table extends Table 1 from the main paper with results across all nine datasets and all hierarchical levels. li denotes the i-th hierarchical level. MAPLE* uses semantic initialization while MAPLE uses random initialization. ∆∗ and ∆ show relative improvements over flat baseline.",
+      "page": 12,
+      "index": 7,
+      "width": 664,
+      "height": 681
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29784v1/fig-008.webp",
+      "caption": "Figure 8: Performance comparison of different GNN architectures across datasets.",
+      "page": 16,
+      "index": 8,
+      "width": 816,
+      "height": 277
+    }
+  ]
+}

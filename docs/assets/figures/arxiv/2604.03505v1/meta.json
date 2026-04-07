@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.03505v1/fig-001.webp",
+      "caption": "Figure 2: Flowcharts for the three annotation-efficient learning strategies. (A) Flowchart for the semi-supervised pipeline. The model is trained on the labeled train/validation dataset and deployed on an unlabeled pool. Detections with confidence above 0.8 are automatically accepted as pseudo-labels and merged with the original dataset for retraining, while lower-confidence predictions are placed back in the unlabeled pool. (B) Active learning and hybrid learning strategies. In active learning, samples with prediction confidence below 0.5 are selected for human annotation. In the hybrid approach, predictions with confidence above 0.8 are automatically accepted as pseudo-labels (semi-supervised learning), while samples with confidence below 0.5 are assigned for human annotation (active learning) before merging and deduplication.",
+      "page": 6,
+      "index": 1,
+      "width": 1087,
+      "height": 317
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03505v1/fig-002.webp",
+      "caption": "Figure 3: Precision, Recall, and F1-Score curve of the satellite model canopy detection. The best F1-score of 0.78 is achieved at a confidence threshold of 0.41. Lower thresholds increase recall at the cost of lower precision, while higher thresholds improve precision but reduce recall.",
+      "page": 6,
+      "index": 2,
+      "width": 527,
+      "height": 316
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03505v1/fig-003.webp",
+      "caption": "Figure 7: Distribution of the number of pseudo-labeled and human-annotated samples added to the training dataset per round for different learning strategies. (A) Semi-supervised vs. hybrid learning: a decline in pseudo-label generation for the semi-supervised approach. (B) Active learning vs. hybrid learning: active learning requires substantially higher human annotation effort, while the hybrid approach achieves comparable dataset growth with fewer human annotations.",
+      "page": 11,
+      "index": 3,
+      "width": 979,
+      "height": 435
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03505v1/fig-004.webp",
+      "caption": "Figure 4: Performance comparison of three learning strategies over 10 rounds: Semi-Supervised learning (SS), Active Learning (AL), and hybrid AL + SemiSupervised learning. (A) Precision trajectories across training rounds. (B) Recall trajectories across training rounds. (C) F1 score trajectories with peak performance markers (stars) for each method.",
+      "page": 8,
+      "index": 4,
+      "width": 979,
+      "height": 523
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.03328v1/fig-001.webp",
+      "caption": "Table 2 Surface reconstruction results for ten Leaves across nine plant species from Crops3d ( 𝐶3𝐷) and Pheno4D (𝑃4𝐷) Datasets",
+      "page": 6,
+      "index": 1,
+      "width": 1029,
+      "height": 1400
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03328v1/fig-002.webp",
+      "caption": "Table 3 Plant-level leaf (leaflet) surface reconstruction results on   dataset",
+      "page": 10,
+      "index": 2,
+      "width": 1029,
+      "height": 1385
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03328v1/fig-003.webp",
+      "caption": "Figure 2: Mean leaf surface area (%) for each plant computed by different methods in Sec. 4 on   dataset using Poisson as benchmark",
+      "page": 8,
+      "index": 3,
+      "width": 1029,
+      "height": 505
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03328v1/fig-004.webp",
+      "caption": "Figure 4: Comparison of Leaf Surface Reconstruction Methods on the   Dataset (a) Mean CPU Time per Plant (b) Variability of Peak RAM Usage (IQR)",
+      "page": 9,
+      "index": 4,
+      "width": 1022,
+      "height": 442
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03328v1/fig-005.webp",
+      "caption": "Figure 1: Leaf surface Reconstruction results comparison across methods that we described in Sec. 4",
+      "page": 5,
+      "index": 5,
+      "width": 1021,
+      "height": 492
+    }
+  ]
+}
