@@ -1,0 +1,118 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.29245v1/fig-001.webp",
+      "caption": "Fig. 3. The structure of Cross-Stream Exchange Module (CSEM).",
+      "page": 6,
+      "index": 1,
+      "width": 1087,
+      "height": 698
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29245v1/fig-002.webp",
+      "caption": "Fig. 6. Qualitative results of ablation experiments for modules.",
+      "page": 11,
+      "index": 2,
+      "width": 1087,
+      "height": 598
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29245v1/fig-003.webp",
+      "caption": "Fig. 9. Distribution of ground-truth building heights for valid building pixels in the training and test sets (top), and RMSE of different methods across groundtruth height bins on the test set (bottom).",
+      "page": 15,
+      "index": 3,
+      "width": 492,
+      "height": 606
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29245v1/fig-004.webp",
+      "caption": "Fig. 10. Example from Boston illustrating the native challenges of PhiSat-2 products, including extent inconsistency (bottom) and inter-band spatial misalignment (top).",
+      "page": 15,
+      "index": 4,
+      "width": 491,
+      "height": 781
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29245v1/fig-005.webp",
+      "caption": "Fig. 4. The structure of Feature-Enhanced Bin Refinement (FEBR).",
+      "page": 7,
+      "index": 5,
+      "width": 1087,
+      "height": 627
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29245v1/fig-006.webp",
+      "caption": "Fig. 5. Qualitative results of comparison experiments.",
+      "page": 10,
+      "index": 6,
+      "width": 783,
+      "height": 1371
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29245v1/fig-007.webp",
+      "caption": "Fig. 8. Illustration of the advantages of PhiSat-2 for monocular building height estimation. (a) Example of spatial resolution degradation. (b) Performance changes under different spatial resolution settings. (c) Performance changes under different input band configurations.",
+      "page": 14,
+      "index": 7,
+      "width": 491,
+      "height": 352
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29245v1/fig-008.webp",
+      "caption": "Fig. 1. The spatial distribution and PhiSat-2 imagery examples of chosen scene locations.",
+      "page": 3,
+      "index": 8,
+      "width": 1087,
+      "height": 808
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29245v1/fig-009.webp",
+      "caption": "Fig. 7. Qualitative results of ablation experiments for task configurations.",
+      "page": 13,
+      "index": 9,
+      "width": 1087,
+      "height": 604
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29245v1/fig-010.webp",
+      "caption": "Table 2. Quantitative results of comparison experiments.",
+      "page": 8,
+      "index": 10,
+      "width": 829,
+      "height": 414
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29245v1/fig-011.webp",
+      "caption": "Table 1. Band information of PhiSat-2 used in this study.",
+      "page": 4,
+      "index": 11,
+      "width": 489,
+      "height": 258
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29245v1/fig-012.webp",
+      "caption": "Table 4. Quantitative results of ablation experiments for task configurations.",
+      "page": 12,
+      "index": 12,
+      "width": 891,
+      "height": 195
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29245v1/fig-013.webp",
+      "caption": "Table 3. Quantitative results of ablation experiments for modules.",
+      "page": 9,
+      "index": 13,
+      "width": 869,
+      "height": 195
+    },
+    {
+      "url": "assets/figures/arxiv/2603.29245v1/fig-014.webp",
+      "caption": "Fig. 2. Overall structure of the proposed Two-Stream Ordinal Network (TSONet).",
+      "page": 5,
+      "index": 14,
+      "width": 958,
+      "height": 644
+    }
+  ]
+}

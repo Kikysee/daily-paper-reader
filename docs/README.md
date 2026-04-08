@@ -6,73 +6,71 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-07
-- 运行时间：2026-04-07 20:13:08 UTC
+- 最新运行日期：2026-04-08
+- 运行时间：2026-04-08 20:11:42 UTC
 - 运行状态：成功
 - 本次总论文数：17
 - 精读区：6
 - 速读区：11
 
 ### 今日简报（AI）
-今日共研读17篇前沿论文，核心聚焦遥感图像基准数据集与农业多模态预测技术。
-最值得关注的是合成植被高光谱基准数据集（SVH-BD）的构建，以及用于高分辨率作物产量预测的多模态基准（YieldSAT）。
-建议关注智慧农业与地球观测的读者，优先探索这几个高分基准数据集，为多模态模型训练寻找新思路。
-- 详情：[/202604/07/README](/202604/07/README)
+今日共研读17篇前沿文献，核心聚焦高分辨率农作物估产与地球观测多模态数据集的创新突破。
+- 详情：[/202604/08/README](/202604/08/README)
 
 ### 精读区论文标签
-1. [SVH-BD : Synthetic Vegetation Hyperspectral Benchmark Dataset for Emulation of Remote Sensing Images](/202604/07/2603.28390v1-svh-bd--synthetic-vegetation-hyperspectral-benchmark-dataset-for-emulation-of-remote-sensing-images)  
-   标签：评分：9.0/10、query:q2
-   evidence：用于植被性状反演的合成高光谱数据集
-2. [YieldSAT: A Multimodal Benchmark Dataset for High-Resolution Crop Yield Prediction](/202604/07/2604.00940v1-yieldsat-a-multimodal-benchmark-dataset-for-high-resolution-crop-yield-prediction)  
-   标签：评分：9.0/10、query:q4
-   evidence：用于作物产量预测的多模态基准数据集
-3. [A Conditional Denoising Diffusion Probabilistic Model for RFI Mitigation in Synthetic Aperture Interferometric Radiometer](/202604/07/2604.01531v1-a-conditional-denoising-diffusion-probabilistic-model-for-rfi-mitigation-in-synthetic-aperture-interferometric-radiometer)  
-   标签：评分：9.0/10、query:q5
-   evidence：L波段辐射计中的RFI抑制以进行地球物理参数反演
-4. [Edge-Based Standing-Water Detection via FSM-Guided Tiering and Multi-Model Consensus](/202604/07/2604.03308v1-edge-based-standing-water-detection-via-fsm-guided-tiering-and-multi-model-consensus)  
-   标签：评分：9.0/10、query:q8
-   evidence：农田积水检测以进行作物健康监测
-5. [BigEarthNet.txt: A Large-Scale Multi-Sensor Image-Text Dataset and Benchmark for Earth Observation](/202604/07/2603.29630v1-bigearthnettxt-a-large-scale-multi-sensor-image-text-dataset-and-benchmark-for-earth-observation)  
+1. [YieldSAT: A Multimodal Benchmark Dataset for High-Resolution Crop Yield Prediction](/202604/08/2604.00940v1-yieldsat-a-multimodal-benchmark-dataset-for-high-resolution-crop-yield-prediction)  
+   标签：评分：10.0/10、query:profile-1
+   evidence：作物产量预测的多模态基准数据集
+2. [BigEarthNet.txt: A Large-Scale Multi-Sensor Image-Text Dataset and Benchmark for Earth Observation](/202604/08/2603.29630v2-bigearthnettxt-a-large-scale-multi-sensor-image-text-dataset-and-benchmark-for-earth-observation)  
    标签：评分：8.0/10、query:profile-1
-   evidence：包含用于地球观测的Sentinel-1 SAR和Sentinel-2多光谱的大规模多传感器数据集
-6. [Review and Evaluation of Point-Cloud based Leaf Surface Reconstruction Methods for Agricultural Applications](/202604/07/2604.03328v1-review-and-evaluation-of-point-cloud-based-leaf-surface-reconstruction-methods-for-agricultural-applications)  
+   evidence：包含Sentinel-1 SAR和Sentinel-2的多传感器遥感数据集
+3. [A Conditional Denoising Diffusion Probabilistic Model for RFI Mitigation in Synthetic Aperture Interferometric Radiometer](/202604/08/2604.01531v1-a-conditional-denoising-diffusion-probabilistic-model-for-rfi-mitigation-in-synthetic-aperture-interferometric-radiometer)  
+   标签：评分：8.0/10、query:q5
+   evidence：L波段辐射计RFI抑制以支持地球物理参数反演
+4. [Edge-Based Standing-Water Detection via FSM-Guided Tiering and Multi-Model Consensus](/202604/08/2604.03308v1-edge-based-standing-water-detection-via-fsm-guided-tiering-and-multi-model-consensus)  
+   标签：评分：8.0/10、query:q8
+   evidence：农田积水检测
+5. [Review and Evaluation of Point-Cloud based Leaf Surface Reconstruction Methods for Agricultural Applications](/202604/08/2604.03328v1-review-and-evaluation-of-point-cloud-based-leaf-surface-reconstruction-methods-for-agricultural-applications)  
    标签：评分：8.0/10、query:q2
-   evidence：农业应用中的叶片表面重建
+   evidence：用于农业表型分析的叶片表面重建
+6. [Spatiotemporal Interpolation of GEDI Biomass with Calibrated Uncertainty](/202604/08/2604.03874v1-spatiotemporal-interpolation-of-gedi-biomass-with-calibrated-uncertainty)  
+   标签：评分：8.0/10、query:q6
+   evidence：生物量密度的时空插值
 
 ### 速读区论文标签
-1. [Spatiotemporal Interpolation of GEDI Biomass with Calibrated Uncertainty](/202604/07/2604.03874v1-spatiotemporal-interpolation-of-gedi-biomass-with-calibrated-uncertainty)  
-   标签：评分：8.0/10、query:q6
-   evidence：利用激光雷达进行生物量密度估计
-2. [BigEarthNet.txt: A Large-Scale Multi-Sensor Image-Text Dataset and Benchmark for Earth Observation](/202604/07/2603.29630v2-bigearthnettxt-a-large-scale-multi-sensor-image-text-dataset-and-benchmark-for-earth-observation)  
+1. [Polyhedral Unmixing: Bridging Semantic Segmentation with Hyperspectral Unmixing via Polyhedral-Cone Partitioning](/202604/08/2603.29438v1-polyhedral-unmixing-bridging-semantic-segmentation-with-hyperspectral-unmixing-via-polyhedral-cone-partitioning)  
+   标签：评分：7.0/10、query:q3
+   evidence：高光谱解混与分割
+2. [30-meter Land Surface Temperature from Landsat via Progressive Self-Training Downscaling](/202604/08/2603.29478v1-30-meter-land-surface-temperature-from-landsat-via-progressive-self-training-downscaling)  
+   标签：评分：7.0/10、query:q3
+   evidence：Landsat地表温度降尺度用于水热过程分析
+3. [BigEarthNet.txt: A Large-Scale Multi-Sensor Image-Text Dataset and Benchmark for Earth Observation](/202604/08/2603.29630v1-bigearthnettxt-a-large-scale-multi-sensor-image-text-dataset-and-benchmark-for-earth-observation)  
    标签：评分：7.0/10、query:profile-1
-   evidence：包含Sentinel-1 SAR和Sentinel-2的多传感器数据集
-3. [MAPLE: Multi-Path Adaptive Propagation with Level-Aware Embeddings for Hierarchical Multi-Label Image Classification](/202604/07/2603.29784v1-maple-multi-path-adaptive-propagation-with-level-aware-embeddings-for-hierarchical-multi-label-image-classification)  
+   evidence：包含用于地球观测的Sentinel-1 SAR多传感器数据集
+4. [Looking into a Pixel by Nonlinear Unmixing -- A Generative Approach](/202604/08/2604.01141v1-looking-into-a-pixel-by-nonlinear-unmixing----a-generative-approach)  
    标签：评分：7.0/10、query:q3
-   evidence：遥感图像的分层多标签分类
-4. [Whittaker-Henderson smoother for long satellite image time series interpolation](/202604/07/2604.00048v1-whittaker-henderson-smoother-for-long-satellite-image-time-series-interpolation)  
-   标签：评分：7.0/10、query:q3
-   evidence：卫星图像时间序列插值的预处理
-5. [MIRANDA: MId-feature RANk-adversarial Domain Adaptation toward climate change-robust ecological forecasting with deep learning](/202604/07/2604.00800v1-miranda-mid-feature-rank-adversarial-domain-adaptation-toward-climate-change-robust-ecological-forecasting-with-deep-learning)  
+   evidence：遥感中的高光谱解混
+5. [FSKD: Monocular Forest Structure Inference via LiDAR-to-RGBI Knowledge Distillation](/202604/08/2604.01766v1-fskd-monocular-forest-structure-inference-via-lidar-to-rgbi-knowledge-distillation)  
    标签：评分：7.0/10、query:q2
-   evidence：植物物候建模与生态预测
-6. [FSKD: Monocular Forest Structure Inference via LiDAR-to-RGBI Knowledge Distillation](/202604/07/2604.01766v1-fskd-monocular-forest-structure-inference-via-lidar-to-rgbi-knowledge-distillation)  
-   标签：评分：7.0/10、query:q6
-   evidence：森林结构指标如植被面积指数(PAI)和冠层高度
-7. [Country-wide, high-resolution monitoring of forest browning with Sentinel-2](/202604/07/2604.02074v1-country-wide-high-resolution-monitoring-of-forest-browning-with-sentinel-2)  
-   标签：评分：7.0/10、query:q3
-   evidence：利用Sentinel-2监测森林绿度和植被周期
-8. [Multimodal Urban Tree Detection from Satellite and Street-Level Imagery via Annotation-Efficient Deep Learning Strategies](/202604/07/2604.03505v1-multimodal-urban-tree-detection-from-satellite-and-street-level-imagery-via-annotation-efficient-deep-learning-strategies)  
+   evidence：森林结构推断，包括植被面积指数(PAI)
+6. [Country-wide, high-resolution monitoring of forest browning with Sentinel-2](/202604/08/2604.02074v1-country-wide-high-resolution-monitoring-of-forest-browning-with-sentinel-2)  
    标签：评分：7.0/10、query:q8
-   evidence：利用卫星图像进行城市树木检测的多模态框架
-9. [ConInfer: Context-Aware Inference for Training-Free Open-Vocabulary Remote Sensing Segmentation](/202604/07/2603.29271v1-coninfer-context-aware-inference-for-training-free-open-vocabulary-remote-sensing-segmentation)  
+   evidence：监测森林绿度和植被周期
+7. [Monocular Building Height Estimation from PhiSat-2 Imagery: Dataset and Method](/202604/08/2603.29245v1-monocular-building-height-estimation-from-phisat-2-imagery-dataset-and-method)  
    标签：评分：6.0/10、query:q3
-   evidence：开放词汇遥感图像分割
-10. [30-meter Land Surface Temperature from Landsat via Progressive Self-Training Downscaling](/202604/07/2603.29478v1-30-meter-land-surface-temperature-from-landsat-via-progressive-self-training-downscaling)  
+   evidence：利用多光谱卫星图像进行建筑物高度估计
+8. [ConInfer: Context-Aware Inference for Training-Free Open-Vocabulary Remote Sensing Segmentation](/202604/08/2603.29271v1-coninfer-context-aware-inference-for-training-free-open-vocabulary-remote-sensing-segmentation)  
    标签：评分：6.0/10、query:q3
-   evidence：地表过程的遥感参数估计
-11. [Continual Vision-Language Learning for Remote Sensing: Benchmarking and Analysis](/202604/07/2604.00820v1-continual-vision-language-learning-for-remote-sensing-benchmarking-and-analysis)  
+   evidence：遥感图像的开放词汇分割
+9. [UQ-SHRED: uncertainty quantification of shallow recurrent decoder networks for sparse sensing via engression](/202604/08/2604.01305v1-uq-shred-uncertainty-quantification-of-shallow-recurrent-decoder-networks-for-sparse-sensing-via-engression)  
+   标签：评分：6.0/10、query:profile-1
+   evidence：时空场稀疏传感的不确定性量化
+10. [Prototype-Based Low Altitude UAV Semantic Segmentation](/202604/08/2604.01550v1-prototype-based-low-altitude-uav-semantic-segmentation)  
+   标签：评分：6.0/10、query:q4
+   evidence：低空无人机图像的语义分割
+11. [Cosine-Normalized Attention for Hyperspectral Image Classification](/202604/08/2604.01763v1-cosine-normalized-attention-for-hyperspectral-image-classification)  
    标签：评分：6.0/10、query:q3
-   evidence：遥感解译任务的视觉语言学习
+   evidence：利用余弦归一化注意力进行高光谱图像分类
 
 
 <div class="dpr-home-promo-card">

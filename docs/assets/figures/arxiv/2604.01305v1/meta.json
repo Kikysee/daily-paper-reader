@@ -1,0 +1,142 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.01305v1/fig-001.webp",
+      "caption": "Figure 5: UQ-SHRED reconstruction of the solar activity dataset. Shaded regions: 50%, 70%, and 95% confidence intervals; blue dashed: median; black solid: ground truth.",
+      "page": 11,
+      "index": 1,
+      "width": 976,
+      "height": 296
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01305v1/fig-002.webp",
+      "caption": "Figure 6: Calibration diagrams for UQ-SHRED across all four datasets. Dashed line: perfect calibration. Blue: UQ-SHRED empirical coverage.",
+      "page": 11,
+      "index": 2,
+      "width": 922,
+      "height": 260
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01305v1/fig-003.webp",
+      "caption": "Figure 9: Stability comparison between UQ-SHRED and deterministic SHRED under temporal extrapolation on the 1D RDE data. Visualizations are presented for temporal traces at a selected spatial location x = 14.50 on the temperature field.",
+      "page": 15,
+      "index": 3,
+      "width": 976,
+      "height": 348
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01305v1/fig-004.webp",
+      "caption": "Figure 12: Spatial reconstruction of UQ-SHRED on isotropic turbulent flow data. Columns: ground truth, median reconstruction, absolute error, and 95% CI width.",
+      "page": 21,
+      "index": 4,
+      "width": 979,
+      "height": 802
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01305v1/fig-005.webp",
+      "caption": "Figure 13: Spatial reconstruction of UQ-SHRED on neuro activity data. Columns: ground truth, median reconstruction, absolute error, and 95% CI width.",
+      "page": 21,
+      "index": 5,
+      "width": 976,
+      "height": 246
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01305v1/fig-006.webp",
+      "caption": "Figure 14: Spatial reconstruction of UQ-SHRED on solar activity data. Columns: ground truth, median reconstruction, absolute error, and 95% CI width.",
+      "page": 22,
+      "index": 6,
+      "width": 976,
+      "height": 802
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01305v1/fig-007.webp",
+      "caption": "Figure 4: UQ-SHRED reconstruction of the neural activity dataset. Shaded regions: 50%, 70%, and 95% confidence intervals; blue dashed: median; black solid: ground truth.",
+      "page": 10,
+      "index": 7,
+      "width": 976,
+      "height": 440
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01305v1/fig-008.webp",
+      "caption": "Figure 8: Calibration diagrams for UQ-SHRED on the 1D RDE transient stage. Dashed line: perfect calibration. Blue: UQ-SHRED empirical coverage.",
+      "page": 14,
+      "index": 8,
+      "width": 979,
+      "height": 505
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01305v1/fig-009.webp",
+      "caption": "Figure 15: Spacetime overview for UQ-SHRED on the 1D RDE transient ignition stage. Columns: ground truth, median reconstruction, absolute error, and 95% CI width. Top rows: pressure; bottom rows: temperature. The 95% CI width concentrates along the detonation fronts, matching the spatial distribution of reconstruction error.",
+      "page": 23,
+      "index": 9,
+      "width": 976,
+      "height": 846
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01305v1/fig-010.webp",
+      "caption": "Figure 7: UQ-SHRED reconstruction of the 1D RDE transient stage at selected time instances. Top rows: pressure; bottom rows: temperature. Shaded regions: 50%, 70%, and 95% confidence intervals; red dashed: median; black solid: ground truth; red dots: sensor locations.",
+      "page": 13,
+      "index": 10,
+      "width": 979,
+      "height": 776
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01305v1/fig-011.webp",
+      "caption": "Table 1: UQ-SHRED metrics across the four experimental datasets. Calibration reports observed coverage (%) at each nominal confidence level. CRPS represents the continuous ranked probability score. Sharpness is the average CI width.",
+      "page": 12,
+      "index": 11,
+      "width": 698,
+      "height": 202
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01305v1/fig-012.webp",
+      "caption": "Table 2: UQ-SHRED metrics on the 1D RDE transient stage for two test trajectories with different initialcondition perturbation magnitudes. Calibration reports observed coverage (%) at each nominal confidence level. CRPS represents the continuous ranked probability score. Sharpness is the average CI width.",
+      "page": 12,
+      "index": 12,
+      "width": 840,
+      "height": 204
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01305v1/fig-013.webp",
+      "caption": "Figure 16: Temporal traces at selected spatial locations for UQ-SHRED on the 1D RDE transient ignition stage. Confidence bands widen during detonation-wave passage and contract during quiescent intervals.",
+      "page": 24,
+      "index": 13,
+      "width": 976,
+      "height": 676
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01305v1/fig-014.webp",
+      "caption": "Figure 2: UQ-SHRED reconstruction of the SST dataset. Shaded regions: 50%, 70%, and 95% confidence intervals; blue dashed: median; black solid: ground truth.",
+      "page": 9,
+      "index": 14,
+      "width": 976,
+      "height": 293
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01305v1/fig-015.webp",
+      "caption": "Figure 3: UQ-SHRED reconstruction of the isotropic turbulent flow. Shaded regions: 50%, 70%, and 95% confidence intervals; blue dashed: median; black solid: ground truth.",
+      "page": 9,
+      "index": 15,
+      "width": 976,
+      "height": 294
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01305v1/fig-016.webp",
+      "caption": "Figure 11: Spatial reconstruction of UQ-SHRED on SST data. Columns: ground truth, median reconstruction, absolute error, and 95% CI width.",
+      "page": 20,
+      "index": 16,
+      "width": 976,
+      "height": 200
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01305v1/fig-017.webp",
+      "caption": "Figure 1: (a) UQ-SHRED architecture. The noise vector ε is concatenated to the sensor input at each lag step and kept constant across the temporal window. The random noises are concatenated to the sensor input to the GRU, as stated in Eqn. 4. (b) The function G(·) represents the SHRED architecture with temporal units and shallow decoder networks. Two independent forward passes with different noise draws produce Gθ(x, ε1) and Gθ(x, ε2), which define the energy score loss equation 7. (c) At inference, K forward passes with independently resampled noise yield an empirical predictive distribution from which quantile-based confidence intervals are extracted. (d) Uncertainty estimation from the Monte Carlo samples for test sensor locations. Black: ground truth, blue: 95% uncertainty bounds.",
+      "page": 5,
+      "index": 17,
+      "width": 977,
+      "height": 546
+    }
+  ]
+}
