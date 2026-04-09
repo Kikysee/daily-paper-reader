@@ -1,0 +1,94 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.06988v1/fig-001.webp",
+      "caption": "Figure 4: Boxplot of distance of quantile predictions to point-estimate, i.e. median prediction. Per confidence level α ∈ [0.5, 0.6, 0.7, 0.8, 0.9], the prediction interval at level α is written as PIWα = [ŷlow, ŷhigh] ⊂ R, while the median prediction is denoted ŷ ∈ R.",
+      "page": 6,
+      "index": 1,
+      "width": 481,
+      "height": 255
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06988v1/fig-002.webp",
+      "caption": "Figure 14: Sample satellite image with point estimates and 80% Prediction Interval Width of our model, trained with or without shift loss. Left: Satellite image (yearly median composite). Top Right: Point-estimates of canopy height. Bottom Right: 80% Prediction Inverval Width. It is clearly visible that the shift loss reduces uncertainty at forest borders.",
+      "page": 15,
+      "index": 2,
+      "width": 906,
+      "height": 458
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06988v1/fig-003.webp",
+      "caption": "Figure 13: Boxplot of Prediction Interval Width at level α = 0.8 for model trained without shift loss in dependence of either Left: being at forest border or Right: average slope within a 140m square. Note that the model without shift loss is more uncertain at forest borders compared to the model with shift loss (compare Figures 7 and 8).",
+      "page": 15,
+      "index": 3,
+      "width": 977,
+      "height": 348
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06988v1/fig-004.webp",
+      "caption": "Figure 5: Scatter plot of GEDI height against predicted height with color dependent on the prediction interval width at level α = 0.8. All heights are clipped into [0m, 50m]. Left: Lang et al.’s model. Right: Our model.",
+      "page": 7,
+      "index": 4,
+      "width": 1010,
+      "height": 477
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06988v1/fig-005.webp",
+      "caption": "Figure 12: Empirical Coverage vs Nominal Quantile for our model trained without shift loss.",
+      "page": 14,
+      "index": 5,
+      "width": 984,
+      "height": 218
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06988v1/fig-006.webp",
+      "caption": "Table 4: Comparison of Mean Prediction Interval Width (MPIW) and Prediction Interval Coverage Probability (PICP) for multiple uncertainty levels α.",
+      "page": 13,
+      "index": 6,
+      "width": 886,
+      "height": 250
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06988v1/fig-007.webp",
+      "caption": "Table 3: Results on point-estimators, measured using Mean Squared Error (MSE, m2), Mean Absolute Error (MAE, m), R2 and Empirical Coverage (EC).",
+      "page": 13,
+      "index": 7,
+      "width": 568,
+      "height": 251
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06988v1/fig-008.webp",
+      "caption": "Figure 8: Boxplot of Prediction Interval Width at level α = 0.8 in dependence of average slope within a 140m surrounding.",
+      "page": 8,
+      "index": 8,
+      "width": 483,
+      "height": 355
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06988v1/fig-009.webp",
+      "caption": "Figure 7: Boxplot of Prediction Interval Width at level α = 0.8 in dependence of being at a forest border. Note that less than 5% of the pixels are located at forest borders.",
+      "page": 8,
+      "index": 9,
+      "width": 481,
+      "height": 351
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06988v1/fig-010.webp",
+      "caption": "Figure 10: Architecture of the 3D UNet. (a) Each Encoder Layer applies MaxPool3d for 2× spatial downsampling followed by a DoubleConv block (two Conv3d+GroupNorm+ReLU); the initial DoubleConv omits the MaxPool. Each Decoder Layer applies ConvTranspose3d for 2× spatial upsampling, concatenates skip features (dashed), then applies a DoubleConv block. (b) Overall architecture. Encoder features pass through Temporal Aggregation Conv3d layers with temporal-only kernels (T ,1,1) that collapse the time dimension to 1 before entering the decoder as skip connections. The solid path at the bottom shows the bottleneck flow. Tensor shapes are shown in magenta as C × T ×H ×W .",
+      "page": 12,
+      "index": 10,
+      "width": 956,
+      "height": 655
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06988v1/fig-011.webp",
+      "caption": "Figure 9: Sample satellite image with point estimates and 80% Prediction Interval Width of Lang et al.’s model and our model. Left: Satellite image (yearly median composite). Top Right: Point-estimates of canopy height. Bottom Right: 80% Prediction Inverval Width.",
+      "page": 9,
+      "index": 11,
+      "width": 1016,
+      "height": 515
+    }
+  ]
+}
