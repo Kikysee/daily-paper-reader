@@ -1,0 +1,748 @@
+Title: CoRegOVCD: Consistency-Regularized Open-Vocabulary Change Detection
+
+URL Source: https://arxiv.org/pdf/2604.02160v1
+
+Published Time: Fri, 03 Apr 2026 01:06:42 GMT
+
+Number of Pages: 10
+
+Markdown Content:
+# CoRegOVCD: Consistency-Regularized Open-Vocabulary Change Detection 
+
+# Weidong Tang 
+
+wdtang29@gmail.com China Agricultural University College of Information and Electrical Engineering Beijing, China 
+
+# Hanbin Sun 
+
+2023308130201@cau.edu.cn China Agricultural University College of Information and Electrical Engineering Beijing, China 
+
+# Zihan Li 
+
+2023308160205@cau.edu.cn China Agricultural University College of Information and Electrical Engineering Beijing, China 
+
+# Yikai Wang 
+
+yikaiwang745@gmail.com China Agricultural University College of Information and Electrical Engineering Beijing, China 
+
+# Feifan Zhang ∗
+
+feifanzhang@cau.edu.cn China Agricultural University College of Science Beijing, China 
+
+## Abstract 
+
+Remote sensing change detection (CD) aims to identify where land-cover semantics change across time, but most existing methods still assume a fixed label space and therefore cannot answer arbitrary user-defined queries. Open-vocabulary change detection (OVCD) instead asks for the change mask of a queried concept. In the fully training-free setting, however, dense concept responses are difficult to compare directly across dates: appearance variation, weak cross-concept competition, and the spatial continuity of many land-cover categories often produce noisy, fragmented, and semantically unre-liable change evidence. We propose Consistency-Regularized Open-Vocabulary Change Detection (CoRegOVCD), a training-free dense inference framework that reformulates concept-specific change as calibrated posterior discrepancy. Competitive Posterior Calibration (CPC) and the Semantic Posterior Delta (SPD) convert raw con-cept responses into competition-aware queried-concept posteriors and quantify their cross-temporal discrepancy, making semantic change evidence more comparable without explicit instance match-ing. Geometry-Token Consistency Gate (GeoGate) and Regional Consensus Discrepancy (RCD) further suppress unsupported re-sponses and improve spatial coherence through geometry-aware structural verification and regional consensus. Across four bench-marks spanning building-oriented and multi-class settings, CoRe-gOVCD consistently improves over the strongest previous training-free baseline by 2.24 to 4.98 F1 𝐶 points and reaches a six-class average of 47.50% F1 𝐶 on SECOND. 
+
+## 1 Introduction 
+
+Remote sensing change detection (CD) aims to identify seman-tic changes from multi-temporal observations of the same geo-graphic area [ 21 , 30 – 32 , 38 ], playing a crucial role in environmental monitoring, urban expansion tracking, and disaster assessment [ 10 , 17 , 22 , 28 , 42 ]. Current CD methods can typically be divided into two categories: binary change detection (BCD) [ 35 ], which determines whether a change has occurred, and semantic change detection (SCD) [ 7 , 24 ], which further identifies the categories of change. However, both paradigms are built upon a closed-world 
+
+> ∗Corresponding author.
+
+## Ia
+
+## Ib
+
+Queried 
+
+concept  c
+
+> Change
+> Mask
+
+Hard mask maps 
+
+Semantic cues 
+
+Cross -temporal 
+
+matching 
+
+> Change integration Mask
+> map s
+> Semantic
+> cues
+> Matched
+> pieces
+> Dense
+> score
+> CPC
+> SPD
+> RCD
+
+GeoGate 
+
+> Final mask
+> inferenc e
+
+## Ia
+
+## Ib
+
+Queried 
+
+concept  c
+
+> Change
+> Mask
+
+(a) Previous Methods 
+
+(b) CoRegOVCD (ours) 
+
+Continuous fields first, then regularize 
+
+Hard masks first, then compare 
+
+Figure 1: Paradigm comparison between previous training-free OVCD methods and CoRegOVCD. (a) Previous methods typically rely on explicit mask or instance representations, semantic cues, and cross-temporal matching before produc-ing the final change mask. (b) CoRegOVCD instead performs dense posterior-based change inference through dense score construction, CPC, SPD, GeoGate, RCD, and lightweight final mask inference. 
+
+assumption characterized by a predefined label space, which lim-its their ability to generalize to unseen categories [ 16 , 45 ]. In ad-dition, traditional methods predominantly rely on supervised or semi-supervised paradigms, which depend on costly pixel-level annotations, making them even more impractical for open-world scenarios [13, 25, 46]. Recent advances in large-scale foundation models have opened new opportunities to address these limitations. Through extensive pretraining on massive image and language datasets, these mod-els capture rich semantic knowledge and exhibit strong zero-shot 
+
+> 1
+> arXiv:2604.02160v1 [cs.CV] 2 Apr 2026 Tang et al.
+
+generalization capabilities, enabling them to interpret and reason about previously unseen concepts without task-specific adapta-tion [ 2, 39 , 44 ]. Early works such as AnyChange [ 43 ] and UCD-SCM [29 ] have demonstrated the potential of leveraging pre-trained foun-dation models for zero-shot change detection, achieving promising results under open-world conditions. Motivated by these develop-ments, the concept of open-vocabulary change detection (OVCD) has been proposed [18], aiming to detect semantic changes across any user-specified category. Current mainstream approaches primarily decompose the OVCD task into three subtasks, which are mask segmentation, semantic recognition, and change detection, with representative works such as DynamicEarth [ 18 ] and AdaptOVCD [ 9], while OmniOVCD [ 41 ] introduces a standalone architecture aimed at reducing model cascade error. However, existing methods still face two fundamen-tal challenges: (1) most approaches rely on binary decisions for pixel-wise classification of given prompts, which can lead to mis-classification when candidate concepts are semantically similar; (2) variations in external conditions (illumination, seasonal changes, and atmospheric effects) often introduce spurious differences that result in inconsistencies in cross-temporal semantics and spatial neighborhoods [ 37 ]. To address these challenges, our core insight is to represent target vocabulary concepts using continuous probabil-ity values rather than conventional binary masks. This design natu-rally captures the model’s confidence in predicting target semantics, offering a more nuanced representation than binary decisions. To further suppress pseudo changes, we introduce geometric cues as a complementary constraint. Intuitively, regions exhibiting substan-tial contour variations are more likely to correspond to genuine changes, whereas pseudo changes often manifest with irregular or scattered boundary patterns. Driven by the above motivation, we propose a consistency-regularized open-vocabulary change detection framework (CoRe-gOVCD). As illustrated in Figure 1, previous training-free OVCD methods typically generate explicit mask or instance representa-tions early and then perform cross-temporal matching, whereas CoRegOVCD reasons over dense concept responses and calibrated posterior discrepancies before a lightweight final mask inference stage. Specifically, we introduce Competitive Posterior Calibration (CPC) to model cross-concept competition and obtain calibrated posteriors, followed by Semantic Posterior Delta (SPD) to capture cross-temporal semantic discrepancies without explicit instance matching. We further introduce Geometry-Token Consistency Gate (GeoGate), a structural verification module that leverages geometry-aware representations to validate semantic evidence. Finally, Re-gional Consensus Discrepancy (RCD) fuses semantic and structural cues with superpixel-based regional pooling to enforce spatial co-herence. The main contributions of this work are as follows: 
+
+• We propose a new training-free open-vocabulary change de-tection framework, CoRegOVCD, which reinterprets concept-specific change detection as a dense inference framework of calibrated posterior divergence, yielding more comparable evidence of semantic changes. 
+
+• We establish a complementary synergy between semantic posterior divergence and geometric structural verification, enabling robust suppression of external-variation-induced false changes while preserving genuine semantic transi-tions. 
+
+• We validate the superiority of our method on four bench-mark datasets, achieving new state-of-the-art performance under training-free settings while maintaining high effi-ciency. 
+
+## 2 Related Work 2.1 Remote Sensing Change Detection 
+
+Remote sensing change detection has evolved from classical dis-crepancy modeling to deep feature learning. Early unsupervised methods such as CVA [ 3 ], IRMAD [ 23 ], PCA-Kmeans [ 5 ], ISFA [ 33 ], DSFA [ 11 ], and DCVA [ 27 ] estimate change by analyzing spectral or feature-space differences without requiring pixel-level annota-tions. Although these methods are attractive from the standpoint of annotation cost, they primarily operate on low-level or weakly semantic change cues and therefore often respond to illumination variation, seasonal shifts, and registration noise. Recent supervised models, including Siamese CNNs [ 8], MetaChanger [ 12 ], and HAT-Net [ 34 ], substantially improve localization quality by learning stronger temporal representations. However, their prediction space remains fundamentally closed-set: the semantic categories that can be recognized at test time are limited by the labels available during training. This tension between semantic flexibility and annotation dependence motivates open-vocabulary formulations of change detection. 
+
+## 2.2 Foundation Models for Open-Vocabulary Perception 
+
+The emergence of foundation models has made open-vocabulary reasoning feasible in remote sensing. CLIP [ 26 ] provides transfer-able vision-language alignment for text-guided recognition, while SAM [ 15 ] and its successors [ 4] offer promptable mask genera-tion with increasingly strong generalization capacity. Yet directly applying foundation models trained on natural images to aerial or satellite imagery is non-trivial because of the pronounced do-main gap between horizontal-view natural scenes and overhead remote sensing observations. Recent remote-sensing-specific open-vocabulary segmentation work, such as SegEarth-OV [ 19 ], shows that dense high-resolution features and training-free adaptation are particularly important for transferring open-vocabulary perception to remote sensing imagery. These advances provide the semantic and spatial building blocks required by OVCD, but they do not by themselves solve the temporal consistency problem: a valid OVCD model must not only recognize the queried concept, but also deter-mine whether its spatial support changes across two acquisition times under significant appearance perturbation. 
+
+## 2.3 Training-Free Open-Vocabulary Change Detection 
+
+Existing training-free OVCD methods can be viewed as differ-ent ways of combining foundation-model segmentation, compari-son, and semantic filtering. AnyChange [ 43 ] uses latent matching in SAM to produce class-agnostic change masks, demonstrating 
+
+> 2CoRegOVCD : Consistency-Regularized Open-Vocabulary Change Detection
+
+SAM3
+
+aI
+
+bI 
+
+> ()k
+> t
+
+S ( )q 
+
+> tS
+> ()q
+> tM
+
+Prompts
+
+> Building
+> Tree
+> Car
+> Surface
+> ……
+> CPC
+
+# Input Inference SPD
+
+( )
+
+#  c    
+
+> ()q
+> tM
+> ()q
+> tS
+> r
+> ()c
+> tP
+> ()c
+> t
+
+P 
+
+> ()c
+> a
+
+P ( )c
+
+> b
+
+P
+
+## I 
+
+> SLIC
+> ()c
+
+S P
+
+# Output
+
+> cosim
+> Threshold
+> P
+
+( )G u            
+
+> ()()()()cc
+> abPxPx
+> Pool
+> Frozen
+> ()bgu
+> GeoGate
+> Block 1
+
+Geometric Encoder Block L  
+
+> Block 2 ()agu
+> RCD
+
+Figure 2: Overview of CoRegOVCD. Given bi-temporal images and a queried concept, the framework first constructs dense concept confidence scores from prompt-conditioned Segment Anything Model 3 (SAM 3) outputs and calibrates them with Competitive Posterior Calibration (CPC). It then computes the Semantic Posterior Delta (SPD) as the semantic change signal. For structural verification, Geometry-Token Consistency Gate (GeoGate) employs a Geometric Encoder instantiated with Depth Anything 3 (DA3) to extract geometry tokens and derive the gate map 𝐺 . Finally, Regional Consensus Discrepancy (RCD) fuses SPD and the gate map 𝐺 and imposes SLIC-based regional consensus, after which a lightweight final mask inference stage converts the resulting score map into the final change mask. 
+
+the feasibility of zero-shot change localization but not category-specific reasoning. UCD-SCM [ 29 ] adds semantic filtering on top of foundation-model proposals, but it is still largely tailored to building-oriented change detection. DynamicEarth [ 18 ] formally defines OVCD and organizes training-free inference into two mod-ular paradigms, namely mask-compare-identify and identify-mask-compare, thereby establishing a clear benchmark and evaluation protocol for the field. AdaptOVCD [ 9] strengthens this modular line through adaptive information fusion across data, feature, and deci-sion levels, improving robustness but still relying on heterogeneous model collaboration. OmniOVCD [ 41 ] instead exploits the decou-pled outputs of SAM 3 to streamline the pipeline through instance fusion and matching in a more unified architecture. Despite these advances, existing methods still predominantly reason through explicit proposals, instance matching, or multi-stage model compo-sition, which can be brittle to the pseudo-changes and can amplify cross-model mismatch. This gap motivates a dense, posterior-based alternative that reasons directly on concept confidence and cross-temporal geometric consistency. 
+
+## 3 Methodology 
+
+Problem setup. Open-vocabulary change detection (OVCD) takes two aligned remote sensing images 𝐼 𝑎 , 𝐼 𝑏 ∈ R𝐻 ×𝑊 ×3 and a queried concept 𝑐 , and predicts a binary mask ˆ𝑌 (𝑐 ) ∈ { 0, 1}𝐻 ×𝑊 over the pixel domain Ω that marks where the membership of concept 𝑐 
+
+changes between the two acquisition times. In the fully training-free setting considered here, all backbones remain frozen, and the user specifies the target concept with either a single prompt or a small prompt set Q ( 𝑐 ). The main difficulty is not single-date recog-nition alone, but constructing a query-conditioned dense signal that remains comparable across time: raw concept responses may drift under appearance variation, weak cross-class competition, and the spatial continuity of many land-cover categories, even when the underlying semantic state does not truly change. 
+
+Pipeline overview. As illustrated in Figure 2, CoRegOVCD ad-dresses this issue with four main components and a lightweight final mask inference stage. Competitive Posterior Calibration (CPC) first constructs dense concept confidence scores and calibrates them into queried-concept-vs-rest posteriors 𝑃 (𝑐 ) 
+
+> 𝑎
+
+and 𝑃 (𝑐 ) 
+
+> 𝑏
+
+. Semantic Pos-terior Delta (SPD) then measures their cross-temporal discrepancy as the core semantic change signal Δ(𝑐 ) . For structural verification, Geometry-Token Consistency Gate (GeoGate) employs a Geomet-ric Encoder instantiated with Depth Anything 3 (DA3) to extract geometry tokens and derive the gate map 𝐺 . Regional Consensus Discrepancy (RCD) fuses Δ(𝑐 ) and 𝐺 and regularizes the fused score through regional consensus. Finally, a lightweight final mask infer-ence stage converts the pooled score map into the output change mask. The following subsections detail Competitive Posterior Cal-ibration, Semantic Posterior Delta, Geometry-Token Consistency Gate, Regional Consensus Discrepancy, and the final mask inference stage. 
+
+## 3.1 Semantic reliability: CPC 
+
+For each image 𝐼 𝑡 with 𝑡 ∈ { 𝑎, 𝑏 }, we construct per-pixel concept confidence scores 
+
+𝑆 (𝑘 ) 
+
+> 𝑡
+
+(𝑥 ) ∈ [ 0, 1], 𝑘 ∈ { 1, . . . , 𝐾 }, (1) 
+
+> 3Tang et al.
+
+over a prompt vocabulary V = {𝑤 𝑘 }𝐾 𝑘 =1, where 𝑥 denotes the pixel location. Specifically, for prompt 𝑤 𝑘 , let 
+
+n 𝜋 (𝑘 ) 
+
+> 𝑡,𝑖
+
+(𝑥 ), 𝛼 (𝑘 )
+
+> 𝑡,𝑖
+
+o𝑁 (𝑘 ) 
+
+> 𝑡
+> 𝑖 =1
+
+(2) denote the retained instance masks after top-𝑅 truncation and con-fidence filtering, where 𝜋 (𝑘 ) 
+
+> 𝑡,𝑖
+
+(𝑥 ) ∈ [ 0, 1] is the upsampled value of the 𝑖 -th mask at pixel 𝑥 , 𝛼 (𝑘 ) 
+
+> 𝑡,𝑖
+
+∈ [ 0, 1] is its retained confidence, and 𝑁 (𝑘 ) 
+
+> 𝑡
+
+is the number of retained instances. Let 𝑑 (𝑘 ) 
+
+> 𝑡
+
+(𝑥 ) ∈ [ 0, 1]
+
+denote the upsampled dense semantic response of prompt 𝑤 𝑘 , and set 𝑑 (𝑘 ) 
+
+> 𝑡
+
+(𝑥 ) = 0 when this branch is unavailable. We then define 
+
+𝑆 (𝑘 ) 
+
+> 𝑡
+
+(𝑥 ) = max max    
+
+> 1≤𝑖 ≤𝑁 (𝑘 )
+> 𝑡
+
+𝛼 (𝑘 ) 
+
+> 𝑡,𝑖
+
+𝜋 (𝑘 ) 
+
+> 𝑡,𝑖
+
+(𝑥 ), 𝑑 (𝑘 ) 
+
+> 𝑡
+
+(𝑥 )
+
+!
+
+, (3) with the convention that the inner maximum is 0 when 𝑁 (𝑘 ) 
+
+> 𝑡
+
+= 0.Eq. (3) aggregates prompt-conditioned instance evidence into a single dense response while allowing the dense semantic branch to complement regions that are not well covered by the retained instances. Let 𝑞 be the index of the queried concept. Direct temporal differ-encing of 𝑆 (𝑞 ) 
+
+> 𝑎
+
+and 𝑆 (𝑞 ) 
+
+> 𝑏
+
+is unreliable because the raw score does not encode cross-concept dominance, its magnitude may drift under appearance variation, and weak off-target activations may survive into the difference map. CPC makes the dense evidence comparable across time by mod-eling cross-concept competition explicitly. For the queried concept, we define the strongest non-target competitor as 
+
+𝑀 (𝑞 ) 
+
+> 𝑡
+
+(𝑥 ) = max  
+
+> 𝑘 ≠𝑞
+
+𝑆 (𝑘 ) 
+
+> 𝑡
+
+(𝑥 ). (4) The calibrated posterior is then 
+
+𝑃 (𝑐 ) 
+
+> 𝑡
+
+(𝑥 ) = 𝑆 (𝑞 ) 
+
+> 𝑡
+
+(𝑥 ) 𝑆 (𝑞 ) 
+
+> 𝑡
+
+(𝑥 )
+
+𝑆 (𝑞 ) 
+
+> 𝑡
+
+(𝑥 ) + 𝑀 (𝑞 ) 
+
+> 𝑡
+
+(𝑥 ) + 𝜖 
+
+!𝜌 
+
+, (5) where 𝜖 > 0 is a numerical stabilizer and 𝜌 controls how strongly the strongest competitor suppresses the queried concept. Eq. (5) keeps two pieces of information at once. The first fac-tor preserves the absolute evidence of the queried concept. The second factor measures whether this evidence remains dominant under competition. When the queried concept clearly dominates its strongest rival, the factor stays close to 1. When the competition is tight, the calibrated response is pushed down. CPC produces competition-aware queried-concept posteriors that provide a more reliable basis for subsequent cross-temporal discrepancy estimation. 
+
+## 3.2 Concept-specific change: SPD 
+
+Once the single-date evidence has been calibrated, the next step is to compare it across time without explicit mask matching. We define the core semantic change variable as the Semantic Posterior Delta (SPD): 
+
+Δ(𝑐 ) (𝑥 ) = 𝑃 (𝑐 ) 
+
+> 𝑎
+
+(𝑥 ) − 𝑃 (𝑐 ) 
+
+> 𝑏
+
+(𝑥 ) . (6) Under the queried-concept-vs-rest interpretation, Eq. (6) equals the total variation distance between two Bernoulli posteriors. Ac-cordingly, Eq. (6) captures cross-temporal changes in concept be-lief rather than raw score inconsistency, which makes it a cleaner change variable for training-free OVCD. As a dense posterior dis-crepancy, SPD does not require explicit instance correspondence. In practice, a category may be specified by multiple prompts rather than a single query. We therefore define a prompt set 
+
+Q ( 𝑐 ) = {𝑝 1, 𝑝 2, . . . , 𝑝 𝑚 }. (7) For each prompt 𝑝 ∈ Q ( 𝑐 ), let 𝑃 (𝑝 ) 
+
+> 𝑡
+
+(𝑥 ) denote the calibrated pos-terior obtained by applying Eq. (5) with 𝑝 as the queried concept. The prompt-set aggregation is then defined by 
+
+Δ(𝑐 ) (𝑥 ) = max    
+
+> 𝑝 ∈ Q ( 𝑐 )
+
+𝑃 (𝑝 ) 
+
+> 𝑎
+
+(𝑥 ) − 𝑃 (𝑝 ) 
+
+> 𝑏
+
+(𝑥 ) . (8) Eq. (8) pools prompt-level deltas over the specified prompt set and keeps the strongest prompt-aligned response when semantically related prompts are not equally reliable across scenes. 
+
+## 3.3 Structural verification: GeoGate 
+
+Even after CPC, SPD may still respond to non-semantic appearance variation. Illumination shifts, shadows, seasonal texture changes, and radiometric offsets can perturb the semantic posterior without corresponding to a real land-cover transition. We therefore intro-duce GeoGate as a structural-verification module that validates semantic change evidence with geometry-aware cues. GeoGate instantiates the Geometric Encoder with Depth Any-thing 3 (DA3) [ 20 ]. Rather than using the final scalar depth predic-tion, GeoGate extracts the last-layer encoder tokens from the two dates as geometry-aware representations, since these tokens re-tain richer local structure and contextual information for structural verification. Let 
+
+g𝑎 (𝑢 ), g𝑏 (𝑢 ) ∈ R𝐷 (9) denote the geometry tokens at token-grid location 𝑢 for the two dates. GeoGate then constructs a geometry-token consistency gate via the cosine distance 
+
+𝐺 (𝑢 ) = 12 (1 − cosim (g𝑎 (𝑢 ), g𝑏 (𝑢 ))) , (10) where 
+
+cosim (g𝑎 , g𝑏 ) = g⊤ 
+
+> 𝑎
+
+g𝑏 
+
+∥g𝑎 ∥2 ∥g𝑏 ∥2
+
+. (11) After bilinear upsampling, the resulting gate map 𝐺 (𝑥 ) ∈ [ 0, 1] is small in structurally stable regions and large where the geometry representations disagree across time. In this way, GeoGate provides structure-based verification for the semantic signal: it reinforces change evidence supported by structural variation, suppresses responses unsupported by geome-try, and compensates regions where semantic evidence is weak but structural change is pronounced. 
+
+## 3.4 Regional consensus: RCD 
+
+After semantic calibration and structural verification, we still need to turn these cues into a spatially coherent score map. A direct pixel-wise fusion is often too fragmented for region-like categories and too sensitive to local noise near object boundaries. Regional Con-sensus Discrepancy (RCD) therefore regularizes the fused evidence with shared regional support. 
+
+> 4CoRegOVCD : Consistency-Regularized Open-Vocabulary Change Detection
+
+RCD integrates SPD and the GeoGate output via a gated fusion formulation: 
+
+𝑆 (𝑐 ) (𝑥 ) = Δ(𝑐 ) (𝑥 )  (1 − 𝛽 ) + 𝛽𝐺 (𝑥 )𝛾 
+
++ 𝛼𝐺 (𝑥 )𝛾 , (12) where 𝛽 ∈ [ 0, 1] controls the strength of gated verification, 𝛾 ≥ 0
+
+modulates the response profile of the GeoGate output, and 𝛼 ≥ 0
+
+governs the additive compensation term. The gated term preserves semantic discrepancy as the primary cue while suppressing regions not supported by geometric evidence. The additive term compen-sates regions with salient structural variation but weak semantic response. Using only the gated term would be overly conservative when semantic evidence is weak, whereas a purely additive design would dilute concept specificity. The fused score in Eq. (12) is still pixel-wise and may exceed 1
+
+because of the additive compensation term. We therefore clip it to the unit interval before regional pooling: 
+
+¯𝑆 (𝑐 ) (𝑥 ) = min 
+
+
+
+1, 𝑆 (𝑐 ) (𝑥 )
+
+
+
+. (13) Land-cover changes typically exhibit local spatial coherence rather than isolated pixel-wise variation. We therefore impose regional consensus using Simple Linear Iterative Clustering (SLIC) super-pixels [1] computed on the average image 
+
+¯𝐼 = 12 (𝐼 𝑎 + 𝐼 𝑏 ). (14) Using the average image yields a shared local partition that is less biased toward either date alone. Let 𝐿 (𝑥 ) denote the SLIC label assigned to pixel 𝑥 , and let Ω𝐿 (𝑥 ) denote the corresponding superpixel. We pool the clipped score by 
+
+˜𝑆 (𝑐 ) (𝑥 ) = 1
+
+|Ω𝐿 (𝑥 ) |∑︁ 𝑦 ∈Ω𝐿 (𝑥 )
+
+¯𝑆 (𝑐 ) (𝑦 ). (15) This step does not introduce new evidence. Instead, it enforces local agreement within a shared partition before final mask inference. 
+
+## 3.5 Final mask inference 
+
+RCD yields a region-consistent score map, but downstream evalua-tion requires a binary change mask. We therefore use a lightweight decoding step that converts the pooled score into the final predic-tion while preserving the spatial support established above. We quantize the pooled score to 8-bit space and apply a fixed threshold: 
+
+˜𝑆 (𝑐 ) 
+
+> 𝑢 8
+
+(𝑥 ) = ⌊255 ˜ 𝑆 (𝑐 ) (𝑥 )⌋ , (16) 
+
+𝑌 (𝑐 ) 
+
+> 0
+
+(𝑥 ) = I
+
+h ˜𝑆 (𝑐 ) 
+
+> 𝑢 8
+
+(𝑥 ) > 𝜏 𝑢 8
+
+i
+
+. (17) We then apply a lightweight structural filter 
+
+ˆ𝑌 (𝑐 ) = StructFilter 
+
+
+
+𝑌 (𝑐 )
+
+> 0
+
+
+
+, (18) where I[·] denotes the indicator function, 𝜏 𝑢 8 ∈ [ 0, 255 ] is a fixed threshold in the 8-bit domain, and StructFilter (·) denotes light-weight morphology and connected-component filtering. This de-coding stage does not inject new semantic evidence; it removes isolated fragments and stabilizes compact regions after CPC, SPD, GeoGate, and RCD have already determined the underlying score landscape. Algorithm 1 summarizes the complete inference proce-dure. 
+
+Algorithm 1 Inference procedure of CoRegOVCD                                                                                                                 
+
+> Input: Bi-temporal images 𝐼 𝑎 ,𝐼 𝑏 ∈R𝐻 ×𝑊 ×3; queried concept 𝑐 ;prompt set Q ( 𝑐 )
+> Output: Change mask ˆ𝑌 (𝑐 )∈ { 0,1}𝐻 ×𝑊
+> 1: construct dense concept scores {𝑆 (𝑘 )
+> 𝑎 }𝐾 𝑘 =1and {𝑆 (𝑘 )
+> 𝑏 }𝐾 𝑘 =1by Eq. (3)
+> 2: for all 𝑝 ∈ Q ( 𝑐 )do
+> 3: 𝑃 (𝑝 )
+> 𝑎 , 𝑃 (𝑝 )
+> 𝑏 ←Eq. (5), Δ(𝑝 )←𝑃 (𝑝 )
+> 𝑎 −𝑃 (𝑝 )
+> 𝑏
+> 4: end for
+> 5: Δ(𝑐 )←max 𝑝 ∈Q ( 𝑐 )Δ(𝑝 )⊲Eq. (6) or Eq. (8)
+> 6: 𝐺 ←Eq. (10), 𝑆 (𝑐 )←Eq. (12), ¯𝑆 (𝑐 )←Eq. (13)
+> 7: 𝐿 ←SLIC ( ( 𝐼 𝑎 +𝐼 𝑏 )/ 2),˜𝑆 (𝑐 )←Eq. (15) on 𝐿
+> 8: 𝑌 (𝑐 )
+> 0←I⌊255 ˜ 𝑆 (𝑐 )⌋>𝜏 𝑢 8
+> ⊲Eq. (17)
+> 9: ˆ𝑌 (𝑐 )←StructFilter
+> 
+> 𝑌 (𝑐 )
+> 0
+> 
+> ⊲Eq. (18)
+> 10: return ˆ𝑌 (𝑐 )
+
+## 4 Experiments and Analysis 4.1 Datasets 
+
+To fully assess the proposed methods, experiments are conducted on four diverse datasets: LEVIR-CD [ 6 ], WHU-CD-256 [ 14 ], DSIFN [ 40 ], and the SECOND validation split [ 36 ] for multi-class semantic change detection. LEVIR-CD contains 637 bi-temporal image pairs of size 1024 ×1024 at 0.5 m resolution and mainly focuses on build-ing changes in urban scenes. WHU-CD-256 is derived from very-high-resolution aerial imagery and cropped into 256 ×256 patches, providing a challenging benchmark for building change detection in dense urban areas. DSIFN contains 3940 bi-temporal image pairs of size 512 ×512 at approximately 2 m resolution, covering diverse scenes and building-related changes across different imaging con-ditions. SECOND contains 4662 bi-temporal image pairs of size 512 ×512 with pixel-wise semantic annotations for six land-cover categories, making it a suitable benchmark for evaluating semantic change detection beyond the building-only setting. 
+
+## 4.2 Experimental Setup 
+
+Metrics. All metrics are computed on the changed class. We report changed-class precision (%), recall (%), IoU 𝐶 (%), and F1 𝐶 (%). We treat F1 𝐶 as the primary ranking metric because it balances preci-sion and recall, while IoU 𝐶 is reported as a complementary overlap measure. 
+
+Implementation details. All experiments are conducted on a single NVIDIA A800-SXM4-80GB GPU under PyTorch. All back-bones remain frozen. CPC is built on dense concept confidence scores constructed from prompt-conditioned SAM 3 outputs. Ge-oGate uses DA3 as the Geometric Encoder, and its geometry tokens are extracted from feature layer 23 at a processing resolution of 336. Unless noted otherwise, the calibration exponent is 𝜌 = 1.5,the fusion parameters are 𝛼 = 0.1, 𝛽 = 0.7, and 𝛾 = 1, the concept confidence threshold is 0.5, and the retained instance set is trun-cated to top-𝑅 = 30 . The 8-bit thresholds, SLIC segment counts, and lightweight decoding hyperparameters are fixed within each evaluation configuration. We use a fixed category-specific prompt configuration across experiments. No fine-tuning, adapter train-ing, or dataset-specific backbone update is performed. Additional implementation details are included in the Supplement .
+
+> 5Tang et al.
+
+Table 1: Quantitative comparison on three building-oriented benchmarks and SECOND-Building under the per-class OR-rule evaluation protocol. For SECOND-Building, a pixel is positive if the queried class appears at either timestamp. “-” denotes values not numerically reported in the corresponding paper. The best and second-best results are highlighted. F1 𝐶 serves as the primary evaluation metric. LEVIR-CD (%) WHU-CD-256 (%) DSIFN (%) SECOND (Building) (%) Method Prec. Rec. IoU 𝐶 F1 𝐶 Prec. Rec. IoU 𝐶 F1 𝐶 Prec. Rec. IoU 𝐶 F1 𝐶 Prec. Rec. IoU 𝐶 F1 𝐶 
+
+> Traditional unsupervised methods
+
+CVA [3] 5.43 93.93 5.41 10.26 3.73 92.20 3.71 7.16 18.02 92.16 17.75 30.14 11.65 97.08 11.61 20.81 IRMAD [23] 11.06 14.62 6.72 12.59 4.19 13.64 3.31 6.41 28.63 7.05 5.99 11.31 23.26 22.60 12.95 22.93 PCA-Kmeans [5] 5.92 36.13 5.36 10.18 7.24 44.72 6.64 12.46 27.28 43.16 20.07 33.43 17.74 44.32 14.51 25.34 ISFA [33] 5.37 96.27 5.36 10.17 3.83 92.99 3.82 7.36 17.51 96.81 17.41 29.66 11.46 98.49 11.44 20.52 DSFA [11] 8.90 41.75 7.92 14.67 6.67 33.99 5.91 11.15 26.98 35.91 18.21 30.81 20.77 43.48 16.35 28.11 DCVA [27] 18.72 35.46 13.28 24.50 21.35 42.18 15.62 28.36 32.47 28.63 17.85 30.42 25.18 38.74 18.23 30.52 
+
+> Training-free methods
+
+AnyChange [43] 11.96 18.50 7.85 14.56 11.13 17.80 7.30 13.59 16.49 31.50 12.14 21.64 11.54 17.68 7.51 13.96 UCD-SCM [29] 23.99 48.73 19.15 32.15 23.40 73.47 21.58 35.50 55.06 16.30 14.38 25.15 31.99 40.61 21.79 35.79 DynamicEarth (IMC) [18] 66.26 73.52 53.50 69.70 70.29 74.86 56.80 72.50 48.23 37.54 26.13 42.18 47.81 37.45 26.50 42.00 DynamicEarth (MCI) [18] 48.36 60.11 36.60 53.60 43.90 84.15 40.60 57.70 58.52 51.76 37.89 54.98 59.52 51.46 38.10 55.20 AdaptOVCD [9] 62.83 74.10 51.52 68.00 80.60 72.85 61.99 76.53 55.23 64.42 42.32 59.47 64.38 63.25 46.85 63.81 
+
+OmniOVCD [41] - - 67.20 80.40 - - 66.50 79.90 - - - - - - 45.20 62.30 
+
+CoRegOVCD (Ours) 79.72 86.57 70.95 83.01 87.86 77.12 69.70 82.14 62.44 66.60 47.55 64.45 79.24 56.10 48.91 65.69 Table 2: Open-vocabulary change detection results on the six SECOND classes under the per-class OR-rule evaluation, where a pixel is positive for class 𝑐 if either timestamp belongs to 𝑐 . The best and second-best results are highlighted. F1 𝐶 serves as the primary evaluation metric. Building (%) Tree (%) Water (%) Low vegetation (%) Surface (%) Playground (%) Class Avg. (%) Method IoU 𝐶 F1 𝐶 IoU 𝐶 F1 𝐶 IoU 𝐶 F1 𝐶 IoU 𝐶 F1 𝐶 IoU 𝐶 F1 𝐶 IoU 𝐶 F1 𝐶 IoU 𝐶 F1 𝐶 
+
+DynamicEarth (IMC) [18] 26.50 42.00 13.50 23.80 9.80 17.90 0.00 0.00 0.00 0.00 16.50 28.30 11.05 18.67 DynamicEarth (MCI) [18] 38.10 55.20 20.30 33.80 14.30 25.10 24.10 38.90 26.20 41.60 20.00 33.30 23.83 37.98 AdaptOVCD [9] 46.85 63.81 12.67 22.49 23.34 37.84 22.15 36.27 33.99 50.74 29.28 45.30 28.05 42.74 
+
+OmniOVCD [41] 45.20 62.30 16.70 28.60 21.20 35.00 24.50 39.30 27.70 43.40 27.00 42.40 27.10 41.80 
+
+CoRegOVCD (Ours) 48.91 65.69 20.93 34.61 29.88 46.01 27.71 43.40 32.27 48.79 30.31 46.52 31.67 47.50 Compared methods. We compare against traditional unsuper-vised baselines (CVA [ 3 ], IRMAD [ 23 ], PCA-Kmeans [ 5 ], ISFA [ 33 ], DSFA [ 11 ], and DCVA [ 27 ]), early training-free methods (Any-Change [ 43 ] and UCD-SCM [ 29 ]), and recent OVCD systems in-cluding DynamicEarth [ 18 ], AdaptOVCD [ 9], and OmniOVCD [ 41 ]. We report DynamicEarth (MCI) and DynamicEarth (IMC), which correspond to the SAM-DINOv2-SegEarth-OV and APE-/-DINO configurations, respectively. 
+
+## 4.3 Comparison with State-of-the-Art Methods 
+
+Building-oriented benchmarks. Table 1 compares CoRegOVCD with prior methods on LEVIR-CD, WHU-CD-256, DSIFN, and the building split of SECOND. CoRegOVCD achieves the best F1 𝐶 on all four settings, surpassing the strongest training-free baseline by 2.61, 2.24, 4.98, and 1.88 points on LEVIR-CD, WHU-CD-256, DSIFN, and SECOND-Building, respectively. Traditional unsuper-vised baselines typically exhibit very high recall but extremely low precision, showing that purely discrepancy-driven methods overreact to non-semantic appearance variation. Recent training-free OVCD baselines improve semantic selectivity, but their out-puts remain vulnerable to unstable semantic responses, insufficient structural verification, or weak regional consistency. The consis-tent gains across all four settings indicate that CPC-based posterior differencing, together with GeoGate, RCD, and the final decoding stage, provides a robust dense formulation for building-oriented OVCD. 
+
+Class-wise results on SECOND. Table 2 reports class-wise results on the six queried classes of SECOND. Compared with Adap-tOVCD, CoRegOVCD raises the class-average IoU 𝐶 from 28.05% to 31.67% and F1 𝐶 from 42.74% to 47.50%. The gains are especially pronounced for tree and water , two categories for which appear-ance can vary substantially while geometry remains informative for structural verification. CoRegOVCD also performs best on building ,
+
+low vegetation , and playground ; the playground result is consistent with max-over-prompts aggregation over visually diverse sports-field instances. Overall, the class-wise comparison shows that the proposed dense posterior formulation remains effective across both object-like and region-like categories. 
+
+## 4.4 Ablation Study and Analysis 
+
+Components ablation. Table 3 ablates CPC, GeoGate, and the de-sign choices in the downstream regularization and decoding stages. 
+
+> 6
+
+CoRegOVCD : Consistency-Regularized Open-Vocabulary Change Detection 
+
+Table 3: Ablation of CPC, GeoGate, RCD, and final mask in-ference in CoRegOVCD. “RCD ( w/o additive term)” removes the additive compensation term in Eq. (12) , and “Decoding (w/o StructFilter)” skips the structural filtering step in final mask inference. SECOND Avg. reports the class-average re-sult over the six semantic categories. DSIFN (%) LEVIR-CD (%) SECOND Avg. (%) Setting IoU 𝐶 F1 𝐶 IoU 𝐶 F1 𝐶 IoU 𝐶 F1 𝐶 
+
+w/o CPC 45.66 62.70 70.30 82.56 31.05 46.65 
+
+w/o GeoGate 34.51 51.31 50.01 66.67 22.40 36.21 RCD ( w/o additive term) 23.26 37.74 69.92 82.05 31.16 46.85 RCD ( w/o SLIC) 44.85 61.93 68.89 81.32 29.60 45.36 Decoding ( w/o StructFilter) 42.32 59.47 70.15 82.46 31.12 46.81 
+
+CoRegOVCD 47.55 64.45 70.95 83.01 31.67 47.50 
+
+Removing CPC causes a consistent degradation across all three benchmarks, for example reducing F1 𝐶 from 64.45% to 62.70% on DSIFN and from 47.50% to 46.65% on SECOND Avg., indicating that stable semantic change inference requires calibrated concept posteriors rather than raw concept responses alone. GeoGate is even more critical: without structural verification, F1 𝐶 drops from 64.45% to 51.31% on DSIFN and from 47.50% to 36.21% on SECOND Avg., showing that posterior discrepancies must be validated by geometry-aware evidence. Within RCD, removing the additive com-pensation term especially hurts DSIFN, where F1 𝐶 falls from 64.45% to 37.74%, indicating that additive compensation is particularly use-ful when semantic evidence is weak but structural variation remains salient. Removing SLIC pooling or the final structural filter also causes consistent degradation, showing that regional consensus and final mask inference further improve the spatial completeness and stability of the output mask. 
+
+GeoGate design. Table 4 isolates GeoGate under fixed SPD inference and RCD settings. GeoGate yields the strongest results not only on DSIFN and LEVIR-CD but also on the SECOND class average. In particular, replacing GeoGate with no structural verifi-cation causes the SECOND average to drop from 31.67% to 22.40% in IoU 𝐶 and from 47.50% to 36.21% in F1 𝐶 , while a depth-only variant performs even worse than the no-GeoGate baseline on DSIFN and LEVIR-CD. The hybrid variant partially recovers performance, but it still trails GeoGate by a clear margin. These results show that the improvement comes from the geometry-token consistency gate rather than from simply attaching an auxiliary geometric cue. 
+
+Table 4: Comparison of GeoGate designs. “Depth” uses only a depth-based gate from DA3, whereas “Hybrid” combines the depth-based gate with the geometry-token consistency gate. SECOND Avg. reports the class-average result over the six semantic categories. DSIFN (%) LEVIR-CD (%) SECOND Avg. (%) Gate IoU 𝐶 F1 𝐶 IoU 𝐶 F1 𝐶 IoU 𝐶 F1 𝐶 
+
+None 34.51 51.31 50.01 66.67 22.40 36.21 Depth 19.58 32.75 46.12 63.13 22.12 35.29 Hybrid 25.60 40.76 66.89 80.16 26.58 40.72 
+
+GeoGate 47.55 64.45 70.95 83.01 31.67 47.50 building           
+
+> roof
+> rooftop
+> edifice
+> house
+> 0
+> 20
+> 40
+> 60
+> F1 C (%)
+> 65.7 63.5
+> 47.5
+> 20.7
+> 11.6
+> (a) Building
+> water
+> river
+> pond
+> lake
+> water surf.
+> 46.0
+> 34.7 33.0 30.2
+> 25.2
+> (b) Water
+> tree
+> forest
+> woods
+> woodland
+> grove
+> 34.6 30.9
+> 18.2 14.9
+> 8.4
+> (c) Tree
+> bare land
+> dirt
+> barren
+> soil
+> earth
+> 0
+> 20
+> 40
+> 60
+> F1 C (%)
+> 48.8 48.2 46.5
+> 29.7
+> 5.8
+> (d) Surface
+> grass
+> green grass
+> low veg.
+> agricultural
+> 43.4 40.5 39.9
+> 26.4
+> (e) Low vegetation
+> max-4 bank
+> sports field
+> basketball ct.
+> soccer field
+> track field
+> 46.5
+> 40.2
+> 23.2 22.0
+> 13.8
+> (f) Playground
+
+Figure 3: Open-vocabulary query substitution on SECOND. Each panel reports F1 𝐶 (%) for semantically related query words of one class. Bold bars denote the default query, and the hatched bar denotes a prompt set. Open-vocabulary query substitution. Figure 3 further ex-amines whether CoRegOVCD can respond to semantically related lexical variants rather than a single fixed query. Overall, several alternative query words remain effective across the six SECOND classes, which supports the open-vocabulary nature of the pro-posed framework. At the same time, the transfer is clearly class-dependent rather than uniform. For building , the alternatives roof 
+
+and rooftop still recover a substantial portion of the default perfor-mance, whereas more weakly aligned terms such as house degrade much more noticeably. A similar pattern appears for surface and 
+
+low vegetation , where some related expressions remain competitive but others become much less reliable. These results indicate that CoRegOVCD is not tied to a single hand-crafted wording, yet the semantic alignment between the query and the deployed concept space still matters. The playground panel is especially informa-tive: the default max-over-4 prompt bank outperforms every single sports-field prompt, which justifies the prompt-bank design used in the main results for visually diverse categories. 
+
+Efficiency trade-off. Because CoRegOVCD avoids proposal-level matching and multi-stage instance reasoning, it retains a simpler dense inference path. Figure 4 summarizes the resulting runtime behavior by jointly visualizing latency, peak memory, throughput, and accuracy. In Figure 4(a), CoRegOVCD achieves the Dyn.-Earth       
+
+> (MCI)
+> Dyn.-Earth
+> (IMC)
+> AdaptOVCD CoRegOVCD
+> 0
+> 2,000
+> 4,000
+> 6,000
+> 8,000
+> 10,000
+> 12,000
+> Latency (ms/pair)
+> 3367.7 3865.9
+> 11288.1
+> 1389.7
+> (a) Latency and peak memory
+> 010 20 30 40
+> Throughput (pairs/min)
+> 40
+> 45
+> 50
+> 55
+> 60
+> 65
+> F1 𝐶  (%)
+> DynamicEarth (MCI)
+> DynamicEarth (IMC)
+> AdaptOVCD
+> CoRegOVCD
+> (b) F1 𝐶 –throughput trade-off
+> 6
+> 8
+> 10
+> 12
+> 14
+> 16
+> Peak memory (GB)
+> 6.38
+> 15.24
+> 13.93
+> 8.16
+> 1
+
+Figure 4: Efficiency and accuracy trade-off among training-free OVCD methods. (a) Latency per image pair and peak memory on an NVIDIA A800-SXM4-80GB device, measured after a one-pair warm-up. (b) Accuracy–speed trade-off in terms of throughput and the corresponding DSIFN F1 𝐶 values used in the efficiency comparison. 
+
+7Tang et al. Ia Ib GT        
+
+> Dyn.-Earth
+> (MCI)
+> Dyn.-Earth
+> (IMC) AdaptOVCD CoRegOVCD
+> Building Tree Water Low vegetation Surface Playground
+
+Figure 5: Qualitative comparison on SECOND with Dynam-icEarth (MCI/IMC), AdaptOVCD, and CoRegOVCD across six semantic categories. CoRegOVCD yields more complete masks with fewer unsupported responses. 
+
+lowest latency among the compared training-free OVCD methods while maintaining moderate peak memory usage. In Figure 4(b), the DSIFN F1 𝐶 (%) values used for the efficiency comparison are plotted against throughput, making the accuracy–speed trade-off explicit. CoRegOVCD processes 43.17 pairs per minute, which is 2.42 × faster than DynamicEarth (MCI), 2.78 × faster than DynamicEarth (IMC), and 8.11 × faster than AdaptOVCD. It also attains the highest DSIFN F1 𝐶 (%) among the compared training-free OVCD methods, placing it in the most favorable region of the accuracy–efficiency space. 
+
+## 4.5 Qualitative Analysis 
+
+Qualitative comparison with prior methods. Figure 5 presents qualitative comparison on six representative SECOND classes. Across building, tree, water, low vegetation, surface, and playground, CoRe-gOVCD produces more complete masks and fewer unsupported fragments than DynamicEarth and AdaptOVCD. These visual gains are consistent with the quantitative improvements in Table 2 and reflect stronger semantic selectivity, more reliable structural verifi-cation, and cleaner region-level masks. 
+
+Intermediate responses. Figure 6 visualizes intermediate re-sponses on three representative samples from DSIFN, LEVIR-CD, and WHU-CD-256. The SPD maps already highlight the queried semantic changes, but they still contain weak responses caused by background appearance variation. The GeoGate output is spa-tially coarse but structurally stable, emphasizing regions that are consistent with genuine scene changes. After RCD, the score map becomes both cleaner and more localized, and the final decoding stage removes isolated fragments and stabilizes compact shapes in the output mask. Ia Ib GT CoRegOVCD SPD Δ (c) GeoGate G(u) Fused score S(c)
+
+> 0.0
+> 0.5
+> 1.0
+
+Figure 6: Intermediate responses and final predictions of CoRegOVCD on three representative samples. GeoGate sup-presses unsupported responses, and RCD produces cleaner, more localized change evidence before final decoding. 
+
+## 5 Discussion 
+
+Why posterior differencing works. Existing training-free OVCD pipelines usually infer change after early discretization, for exam-ple by constructing proposals, binary masks, or matched instances and then comparing them across time. Our framework follows a different inference paradigm: it retains dense concept responses, calibrates them into competition-aware queried-concept posteriors, and performs change inference directly at the posterior layer be-fore the final binarization stage. This shift matters because it avoids committing too early to object instances or hard masks, which is especially beneficial for stuff-like categories and irregular seman-tic changes that do not admit reliable instance correspondence. CPC restores semantic selectivity under cross-concept competi-tion, while GeoGate and the subsequent regional and decoding stages suppress posterior discrepancies that are not supported by structural evidence. Together, these components make posterior differencing a simpler and more stable alternative to proposal- and matching-centered training-free OVCD pipelines. 
+
+## 6 Conclusion 
+
+CoRegOVCD recasts training-free open-vocabulary change detec-tion as posterior-level dense reasoning, replacing early discretiza-tion and explicit instance matching with calibrated semantic com-parison and geometry-aware structural verification. By coupling Competitive Posterior Calibration with Semantic Posterior Delta, and then regularizing the resulting change evidence through Ge-oGate and Regional Consensus Discrepancy, the framework makes queried-concept responses more comparable across time and yields masks that are cleaner, more complete, and less vulnerable to appearance-induced pseudo changes. The empirical results and ablation analysis show that the improvement comes less from adding a heavier pipeline than from moving change inference into a competition-aware posterior space and enforcing structural sup-port before final binarization. This view offers a different answer to training-free OVCD: reliable open-world change analysis need not depend on increasingly elaborate proposal matching, but rather on whether semantic comparability and structural consistency are established jointly. Prompt robustness, threshold transfer, and ef-ficient multi-concept inference remain open, but the central con-clusion is clear: posterior differencing, once properly regularized, provides a stronger foundation for training-free OVCD. 
+
+> 8
+
+CoRegOVCD : Consistency-Regularized Open-Vocabulary Change Detection 
+
+## References 
+
+[1] Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine Süsstrunk. 2012. SLIC Superpixels Compared to State-of-the-Art Superpixel Methods. IEEE Trans. Pattern Anal. Mach. Intell. 34, 11 (2012), 2274– 2282. doi:10.1109/TPAMI.2012.120 [2] Walid Bousselham, Felix Petersen, Vittorio Ferrari, and Hilde Kuehne. 2024. Grounding Everything: Emerging Localization Properties in Vision-Language Transformers. In 2024 IEEE/CVF Conference on Computer Vision and Pattern Recognition (Seattle, WA, USA). IEEE, Piscataway, NJ, USA, 3828–3837. doi:10. 1109/CVPR52733.2024.00367 [3] Francesca Bovolo and Lorenzo Bruzzone. 2007. A Theoretical Framework for Unsupervised Change Detection Based on Change Vector Analysis in the Polar Domain. IEEE Trans. Geosci. Remote Sens. 45, 1 (2007), 218–236. doi:10.1109/ TGRS.2006.885408 [4] Nicolas Carion, Laura Gustafson, Yuan-Ting Hu, Shoubhik Debnath, et al . 2025. 
+
+SAM 3: Segment Anything with Concepts . doi:10.48550/arXiv.2511.16719 [5] Turgay Celik. 2009. Unsupervised Change Detection in Satellite Images Using Principal Component Analysis and 𝑘 -Means Clustering. IEEE Geosci. Remote Sens. Lett. 6, 4 (2009), 772–776. doi:10.1109/LGRS.2009.2025059 [6] Hao Chen and Zhenwei Shi. 2020. A Spatial-Temporal Attention-Based Method and a New Dataset for Remote Sensing Image Change Detection. Remote. Sens. 
+
+12 (2020), 1662. doi:10.3390/rs12101662 [7] Ming Chen and Wanshou Jiang. 2025. SCDVit: Semantic Change Detection Based on Sam-Vit and Semantic Consistency. IEEE J. Sel. Top. Appl. Earth Obs. Remote Sens. 18 (2025), 2269–2282. doi:10.1109/JSTARS.2024.3514926 [8] Rodrigo Caye Daudt, Bertr Le Saux, and Alexandre Boulch. 2018. Fully Convolu-tional Siamese Networks for Change Detection. In Proc. IEEE Int. Conf. Image Process. (Athens, Greece). IEEE, Piscataway, NJ, USA, 4063–4067. doi:10.1109/ ICIP.2018.8451652 [9] Mingyu Dou, Shi Qiu, Ming Hu, Yifan Chen, Huping Ye, Xiaohan Liao, and Zhe Sun. 2026. AdaptOVCD: Training-Free Open-Vocabulary Remote Sensing Change Detection via Adaptive Information Fusion . doi:10.48550/arXiv.2602.06529 [10] Mingyu Dou, Shi Qiu, Ming Hu, Xiaozhen Qiao, Huping Ye, Xiaohan Liao, and Zhe Sun. 2025. McAmamba: Multi-Level Cross-Modal Attention-Guided State Space Model for Multi-Source Remote Sensing Image Classification. IEEE Trans. Geosci. Remote Sens. 63 (2025), 1–19. doi:10.1109/TGRS.2025.3618301 [11] Bo Du, Lixiang Ru, Chen Wu, and Liangpei Zhang. 2019. Unsupervised Deep Slow Feature Analysis for Change Detection in Multi-Temporal Remote Sensing Images. IEEE Trans. Geosci. Remote Sens. 57, 12 (2019), 9976–9992. doi:10.1109/ TGRS.2019.2930682 [12] Sheng Fang, Kaiyu Li, and Zhe Li. 2023. Changer: Feature Interaction is What You Need for Change Detection. IEEE Trans. Geosci. Remote Sens. 61 (2023), 1–11. doi:10.1109/TGRS.2023.3277496 [13] Xuan Hou, Yunpeng Bai, Yefan Xie, Ying Li, Changjing Shang, and Qiang Shen. 2025. Language-Guided Change Detection for High-Resolution Remote Sensing Imagery with Limited Labelled Data. Knowl.-Based Syst. 326 (2025), 113994. doi:10.1016/j.knosys.2025.113994 [14] Shunping Ji, Shiqing Wei, and Meng Lu. 2019. Fully Convolutional Networks for Multisource Building Extraction from an Open Aerial and Satellite Imagery Data Set. IEEE Trans. Geosci. Remote Sens. 57, 1 (2019), 332–344. doi:10.1109/TGRS. 2018.2858817 [15] Alexander Kirillov, Eric Mintun, Nikhila Ravi, Hanzi Mao, Chloe Rolland, Laura Gustafson, Tete Xiao, Spencer Whitehead, Alexander C. Berg, Wan-Yen Lo, Piotr Dollár, and Ross Girshick. 2023. Segment Anything. In 2023 IEEE/CVF Interna-tional Conference on Computer Vision (Paris, France). IEEE, Piscataway, NJ, USA, 3992–4003. doi:10.1109/ICCV51070.2023.00371 [16] Yilmaz Korkmaz, Jay N Paranjape, Celso M de Melo, and Vishal M Patel. 2026. 
+
+Referring Change Detection in Remote Sensing Imagery . doi:10.48550/arXiv.2512. 11719 [17] Chengxi Li, Gang Li, Zhuoyue Wang, Xueqian Wang, and Pramod K Varshney. 2024. COMIC: An Unsupervised Change Detection Method for Heterogeneous Remote Sensing Images Based on Copula Mixtures and Cycle-Consistent Adver-sarial Networks. Inf. Fusion 106 (2024), 102240. doi:10.1016/j.inffus.2024.102240 [18] Kaiyu Li, Xiangyong Cao, Yupeng Deng, Chao Pang, Zepeng Xin, Deyu Meng, and Zhi Wang. 2025. DynamicEarth: How Far Are We from Open-Vocabulary Change Detection? doi:10.48550/arXiv.2501.12931 [19] Kaiyu Li, Ruixun Liu, Xiangyong Cao, Xueru Bai, Feng Zhou, Deyu Meng, and Zhi Wang. 2025. SegEarth-OV: Towards Training-Free Open-Vocabulary Segmen-tation for Remote Sensing Images. In Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (Nashville, TN, USA). IEEE/CVF, Nashville, TN, USA, 10545–10556. doi:10.1109/CVPR52734.2025.00986 [20] Haotong Lin, Sili Chen, Junhao Liew, Donny Y Chen, Zhenyu Li, Guang Shi, Jiashi Feng, and Bingyi Kang. 2025. Depth Anything 3: Recovering the Visual Space from Any Views . doi:10.48550/arXiv.2511.10647 [21] Xuanguang Liu, Chenguang Dai, Lei Ding, Zhenchao Zhang, Yujie Li, Xibing Zuo, Mengmeng Li, Hanyun Wang, and Yuzhe Miao. 2025. GSTM-SCD: Graph-Enhanced Spatio-Temporal State Space Model for Semantic Change Detection in Multi-Temporal Remote Sensing Images. ISPRS J. Photogramm. Remote Sens. 230 (2025), 73–91. doi:10.1016/j.isprsjprs.2025.09.003 [22] Zhiyong Lv, Ming Zhang, Weiwei Sun, Tao Lei, Jón Atli Benediktsson, and Tongfei Liu. 2025. Land Cover Change Detection with Hyperspectral Remote Sensing Images: A Survey. Inf. Fusion 123 (2025), 103257. doi:10.1016/j.inffus.2025.103257 [23] Allan Aasbjerg Nielsen. 2007. The Regularized Iteratively Reweighted MAD Method for Change Detection in Multi- and Hyperspectral Data. IEEE Trans. Image Process. 16, 2 (2007), 463–478. doi:10.1109/TIP.2006.888195 [24] Xiaogang Ning, You He, Hanchao Zhang, Ruiqian Zhang, Dong Chang, and Minghui Hao. 2024. Semantic Information Collaboration Network for Semantic Change Detection in Remote Sensing Images. IEEE J. Sel. Top. Appl. Earth Obs. Remote Sens. 17 (2024), 12893–12909. doi:10.1109/JSTARS.2024.3418632 [25] Daifeng Peng, Min Liu, Yongjun Zhang, and Haiyan Guan. 2025. Toward Label-Efficient Deep Learning Change Detection for Remote Sensing Imagery: A Com-prehensive Review. Photogramm. Rec. 40, 191 (2025), e70021. doi:10.1111/phor. 70021 [26] Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark, Gretchen Krueger, and Ilya Sutskever. 2021. Learning Transferable Visual Models From Natural Language Supervision. In Proceedings of the 38th International Conference on Machine Learning (Online), Vol. 139. PMLR, 8748–8763. https: //proceedings.mlr.press/v139/radford21a.html [27] Sudipan Saha, Francesca Bovolo, and Lorenzo Bruzzone. 2019. Unsupervised Deep Change Vector Analysis for Multiple-Change Detection in VHR Images. 
+
+IEEE Trans. Geosci. Remote Sens. 57, 6 (2019), 3677–3693. doi:10.1109/TGRS.2018. 2886643 [28] Ashbindu Singh. 1989. Review Article: Digital Change Detection Techniques Using Remotely-Sensed Data. Int. J. Remote Sens. 10, 6 (1989), 989–1003. doi:10. 1080/01431168908903939 [29] Xiaoliang Tan, Guanzhou Chen, Tong Wang, Jiaqi Wang, and Xiaodong Zhang. 2024. Segment Change Model (SCM) for Unsupervised Change Detection in VHR Remote Sensing Images: A Case Study of Buildings. In Proceedings of the IEEE International Geoscience and Remote Sensing Symposium (Athens, Greece). IEEE, 8577–8580. doi:10.1109/IGARSS53475.2024.10642429 [30] Xiaoliang Tan, Guanzhou Chen, Xiaodong Zhang, Tong Wang, Jiaqi Wang, Kui Wang, and Tingxuan Miao. 2025. TripleS: Mitigating Multi-Task Learning Con-flicts for Semantic Change Detection in High-Resolution Remote Sensing Imagery. 
+
+ISPRS J. Photogramm. Remote Sens. 230 (2025), 374–401. doi:10.1016/j.isprsjprs. 2025.09.019 [31] Kai Tang, Fei Xu, Xuehong Chen, Qi Dong, Yuheng Yuan, and Jin Chen. 2024. The ClearSCD Model: Comprehensively Leveraging Semantics and Change Relationships for Semantic Change Detection in High Spatial Resolution Re-mote Sensing Imagery. ISPRS J. Photogramm. Remote Sens. 211 (2024), 299–317. doi:10.1016/j.isprsjprs.2024.04.013 [32] Biao Wang, Zhenghao Jiang, Weichun Ma, Xiao Xu, Peng Zhang, Yanlan Wu, and Hui Yang. 2024. Dual-Dimension Feature Interaction for Semantic Change Detection in Remote Sensing Images. IEEE J. Sel. Top. Appl. Earth Obs. Remote Sens. 17 (2024), 9595–9605. doi:10.1109/JSTARS.2024.3394571 [33] Chen Wu, Bo Du, and Liangpei Zhang. 2014. Slow Feature Analysis for Change Detection in Multispectral Imagery. IEEE Trans. Geosci. Remote Sens. 52, 5 (2014), 2858–2874. doi:10.1109/TGRS.2013.2266673 [34] Chuan Xu, Zhaoyi Ye, Liye Mei, Haonan Yu, Jianchen Liu, Yaxiaer Yalikun, Shuangtong Jin, Sheng Liu, Wei Yang, and Cheng Lei. 2024. Hybrid Attention-Aware Transformer Network Collaborative Multiscale Feature Alignment for Building Change Detection. IEEE Trans. Instrum. Meas. 73 (2024), 1–14. doi:10. 1109/TIM.2024.3373089 [35] Kun Yang, Renfang Wang, Feng Wang, and Hong Qiu. 2025. Binary Change Detection of Remote Sensing Images with Deformable Convolution. In 2025 6th International Conference on Geology, Mapping and Remote Sensing (Wuhan, China). IEEE, Piscataway, NJ, USA, 293–298. doi:10.1109/ICGMRS66001.2025.11065038 [36] Kunping Yang, Gui-Song Xia, Zicheng Liu, Bo Du, Wen Yang, Marcello Pelillo, and Liangpei Zhang. 2022. Asymmetric Siamese Networks for Semantic Change Detection in Aerial Images. IEEE Trans. Geosci. Remote Sens. 60 (2022), 1–18. doi:10.1109/TGRS.2021.3113912 [37] Zhiwei Yang, Xiaoqin Wang, Mengmeng Li, and Jiang Long. 2025. SCEDNet: A Style Consistency Enhanced Differential Network for Remote Sensing Image Change Detection. IEEE Geosci. Remote Sens. Lett. 22 (2025), 1–5. doi:10.1109/ LGRS.2025.3574734 [38] Yufeng Yao, Ying Wang, Yiming Zhou, and Yuexing Peng. 2025. MTASCD: A Semantic Change Detection Model Using Remote Sensing Images. In 2025 5th International Conference on Computer Graphics, Image and Virtualization (Kuala Lumpur, Malaysia). IEEE, Piscataway, NJ, USA, 97–105. doi:10.1109/ICCGIV65419. 2025.11085392 [39] Xi Yu, Shinjae Yoo, and Yuewei Lin. 2024. CLIPCEIL: Domain Generalization through CLIP via Channel Refinement and Image-Text Alignment. In Proceedings of the 38th International Conference on Neural Information Processing Systems 
+
+(Vancouver, BC, Canada). Curran Associates Inc., Red Hook, NY, USA, 4267–4294. doi:10.52202/079017-0139 9Tang et al. 
+
+[40] Chenxiao Zhang, Peng Yue, Deodato Tapete, Liangcun Jiang, Boyi Shangguan, Li Huang, and Guangchao Liu. 2020. A Deeply Supervised Image Fusion Network for Change Detection in High Resolution Bi-Temporal Remote Sensing Images. 
+
+ISPRS J. Photogramm. Remote Sens. 166 (2020), 183–200. doi:10.1016/j.isprsjprs. 2020.06.003 [41] Xu Zhang, Danyang Li, Yingjie Xia, Xiaohang Dong, Hualong Yu, Jianye Wang, and Qicheng Li. 2026. OmniOVCD: Streamlining Open-Vocabulary Change Detec-tion with SAM 3 . doi:10.48550/arXiv.2601.13895 [42] Xingjian Zheng, Xin Lin, Linbo Qing, and Xianfeng Ou. 2025. Semantic-Aware Remote Sensing Change Detection with Multi-Scale Cross-Attention. Sensors 25, 9 (2025), 2813. doi:10.3390/s25092813 [43] Zhuo Zheng, Yanfei Zhong, Liangpei Zhang, and Stefano Ermon. 2024. Segment Any Change. In Proceedings of the 38th International Conference on Neural Infor-mation Processing Systems (Vancouver, BC, Canada). Curran Associates Inc., Red Hook, NY, USA, 81204–81224. doi:10.52202/079017-2581 [44] Yuhan Zhu, Yuyang Ji, Zhiyu Zhao, Gangshan Wu, and Limin Wang. 2024. AWT: Transferring Vision-Language Models via Augmentation, Weighting, and Transportation. In Advances in Neural Information Processing Systems (Vancou-ver, BC, Canada). Curran Associates, Inc., Red Hook, NY, USA, 25561–25591. doi:10.52202/079017-0804 [45] Ziqiang Zhu and Bowei Yang. 2025. UniVCD: A New Method for Unsupervised Change Detection in the Open-Vocabulary Era . doi:10.48550/arXiv.2512.13089 [46] Changzhong Zou, Mengen Li, and Changwu Zou. 2026. Semi-Supervised Seman-tic Change Detection of Remote Sensing Images with Dual-Resolution Semantic Guidance Network. Int. J. Remote Sens. (2026), 1–29. doi:10.1080/01431161.2026. 2648099 10

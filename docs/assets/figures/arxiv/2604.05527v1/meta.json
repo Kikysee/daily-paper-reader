@@ -1,0 +1,102 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.05527v1/fig-001.webp",
+      "caption": "Fig. 2: An overview of the proposed MMCD architecture. It contains three core components: a modal-specific feature encoder based on a pseudo-siamese feature extractor, a spatio-temporal common feature modeling module, and a multimodal feature fusion module guided by change priors.",
+      "page": 6,
+      "index": 1,
+      "width": 968,
+      "height": 510
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05527v1/fig-002.webp",
+      "caption": "Fig. 3: Details of the Modal-specific feature Extractor.",
+      "page": 6,
+      "index": 2,
+      "width": 529,
+      "height": 375
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05527v1/fig-003.webp",
+      "caption": "TABLE III: Evaluation of building damage result accuracy of different methods on the BRIGHT dataset (%).",
+      "page": 11,
+      "index": 3,
+      "width": 914,
+      "height": 371
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05527v1/fig-004.webp",
+      "caption": "TABLE IV: Evaluation of MMCD results on the Delta-SN6 dataset (%). BG, AB, AR, AW, DB, DR and DW refer to background, added building, added road, added water, disappeared building, disappeared road and disappeared water, respectively.",
+      "page": 11,
+      "index": 4,
+      "width": 927,
+      "height": 384
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05527v1/fig-005.webp",
+      "caption": "Fig. 4: Extraction of cross-modal common features with spatio-temporal correlations.",
+      "page": 7,
+      "index": 5,
+      "width": 968,
+      "height": 281
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05527v1/fig-006.webp",
+      "caption": "Fig. 5: Workflow for fusing modality-specific and common features guided by change priors.",
+      "page": 7,
+      "index": 6,
+      "width": 529,
+      "height": 425
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05527v1/fig-007.webp",
+      "caption": "Fig. 6: Results of different methods in the testing areas (a)-(d) on the Wuhan-Het dataset.",
+      "page": 10,
+      "index": 7,
+      "width": 968,
+      "height": 1138
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05527v1/fig-008.webp",
+      "caption": "Fig. 12: Visualization of specific features, common features, and the fused change feature.",
+      "page": 18,
+      "index": 8,
+      "width": 1022,
+      "height": 681
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05527v1/fig-009.webp",
+      "caption": "Fig. 8: Results among different methods in the testing areas (a)-(d) on the Delta-SN6 dataset.",
+      "page": 13,
+      "index": 9,
+      "width": 968,
+      "height": 1238
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05527v1/fig-010.webp",
+      "caption": "Fig. 1: The Delta-SN6 dataset provides multimodal and multi-temporal remote sensing images along with ground truth labels, designed for MMCD task.",
+      "page": 4,
+      "index": 10,
+      "width": 968,
+      "height": 554
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05527v1/fig-011.webp",
+      "caption": "Fig. 7: Results among different methods in the testing areas (a)-(d) on the BRIGHT dataset.",
+      "page": 12,
+      "index": 11,
+      "width": 990,
+      "height": 1288
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05527v1/fig-012.webp",
+      "caption": "TABLE II: Evaluation of MMCD results on the Wuhan-Het dataset (%). The best and second-best results are highlighted and underlined, respectively.",
+      "page": 9,
+      "index": 12,
+      "width": 694,
+      "height": 427
+    }
+  ]
+}

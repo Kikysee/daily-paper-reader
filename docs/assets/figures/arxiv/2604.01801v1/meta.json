@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.01801v1/fig-001.webp",
+      "caption": "Fig. 2. Comparison between the HyPIS and the traditional method hyperspectral image classification process. a, Schematic illustration of the hyperspectral image classification process of HyPIS, which realizes the compressed processing of spatial-spectral 2D information, and directly achieves hyperspectral image classification. b, Traditional hyperspectral image classification process involves imaging using hyperspectral camera, storing a large 3D dataset, and performing post-processing with algorithms. Simulation classification results of HyPIS on public datasets: c,",
+      "page": 6,
+      "index": 1,
+      "width": 823,
+      "height": 872
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01801v1/fig-002.webp",
+      "caption": "Fig. 3. Experimental setup of HyPIS and characterization of the optical encoders. a, Schematic of the experimental setup. DMD: digital micromirror device; BS: beam splitter; SPD: single-pixel detector. b, Illustration of traditional methods that measure the spectra of an object with a spectrometer with a line-array detector. c-d, Transmission spectra of the ideal phasor encoders, with the shape of cosine and sine, respectively. e, Phasor representation of the ideal encoders and different spectra of the object (f) are coded into unique positions within the phasor domain. g-h, Transmission spectra of the cosine and sine encoders used in this work. i, Phasor representation of the used encoders and the spectra from the object.",
+      "page": 7,
+      "index": 2,
+      "width": 869,
+      "height": 564
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01801v1/fig-003.webp",
+      "caption": "Fig. 5. Demonstration of HyPIS for real-time hyperspectral phasor imaging and classification. a, Illustration of HyPIS for real-time imaging. The encoded patterns were projected onto the moving object, where a black arrow indicates the direction of the object's motion. A beam-splitting detection (BSD) system is adopted to acquire the spectral encoded light intensities. b, Schematic diagram of the BSD. c, Photograph of the experimental setup, in which the object is mounted on a rotating stage. d, 2D phasor plot of the six different objects that have different transmission spectra. e, Statistics of G and S values in the phasor domain for the six different objects, along with their standard deviations. f. Classification results of the objects and the background, showing in different colors. g, Reconstructed pseudo-colored images using HyPIS. h, Transmission spectra of the two example objects that have slight differences in the spectral profiles.",
+      "page": 10,
+      "index": 3,
+      "width": 853,
+      "height": 848
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01801v1/fig-004.webp",
+      "caption": "Fig. 1. Schematic illustrating how HyPIS mimics human vision to enable hyperspectral image classification. a, The process of human visual perception. Cone cells are mainly responsible for color vision, while rod cells are primarily responsible for detecting shapes and movement in dim environments. The brain makes decisions based on the information transmitted from the retina. b, Biomimetic hyperspectral image classification process of HyPIS. Cos-encoder and sin-encoder convert spectral signals into a single point in the phasor plot, functioning similarly to cone cells in the retina and responsible for processing spectral information. SPI reconstructs the spatial information of objects, analogous to the role of cone cells in the retina. Cos-encoder: an encoder performs wavelength-dependent cosine-encoding; Sin-encoder: an encoder performs wavelength-dependent sine-encoding; SPD: singlepixel detector. c, The perceiving results of an object, derived from human visual recognition and cerebral processing. Two colors with similar spectra fail to be classified. d, Classification results of the same object when using HyPIS. Two colors with similar spectra can be recognized and classified.",
+      "page": 3,
+      "index": 4,
+      "width": 869,
+      "height": 444
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01801v1/fig-005.webp",
+      "caption": "Fig. 4. Demonstration of HyPIS with a transmission object. a, Photograph of the used object, which is a four-leaf clover-like transmission mask. b, Reconstructed images of G and S components, respectively, where the two intensity values of each spatial location serve as the coordinates of its phasor point in c. d, Classification result according to phasor locations. e, Spectra of four areas measured using a spectrometer under three conditions: with Sin-encoder, with Cos-encoder, and without any encoder. f, 2D phasor plot of the measured spectra in e. g, Reconstructed pseudo-color image using HyPIS. h, (Ⅰ): The 3D hyperspectral data that was constructed by combining the spectral data measured by a spectrometer with the images reconstructed by traditional SPI; (Ⅱ): synthesized pseudo-color image.",
+      "page": 8,
+      "index": 5,
+      "width": 854,
+      "height": 482
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01801v1/fig-006.webp",
+      "caption": "Fig. 6. Demonstration of HyPIS with a leaf as the object. a, Illustration of HyPIS deployed on a small unmanned aerial vehicle. b, Photograph of the HyPIS experimental setup in the reflective configuration. c, Photograph of the object—an Anthurium leaf. The right image shows the illuminated detection area (~2.2 cm × 2.2 cm). d, Measured reference spectra at selected points labeled in (c). e, Referenced spectral phasor plot of the object, derived from data in (d). f, 2D phasor plot retrieved by HyPIS. g, Enlarged view of the red dashed region in (f). h, Classification result obtained using HyPIS. i & j, Segmented regions corresponding to the leaf and stem areas indicated in (c).",
+      "page": 12,
+      "index": 6,
+      "width": 869,
+      "height": 992
+    }
+  ]
+}
