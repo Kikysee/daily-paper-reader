@@ -1,0 +1,313 @@
+Title: RL-Driven Sustainable Land-Use Allocation for the Lake Malawi Basin
+
+URL Source: https://arxiv.org/pdf/2604.03768v1
+
+Published Time: Tue, 07 Apr 2026 00:44:55 GMT
+
+Number of Pages: 7
+
+Markdown Content:
+# RL-Driven Sustainable Land-Use Allocation for the Lake Malawi Basin 
+
+Ying Yao 
+
+Georgia Institute of Technology 
+
+yyao374@gatech.edu 
+
+Abstract —Unsustainable land-use practices in ecologically sen-sitive regions threaten biodiversity, water resources, and the livelihoods of millions. This paper presents a deep reinforcement learning (RL) framework for optimizing land-use allocation in the Lake Malawi Basin to maximize total ecosystem service value (ESV). Drawing on the benefit transfer methodology of Costanza et al., we assign biome-specific ESV coefficients—locally anchored to a Malawi wetland valuation—to nine land-cover classes derived from Sentinel-2 imagery. The RL environment models a 50 ×50 cell grid at 500 m resolution, where a Proximal Policy Optimization (PPO) agent with action masking iteratively transfers land-use pixels between modifiable classes. The reward function combines per-cell ecological value with spatial coherence objectives: contiguity bonuses for ecologically connected land-use patches (forest, cropland, built area etc.) and buffer zone penalties for high-impact development adjacent to water bodies. We evaluate the framework across three scenarios: (i) pure ESV maximization, (ii) ESV with spatial reward shaping, and (iii) a regenerative agriculture policy scenario. Results demonstrate that the agent effectively learns to increase total ESV; that spatial reward shaping successfully steers allocations toward ecologically sound patterns, including homogeneous land-use clustering and slight forest consolidation near water bodies; and that the framework responds meaningfully to policy parameter changes, establishing its utility as a scenario-analysis tool for environmental planning. 
+
+Index Terms —reinforcement learning, ecosystem service value, land-use optimization, proximal policy optimization, Lake Malawi 
+
+I. I NTRODUCTION 
+
+Lake Malawi, the third-largest lake in Africa, harbors ex-traordinary aquatic biodiversity—including more than 1,000 endemic cichlid fish species—and sustains the livelihoods of over five million people through fisheries, agriculture, and freshwater supply. Yet the basin faces accelerating pressures from deforestation, agricultural expansion, and unplanned urbanization, all of which degrade the ecosystem services on which local communities depend [1]. Making informed land-use decisions in such contexts requires a quantitative framework that can (i) value the diverse services provided by different biome types, (ii) account for spatial interactions among adjacent land parcels, and (iii) explore the conse-quences of alternative development strategies. 
+
+A. Ecosystem Service Valuation 
+
+The concept of ecosystem service value (ESV) provides a monetary accounting of the benefits that ecosystems deliver to human well-being, spanning provisioning services (food, freshwater), regulating services (climate regulation, water pu-rification), and cultural services (recreation, aesthetic value). Costanza et al. [2] pioneered the global estimation of these services at US$33 trillion/yr (1995 dollars). A subsequent update using expanded valuation data from the Ecosystem Services Value Database (ESVD) [3] revised the estimate to US$125 trillion/yr (2007 dollars) [4]. The underlying benefit transfer method assigns unit values (USD/ha/yr) to each biome type, making the trade-offs inherent in land-use decisions explicit: converting a wetland to cropland may increase pro-visioning output while sacrificing regulating services such as flood control and nutrient filtration [4]. This valuation framework forms the foundation for the reward function used in this study. 
+
+B. Deep Reinforcement Learning for Land-Use Optimization 
+
+Reinforcement learning (RL) formulates sequential decision-making as an agent interacting with an environment to maximize cumulative reward [5]. Recent advances in deep RL (DRL) have demonstrated the potential of this paradigm for spatial planning tasks. Zheng et al. [6] applied DRL with graph neural networks to urban community planning, optimizing land-use and road layouts to maximize the “15-minute city” accessibility metric. Shen et al. [7] proposed a DRL-based carbon emission mitigation strategy that integrates Points of Interest and transportation data to iteratively optimize urban land-use configurations. Later on, Shen et al. [8] extended this line of work to Hangzhou, using PPO to adjust cell-level land-use proportions and achieving up to 15% carbon emission reductions relative to baseline configurations. A common pattern in these studies is to represent the study area as a grid, model cell-level land-use fractions as the RL state, and define actions as incremental transfers between land-use classes. Our work adopts a similar formulation but shifts the optimization target from carbon emission reduction in urban settings to ecosystem service value maximization in an ecological basin context—a setting with fundamentally different land-use classes (forest, wetland, rangeland) and conservation priorities (habitat connectivity, riparian buffer zones). 
+
+C. Contributions 
+
+This paper makes the following contributions: 1
+
+> arXiv:2604.03768v1 [cs.AI] 4 Apr 2026
+
+1) A novel RL framework for ESV-driven land-use opti-mization in a non-urban, ecologically critical setting, the Lake Malawi Basin. 2) A multi-objective reward function that combines benefit-transfer ESV coefficients with spatial coherence terms—contiguity bonuses and water buffer penalties— grounded in ecological principles of habitat connectiv-ity [9] and riparian protection [10]. 3) An action masking mechanism that enforces physical constraints on land-use transfers, ensuring zero-sum conservation within each cell. 4) A systematic comparison of three policy scenarios that demonstrates the framework’s utility as an environmen-tal planning and scenario analysis tool. II. M ATERIALS AND METHODS 
+
+A. Study Region 
+
+Lake Malawi is located between Malawi, Mozambique, and Tanzania and is the ninth-largest lake in the world by area. The study focuses on a 25 km × 25 km area on the western shore of the lake, centered at latitude −13 .934564 °, longitude 34 .542859 ° (Fig. 1). This region was selected for its diverse land-cover composition: water (12%), trees (20%), flooded/wetlands (24%), crops (4%), built area (20%), bare ground (12%), and rangeland (8%)—providing a rich testbed for multi-class land-use optimization.      
+
+> Fig. 1. Satellite view of the 25 ×25 km study region on the western shore of Lake Malawi. The green overlay denotes the area of interest.
+
+B. Data Sources and Preprocessing 1) Land Cover: Land-cover data were obtained from the ESA WorldCover product [11], derived from Sentinel-2 im-agery at 10 m resolution for the year 2024. Nine land-cover classes are present in the study area (Table I). To reduce dimensionality, we downsample to 100 m resolution by taking the modal class within each 10 ×10 pixel block (10% sampling). The downsampled map is then organized into a grid of 50 ×50 
+
+cells, each cell comprising 5 × 5 pixels at 100 m, yielding a 500 m effective resolution per cell. Each cell stores a 9-dimensional vector of pixel counts per land-cover class. 
+
+2) Evapotranspiration: Evapotranspiration (ET) data are drawn from the MODIS MOD16A3GF product [12] at 500 m resolution for 2024, accessed via the Planetary Computer API. Yearly ET values (kg/m 2/yr) are computed per land-cover class by area-weighted averaging. While ET is not directly used in the reward function, it serves as an environmental constraint: episodes terminate early if the cumulative ET decrease exceeds a configurable tolerance, preventing allocations that would severely compromise water cycling. 
+
+C. Ecosystem Service Valuation 
+
+We adopt a benefit transfer approach to assign ESV coeffi-cients to each land-cover class. Inter-biome ratios are derived from the updated unit values in Costanza et al. [4], which synthesizes over 300 case studies in the ESVD [3]. To anchor these global ratios to the local context, we calibrate against a primary valuation study for the Lake Chiuta wetland in southern Malawi, which estimated the gross financial value of inland wetland services at US$554/ha/yr [13]. Ratios for each biome type are then scaled relative to this anchor (Table I). Four classes—water, flooded/wetlands, snow/ice, and clouds—are designated as protected : the RL agent can neither observe nor modify them, reflecting physical or regulatory constraints. The remaining five modifiable classes (trees, crops, built area, bare ground, rangeland) constitute the agent’s observation and action space. All ESV coefficients are min-max normalized to [0 , 1] 
+
+before use in the reward function, ensuring that no single class dominates the gradient signal by virtue of its absolute dollar value. Among the modifiable classes, the normalized values rank as: built area (0.26) > crops (0.22) > trees (0.21) >
+
+rangeland (0.16) > bare ground (0.00).                                   
+
+> TABLE I LAND -C OVER CLASSES AND ECOSYSTEM SERVICE VALUES
+> Class Type ESV Ratio (USD/ha/yr) Water Protected 554 1.00 Trees Modifiable 238 0.43 Flooded Protected 1,136 2.05 Crops Modifiable 246 0.44 Built Area Modifiable 295 0.53 Bare Ground Modifiable 00.00 Snow/Ice Protected 0—Clouds Protected 0—Rangeland Modifiable 184 0.33
+
+D. Training Dataset Preparation 
+
+The 50 × 50 cell grid is partitioned into non-overlapping 
+
+10 ×10 sub-patches, yielding 25 samples. These are split 70/30 into training and test sets, with indices fixed by a random seed. To mitigate overfitting on the small sample count, we apply spatial data augmentation: each original patch is randomly shifted by ±2 cells in both row and column directions for 
+
+naug = 5 rounds, expanding the effective training set by a 2factor of 6. Patches with a modifiable land fraction below 10% are rejected during episode initialization to ensure the agent has meaningful action opportunities. 
+
+E. Reinforcement Learning Framework 1) State Space: The observation at each timestep is a three-dimensional tensor s ∈ [0 , 1] M ×M ×K , where M = 10 is the grid dimension and K = 5 is the number of modifiable land-cover classes. Each element si,j,k represents the fraction of cell 
+
+(i, j ) occupied by modifiable class k, computed as the pixel count divided by the total pixels per cell ( Np = 25 ). Protected classes are excluded from the observation entirely (i.e., the agent has no channel for water or wetlands), however, the protected water fraction is retained internally for computing the buffer zone penalty. 
+
+2) Action Space and Masking: Each action is a 4-tuple a = (i, j, c src , c tgt ), implemented as a
+
+MultiDiscrete [M, M, K, K ] space. An action selects cell (i, j ) and transfers ∆ = 5 pixels from source class csrc 
+
+to target class ctgt . The transfer is clamped so that the source fraction cannot fall below 0 and the target fraction cannot exceed 1, guaranteeing zero-sum conservation within each cell by construction. When csrc = ctgt , or when the source class has zero pixels in the selected cell, the action is defined as a no-op .To prevent the agent from wasting exploration on globally infeasible actions, we employ action masking via Mask-ablePPO [14], [15]. At each step, a boolean mask is computed per action dimension:  
+
+> •
+
+Row / Column : all positions are valid (mask = all true).  
+
+> •
+
+Source : class k is valid iff ∃ (i, j ) such that si,j,k > 0. 
+
+> •
+
+Target : class k is valid iff ∃ (i, j ) such that si,j,k < 1.This grid-level masking eliminates globally impossible trans-fers while keeping the mask computation O(M 2K).
+
+3) Reward Function: The reward at step t is the change in total value: 
+
+rt = V (st+1 ) − V (st)
+
+σ (1) where σ is a configurable reward scale and the total value V
+
+is defined as: 
+
+V (s) = Veco (s) + λs · Vspatial (s) (2) The ecological value is the sum of ESV-weighted fractions across all cells: 
+
+Veco (s) = 
+
+> M
+
+X
+
+> i=1
+> M
+
+X
+
+> j=1
+> K
+
+X
+
+> k=1
+
+si,j,k ˜ek (3) where ˜ek is the min-max normalized ESV coefficient for modifiable class k.The spatial value captures landscape-level ecological co-herence: 
+
+Vspatial (s) = wT CT + wC CC + wB CB − wW PW (4) where CT , CC , CB are contiguity scores for trees, crops, and built area respectively, and PW is the water buffer penalty. Each contiguity score measures how much a given class is spatially clustered: 
+
+Cc = ln 
+
+
+
+1 + X
+
+> i,j
+
+si,j,c (K ∗ s:,:,c )i,j 
+
+
+
+(5) Here K is the 4-connected neighbor kernel  0 1 0 1 0 1 0 1 0 
+
+ and ∗
+
+denotes 2D convolution with zero-padded boundaries. The 
+
+ln(1 + ·) transformation compresses the range to prevent large contiguous patches from dominating the reward signal. The buffer zone penalty discourages high-impact land use (crops and built area) adjacent to water bodies: 
+
+PW = ln 
+
+
+
+1 + X
+
+> i,j
+
+(si,j, crop + si,j, built ) ( K ∗ w)i,j 
+
+
+
+(6) where w ∈ [0 , 1] M ×M is the protected water fraction map (wa-ter + flooded classes). This term penalizes the agent for placing crops or built area in cells whose neighbors contain water, encoding the ecological principle that riparian buffer zones reduce nutrient runoff and protect aquatic ecosystems [10]. 
+
+4) Termination Conditions: An episode terminates when any of the following conditions is met: 1) Step limit : the agent has taken Tmax = 500 steps. 2) ET constraint : the fractional decrease in total evapo-transpiration from the initial state exceeds a tolerance 
+
+τET = 1 .0 (i.e., ET may decrease by up to 100%). 3) Stagnation : the agent has produced nnoop = 10 con-secutive no-op actions, indicating it can find no further improving transfers. The no-op termination condition is critical: it allows the agent to choose to stop early and spend more time on exploration rather than exploitation. 
+
+F. Network Architecture 
+
+We employ a custom CNN feature extractor (G RID CNN) that replaces the default MLP feature extractor in Stable-Baselines3. The architecture processes the K × M × M ob-servation (channels first) as follows: 1) Conv2d (K=5 , 32 , 3×3, stride = 1 , pad = 1) →
+
+ReLU 2) Conv2d (32 , 64 , 3×3, stride = 2 , pad = 1) → ReLU 3) Flatten → Linear (1600 , 128) → ReLU The first convolutional layer preserves the 10 × 10 spatial dimensions with a 3 × 3 receptive field—structurally aligned with the 4-connected contiguity kernel K used in the reward function. This inductive bias allows the network to directly learn representations of local neighbor relationships relevant to the spatial reward terms. The second layer, with stride 2, reduces the spatial dimensions to 5×5 and captures multi-cell cluster patterns. The resulting 128-dimensional feature vector is shared between the actor and critic heads of the PPO agent. 
+
+G. Training Configuration 
+
+The agent is trained using MaskablePPO [14], [16] from the SB3-Contrib library [15]. Table II lists the hyperparam-eters used across all experiments. Training runs for 500,000 timesteps with metrics logged to Weights & Biases. 3Environment   
+
+> 10 ×10 ×5 grid
+> Nsamples
+
+GridCNN 
+
+> Conv2d(5,32,3 ×3) + ReLU
+> Conv2d(32,64,3 ×3,s=2) + ReLU
+> Linear(1600,128) + ReLU
+
+Actor (Policy)  
+
+> Linear(128, |A|)
+> MultiDiscrete[10,10,5,5]
+
+Critic (Value)   
+
+> Linear(128, 1)
+> ˆV(st)
+> Action Mask
+> at= ( i, j, c s, c t)
+
+Reward                   
+
+> Veco : ESV
+> Vspatial : contiguity
+> st
+> 128-d
+> 128-d
+> execute
+> st, s t+1
+> rt
+> shared Fig. 2. Overview of the proposed RL framework. The agent observes a 10 ×10 ×5land-use fraction grid, extracts spatial features via a shared GridCNN, and produces both a masked policy (Actor) and state value estimate (Critic). The environment executes the selected action and returns a reward combining ESV change and spatial coherence metrics. TABLE II PPO H YPERPARAMETERS
+> Parameter Value Learning rate 1×10 −4
+> Rollout length ( nsteps )2,048 Mini-batch size 128 PPO epochs 10 Discount ( γ)0.99 GAE λ0.95 Clip range 0.2 Entropy coefficient 0.02 Value function coeff. 0.5 Max gradient norm 0.5 Total timesteps 500,000
+
+III. R ESULTS 
+
+We evaluate the framework across three experimental sce-narios that progressively add complexity to the reward signal. In each experiment, the trained agent is evaluated on both training and test patches; the resulting cell-level allocations are reconstructed onto the full 50 ×50 grid and visualized as side-by-side before/after heatmaps. Each cell displays horizontal bars representing land-use type fractions, and the background color encodes the cell’s total ecosystem value (red = high, white = low). Black-bordered cells indicate locations modified by the agent. 
+
+A. Experiment I: ESV Maximization ( λs = 0 )
+
+In this baseline experiment, the spatial reward scale is set to zero ( λs = 0 ), so the agent optimizes purely for per-cell ecological value (Eq. 3). Because built area has the highest normalized ESV among modifiable classes (0.26), the rational greedy strategy is to convert low-value classes (bare ground, rangeland) toward built area. Fig. 3 confirms this expectation: the agent aggressively expands built area across the grid. Bare ground and rangeland fractions decrease substantially, replaced predominantly by built area, with some increase in crops (the second-highest value class at 0.22). The “after” map shows a pronounced reddening across the inland portion of the grid, indicating higher cell-level ESV but at the cost of ecological realism— the resulting allocation resembles unconstrained urban sprawl rather than sustainable land management. This result validates that the RL agent is learning to maxi-mize its reward, but simultaneously reveals the insufficiency of a purely value-based objective: without spatial constraints, the agent exploits the reward function in ways that are ecologically undesirable. 
+
+B. Experiment II: Spatial-Ecological Optimization ( λs = 1 )
+
+This experiment activates the full spatial reward (Eq. 4) with weights wT =1 , wC =3 , wB =3 , wW =5 (Table III). The tree contiguity weight is set lower than crop and built con-tiguity because trees already have a moderate base ESV; the higher crop and built weights encourage consolidation of these classes into contiguous blocks rather than scattering them. The water buffer penalty receives the highest weight, reflecting the ecological priority of protecting riparian zones. Fig. 4 shows markedly different behavior compared to Experiment I. The agent produces more nuanced allocations with several notable patterns: 4Fig. 3. Experiment I results ( λs = 0 ). Left: initial land-use allocation. Right: allocation after agent optimization. The agent aggressively converts low-value classes to built area (red), indicating reward maximization without spatial awareness. TABLE III SPATIAL REWARD WEIGHTS            
+
+> Component Symbol Weight Tree contiguity bonus wT1.0 Crop contiguity bonus wC3.0 Built-area contiguity bonus wB3.0 Water buffer penalty wW5.0
+> •
+
+Forest consolidation : tree fractions increase in areas ad-jacent to existing forest patches, forming more contiguous canopy cover rather than scattered fragments.  
+
+> •
+
+Water protection : cells adjacent to the lake and wetland boundaries show reduced crop and built-area fractions relative to Experiment I, indicating that the buffer penalty effectively discourages development near water.  
+
+> •
+
+Built-area clustering : urban expansion still occurs but is more spatially concentrated, reflecting the built contiguity bonus rather than uniform sprawl. The overall ESV increase is smaller than in Experiment I be-cause the spatial penalties constrain some high-value-per-cell conversions, but the resulting landscape is more ecologically coherent.   
+
+> Fig. 4. Experiment II results ( λs= 1 , spatial rewards active). The agent balances ESV maximization with spatial coherence, consolidating forests and reducing development pressure near water bodies compared to Experiment I.
+
+C. Experiment III: Regenerative Agriculture Scenario 
+
+This experiment uses identical spatial reward weights as Experiment II but increases the crop ESV coefficient by 35% (from $246 to $332/ha/yr), simulating a policy scenario in which regenerative agricultural practices (e.g., agroforestry, cover cropping) enhance the ecosystem service output of cropland. After re-normalization, the crop class (0.29) now exceeds built area (0.26) as the highest-value modifiable class. Fig. 5 shows a visible shift toward agricultural allocation compared to Experiment II. The agent converts more bare ground and rangeland to crops rather than built area, and cropland patches appear more contiguous—driven by both the higher per-cell crop value and the crop contiguity bonus (wC = 3). Built-area expansion is relatively restrained, demonstrating that the framework is sensitive to policy-driven changes in ESV coefficients. This result illustrates the framework’s potential as a sce-nario analysis tool : by adjusting ESV coefficients, stake-holders can explore how different agricultural policies, con-servation incentives, or development regulations would alter optimal land-use patterns. The RL agent serves as an optimizer that translates these value assumptions into concrete spatial allocations.  
+
+> Fig. 5. Experiment III results (regenerative agriculture scenario). With crop ESV increased by 35%, the agent shifts allocation preference from built area toward cropland, demonstrating policy sensitivity.
+
+D. Comparative Analysis 
+
+Table IV summarizes the qualitative behavioral differences across the three experiments. The progression from Experi-ment I to III demonstrates three key findings: (1) the RL agent reliably learns to maximize its reward signal; (2) spatial reward shaping is effective at steering allocations toward ecologically desirable patterns without requiring hard constraints; and (3) the framework responds meaningfully to changes in ESV coefficients, confirming its utility for policy scenario analysis. IV. D ISCUSSION AND CONCLUSION 
+
+A. Discussion 
+
+The experimental results confirm that deep reinforcement learning can serve as an effective mechanism for land-use allocation optimization when grounded in a well-designed reward function. Several aspects merit further discussion. 
+
+Reward design as policy encoding. The transition from Experiment I to Experiment II illustrates that reward shaping is not merely a training aid but a form of policy encod-ing . The contiguity bonuses and buffer penalties translate ecological principles—habitat connectivity [9] and riparian protection [10]—into differentiable objectives that the agent 5TABLE IV BEHAVIORAL COMPARISON ACROSS EXPERIMENTS                    
+
+> Exp. I Exp. II Exp. III
+> (Eco only) (+ Spatial) (+ Regen. Ag.) Spatial scale
+> λs=0 λs=1 λs=1
+> Dominant conversion
+> →Built Mixed →Crops Forest near water Reduced Increased Increased Built expan-sion Aggressive Clustered Restrained Crop alloca-tion Moderate Moderate High Ecological realism Low High High
+
+can optimize through gradient-based learning. This approach is more flexible than hard constraints because the weights can be tuned to reflect varying policy priorities without modifying the environment logic. 
+
+CNN inductive bias. The GridCNN feature extractor’s 3×
+
+3 convolutional filters are structurally aligned with the 3×3
+
+contiguity kernel used in the spatial reward computation. This architectural choice provides an inductive bias that helps the actor and critic networks learn representations of local spatial patterns relevant to the reward. While the small grid size ( 10 ×
+
+10 ) means an MLP could potentially learn these relationships given sufficient data, the CNN provides a useful prior that may accelerate learning and improve sample efficiency—though a formal ablation study is needed to quantify this benefit. 
+
+Policy scenario analysis. Experiment III demonstrates a practical use case: a policymaker can adjust ESV coefficients to simulate “what-if” scenarios (e.g., subsidizing regenerative agriculture) and observe how optimal land-use allocations shift. The RL agent acts as an optimizer that translates value assumptions into spatial strategies, providing a computational complement to traditional cost-benefit analysis. 
+
+B. Limitations 
+
+The current study has several limitations that should be acknowledged:  
+
+> •
+
+Grid resolution and scale : the 10 × 10 grid at 500 m resolution covers a limited area and operates at a coarse spatial scale. Scaling to larger regions or finer resolutions would require architectural modifications and signifi-cantly more compute.  
+
+> •
+
+Static ESV coefficients : the benefit-transfer values are fixed and do not account for nonlinear interactions be-tween services, diminishing marginal returns, or temporal dynamics of ecosystem recovery.  
+
+> •
+
+No baseline comparison : the current evaluation lacks comparison with alternative optimization methods (e.g., genetic algorithms, integer linear programming) that would contextualize the RL framework’s relative perfor-mance.  
+
+> •
+
+Action masking granularity : the source/target masks operate at the grid level (checking if any cell has the class available) rather than at the cell level, meaning some selected actions may still resolve to no-ops at the cell level. Finer-grained masking could improve sample efficiency.  
+
+> •
+
+Single study region : results are demonstrated on one geographic area; generalization to other basins with dif-ferent land-cover distributions remains to be validated. 
+
+C. Future Work 
+
+Several directions are worth pursuing: (i) conducting formal ablation studies on the GridCNN versus MLP feature extractor and on individual spatial reward components; (ii) scaling the framework to larger grids with hierarchical RL or attention-based architectures; (iii) benchmarking against established optimization baselines; and (iv) generalizing the framework to other ecologically sensitive regions beyond Lake Malawi to validate its transferability across diverse land-cover distribu-tions and policy contexts. 
+
+D. Conclusion 
+
+This paper presented a reinforcement learning framework for optimizing land-use allocation in the Lake Malawi Basin to maximize ecosystem service value. By combining benefit-transfer ESV coefficients with spatial coherence rewards, the framework produces ecologically informed land-use plans that balance per-cell value maximization with landscape-level ob-jectives. The three experimental scenarios demonstrate that the RL agent reliably learns to exploit its reward signal, that spatial reward shaping effectively encodes ecological principles into the optimization process, and that the framework is responsive to policy parameter changes. While significant work remains to scale the approach and validate it against baselines, the results establish a promising proof of concept for AI-assisted environmental planning in critical ecosystems. REFERENCES [1] Millennium Ecosystem Assessment, Ecosystems and Human Well-Being: Synthesis . Washington, DC: Island Press, 2005. [2] R. Costanza, R. d’Arge, R. de Groot, S. Farber, M. Grasso, B. Hannon, K. Limburg, S. Naeem, R. V. O’Neill, J. Paruelo, R. G. Raskin, P. Sutton, and M. van den Belt, “The value of the world’s ecosystem services and natural capital,” Nature , vol. 387, pp. 253–260, 1997. [3] R. de Groot, L. Brander, S. van der Ploeg, R. Costanza, F. Bernard, L. Braat, M. Christie, N. Crossman, A. Ghermandi, L. Hein et al. ,“Global estimates of the value of ecosystems and their services in monetary units,” Ecosystem Services , vol. 1, no. 1, pp. 50–61, 2012. [4] R. Costanza, R. de Groot, P. Sutton, S. van der Ploeg, S. J. Anderson, I. Kubiszewski, S. Farber, and R. K. Turner, “Changes in the global value of ecosystem services,” Global Environmental Change , vol. 26, pp. 152–158, 2014. [5] R. S. Sutton and A. G. Barto, Reinforcement Learning: An Introduction ,2nd ed. MIT Press, 2018. [6] Y. Zheng, Y. Lin, L. Zhao, T. Wu, D. Jin, and Y. Li, “Spatial planning of urban communities via deep reinforcement learning,” Nature Com-putational Science , vol. 3, no. 9, pp. 748–762, 2023. [7] J. Shen, F. Zheng, Y. Ma, W. Deng, and Z. Zhang, “Urban travel car-bon emission mitigation approach using deep reinforcement learning,” 
+
+> Scientific Reports , vol. 14, no. 1, p. 27778, 2024.
+
+6[8] J. Shen, F. Zheng, T. Chen, W. Deng, A. Bellotti, F. B. Tesema, and E. Lucchi, “Optimizing urban land-use through deep reinforcement learning: A case study in Hangzhou for reducing carbon emissions,” 
+
+Land , vol. 14, no. 12, 2025. [9] L. Fahrig, “Effects of habitat fragmentation on biodiversity,” Annual Review of Ecology, Evolution, and Systematics , vol. 34, pp. 487–515, 2003. [10] R. Lowrance, R. Todd, J. Fail, O. Hendrickson, R. Leonard, and L. As-mussen, “Riparian forests as nutrient filters in agricultural watersheds,” 
+
+BioScience , vol. 34, no. 6, pp. 374–377, 1984. [11] D. Zanaga, R. Van De Kerchove, D. Daels, W. De Keersmaecker, C. Brockmann, G. Kirches, J. Wevers, O. Cartus, M. Santoro, S. Fritz 
+
+et al. , “ESA WorldCover 10 m 2021 v200,” Zenodo , 2022. [12] S. Running, Q. Mu, M. Zhao, and A. Moreno, “MOD16A2 MODIS/Terra net evapotranspiration 8-day L4 global 500m SIN grid V061,” NASA EOSDIS Land Processes Distributed Active Archive Cen-ter , 2021. [13] F. Zuze, “The economic valuation of Lake Chiuta wetland: A case study of Machinga district,” Master’s thesis, University of Malawi, Chancellor College, 2013. [14] S. Huang and S. Onta˜ n´ on, “A closer look at invalid action masking in policy gradient algorithms,” in The International FLAIRS Conference Proceedings , vol. 35, 2022. [15] A. Raffin, A. Hill, A. Gleave, A. Kanervisto, M. Ernestus, and N. Dor-mann, “Stable-baselines3: Reliable reinforcement learning implementa-tions,” Journal of Machine Learning Research , vol. 22, no. 268, pp. 1–8, 2021. [16] J. Schulman, F. Wolski, P. Dhariwal, A. Radford, and O. Klimov, “Prox-imal policy optimization algorithms,” arXiv preprint arXiv:1707.06347 ,2017. 
+
+7

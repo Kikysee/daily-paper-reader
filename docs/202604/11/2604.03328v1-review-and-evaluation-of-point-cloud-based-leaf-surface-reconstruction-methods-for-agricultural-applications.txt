@@ -1,0 +1,891 @@
+Title: Review and Evaluation of Point-Cloud based Leaf Surface Reconstruction Methods for Agricultural Applications
+
+URL Source: https://arxiv.org/pdf/2604.03328v1
+
+Published Time: Tue, 07 Apr 2026 00:05:52 GMT
+
+Number of Pages: 12
+
+Markdown Content:
+# Review and Evaluation of Point-Cloud based Leaf Surface Reconstruction Methods for Agricultural Applications 
+
+## Arif Ahmed a, Parikshit Maini a,∗
+
+> a
+
+Department of Computer Science and Engineering, University of Nevada, Reno, Reno 89557, Nevada, USA 
+
+A R T I C L E I N F O 
+
+Keywords :Leaf Surface Reconstruction Phenotyping from Point Cloud Leaf Area Estimation 3D Perception in Ag-Robotics 
+
+A B S T R A C T 
+
+Accurate reconstruction of leaf surfaces from 3D point cloud is essential for agricultural applications such as phenotyping. However, real-world plant data (i.e., irregular 3D point cloud) are often complex to reconstruct plant parts accurately. A wide range of surface reconstruction methods has been proposed, including parametric, triangulation-based, implicit, and learning based approaches, yet their relative performance for leaf surface reconstruction remains insufficiently understood. In this work, we present a comparative study of nine representative surface reconstruction methods for leaf surfaces. We evaluate these methods on three publicly available datasets: LAST-STRAW, Pheno4D, and Crops3D - spanning diverse species, sensors, and sensing environments, ranging from clean high-resolution indoor scans to noisy low-resolution field settings. The analysis highlights the trade-offs between surface area estimation accuracy, smoothness, robustness to noise and missing data, and computational cost across different methods. These factors affect the cost and constraints of robotic hardware used in agricultural applications. Our results show that each method exhibits distinct advantages depending on application and resource constraints. The findings provide practical guidance for selecting surface reconstruction techniques for resource constrained robotic platforms. 
+
+## 1. Introduction 
+
+The high labor and costs associated with manual plant phenotyping Stausberg, Jost, Klingbeil and Kuhlmann (2024) have motivated the development of automated solutions in agricultural robotics Ahmed, Agarwal, Srikar, Rose and Maini (2025). These approaches perform plant phenotyp-ing by analyzing plant geometry reconstructed from 3D point cloud data Stausberg et al. (2024). These data are typically acquired through either active sensing methods, such as LiDAR, or passive approaches using camera-based techniques such as Structure-from-Motion (SfM) Santos, Koenigkan, Barbedo and Rodrigues (2014); Stausberg et al. (2024). Leaf surface reconstruction from 3D point cloud data is a core problem in plant phenotyping because it describes plant health, growth, and yield estimation Ando, Ozasa and Guo (2021). Beyond structural analysis, accurate 3D leaf surface reconstruction also helps scientists study how leaves perform photosynthesis, exchange gases, and transport nutrients Loch, Belward and Hanan (2005); Hui, He, Jin, Chen, He and Ziggah (2026). From phenotyping perspective, reconstructed leaf sur-faces allow for the extraction of geometric traits such as leaf length and width. In contrast, plant scientists focus more on modeling a leaf surface for applications such as modeling agrichemical spray droplet movement and spread on surface Kempthorne, Turner, Belward, McCue, Barry, Young, Dorr, Hanan and Zabkiewicz (2015); Mayo, McCue, Moroney, Forster, Kempthorne, Belward and Turner (2015). In this 
+
+> ⋆
+
+This work was funded by University of Nevada, Reno. 
+
+> ∗
+
+Corresponding author  
+
+> arifa@unr.edu
+
+(A. Ahmed); pmaini@unr.edu (P. Maini) 
+
+> ORCID
+
+(s): 
+
+context, leaf surface reconstruction is critical, as variations in surface characteristics strongly influence computational predictions of droplet interception, impaction behavior (ad-here, bounce, or shatter), and overall spray retention Dorr, Kempthorne, Mayo, Forster, Zabkiewicz, McCue, Belward, Turner and Hanan (2014). Furthermore, accurate reconstruc-tion of the leaf surface is important for critical phenotypic traits such as leaf size, leaf area index, and leaf angle distribution Zermas, Morellas, Mulla and Papanikolopoulos (2020); Stausberg et al. (2024); Li, Liang, Liu, Yin, Wan, Qian and Qiao (2025). Despite the wide range of available surface reconstruc-tion methods, their suitability for reconstruction leaf sur-faces in real-world agricultural robotics applications remains insufficiently understood. In particular, there is a lack of sys-tematic evaluation on real plant dataset that quantifies trade-offs between surface are estimation accuracy, qualitative sur-face fidelity, and computational efficiency under constraints imposed by robotic platforms and onboard computation. This survey presents a comprehensive review of leaf sur-face reconstruction methods from the perspective of agricul-tural robotics. We analyze representative approaches from each methodological category and conduct a comparative study on real leaf point cloud datasets. Furthermore, we examine the strength and limitations of each method, pro-viding practical insight to guide the selection of appropriate techniques for different robotic platforms and onboard com-putational resources. 
+
+: Preprint submitted to Elsevier Page 1 of 12 
+
+> arXiv:2604.03328v1 [cs.CV] 2 Apr 2026
+
+## 2. Literature Review 
+
+Prior works classified leaf surface reconstruction meth-ods into two broad categories: model-free (bottom-up) and model-based (top-down) Stausberg et al. (2024). The model-free methods do not require any parameter calibration or knowledge about the leaf geometry. These methods rely on local information of the point cloud data to reconstruct leaf surfaces such as Poisson surface reconstruction, Ball-Pivoting-Algorithm (BPA), non-uniform rational B-spline (NURBS) Wang, Li and Chai (2013); Stausberg et al. (2024). The model-based methods utilize prior knowledge to gener-ate a mathematical model of the surface Quan, Tan, Zeng, Yuan, Wang and Kang (2006). They can better capture the morphological differences but can not capture subtle differences within each leaf Ando et al. (2021). However, model-free methods suffer from noisy or missing data as they do not exploit the prior knowledge. However, Lim and Haron (2014) reported different classifications for surface recon-struction from the literature in their review. They reviewed two representations: explicit and implicit Zhao, Osher and Fedkiw (2001). The explicit surfaces denote the exact lo-cation of a surface, popular representations are parametric (e.g., B-Spline) and triangulated surface (e.g., Delaunay) Piegl and Tiller (2012); Dimitrov, Gu and Golparvar-Fard (2016) . The parameterization is a challenge for 3D surface reconstruction and noisy data can make it more difficult. For triangulation, correct connectivity for the sample points can be difficult for non-uniform and noisy data. On the other hand, implicit surfaces (a.k.a volumetric representations) represent a surface as a particular isocontour of a scalar function (e.g., Poisson). Another popular surface reconstruc-tion is Kohonen network or Self-Organizing Map (SOM) Kohonen (1997), Lim and Haron (2014) classified it as a neural network method. This iterative method can better capture the surface topology. This method is useful when leaf surface reconstruction has missing leaf points or holes. 
+
+## 3. Organization 
+
+The remainder of this paper is organized as follows. In Section 4, we present nine representative leaf surface recon-struction methods from the literature and their mathematical formulation. In Section 5, we evaluate these leaf surface reconstruction methods experimentally, covering dataset preparation, implementation details, and reconstruction re-sults. In Section 6, we discuss robotic perception challenges in agricultural environments and real-time deployment con-straints. In Section 7, we identify open challenges and research directions, and we conclude in Section 8. 
+
+## 4. Leaf Surface Reconstruction Methods 
+
+In this section, we describe nine leaf surface reconstruc-tion methods and their mathematical formulation. These methods are: 1. B-Spline 2. Non-Uniform Rational B-Spline (NURBS) 3. Discrete Smoothing 𝐷 2-Spline (D2S) 4. Delaunay 5. Moving Least Squares (MLS) 6. Locally estimated scatterplot smoothing (LOESS) 7. Poisson Surface Reconstruction 8. Ball Pivoting Algorithm (BPA) 9. Self-organizing Map (SOM). 
+
+4.1. B-Spline 
+
+A B-spline (i.e., basis-spline) surfaces represent one of the most widely used formulations for geometric surface reconstruction from point cloud data Piegl and Tiller (2012). To construct the geometric model of a broad-leaf plants leaf veins and surfaces, Wang et al. (2013) used this parametric method. Wu, Hu and Lu (2021) also used this method for modeling tea leaves. Piegl and Tiller (2012) define a B-spline surface by taking a bidirectional net of control points, two knot vectors, and the products of the univariate B-spline functions. So, B-spline surface of degree 𝑝 × 𝑞 as: 
+
+𝐒 (𝑢, 𝑣 ) = 
+
+> 𝑛
+
+∑
+
+> 𝑖 =0
+> 𝑚
+
+∑
+
+> 𝑗 =0
+
+𝑁 𝑖,𝑝 (𝑢 )𝑁 𝑗,𝑞 (𝑣 ) 𝐏 𝑖𝑗 (1) where 𝐏 𝑖𝑗 ∈ ℝ3 are the vertices of the control point vertices arranged in a 𝑛 × 𝑚 control net, and 𝑁 𝑖,𝑝 (𝑢 ), 𝑁 𝑗,𝑞 (𝑣 )
+
+are the B-spline basis functions in the 𝑢 and 𝑣 directions respectively, each constructed from their own knot vector via Cox-de Boor recursion. The basis functions are piecewise polynomial and smooth at their joins. Because each basis function is nonzero over only a small range of parameter values, each control point influences only a local region of the surface rather than the entire surface. To fit this surface to measured data, Piegl and Tiller (2012) assign parameter values to each data point using chord-length parameteriza-tion. Here, the data points that are far apart in physical space receive a larger gap in parameter space, and data points that are close together in physical space receive a small gap. This ensures the fitted surface does not compress or stretch unevenly across the leaf. Once parameter values are assigned, the method finds the control points by enforcing: 
+
+the surface must pass exactly through every data point .This turns the fitting problem into a standard linear system, where the unknowns are the control point positions and each equation corresponds to one data point. Solving this system gives a surface that reproduces the measured geometry of the leaf. However, the surface also reproduces any noise in the point cloud data. 
+
+4.2. Non-Uniform Rational B-Spline (NURBS) 
+
+NURBS generalize polynomial B-splines by introducing a positive weight 𝑤 𝑖𝑗 for each control point, making the surface a ratio of two weighted sums rather than a single polynomial expression. Researchers adopt this method for leaf modeling for various plants such as cucumber, tea,                                               
+
+> :Preprint submitted to Elsevier Page 2 of 12 Table 1
+> Comparison: leaf surface reconstruction methods
+> Method Category Input Noise Robustness Missing Data Surface Key Parameters
+> B-Spline Spline-based, parametric grid data Low Partial Parametric surface Control point net NURBS Spline-based, parametric rational grid data Medium Partial Rational surface Better than B-spline for rational weights
+> 𝐷 2-Spline Spline-based, variational, bending energy point cloud High Yes Explicit surface GCV auto-selects smoothing parameter MLS Fitting, polynomial point cloud (2D) Medium Yes Explicit surface neighborhood size (bandwidth) LOESS Fitting, tricube-weighted local polynomial point cloud (2D) High Yes Explicit surface Local neighborhood per query Delaunay 2.5D Triangulation point cloud (2D) Low No Triangulated mesh None Poisson Poisson, Implicit point cloud with normals High Yes Watertight mesh Octree depth, bumpy surface for noisy leaf BPA Ball pivoting, triangulation point cloud with normals Low No Triangulated mesh Sensitive to ball-radius, produce holes where ball cannot reach SOM Competitive learning (Unsupervised) raw point cloud Medium Yes Discrete neuron mesh Grid size, epoch captures leaf topology
+
+Wang, Lu and Jiang (2011); Wu et al. (2021). Piegl and Tiller (2012) define the NURBS surface as: 
+
+𝐒 (𝑢, 𝑣 ) = 
+
+∑𝑛 𝑖 =0 
+
+∑𝑚 𝑗 =0 𝑁 𝑖,𝑝 (𝑢 )𝑁 𝑗,𝑞 (𝑣 ) 𝑤 𝑖𝑗 𝐏 𝑖𝑗 
+
+∑𝑛 𝑖 =0 
+
+∑𝑚 𝑗 =0 𝑁 𝑖,𝑝 (𝑢 )𝑁 𝑗,𝑞 (𝑣 ) 𝑤 𝑖𝑗 
+
+(2) where 𝐏 𝑖𝑗 are the control point vertices, 𝑤 𝑖𝑗 > 0 are the rational weights, and 𝑁 𝑖,𝑝 (𝑢 )𝑁 𝑗,𝑞 (𝑣 ) are the same Cox-de Boor basis functions as in the B-spline formulation. The denominator normalizes the weighted sum so that the basis functions summed to one at every point on the surface. When all the weights are equal, the expression reduces exactly to a polynomial B-spline. Increasing the weight of a control point pulls the surface closer to it, wile decreasing the weight pushes the surface away. This gives the method a degree of local shape control that polynomial B-splines does not have. Rather than matching every data point exactly, the method finds the control net that minimizes the total squared distance between surface and all data points. This averaging effect means isolated noisy measurements have less influence on the final surface, making the approximation more robust to noise than exact interpolation. The rational weights then provide an additional layer of shape refinement, allowing geometrically complex regions such as midribs and leaf margins to conform more closely to the data without increasing the number of control points. 
+
+4.3. Discrete 𝐷 2-Spline (D2S) 
+
+Kempthorne et al. (2015) introduce the discrete smooth-ing 𝐷 2-spline to reconstruct leaf surfaces from 3D scanned point cloud data. Unlike B-spline and NURBS methods, which require the point cloud to be resampled onto a struc-tured parametric grid before fitting, the 𝐷 2-spline works directly with the scattered/raw measurements. This makes it more appropriate to the non-uniform sampling densities that appear near leaf margins and veins, where reliable points are sparse. The method finds smooth height function 𝑤 =
+
+𝑓 (𝑢, 𝑣 ) by solving an optimization problem that balances two competing objectives Kempthorne et al. (2015): 
+
+𝑓 = arg min  
+
+> 𝑓 ∈𝐶 1(Ω)
+> 𝑀
+
+∑
+
+> 𝑖 =1
+
+(𝑤 𝑖 − 𝑓 (𝑢 𝑖 , 𝑣 𝑖 )) 2 + 𝛼 ∫Ω
+
+( 𝜕 2𝑓 𝜕𝑢 2
+
+)2
+
++
+
+( 𝜕 2𝑓 𝜕𝑢𝜕𝑣 
+
+)2
+
++
+
+( 𝜕 2𝑓 𝜕𝑣 2
+
+)2
+
+𝑑𝑢𝑑𝑣 
+
+(3) The first term measures how closely the surface fits the 
+
+𝑀 scattered data points. The second term measures the total bending energy of the surface by integrating the three independent second-order curvature components over the entire domain. A surface that bends sharply to follow noise receives a higher penalty from this term, so the optimization naturally avoids overfitting. The scalar 𝛼 > 0 controls the   
+
+> :Preprint submitted to Elsevier Page 3 of 12
+
+balance between these two objectives. A small 𝛼 prioritizes fitting the data closely, while a large 𝛼 prioritizes a smooth surface. Rather than requiring the user to set 𝛼 manually, the method selects it automatically by minimizing the general-ized cross-validation (GCV) criterion: 
+
+𝐺𝐶𝑉 (𝛼 ) =  
+
+> 1
+> 𝑀
+
+‖(𝐈 − 𝐇 𝛼 𝐰 ‖2
+
+( 1 
+
+> 𝑀
+
+𝑡𝑟 (𝐈 − 𝐇 𝛼 𝐰 )
+
+)2 (4) Here, 𝐇 𝛼 maps observations to fitted values, with 𝛼 chosen via GCV to minimize prediction error. Expressing 𝑓 in basis functions yields a linear system combining data fitting and bending energy. 𝐷 2-splines achieve smoother surfaces and faster convergence than thin-plate and radial basis methods due to curvature regularization and automatic 𝛼 selection Kempthorne et al. (2015). 
+
+4.4. Delaunay triangulation 
+
+Delaunay triangulation creates a triangular mesh from a set of points by connecting points in a specific way De Berg, Cheong, Van Kreveld and Overmars (2008). A triangulation is called Delaunay triangulation if it satisfies the empty circle property: for any triangle in the mesh, the circle that passes through its three vertices does not contain any other points inside it. This property ensures that the resulting triangula-tion avoids silver triangles (i.e., very small triangles- close to 0◦) and produces well-shaped triangles. For leaf surface reconstruction, existing approaches project the leaf points into a plane and apply Delaunay trian-gulation Field (1988). James, Heiwolt, Sargent and Cielniak (2024) applied 2.5D Delaunay triangulation for leaf surface reconstruction. They first projected the leaf point cloud into a two-dimensional plane ignoring z-axis. Next, they applied Delaunay triangulation on the 2D coordinates and then back-projected the triangulated mesh into 3D coordinates. 
+
+4.5. Moving Least Squares 
+
+This is a local polynomial fitting method that approxi-mates surfaces at any query position by minimizing weighted least squares error within a local neighborhood Fleishman, Cohen-Or and Silva (2005). This method generates a local reference plane at each query point, projects nearby points onto this plane. Then, a polynomial function is fitted to minimize the weighted sum of squared distances. For a query point 𝑞 , MLS first finds a local reference plane 𝐻 with normal 𝑛 at position 𝑟 . The method minimizes: 
+
+> 𝑁
+
+∑
+
+> 𝑖 =1
+
+(𝑔 (𝑥 − 𝐼, 𝑦 𝑖 ) − 𝑓 𝑖 )2𝜃 (‖𝑝 𝑖 − 𝑞 ‖) (5) where 𝑓 𝑖 is the height of point 𝑝 𝑖 over the plane 𝐻 , defined as 
+
+𝑓 𝑖 = 𝑛 ⋅(𝑝 𝑖 −𝑞 ), and 𝑔 (𝑥 𝑖 , 𝑦 𝑖 ) is the polynomial approximation on the plane. Here, a distance-based gaussian kernel function assigns larger weights to closer points: 
+
+𝜃 (𝑑 ) = 𝑒 − 𝑑 2 
+
+> ℎ2
+
+(6) where 𝑑 = ‖𝑝 𝑖 − 𝑞 ‖ and ℎ is the bandwidth parameter. This method handles varying point densities for leaf surface reconstruction and provides inherent smoothing. 
+
+4.6. Locally estimated scatterplot smoothing (LOESS) 
+
+Zhu, Thapa, Gao, Ge, Walia and Yu (2018) used LOESS Cleveland and Devlin (1988) instead of MLS for leaf surface fitting of maize and rice plants. Although LOESS is similar to MLS, this method works better when there are missing or sparse leaf points. The use of a tri-cube weight function makes it robust to outliers. LOESS statistically reconstructs the surface without constructing a reference plane, making it more flexible for discontinuous data. For a query point, LOESS identifies the neighbors and computes weights using a tri-cube kernel: 
+
+𝑊 (𝑢 ) = (1 − 𝑢 3)3 for 0 ≤ 𝑢 < 1, and 0 otherwise (7) where 𝑢 = 𝜌 (𝑥, 𝑥 𝑖 )∕ 𝑑 (𝑥 ), with 𝜌 (𝑥, 𝑥 𝑖 ) is the distance from the query point to neighbor 𝑥 𝑖 , and 𝑑 (𝑥 ) is the distance to the nearest neighbor. The weight for each neighbor is then 𝑤 𝑖 (𝑥 ) = 𝑊 (𝜌 (𝑥, 𝑥 𝑖 )∕ 𝑑 (𝑥 )) . LOESS can reconstruct a continuous surface even with presence of discontinuity of leaf points, as it adapts locally. 
+
+4.7. Poisson Surface Reconstruction 
+
+This reconstruction method first converts oriented point clouds into watertight mesh surfaces by solving a partial differential equation Kazhdan, Bolitho and Hoppe (2006). The method takes the 3D points with outward-facing normal vectors {𝐩 𝑖 , 𝐧 𝑖 }and reframes reconstruction as a mathemat-ical problem. It computes an indicator function 𝜒 ∶ ℝ3 →
+
+[0 , 1] that distinguishes the object’s interior and exterior. The gradient of this indicator function should match a vector field 
+
+𝐕 constructed from the input normals: 
+
+∇𝜒 = 𝐕 (8) Taking the divergence of both sides yields Poisson’s equa-tion: 
+
+Δ𝜒 = ∇ ⋅ 𝐕 (9) where Δ = ∇ 2 is the Laplacian operator. The algorithm solves this equation to find the smooth scalar field 𝜒 that best satisfies the normal constraints (i.e., least-squares). The final surface is extracted as an iso-contour where the indicator function reaches a constant value, representing the boundary between interior and exterior. 
+
+𝜕𝑀 = { 𝐱 ∈ ℝ3 ∶ 𝜒 (𝐱 ) = 𝑐 } (10) Typically, with 𝑐 = 0.5 representing the boundary between interior ( 𝜒 = 1 ) and exterior ( 𝜒 = 0 ). This method handles noise and produces watertight mesh without gaps even from imperfect or incomplete point cloud data. How-ever, Zhu et al. (2018) reported in their experimental results that the Poisson surface reconstruction method produces bumpy surfaces in the presence of noisy point cloud data for the leaves of maize plant.    
+
+> :Preprint submitted to Elsevier Page 4 of 12 Figure 1: Leaf surface Reconstruction results comparison across methods that we described in Sec. 4
+
+4.8. Ball Pivoting Algorithm (BPA) 
+
+This surface reconstruction method creates triangular meshes from point cloud by simulating a ball of radius 𝑟 
+
+rolling over points Bernardini, Mittleman, Rushmeier, Silva and Taubin (2002). The algorithm works by pivoting a virtual ball of radius 𝑟 across the point cloud, where the radius determines the level of detail in the final mesh. The ball starts from a seed triangle and expands the mesh front by pivoting around boundary edges. For an existing edge 𝜎 = ( 𝑣 𝑖 , 𝑣 𝑗 ) on the mesh front, the ball pivots to find a point 𝑣 𝑘 such that the ball of radius 𝑟 
+
+touches all three points 𝑣 𝑖 , 𝑣 𝑗 , and 𝑣 𝑘 without enclosing any other points. The center 𝐜 of the ball satisfies: 
+
+‖𝐜 − 𝑣 𝑖 ‖ = ‖𝐜 − 𝑣 𝑗 ‖ = ‖𝐜 − 𝑣 𝑘 ‖ = 𝑟 (11) and for all other points 𝑣 𝑙 ∉ { 𝑣 𝑖 , 𝑣 𝑗 , 𝑣 𝑘 }:
+
+‖𝐜 − 𝑣 𝑙 ‖ ≥ 𝑟 (12) When such a point 𝑣 𝑘 is found, the triangle (𝑣 𝑖 , 𝑣 𝑗 , 𝑣 𝑘 ) is added to the mesh, and new edges are added to the front. The ball continues to pivot around frontier edges until no more triangles can be formed. However, James et al. (2024) showed in their leaf re-construction analysis that BPA fails when point sampling density is uneven, leaving part of leaf regions disconnected. 
+
+4.9. Self-organizing Map (SOM) 
+
+Zermas, Morellas, Mulla and Papanikolopoulos (2017) use Self-Organizing Map (SOM) to reconstruct the leaf surfaces from 3D point cloud. SOM was introduced by Kohonen Kohonen (1997), this algorithm uses competitive learning where neurons in a 2D lattice adapt their positions in 3D space to match the point cloud geometry, with winning neurons and their neighbors adjusting to capture the leaf surface structure. Given a 2D lattice of neurons with weight vectors 𝐦 𝑖 ∈ ℝ3 for 𝑖 = 1 , ..𝑀 , and input points 𝐱 (𝑡 ) from the point cloud, the algorithm iteratively updates neuron positions. For each input point, the best-matching cell (i.e., winner neuron) 𝑐 is identified based on Euclidean distance: 
+
+𝑐 = 𝑎𝑟𝑔𝑚𝑖𝑛 𝑖 ‖𝐱 (𝑡 ) − 𝐦 𝑖 (𝑡 )‖ (13) The weight vectors are then updated according to: 
+
+𝐦 𝑖 (𝑡 + 1) = 𝐦 𝑖 (𝑡 ) + ℎ𝑐𝑖 (𝑡 )[ 𝐱 (𝑡 ) − 𝑚 𝑖 (𝑡 )] (14) where ℎ𝑐𝑖 (𝑡 ) is the neighborhood kernel function. For neu-rons within the neighborhood 𝑁 𝑐 (𝑡 ) of the winner, the kernel is defined as: 
+
+ℎ𝑐𝑖 (𝑡 ) = 𝛼 (𝑡 ), if 𝑖 ∈ 𝑁 𝑐 (𝑡 ) (15) and ℎ𝑐𝑖 (𝑡 ) = 0 otherwise. More specifically, we used a Gaussian neighborhood kernel. Interestingly, SOM naturally handles varying point densities and accurately captures leaf geometry without requiring the uniform sampling density like BPA algorithm. Although SOM can reconstruct leaf surfaces effectively, their computational complexity hinders deployment in real-time robotic pipeline. We therefore pro-pose a learning based leaf surface reconstruction method that achieves comparable accuracy with significantly improved inference speed that can support real-time robotics applica-tions such as the phenotyping task. 
+
+## 5. Performance of Leaf Surface Reconstruction Methods 
+
+In this section, we evaluate the performance of leaf surface reconstruction methods on real leaf point cloud data.   
+
+> :Preprint submitted to Elsevier Page 5 of 12
+
+Table 2 
+
+Surface reconstruction results for ten Leaves across nine plant species from Crops3d ( 𝐶 3𝐷 ) and Pheno4D ( 𝑃 4𝐷 ) Datasets 
+
+Leaf Point Cloud B-spline NURBS 𝐷 2-spline Delaunay MLS LOESS BPA Poisson SOM 
+
+Cabbage 𝐶 3𝐷 (47K points) 
+
+CPU Time RAM Usage 2519 Unit 2
+
+44.1 S
+
+25.9 MB 
+
+2429 Unit 2
+
+24.2 S
+
+21.9 MB 
+
+2269 Unit 2
+
+6.06 S
+
+53.6 MB 
+
+2518 Unit 2
+
+32.9 S
+
+275.6 MB 
+
+2396 Unit 2
+
+617.6 S
+
+896.9 MB 
+
+2382 Unit 2
+
+34.1 S
+
+277.6 MB 
+
+1628 Unit 2
+
+27.5 S
+
+186.6 MB 
+
+2518 Unit 2
+
+61.9 S
+
+444.9 MB 
+
+1944 Unit 2
+
+779.9 S
+
+2.8 MB 
+
+Cotton 𝐶 3𝐷 (46K points) 
+
+CPU Time RAM Usage 1060 Unit 2
+
+44.1 S
+
+26.1 MB 
+
+630 Unit 2
+
+24.2 S
+
+22.1 MB 
+
+560 Unit 2
+
+6.4 S
+
+54.1 MB 
+
+2090 Unit 2
+
+31.4 S
+
+264.7 MB 
+
+620 Unit 2
+
+627.2 S
+
+803.9 MB 
+
+1860 Unit 2
+
+32.3 S
+
+266.7 MB 
+
+530 Unit 2
+
+17.2 S
+
+56.0 MB 
+
+730 Unit 2
+
+45.58 S
+
+337.5 MB 
+
+447 Unit 2
+
+711.8 S
+
+2.0 MB 
+
+Maize 𝐶 3𝐷 (43K points) 
+
+CPU Time RAM Usage 256961.4 Unit 2
+
+48.4 S
+
+28.2 MB 
+
+150150.1 Unit 2
+
+26.8 S
+
+24.5 MB 
+
+8265.9 Unit 2
+
+5.6 S
+
+43.9 MB 
+
+25028.6 Unit 2
+
+30.4 S
+
+253.6 MB 
+
+126076.1 Unit 2
+
+841.5 S
+
+1918.4 MB 
+
+14899.5 Unit 2
+
+30.0 S
+
+255.5 MB 
+
+3233.7 Unit 2
+
+22.5 S
+
+160.2 MB 
+
+5357.2 Unit 2
+
+41.8 S
+
+313.329 MB 
+
+3148 Unit 2
+
+662.9 S
+
+2.8 MB 
+
+Maize 𝑃 4𝐷 (156K points) 
+
+CPU Time RAM Usage 612.2 Unit 2
+
+47.7 S
+
+60.0 MB 
+
+483.3 Unit 2
+
+26.2 S
+
+45.0 MB 
+
+510.0 Unit 2
+
+5.3 S
+
+46.1 MB 
+
+1134.6 Unit 2
+
+107.9 S
+
+903.2 MB 
+
+473.2 Unit 2
+
+7052.3 S
+
+31283.2. MB 
+
+1422.9 Unit 2
+
+110.9 S
+
+910.1 MB 
+
+230.5 Unit 2
+
+48.7 S
+
+153.3 MB 
+
+570.8 Unit 2
+
+78.2 S
+
+546.8 MB 
+
+364.9 Unit 2
+
+2465.3 S
+
+2.1 MB 
+
+Potato 𝐶 3𝐷 (23K points) 
+
+CPU Time RAM Usage 725.3 Unit 2
+
+46.5 S
+
+26.3 MB 
+
+267.7 Unit 2
+
+25.2 S
+
+22.6 MB 
+
+202.9 Unit 2
+
+5.3 S
+
+43.1 MB 
+
+2083.2 Unit 2
+
+15.88 S
+
+133.5 MB 
+
+7881.0 Unit 2
+
+331.2 S
+
+310.4 MB 
+
+1188.4 Unit 2
+
+16.0 S
+
+134.6 MB 
+
+361.4 Unit 2
+
+9.1 S
+
+40.2 MB 
+
+575.0 Unit 2
+
+43.9 S
+
+332.2 MB 
+
+240.2 Unit 2
+
+353.5 S
+
+2.0 MB 
+
+Rapeseed 𝐶 3𝐷 (1K points) 
+
+CPU Time RAM Usage 222.9 Unit 2
+
+42.6 S
+
+22.1 MB 
+
+116.3 Unit 2
+
+21.4 S
+
+18.3 MB 
+
+74.6 Unit 2
+
+2.3 S
+
+38.9 MB 
+
+155.4 Unit 2
+
+1.3 S
+
+10.9 MB 
+
+100.2 Unit 2
+
+23.1 S
+
+11.5 MB 
+
+107.9 Unit 2
+
+1.5 S
+
+11.1 MB 
+
+34.9 Unit 2
+
+1.1 S
+
+3.4 MB 
+
+267.7 Unit 2
+
+5.3 S
+
+36.9 MB 
+
+69.9 Unit 2
+
+25.5 S
+
+1.9 MB 
+
+Rice 𝐶 3𝐷 (0.3K points) 
+
+CPU Time RAM Usage 219.4 Unit 2
+
+44.7 S
+
+24.4 MB 
+
+96.8 Unit 2
+
+25.2 S
+
+20.7 MB 
+
+57.70 Unit 2
+
+2.4 S
+
+40.3 MB 
+
+71.0 Unit 2
+
+0.5 S
+
+3.0 MB 
+
+64.3 Unit 2
+
+4.1 S
+
+3.5 MB 
+
+58.9 Unit 2
+
+0.5 S
+
+3.0 MB 
+
+19.3 Unit 2
+
+0.3 S
+
+1.9 MB 
+
+157.1 Unit 2
+
+1.8 S
+
+10.3 MB 
+
+37.8 Unit 2
+
+5.2 S
+
+2.2 MB 
+
+Tomato 𝐶 3𝐷 (8K points) 
+
+CPU Time RAM Usage 168.4 Unit 2
+
+44.4 S
+
+24.4 MB 
+
+108.5 Unit 2
+
+23.3 S
+
+20.7 MB 
+
+101.6 Unit 2
+
+5.0 S
+
+41.5 MB 
+
+237.6 Unit 2
+
+6.1 S
+
+50.7 MB 
+
+109.6 Unit 2
+
+89.4 S
+
+51.9 MB 
+
+164.5 Unit 2
+
+6.2 S
+
+51.0 MB 
+
+53.3 Unit 2
+
+2.6 S
+
+8.4 MB 
+
+165.5 Unit 2
+
+13.4 S
+
+97.3 MB 
+
+79.9 Unit 2
+
+132.7 S
+
+2.2 MB 
+
+Tomato 𝑃 4𝐷 (38K points) 
+
+CPU Time RAM Usage 240.4 Unit 2
+
+46.9 S
+
+24.3 MB 
+
+165.9 Unit 2
+
+23.0 S
+
+20.6 MB 
+
+164.2 Unit 2
+
+5.15 S
+
+42.2 MB 
+
+231.7 Unit 2
+
+26.5 S
+
+220.8 MB 
+
+164.5 Unit 2
+
+685.5 S
+
+1167.5 MB 
+
+241.4 Unit 2
+
+28.3 S
+
+222.5 MB 
+
+55.7 Unit 2
+
+9.27 S
+
+39.2 MB 
+
+178.4 Unit 2
+
+66.5 S
+
+490.4 MB 
+
+116.4 Unit 2
+
+654.6 S
+
+2.2 MB 
+
+Wheat 𝐶 3𝐷 (2K points) 
+
+CPU Time RAM Usage 10209.7 Unit 2
+
+187.7 S
+
+13.1 MB 
+
+5731.1 Unit 2
+
+88.3 S
+
+14.5 MB 
+
+811.9 Unit 2
+
+11.9 S
+
+0.8 MB 
+
+1767.9 Unit 2
+
+2.2 S
+
+17.3 MB 
+
+9380.9 Unit 2
+
+28.7 S
+
+18.3 MB 
+
+1263.6 Unit 2
+
+2.1 S
+
+17.4 MB 
+
+227.0 Unit 2
+
+1.1. S
+
+6.3 MB 
+
+3637.4 Unit 2
+
+8.3 S
+
+60.7 MB 
+
+378.4 Unit 2
+
+42.9 S
+
+2.1 MB 
+
+: Preprint submitted to Elsevier Page 6 of 12 We first describe the dataset preparation and then describe the implementation details for each method. Next, we report the results we obtain in our experiments. 
+
+5.1. Dataset Preparation 
+
+We extract leaf point cloud samples for tomato and maize plants from Pheno4d Schunck, Magistri, Rosu, Cornelißen, Chebrolu, Paulus, Léon, Behnke, Stachniss, Kuhlmann et al. (2021) dataset, which we denote as 𝑃 4𝐷 . Pheno4D pro-vides high-resolution point cloud for 3D plant phenotyping, which was collected in controlled greenhouse environments using structured-light RGB-D sensors. The dataset includes detail annotation at both leaf and plant level. We manually segment leaf point clouds of eight plants (cabbage, cot-ton, maize, potato, rapeseed, rice, tomato, and wheat) from Crops3D Zhu, Zhai, Ren, Xie, Du, He, Cui, Wang, Ye, Wang et al. (2024), which we represent as 𝐶 3𝐷 . Compared to Pheno4D, Crops3D is a real-world 3D point cloud dataset designed for agricultural phenotyping. It provides plants 3D point clouds constructed from multiple methods including LiDAR, structural light, and multi-view stereo reconstruc-tion under natural field conditions. However, this dataset do not provide high resolution point cloud similar to Pheno4D. The publicly available LAST-STRAW dataset contains 28 annotated strawberry point clouds James et al. (2024). There are nearly a million data points available for these plant point clouds. These point clouds were constructed from two different plants over 11 weeks. However, the trifoliate structure of the clusters of strawberry leaves makes leaf reconstruction much more challenging. So, we manually segment the strawberry leaf cluster using CloudCompare, which allows us to extract 893 individual leaves (i.e., leaflets) from annotated leaf clusters, which we denote as   .1
+
+Accurate leaf-surface reconstruction requires reliable leaf segmentation, and this manual process provides high-quality leaf point cloud for our analysis. 
+
+5.2. Implementation Details 
+
+We implement all nine surface reconstruction methods in Python. We first denoise each point cloud using statistical outlier removal and rotate it into a PCA-aligned frame so that the leaf lies flat in the 𝑢𝑣 −plane Santos et al. (2014). We implement B-spline interpolation and NURBS using geomdl 
+
+Bingol and Krishnamurthy (2019) and, resampling the point cloud onto a 40 × 40 parametric grid before surface fitting. Since both methods operate on a rectangular parametric grid that extends beyond the actual leaf boundary, we fit a B-spline trim curve to restrict area integration within the leaf boundary Flöry and Hofer (2008); Santos et al. (2014). For Delaunay 2.5D, MLS, and LOESS, we follow the approach described in the literature Zhu et al. (2018). We project the PCA-rotated point cloud to the 𝑢𝑣 -plane, apply each method independently, apply Delaunay triangulation to the resulting 𝑢𝑣 point locations, and construct TriangleMesh using Open3D with the 3D coordinates. We implement BPA and Poisson surface reconstruction methods using Open3D 
+
+> 1https://www.cloudcompare.org/
+
+and estimate surface normals. For BPA, the ball radius is set adaptively as a multiple of the mean nearest neighbor distance. For Poisson, we use octree depth of 9. For the 𝐷 2-spline, we implement a close approximation to the method of Kempthorne et al. (2015). We use Scipy’s thin-plate-spline basis function instead of Hsieh-Clough-Tocher finite element basis function and setting the 𝛼 empirically rather than via GCV - both of which require a custom finite element solver beyond the scope of our comparative study. We avoid center-line parameterization for twisted wheat leaves but do PCA rotation, which is more appropriate for our study. Since none of the above-described reconstruction methods provide native GPU support, we run all nine implementations on CPU using the libraries described above, including our own SOM implementation with a 20×20 lattice (i.e, neuron grid). 
+
+5.3. Leaf Surface Reconstruction Results 
+
+In Figure 1, we show the leaf surface reconstruction re-sults of a randomly selected strawberry leaflet. All paramet-ric methods (B-Spline, NURBS, and 𝐷 2-Spline), all of them generated smoother surfaces. However, 𝐷 2-spline resulted much leaf surface, specifically leaf-tip. B-spline produces spikes for the leaf tip, which is known and expected for this method. Since NURBS use rational weights, it resulted comparatively better than B-Spline. The three methods De-launay, MLS, and LOESS follow the same pipeline but we see smoother surfaces for MLS and LOESS as they applied polynomial interpolation. For MLS and LOESS we can see more triangles than Delaunay. However, LOESS considered the leaf tip points as noise and also much smoother leaf edges. Both Delaunay and MLS connected the triangulated points incorrectly which produce larger surface area error. Among the mesh-based and across all methods, the Poisson reconstructs the most accurate leaf surface. The BPA does mostly accurate but for the leaf tip the ball-radius was not appropriate to reconstruct that part sufficiently accurate. The learning based SOM also better captures the leaf topology. This unsupervised method can produce much better results with increased lattice (i.e, grid) and epochs. Besides, this method is robust to leaf missing points and holes. For all 893 leaves from   , we report the recon-structed surface area and CPU time in Table 3. The Poisson provides most accurate surface area but for increased points it consumes more CPU memory and execution time. Con-sidering Poisson as the benchmark method, we present the percentage deviation (overestimation and underestimation) in reconstructed surface area (per plant) of each methods in Figure 2. Delaunay, LOESS, and MLS exhibits notable overestimation, with MLS showing the largest spikes. B-splines shows very close agreement with overestimation. Other methods show close agreement with underestimation. In Figure 4a, we see SOM requires more CPU time for it’s iterative learning process. However, this method consumes the lowest peak RAM consumption of 79 .3 MB 
+
+(3× lower than D2S). Our obtained ranking is: SOM ≪
+
+LOESS < Delaunay < NURBS < B-Spline < BPA <
+
+Poisson ≪ MLS ⋘ D2S. Moreover, we also show in       
+
+> :Preprint submitted to Elsevier Page 7 of 12 Figure 2: Mean leaf surface area (%) for each plant computed by different methods in Sec. 4 on   dataset using Poisson as benchmark
+> Figure 3: Reconstruction of Trifoliate Strawberry Leaf Clusters
+
+Figure 4b that SOM exhibits the smallest IQR, indicating that variability in leaf point clouds has a limited effect on its peak RAM consumption. In Table 2, we report the leaf surface reconstruction results for eight leaves from Crops3D dataset, these leaf point clouds were constructed from LiDAR, MVS, and structured-light in real-world agricultural environments. So, the number of points in these leaf point clouds is lower than other two datasets, contain noisy or missing points. Under these challenging conditions, SOM demonstrates more con-sistent and robust performance compared to other methods, as evidenced in Table 2. However, we observe a tendency of SOM to underestimate leaf surface area. This limitations can be addressed by increasing the number of SOM training epochs, which improves convergence and enhances surface reconstruction quality, particularly for high-resolution point cloud. Even with fewer iterations, SOM is able to capture the overall leaf topology across most leaves, highlighting its robustness, even though with reduced geometric precision. For broad and flat leaves, specifically cabbage and tomato, all reconstruction methods performed well, pro-duced visually coherent and geometrically consistent sur-faces. Low-resolution leaf point clouds with discontinued, noisy, or missing points, BPA, despite its fragmented and incomplete surface coverage, consistently captured the most geometrically accurate leaf shape after SOM. In these cases, Poisson produced incorrect shapes with extreme overestima-tion of leaf surfaces (for rapeseed, rice, and wheat). How-ever, for maize ( 𝐶 3𝐷 ) with 43K points, Poisson produces the best surface with fine geometric details despite that there were significant missing or discontinued points. MLS failed to reconstruct meaningful surfaces for three of the leaves (maize, potato, wheat), extremely overestimating surfaces, and using most of the available memory during computation. In contrast, LOESS with tri-cube-weight handled disconti-nuity or missing data points more effectively. For robotic platforms that use single board computers (SBCs) such as Raspberry Pi, we find that SOM remains a practical option for leaf surface reconstruction despite its longer processing time, whereas memory-intensive methods become impractical under such constrained computational conditions. For qualitative analysis, we present Figure 3 to com-pare nine surface reconstruction methods applied to a point cloud of trifoliate leaf clusters from LAST-STRAW. We observe that spline-based methods (first column of Figure 3) overestimate the surface and fail to capture the concave regions between the lobes, which results in an overly smooth representation that does not reflect the true geometry. In the second column of the Figure 3, we find that triangulation and fitting-based methods incorrectly connect points that are geometrically far apart or belong to different leaflet surfaces,      
+
+> :Preprint submitted to Elsevier Page 8 of 12 (a) Comparison on mean CPU time per plant across leaf surface reconstruction methods
+> (b) Variability of peak RAM usage across leaf surface reconstruc-tion methods
+> Figure 4: Comparison of Leaf Surface Reconstruction Methods on the   Dataset (a) Mean CPU Time per Plant (b) Variability of Peak RAM Usage (IQR)
+
+creating triangles that fill in regions that should remain open or concave. We observe that BPA, shown in the top right of Figure 3, reconstructs reasonably accurate with a small hole. We find that Poisson reconstruction performs the best overall, as it produces a clean and complete surface that closely follows the natural curvature of the leaf cluster. Lastly, we see that SOM, shown in the bottom right of Figure 3, captures the overall shape adequately but lacks the fine surface detail along edges. 
+
+## 6. Robotic Perception Challenges for Leaf Surface Reconstruction 
+
+In this section, we address the challenges of 3D percep-tion in real-world agricultural environments, which directly affect downstream leaf surface reconstruction tasks. 
+
+6.1. 3D Sensing in Indoor and Complex Agricultural Environment 
+
+Zermas et al. (2017) capture multiview camera images of corn plants, use VisualSFM for 3D point cloud reconstruc-tion, apply Euclidean clustering to segment leaf point clouds, and estimate leaf surface area using Self-Organizing map Kohonen (1997). Wu, Wen, Gou, Lu, Zhang, Zheng, Xiang, Chen and Guo (2022) proposed a platform that reconstructs individual plants using multiview stereo 3D reconstruction. This platform requires the plant to be placed within it, where the fixed camera arms rotate and capture multi-view images. They also minimize the light and wind effects to obtain high-quality images for 3D reconstruction. Then, they estimate phenotypic traits such as plant height estimation and leaf area estimation. Wei, Liu, Chen, Huang, Zhong, Zhang, Sun, Wu, Fan, Ye et al. (2024) use a turntable setup, where they place a plant and rotate the table uniformly. To reduce the impact of natural light on the sensor data, they cover the interior chamber with a black background, LED light strips, and a diffused fabric to provide uniform and stable lighting. Moreover, in our literature review, we found several agricultural robotics works that use ground robots equipped with a robotic arm (i.e., mobile manipulator) to solve the next-best-view (NBV) planning problem for plants or plant parts reconstruction Menon, Zaenker, Dengler and Ben-newitz (2023); Burusa, van Henten and Kootstra (2024b,a); Isaac Jose, Pan, Zaenker, Menon, Houben and Bennewitz (2025); Ci, van Henten, Wang, Burusa and Kootstra (2025). Roy and Isler (2017) proposed an algorithm for apple count-ing in orchards from geometric information of 3D point clouds. However, most 3D reconstruction works are con-ducted in controlled environments and often overlook envi-ronmental factors such as wind and rain, which can cause leaf movements Sampaio, Silva and Marengoni (2021). 
+
+6.2. Real-time Leaf Surface Reconstruction for Ag-robotics 
+
+In this comparative study, we highlight a core trade-off between reconstruction accuracy and practical deployability. Spline-based methods produce smooth surface but rely on computationally expensive iterative fitting and parameteri-zation, limiting real-time use. Mesh-based approaches are more flexible, but suffer from noise sensitivity, high local memory usage, or incomplete reconstruction in sparse re-gions. The SOM offers a structured and smooth surface representation through competitive learning, yet requires lengthy unsupervised training and lacks adaptability in reso-lution. So, there is a need for reconstruction method for real-time deployment.   
+
+> :Preprint submitted to Elsevier Page 9 of 12
+
+Table 3 
+
+Plant-level leaf (leaflet) surface reconstruction results on   dataset 
+
+Poisson BPA B-spline NURBS Delaunay MLS LOESS SOM 𝐷 2-spline Plant ID Area CPU Area CPU Area CPU Area CPU Area CPU Area CPU Area CPU Area CPU Area CPU A.512a 2461.06 0.73 2129.99 0.77 2827.26 8.55 1934.06 2.01 5277.37 0.03 3502.87 29.69 4116.21 0.04 1560.40 69.90 2165.88 2.27 A.519a 3821.52 1.03 2762.05 2.10 4059.52 8.51 2771.82 1.95 9520.69 0.04 3753.34 63.72 5845.22 0.06 2168.87 111.62 3276.19 2.77 A.525a 3922.36 0.90 2842.58 1.91 4524.57 8.52 2568.91 2.02 11967.65 0.04 43986.13 66.07 7813.24 0.06 2210.73 169.98 3284.84 2.50 A.531a 4288.99 1.11 3257.71 2.35 4274.05 8.58 2945.52 2.04 11222.42 0.05 24417.42 87.32 9411.51 0.07 2526.22 129.02 3543.32 2.63 A.608a 5435.24 1.26 4101.89 2.10 6080.32 8.86 3720.21 2.09 15991.70 0.06 32390.72 101.93 11226.12 0.08 3202.18 146.63 4649.28 2.95 A.616a 5378.83 1.19 3971.17 2.13 6635.48 8.61 3602.31 2.05 17612.71 0.06 18670.73 108.77 13615.28 0.08 3070.87 161.02 4644.61 2.97 A.620a 6190.73 1.50 4468.68 4.60 8104.98 9.21 3923.15 2.10 21521.95 0.07 18936.12 134.22 13418.79 0.09 3314.71 164.79 5393.46 2.92 A.623a 4882.19 1.27 4051.48 2.06 6334.37 8.93 3864.36 2.07 13224.15 0.05 36812.88 93.35 12191.04 0.08 3226.56 144.38 4673.72 2.91 A.627a 5643.79 1.27 4225.41 2.65 6114.50 8.54 4052.87 2.08 15415.39 0.06 8825.97 120.00 13068.55 0.09 3327.99 167.56 4899.22 2.97 A.629a 5106.95 1.31 4075.59 2.59 5613.75 8.72 3968.38 2.13 12137.73 0.06 6898.72 105.37 14900.27 0.08 3222.37 144.26 4676.81 2.87 A.707a 5657.77 1.39 3923.68 2.68 6058.78 9.11 3745.51 2.09 14786.38 0.06 5358.13 124.28 13145.06 0.09 3018.20 160.10 4490.70 2.92 A.715a 4880.36 1.12 3775.81 1.91 5653.90 8.54 3796.57 2.05 11104.88 0.05 7602.56 82.56 12728.74 0.07 3018.60 133.90 4368.80 2.94 A.721a 4655.13 1.04 3523.03 2.61 6068.20 8.57 3417.31 2.01 12339.09 0.04 6140.30 81.91 11282.67 0.06 2663.06 119.63 4026.05 2.46 A.729a 3385.25 0.97 2881.13 1.33 4224.97 8.61 2950.89 1.96 6976.35 0.04 4177.62 58.58 8045.13 0.05 2295.17 100.62 3259.85 2.40 B.513a 1674.26 0.72 1466.33 0.32 1828.90 9.01 1443.91 1.99 2309.99 0.02 4269.17 10.75 2415.61 0.03 1209.22 47.40 1546.64 2.15 B.520a 2277.36 0.71 1940.69 0.73 2200.55 8.51 1862.20 2.01 3572.24 0.03 3306.75 23.20 4132.28 0.04 1576.27 63.02 2021.21 2.37 B.526a 2736.64 0.73 2303.64 0.88 2989.23 8.50 2264.43 2.01 4806.75 0.03 5754.96 28.96 4826.97 0.04 1865.47 79.92 2517.95 2.55 B.531a 3185.20 0.77 2878.64 0.64 3587.72 8.46 2837.18 1.98 5211.17 0.03 6955.59 37.24 5918.82 0.05 2351.22 93.18 3166.12 2.82 B.609a 2989.16 0.77 2549.95 0.78 3361.02 8.42 2546.00 1.93 5045.66 0.03 3827.70 34.78 5506.43 0.05 2096.22 86.13 2785.90 2.75 B.617a 3368.48 0.90 2736.92 1.35 4029.50 8.52 2746.96 2.02 6676.29 0.04 4137.31 50.28 6613.92 0.05 2205.60 93.48 3073.58 2.72 B.620a 4106.76 1.00 2846.40 2.05 4439.27 8.58 2809.48 2.07 9567.87 0.04 12465.27 97.22 7767.66 0.06 2259.09 109.71 3283.51 2.74 B.623a 3221.93 0.86 2568.10 1.09 3754.15 8.58 2624.91 2.02 6248.32 0.04 4312.61 45.90 6462.07 0.05 2093.93 92.29 2914.68 2.54 B.627a 3871.59 1.09 2701.88 1.70 4041.71 9.13 2598.94 2.03 9104.24 0.04 6189.23 66.48 6575.18 0.06 2106.66 106.85 3078.48 2.52 B.630a 3862.87 0.96 3224.23 2.73 4468.68 8.49 3063.15 1.99 8636.94 0.04 10872.31 65.92 7679.56 0.06 2509.59 118.37 3458.81 2.77 B.707a 3331.74 0.85 2568.11 1.09 3207.20 8.55 2535.07 1.97 6048.44 0.04 8338.08 48.69 6087.21 0.05 2086.43 94.99 2789.78 2.49 B.715a 3224.92 0.93 2630.94 1.12 3316.47 9.11 2637.86 2.01 5373.12 0.04 2741.20 44.79 5907.51 0.05 2139.84 88.43 2868.32 2.50 B.721a 3341.18 0.85 2625.58 1.34 3724.23 8.56 2710.03 1.99 6134.84 0.03 3603.73 41.15 5899.40 0.05 2124.23 82.50 2947.35 2.49 B.729a 3394.78 0.79 2651.33 1.50 3490.78 8.53 2674.59 1.98 6231.56 0.04 2828.10 45.00 6283.09 0.05 2116.35 100.67 2936.13 2.30 Here, “Area” indicates mean total leaf surface area per plant, while “CPU” denotes mean computation time per plant. 
+
+: Preprint submitted to Elsevier Page 10 of 12 7. Open Challenges and Research Directions 
+
+Despite the progress demonstrated in this study, several important challenges remain that require further investiga-tion on leaf surface reconstruction. All surface reconstruction methods were evaluated on relatively clean point clouds acquired under controlled con-ditions James et al. (2024); Schunck et al. (2021). In real-world agricultural field, data quality often degraded by occlusion from overlapping leaves, wind-induced motion, varying illumination, and sensor specific noise patterns associated with LiDAR, structured light, or stereo imaging systems Li et al. (2025). Robot motion during scanning introduces additional registration errors that compound with sensor noise. A particularly challenging scenario arises in UAV deployments, where downwash effect cause leaves to oscillate and deform dynamically while scanning. Develop-ing reconstruction methods that are robust to such degra-dations, or that explicitly account for sensing uncertainty, remains a key challenge for Ag-robotics applications. A further challenge lies in view planning, as limited viewpoints often lead to incomplete point cloud observations, thereby preventing accurate and complete reconstruction of leaf surfaces Burusa et al. (2024a). A fundamental challenge that underlies all reconstruc-tion methods is the assumption that individual leaves have already been isolated from the full plant point cloud. In practice, leaf segmentation directly conditions leaf surface reconstruction quality. More specifically, the errors at the segmentation stage propagate into the leaf surface recon-struction, which affects phenotyping tasks such leaf area estimation. Zermas et al. (2017) demonstrate this depen-dency in their work on corn plants, where their segmentation approach using Euclidean Clustering and then Skeleton-Kalman-Filer (SKF) tends to over-segment individual leaves into many parts. As a result, the segmentation errors system-atically introduce underestimation of leaf surface area. Later, Masuda (2021) used PointNet++ for semantic segmentation of tomato leaves and estimate leaf area from number of leaf points around the stem. Their method without reconstructing the actual leaf surface geometry produced around 20% error, highlighting the need for accurate leaf surface reconstruc-tion. Therefore, developing jointly learned segmentation and reconstruction pipelines remains a critical open direction for accurate whole-plant leaf area estimation. SOM-based approximations of leaf surfaces may not fully capture the true underlying geometry and micro-details such as leaf veins, which can affect other phenotypic tasks such as water consumption Zhu et al. (2024); Hui et al. (2026). Higher-quality ground truth is difficult to obtain at scale from physical measurements alone. A promising direction is the use of simulation pipelines that generates photorealistic synthetic plants with exact geometric ground truth. Dang, Yilmaz and Cielniak (2025) propose a pipeline for reconstructing 3D plant meshes from monocular video using Neural Radiance Fields (NeRF), providing a route to generate accurate surface meshes that could support training models. Such simulation-to-real pipelines offer a promising avenue, although their transferability to real sensor data remains an open question. Each reconstruction methods performance on edge devices such as NVIDIA Jetson or Raspberry Pi has not yet been systematically evaluated. Such evaluation is necessary before field deployment. 
+
+## 8. Conclusion 
+
+Accurate leaf surface area estimation from 3D point cloud data is a fundamental requirement for precision agri-culture and agricultural robotics, yet no systematic com-parison of reconstruction methods exists to guide method selection for deployment. In this work, we evaluate nine leaf surface reconstruction methods across common datasets and implementation framework, providing comprehensive analysis. Poisson reconstruction provided the most accurate surface for clean and high-resolution point cloud but strug-gled for low-resolution and noisy data. Parametric methods such as B-Spline, NURBS, 𝐷 2-Spline produced smooth sur-faces but failed to capture geometry for complex leaf point cloud data. BPA performed well for noisy data but resulted fragmented surfaces due to inappropriate ball radius. SOM emerged as a strong alternative, offering robust topology capture with the lowest peak RAM consumption, making it well-suited for deployment on resource constrained robotic platforms. Our analysis reveals that parametric surface methods produce smooth surfaces but iterative fitting limits real-time use. Implicit surface methods provide the most accu-rate surfaces, but they are computationally expensive for high-resolution point cloud data. No existing method si-multaneously satisfies the accuracy, speed, and deployment constraints required for on-device inference on agricultural robots. This work contributes a systematic evaluation frame-work for leaf surface reconstruction for real-time deploy-ment. Our future work will address generalization, robust-ness to occlusion and sensor noise in agricultural field con-ditions. 
+
+## CRediT authorship contribution statement 
+
+Arif Ahmed: Methodology, Software, Investigation, Vi-sualization, Writing - Original Draft. Parikshit Maini: Con-ceptualization, Methodology, Writing - Review & Editing, Supervision, Funding acquisition. 
+
+## References      
+
+> Ahmed, A., Agarwal, R., Srikar, G., Rose, N., Maini, P., 2025. Saral-bot: Autonomous robot for strawberry plant care. arXiv preprint arXiv:2506.06798 . Ando, R., Ozasa, Y., Guo, W., 2021. Robust surface reconstruction of plant leaves from 3d point clouds. Plant Phenomics . Bernardini, F., Mittleman, J., Rushmeier, H., Silva, C., Taubin, G., 2002. The ball-pivoting algorithm for surface reconstruction. IEEE transac-tions on visualization and computer graphics 5, 349–359. Bingol, O.R., Krishnamurthy, A., 2019. NURBS-Python: An open-source object-oriented NURBS modeling framework in Python. SoftwareX 9, 85–94. doi: https://doi.org/10.1016/j.softx.2018.12.005 .
+> :Preprint submitted to Elsevier Page 11 of 12
+
+Burusa, A.K., van Henten, E.J., Kootstra, G., 2024a. Attention-driven next-best-view planning for efficient reconstruction of plants and targeted plant parts. Biosystems Engineering 246, 248–262. Burusa, A.K., van Henten, E.J., Kootstra, G., 2024b. Gradient-based local next-best-view planning for improved perception of targeted plant nodes, in: 2024 IEEE International Conference on Robotics and Automation (ICRA), IEEE. pp. 15854–15860. Ci, J., van Henten, E.J., Wang, X., Burusa, A.K., Kootstra, G., 2025. Ssl-nbv: A self-supervised-learning-based next-best-view algorithm for efficient 3d plant reconstruction by a robot. Computers and Electronics in Agriculture 233, 110121. Cleveland, W.S., Devlin, S.J., 1988. Locally weighted regression: an approach to regression analysis by local fitting. Journal of the American statistical association 83, 596–610. Dang, R., Yilmaz, A., Cielniak, G., 2025. Plant2sim3d: From real plants to simulated worlds via video-driven 3d mesh generation . De Berg, M., Cheong, O., Van Kreveld, M., Overmars, M., 2008. Compu-tational geometry: algorithms and applications. Springer. Dimitrov, A., Gu, R., Golparvar-Fard, M., 2016. Non-uniform b-spline surface fitting from unordered 3d point clouds for as-built modeling. Computer-Aided Civil and Infrastructure Engineering 31, 483–498. Dorr, G.J., Kempthorne, D.M., Mayo, L.C., Forster, W.A., Zabkiewicz, J.A., McCue, S.W., Belward, J.A., Turner, I.W., Hanan, J., 2014. Towards a model of spray–canopy interactions: interception, shatter, bounce and retention of droplets on horizontal leaves. Ecological Modelling 290, 94–101. Field, D.A., 1988. Laplacian smoothing and delaunay triangulations. Communications in applied numerical methods 4, 709–712. Fleishman, S., Cohen-Or, D., Silva, C.T., 2005. Robust moving least-squares fitting with sharp features. ACM transactions on graphics (TOG) 24, 544–552. Flöry, S., Hofer, M., 2008. Constrained curve fitting on manifolds. Computer-Aided Design 40, 25–34. Hui, Z., He, Y., Jin, S., Chen, W., He, H., Ziggah, Y.Y., 2026. Leaflods: A self-adaptive 3-d leaf modeling with enhancing level of details expres-sion. Computers and Electronics in Agriculture 243, 111377. Isaac Jose, A., Pan, S., Zaenker, T., Menon, R., Houben, S., Bennewitz, M., 2025. GO-VMP: Global optimization for view motion planning in fruit mapping, in: IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). James, K.M.F., Heiwolt, K., Sargent, D.J., Cielniak, G., 2024. Lin-coln’s Annotated Spatio-Temporal Strawberry Dataset (LAST-Straw). 
+
+> arXiv:2403.00566
+
+.Kazhdan, M., Bolitho, M., Hoppe, H., 2006. Poisson surface reconstruction, in: Proceedings of the fourth Eurographics symposium on Geometry processing. Kempthorne, D.M., Turner, I.W., Belward, J.A., McCue, S.W., Barry, M., Young, J., Dorr, G.J., Hanan, J., Zabkiewicz, J.A., 2015. Surface re-construction of wheat leaf morphology from three-dimensional scanned data. Functional Plant Biology 42, 444–451. Kohonen, T., 1997. Exploration of very large databases by self-organizing maps, in: Proceedings of international conference on neural networks (icnn’97), IEEE. pp. PL1–PL6. Li, Y., Liang, Z., Liu, B., Yin, L., Wan, F., Qian, W., Qiao, X., 2025. Ap-plications of 3d reconstruction techniques in crop canopy phenotyping: A review. Agronomy 15. Lim, S.P., Haron, H., 2014. Surface reconstruction techniques: a review. Artificial Intelligence Review 42, 59–78. Loch, B.I., Belward, J., Hanan, J., 2005. Application of surface fitting techniques for the representation of leaf surfaces . Masuda, T., 2021. Leaf area estimation by semantic segmentation of point cloud of tomato plants, in: Proceedings of the IEEE/CVF International Conference on Computer Vision, pp. 1381–1389. Mayo, L.C., McCue, S.W., Moroney, T.J., Forster, W.A., Kempthorne, D.M., Belward, J.A., Turner, I.W., 2015. Simulating droplet motion on virtual leaf surfaces. Royal Society open science 2. Menon, R., Zaenker, T., Dengler, N., Bennewitz, M., 2023. Nbv-sc: Next best view planning based on shape completion for fruit mapping and re-construction, in: 2023 IEEE/RSJ international conference on intelligent robots and systems (IROS), IEEE. pp. 4197–4203. Piegl, L., Tiller, W., 2012. The NURBS book. Springer Science & Business Media. Quan, L., Tan, P., Zeng, G., Yuan, L., Wang, J., Kang, S.B., 2006. Image-based plant modeling, in: ACM Siggraph 2006 Papers, pp. 599–604. Roy, P., Isler, V., 2017. Active view planning for counting apples in orchards, in: 2017 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), IEEE. pp. 6027–6032. Sampaio, G.S., Silva, L.A., Marengoni, M., 2021. 3d reconstruction of non-rigid plants and sensor data fusion for agriculture phenotyping. Sensors 21, 4115. Santos, T.T., Koenigkan, L.V., Barbedo, J.G.A., Rodrigues, G.C., 2014. 3d plant modeling: localization, mapping and segmentation for plant phenotyping using a single hand-held camera, in: European Conference on Computer Vision, Springer. pp. 247–263. Schunck, D., Magistri, F., Rosu, R.A., Cornelißen, A., Chebrolu, N., Paulus, S., Léon, J., Behnke, S., Stachniss, C., Kuhlmann, H., et al., 2021. Pheno4d: A spatio-temporal dataset of maize and tomato plant point clouds for phenotyping and advanced plant analysis. Plos one 16, e0256340. Stausberg, L., Jost, B., Klingbeil, L., Kuhlmann, H., 2024. A 3d surface reconstruction pipeline for plant phenotyping. Remote Sensing 16, 4720. Wang, L., Lu, L., Jiang, N., 2011. A study of leaf modeling technology based on morphological features. Mathematical and computer modelling 54, 1107–1114. Wang, X., Li, L., Chai, W., 2013. Geometric modeling of broad-leaf plants leaf based on b-spline. Mathematical and computer Modelling 58, 564– 572. Wei, K., Liu, S., Chen, Q., Huang, S., Zhong, M., Zhang, J., Sun, H., Wu, K., Fan, S., Ye, Z., et al., 2024. Fast multi-view 3d reconstruction of seedlings based on automatic viewpoint planning. Computers and Electronics in Agriculture 218, 108708. Wu, S., Wen, W., Gou, W., Lu, X., Zhang, W., Zheng, C., Xiang, Z., Chen, L., Guo, X., 2022. A miniaturized phenotyping platform for individual plants using multi-view stereo 3d reconstruction. Frontiers in plant science 13, 897746. Wu, W., Hu, Y., Lu, Y., 2021. Parametric surface modelling for tea leaf point cloud based on non-uniform rational basis spline technique. Sensors 21, 1304. Zermas, D., Morellas, V., Mulla, D., Papanikolopoulos, N., 2017. Estimat-ing the leaf area index of crops through the evaluation of 3d models, in: 2017 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), IEEE. pp. 6155–6162. Zermas, D., Morellas, V., Mulla, D., Papanikolopoulos, N., 2020. 3d model processing for high throughput phenotype extraction–the case of corn. Computers and Electronics in Agriculture 172, 105047. Zhao, H.K., Osher, S., Fedkiw, R., 2001. Fast surface reconstruction using the level set method, in: 1st IEEE Workshop on Variational and Level Set Methods, pp. 194–202. Zhu, F., Thapa, S., Gao, T., Ge, Y., Walia, H., Yu, H., 2018. 3d recon-struction of plant leaves for high-throughput phenotyping, in: 2018 IEEE International Conference on Big Data (Big Data), IEEE. pp. 4285–4293. Zhu, J., Zhai, R., Ren, H., Xie, K., Du, A., He, X., Cui, C., Wang, Y., Ye, J., Wang, J., et al., 2024. Crops3d: a diverse 3d crop dataset for realistic perception and segmentation toward agricultural applications. Scientific Data 11, 1438. 
+
+: Preprint submitted to Elsevier Page 12 of 12
