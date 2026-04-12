@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.07574v1/fig-001.webp",
+      "caption": "Figure 2: Difference of the Gaussians [14] is computed by subtracting the scale-space representation of an input image at different levels of the Gaussian blurring resulting in a pyramid of images, which is utilized for detecting the scale-invariant keypoints.",
+      "page": 6,
+      "index": 1,
+      "width": 715,
+      "height": 379
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07574v1/fig-002.webp",
+      "caption": "Figure 4: Keypoint matches with the Brute Force. Initial keypoint correspondences between two images using a Brute Force Matcher on SIFT descriptors, including outliers. Images are retrieved by utilizing the Google Maps Static API [1].",
+      "page": 11,
+      "index": 2,
+      "width": 715,
+      "height": 346
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07574v1/fig-003.webp",
+      "caption": "Table 1: Comparison of the SIFT and ORB methods based on the matching accuracy measured by inlier correspondences, in %. The number next to each method indicates the number of keypoints extracted per image.",
+      "page": 15,
+      "index": 3,
+      "width": 769,
+      "height": 314
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07574v1/fig-004.webp",
+      "caption": "Figure 1: Satellite Image Dataset. The images are sampled such that the neighbouring images have overlapping regions, enable evaluation of the image matching and alignment algorithms. A collection of the satellite images is retrieved by utilizing the Google Maps Static API [1].",
+      "page": 3,
+      "index": 4,
+      "width": 735,
+      "height": 235
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07574v1/fig-005.webp",
+      "caption": "Figure 3: The FAST feature detection [4]. As example, the Bresenham circle of the radius 3 with the center at C is presented. The highlighted squares are the pixels adopted in the feature detection.",
+      "page": 8,
+      "index": 5,
+      "width": 602,
+      "height": 296
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07574v1/fig-006.webp",
+      "caption": "Figure 5: The keypoint matches between two images after applying the RANSAC filtering. The RANSAC rejects outliers and retains only geometrically consistent matches (inliers), leading to a much cleaner and structurally meaningful correspondence set. Images are retrieved by utilizing the Google Maps Static API [1].",
+      "page": 12,
+      "index": 6,
+      "width": 715,
+      "height": 343
+    }
+  ]
+}

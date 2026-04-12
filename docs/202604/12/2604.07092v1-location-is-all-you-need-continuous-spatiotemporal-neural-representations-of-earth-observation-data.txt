@@ -1,0 +1,419 @@
+Title: Location Is All You Need: Continuous Spatiotemporal Neural Representations of Earth Observation Data
+
+URL Source: https://arxiv.org/pdf/2604.07092v1
+
+Published Time: Thu, 09 Apr 2026 01:22:41 GMT
+
+Number of Pages: 18
+
+Markdown Content:
+# Location Is All You Need: Continuous Spatiotemporal Neural Representations of Earth Observation Data 
+
+## Mojgan Madadikhaljan 1 * Jonathan Prexl 1 Isabelle Wittmann 2
+
+## Conrad M Albrecht 3 Michael Schmitt 11University of the Bundeswehr Munich, Germany 
+
+> 2
+
+## IBM Research – Europe 3Columbia University, USA 
+
+## Abstract 
+
+In this work, we present LIANet ( Location Is All You Need Net work), a coordinate-based neural representation that models multi-temporal spaceborne Earth Observation (EO) data for a given region of interest as a continuous spa-tiotemporal neural field. Given only spatial and temporal coordinates, LIANet reconstructs the corresponding satel-lite imagery. Once pretrained, this neural representation can be adapted to various EO downstream tasks, such as semantic segmentation or pixel-wise regression, impor-tantly, without requiring access to the original satellite data. LIANet intends to serve as a user-friendly alterna-tive to Geospatial Foundation Models (GFMs) by elimi-nating the overhead of data access and preprocessing for end-users and enabling fine-tuning solely based on labels. We demonstrate the pretraining of LIANet across target ar-eas of varying sizes and show that fine-tuning it for down-stream tasks achieves competitive performance compared to training from scratch or using established GFMs. The source code and datasets are publicly available at https: //github.com/mojganmadadi/LIANet/tree/ v1.0.1 .
+
+## 1. Introduction 
+
+EO data provide a dynamic and global record of our planet, forming the basis for many relevant applications such as cli-mate monitoring, ecosystem management, agriculture, and disaster response [24, 29, 56]. The continuous growth of satellite constellations, sensor types, and the increase in re-visit frequencies have led to a growth in both the volume and diversity of EO data use cases [5, 62]. However, this in-crease in data volume and complexity makes the utilization of such data increasingly difficult for end-users, especially those from non-EO related disciplines. To tackle this chal-
+
+> *Corresponding author: mojgan.madadikhaljan@unibw.de
+
+Figure 1. Comparison of model performance as a function of the number of tunable parameters for two pixel-wise classifica-tion tasks. A classical UNet architecture (trained from scratch), as well as three commonly applied FMs (with varying parameter count, depending on fine-tuning scheme), serve as a baseline. Our approach, LIANet , achieves a high performance with minimal tun-able parameters. 
+
+lenge, the EO community has started following the trend seen in language, vision, and multimodal deep learning re-search by transitioning toward the use of Foundation Mod-els (FMs). Here, self-supervised pretraining on large-scale datasets enables the models to learn general-purpose repre-sentations that can be efficiently adapted to a wide range of downstream tasks with minimal supervision [57, 61]. This paradigm further empowers end-users to operate directly at the embedding level by utilizing pretrained encoder net-works on mono-temporal, multi-temporal, or even multi-modal EO data [4, 7, 21, 22, 27, 60, 63]. In this work, we propose a new paradigm for EO repre-sentation learning: a coordinate-based neural representation that directly models a specific geographic area (in this study, up to ≈ 12 ,000 km 2) as a latent grid inspired by Implicit Neural Representations (INRs) research [12, 38]. In our setup, the model input solely consists of spatio-temporal 
+
+> arXiv:2604.07092v1 [cs.CV] 8 Apr 2026
+
+coordinates (x, y, t ), which are mapped to a representation 
+
+ˆgx,y,t at the corresponding grid position. A decoder net-work D is trained such that it generates the corresponding satellite image patch I at the time of interest. We refer to this generative training procedure I = D(ˆ gx,y,t ) as pretraining 
+
+in the remainder of the manuscript, where details can be found in Sec. 3. Once pretrained, this neural representation of the Earth’s surface parametrized by (x, y, t ) can then be used for data inspection and fine-tuned (by adapting D) for arbitrary downstream tasks, as will be shown in Sec. 4. Our approach offers three main advantages: Firstly, dur-ing fine-tuning, no additional satellite data is required, since the relevant spatiotemporal information has been encoded during the generative pretraining. From an end-user per-spective, this enables a lightweight adaptation workflow for interacting with EO data: given our pretrained model for a region of interest ( e.g ., a country), the user can adapt it to any target task using only a small set of labels, without the need to access the raw data or preprocessing. This paradigm is similar to embedding-based workflows, where represen-tations are precomputed and reused across tasks. However, unlike embedding approaches, our approach preserves di-rect access to the underlying image data, allowing users to view the area at any point in time. Secondly, the continuous-space/time generative objective provides an intrinsic, label-agnostic mechanism to assess the quality of the learned rep-resentations as well as temporal change monitoring within the model itself. As with other self-supervised learning ap-proaches, reconstruction performance in LIANet provides a direct, quantitative measure independent of downstream tasks. This complements standard evaluation protocols, which rely on task-specific benchmarks and are often in-fluenced by dataset characteristics such as label noise, class imbalance, or benchmark biases. Lastly, the design of the multi-resolution latent grid inherently encourages the model to learn spatially continuous representations, reflecting the natural continuity of the Earth’s surface (see Sec. 3), in con-trast to more common strategies that generate patch-wise embeddings (see Sec. 2). It is important to emphasize that one key difference from classical representation learning lies in the hyper-local na-ture of our approach. While traditional pretrained networks are designed for broad global applicability, our model is intentionally designed to produce meaningful embeddings within the region used during pretraining. The hyper-local 
+
+design is particularly suitable for scenarios in which an end user, for example, a governmental agency or regional au-thority, focuses exclusively on environmental monitoring or sustainable development within a specific area of inter-est, such as a municipality or a single country. In such cases, global generalization is often secondary to obtain-ing a highly performant, region-optimized model that can be efficiently adapted to multiple downstream tasks. There-fore, this workflow is most practical when embeddings are generated centrally, for instance by space agencies or other large-scale data providers, and subsequently distributed to regional stakeholders. As demonstrated throughout this manuscript, the advantages of our approach, including in-terpretability, strong downstream performance, and param-eter efficiency, yield substantial benefits. Overall, our workflow and corresponding contributions can be summarized as follows: 1. We pretrain an INR-based network mapping spatio-temporal coordinates to neural representations. Our ap-proach builds on a discrete grid of embedding vectors to model a continuous field of representations that we de-code into corresponding EO data. We will demonstrate the general capabilities by utilizing multi-temporal ob-servations of the multi-spectral satellite Sentinel-2 . Nev-ertheless, more general approaches using multi-satellite data extensions can be implemented similarly. 2. We evaluate the reconstruction quality on multi-temporal observations and demonstrate how the learned represen-tation can be applied for visual inspection. 3. We utilize the pretrained models to perform dense few-shot fine-tuning on five common downstream tasks (two pixel-wise regression and three semantic segmentation tasks) in the main paper, and additionally evaluate on two adapted datasets from the PANGAEA benchmark [35] in the supplementary material. We compare the re-sults against differently sized UNets trained from scratch and three widely used GFMs as baselines. An overview of the results, contextualized by the number of tunable parameters during fine-tuning, is provided in Fig. 1 for two representative downstream applications. 
+
+## 2. Related Works 
+
+We place LIANet in the context of prior work on GFMs, precomputed embeddings, and coordinate-based models, emphasizing the key differences outlined in Tab. 1. 
+
+GFMs. Recent work has introduced large-scale GFMs trained on single-modal [2, 10, 27, 42, 44, 64] and multi-modal EO imagery [1, 7, 16, 19–21, 40, 52, 59, 63], as well as on vision–language datasets [4, 22, 25, 31, 33]. Most adopt masked autoencoding (MAE) [7, 20–22, 42, 44, 48, 59, 63] or contrastive learning [4, 19, 27, 31, 33, 40] as primary pretraining objectives. Others combine both paradigms [16], or utilize a more complex framework, such as mixture-of-experts [1]. While transformer-based archi-tectures dominate among current GFMs, some integrate convolutional or hybrid CNN–ViT designs to improve com-putational efficiency [27, 31, 33]. These models achieve strong performance across diverse downstream tasks, in-cluding spatially dense prediction. However, they require raw imagery and substantial compute at inference. We Table 1. Conceptual comparison of GFMs, precomputed embed-dings, location encoders, and LIANet on key modeling axes.                      
+
+> GFMs Precomputed Embeddings Location Encoders
+> LIANet (ours)
+> No raw imagery at inference ✗✓✓✓
+> Continuous spatio-temporal field ✗✗Spatial only ✓
+> Image reconstruction ✓✗✗✓
+> Dense, high-res downstream tasks ✓Limited ✗✓
+> Hyper-local spatial detail ✗✗✗✓
+
+benchmark against three representative GFMs: TerraMind [22], an any-to-any generative multimodal model, DOFA [63], which adapts a single transformer across sensor types, and Prithvi-EO-2.0 [52], providing large parameter count and spatiotemporal embeddings. 
+
+Precomputed Embeddings and Location Encoders. 
+
+Precomputed embedding products provide aggregated spa-tiotemporal representations derived from foundation mod-els, enabling querying at fixed spatial and temporal resolu-tions without requiring raw imagery [4, 14]. However, they trade flexibility for efficiency: representations are tempo-rally aggregated, do not support continuous interpolation, and do not allow for image reconstruction. Coordinate-based encoders map geographic locations directly to seman-tic features, further reducing data requirements, but remain primarily discriminative and coarse in spatial detail [27, 60]. 
+
+Implicit Neural Representations and Generative Mod-els. A growing line of research focuses on generative models for EO image synthesis based on text or paired im-age inputs [34]. These include diffusion-based models de-signed for synthetic image generation, cross-modal transla-tion, and scene rendering, such as [25, 32, 47, 49, 53, 64]. Despite producing visually realistic and compelling out-puts, their main goal is not to reflect the exact real-world content of a given location but rather the generation of syn-thetic data. INRs model signals as continuous functions and have recently been explored as an effective approach for image compression [11, 18, 50, 51], by learning compact implicit representations of visual scenes. Building on this foundation, several studies have extended INR-based com-pression to EO imagery [6, 30, 45, 65]. Building on this line of research, we extend INR-based modeling to multi-temporal reconstruction, patch-level decoding, and efficient representation of larger spatial areas. 
+
+## 3. Methodology 
+
+This section outlines the design of the network architecture employed to encode spaceborne EO data for a given re-gion, along with the procedure for fine-tuning the pretrained model to an arbitrary downstream task. Note that the terms 
+
+encoder and decoder are used for clarity and do not refer to a classical bottlenecked architecture. Instead, the repre-sentation is distributed across the grid parameters and the CNN, with the full model jointly encoding the region. 
+
+Encoder Stage. In order to encode a target area A, we first define multiple grids Gi with i ∈ { 1, . . . , N grids } at multiple resolution levels Li. Inspired by recent advances in Neural Radiance Fields (NeRFs) [38], which offer high computational efficiency, each of the grids has a corre-sponding table that stores learnable embeddings with fixed length T (number of table entries) and embedding dimen-sion of F . Every node of the grid is assigned to an index in the table via a hashing operation (for a detailed descrip-tion see [38]). The design choices regarding the number of grids, as well as their respective grid spacings, are adapted to the specific characteristics of the EO data used in this work and will be described in detail in the following sec-tion. For reference, Fig. 2 provides a graphical overview of the workflow. For a given point (x, y ) in the target area 
+
+A, we query the indices of the four surrounding nodes from their corresponding table at all resolution levels. This re-sults in four feature vectors per grid Gi. The feature vector at query point (x, y ) is obtained from feature-wise bilin-ear interpolation given the four grid feature vectors. This interpolation step forces the representations to be continu-ous in space, where spatially close points (depending on the specific level Li) are assigned to similar representations, re-flecting the continuous nature of EO data. The results for each grid Gi get concatenated to an embedding for the posi-tion of the overall dimension RNgrids ·F and summed up with a learnable temporal encoding vectors τ t for each acquisi-tion time step t in the dataset, where each τ t is represented as vectors in τ t ∈ RNgrids ·F . We refer to the above steps as the encoder E part of the model, 
+
+E : R3 → RNgrids ·F ,
+
+for which the output for one specific position (x, y, t ) will be denoted as gx,y,t ∈ RNgrids ·F . Since the objective dur-ing pretraining is to reconstruct the corresponding satel-lite image I ∈ RC×W ×H (C: channels, W : width, and 
+
+H: height), the encoder E is queried for all pixels in the corresponding image patch (x + δx, y + δy ) with δx ∈{0, . . . , W } and δy ∈ { 0, . . . , H }1 iteratively, resulting in multiple gx,y,t (one per pixel in the output image) that we    
+
+> 1The steps (δx, δ y)are directly determined by the ground sampling distance of the satellite imagery, described in Sec. 4.
+
+Figure 2. Visualization of the LIANet workflow. Pretraining: The specified (x, y ) coordinates (model input) are used to query learned representations from a hash table by interpolating table entries for the neighboring pixels (blue dots) for the given input position (red dots) for all different resulution grids Gi (in this illustration Ngrids = 3 ) and adding them to the corresponding temporal encoding vector. This process is applied iteratively to all pixels of the target output image and is implemented in a computationally efficient manner [38], leading to a scene representation ˆgx,y,t . A decoder network D reconstructs the underlying satellite image I = D(ˆ gx,y,t ). Fine tuning: In this stage, the final layers of D are adapted to generate labels for an arbitrary downstream task. During fine-tuning, the learned table values and the first few decoder layers are frozen, and no input images are required during this stage. 
+
+reassemble into the image format and denote as ˆgx,y,t ∈
+
+RNgrids ·F ×W ×H , which encodes the full area of the corre-sponding satellite image and is passed to a decoder network, described in the following section. 
+
+Decoder Stage. The resulting latent representation ˆgx,y,t 
+
+is passed to a CNN-based decoder D,
+
+D : RNgrids ·F ×W ×H → RC×W ×H ,
+
+which follows a ResNet–UNet hybrid design [8]. The decoder outputs the reconstructed satellite image I ∈
+
+RC×H×W at position (x, y ) and time t and thus can be pre-trained in a self-supervised fashion by reconstructing the corresponding image. It is important to point out that, un-like typical INR designs that render by repeatedly querying a fully-connected MLP, our method generates I with a sin-gle forward pass of D. This directly exposes the final lay-ers of D as a modifiable module that can be easily adapted to downstream tasks ( e.g ., semantic segmentation or pixel-wise regression). The overall process is summarized in Al-gorithm 1. 
+
+Pretraining and Fine-tuning. During pretraining, ran-dom spatial points within the area of interest A are sampled in each epoch to ensure spatial continuity in the learned la-tent representations. Given the model input (x, y, t ), the de-coder output is trained to match the corresponding satellite image using an L1 loss function. For adapting the pretrained model to an arbitrary down-stream task, we freeze the encoder E containing the corre-sponding learnable table entries as well as the initial layers of the decoder D and modify the final layers of the decoder 
+
+D to match the output format of the specific downstream application. In this fine-tuning stage, no satellite imagery is required, and only (x, y, t ) are the inputs to the model. The fine-tuning can be performed in a few-shot manner using only a small number of labeled samples covering a limited subset of the area A, as will be demonstrated in Sec. 5. For the remainder of the manuscript, we will refer to the proposed model as Location Is All you Need N et work (LIANet ). 
+
+Algorithm 1 LIANet Forward Pass                                            
+
+> Require: Encoder E, Decoder D,(x, y ),(δx, δ y),t
+> 1: Initialize embedding ˆgx,y,t ∈RNgrids ·F×W×H
+> 2: for i= 0 to W−1do
+> 3: for j= 0 to H−1do
+> 4: ˆgx,y,t [: , i, j ]←E(x+iδ x, y +jδ y, t )
+> 5: end for
+> 6: end for
+> 7: I←D(ˆ gx,y,t )▷decoder produces final image
+
+## 4. Experimental Setup 
+
+In this section, we present the details of the pre-training and fine-tuning stages. In addition, we describe the implemen-tation details of the corresponding reference models used later in Sec. 5. 
+
+4.1. Pretraining and Model Settings 
+
+Within this study, we consider three area A sizes, denoted as A0, A+ and A++ for which multispectral satellite data of the Sentinel-2 mission [9] data is acquired at four time points at different seasons from Munich, Germany. The areas are overlapping in the sense that larger areas are an extension of the A0, i.e . A0 ⊂ A + ⊂ A ++ , where A0
+
+covers 2500 k m2, A+ covers 5000 k m2 and A++ covers 
+
+12 ,000 k m2.Generative pre-training is then conducted by collecting about a million random samples I ∈ RC×W ×H per epoch. We grow the number of pretraining epochs linearly with the area of the encoded target area, and two different sizes of the decoder network D are tested and referred to as Dbase 
+
+and Dlarge (or LIANet-Base and LIANet-Large if referred to the complete model setup) with 75 M and 133 M trainable parameters, respectively. The specific number of epochs, as well as all other training settings, can be found in the 
+
+supplementary materials .
+
+Grid Size Settings. All Sentinel-2 channels are resam-pled to a uniform Ground Sampling Distance (GSD) of 10 meters. We fix the patch dimensions to H = W = 128 
+
+for all experiments. Accordingly, the grid dimensions Gi
+
+are defined as follows: The coarsest grid ( G1), with a node spacing of 6,800 meters, contains multiple 128 × 128 image patches. We then define ten additional grids ( Ngrids = 11 in total), each with the node spacing reduced by a factor of two relative to the previous level. The finest grid ( G11 ) thus achieves a node distance below 10 meters, enabling the en-coding of sub-pixel level information. The nested grids are depicted in Fig. 2. The corresponding hash tables that store the learnable latent representations have a fixed size of T = 2 17 entries with an embedding dimension of F = 4 . Hence, querying concatenated embeddings from all 11 grid resolutions leads to an overall representation ˆgx,y,t of the shape R44 ×128 ×128 .This serves as input to CNN-based decoder D that generates image patch I, where I = D(ˆ gx,y,t ) ∈ R12 ×128 ×128 with 
+
+C = 12 for Sentinel-2 .
+
+4.2. Fine-tuning Settings 
+
+To evaluate the generalization capability of our approach, we fine-tune the pretrained models on five diverse down-stream applications. It is important to note that, for a proper evaluation, corresponding labels must be available within the encoded area A. Many existing EO benchmarks are not directly compatible with our framework, as they (i) lack georeferencing, (ii) provide a very small number of samples within a Sentinel-2 tile, (iii) rely on input modalities differ-ing from multispectral Sentinel-2 imagery, or (iv) are not fully open-access for large-scale generative pretraining. We therefore construct our custom datasets to ensure geograph-ically contiguous coverage consistent with our coordinate-based design. Beyond this contiguous setup, we addition-ally evaluate LIANet on adapted versions of two standard-ized PANGAEA benchmark datasets, namely PASTIS [46] and HLS Burn Scars [39]. Due to space constraints, detailed protocols and results are reported in Sec. 10 of supplemen-tary material . The custom dataset is generated using com-mon EO applications [3, 13, 36, 37]. To create the dataset, we pair the Sentinel-2 data with labels for land-cover classification [3] (six different land cover classes in our target area provided for every season), canopy height regression [36], dominant leaf type classifi-cation [13] (two leaf type classes plus background) as well as data for building footprints [37] which will be used in a regression type setup (by predicting pixel-wise percent-age of building coverage as suggested in [15]) as well as a binary segmentation task. It should be noted that for the building footprint semantic segmentation task, we employ further upsampling layers to predict the building mask on a 
+
+2.5 m scale (tighter than the native resolution of the sensor) as done in [41, 43]. Since the baselines described in the next paragraph have no native capabilities to predict beyond the native sensor resolution, we will use a limited set of base-lines for this task only. It is to be mentioned that only land cover classes [3] are provided for each timestep individu-ally, whereas the rest are available as a single label for all temporal spans. A limited portion of A0 (500 km 2) is used for fine-tuning, corresponding to roughly 20% , 10% , and 4% of A0,
+
+A+, and A++ , respectively, whereas the remaining area is used for validation. We will additionally provide further ab-lation experiments regarding the amount (area) of labeled data and the corresponding model performance. In order to adapt the model output to the corresponding downstream task, we drop the last convolutional layer of the decoding network D and introduce six trainable con-volutional layers (the rest of D as well as all trainable pa-rameters in E are frozen), leading to a parameter-efficient fine-tuning setting with only 0.5 M trainable parameters. The corresponding loss functions, learning rates, and number of epochs can be found in Sec. 9 of supplemen-tary materials . The used Sentinel-2 images as well as all corresponding labels will be available together with the full code for model pretraining and fine-tuning within the project repository. Figure 3. Left plot shows the reconstruction performance of LIANet-Base and LIANet-Large on A0, A+, and A++ measured by Structural Similarity (SSIM) of the reconstructed images as a function of pretraining step. The images on the right show a sample ground truth image (first row), reconstruction images of LIANet-Base (second row) and LIANet-Large (third row) from two different seasons. The enhanced reconstruction capability of LIANet-Large compared to LIANet-Base becomes evident in regions with high-frequency features, such as the highlighted areas A and B. Note that the images produced on the right are the result of four adjacent and non-overlapping 128 × 128 
+
+> patches stitched together horizontally, where, due to effective continuous reconstruction, no patching effect appears, enabling larger scene reconstructions without any undesired artifacts.
+
+4.3. Baselines 
+
+We compare the performance of our models to two different-sized task-specific UNet baselines (trained from scratch) and three widely used GFMs, namely: TerraMind-Base , Prithvi v2-300 , and DOFA-Large . Each FM is adapted to the downstream task by coupling its correspond-ing encoder with a task-specific decoder [17]. We evaluate three different fine-tuning settings: • Full fine-tuning: both encoder and decoder parameters are updated. • Frozen-backbone fine-tuning: the encoder remains frozen and only the decoder is trained. • Embedding setup: only the final-layer embeddings are extracted from the backbone, and a lightweight fully-convolutional (FCN) decoder is trained on top. Both the full and frozen setups employ a standard UNet de-coder that operates on four intermediate and final feature representations, while the embedding setup uses only the last-layer embedding and a compact FCN decoder. Conse-quently, the embedding configuration has the fewest train-able parameters (below 0.5 M) and represents a practical embedding workflow, where final-layer embeddings can be extracted once and shared as data representations. All FMs operate on multispectral optical inputs. Specifi-cally, TerraMind-Base and DOFA-Large (ViT-Patch16-224) 
+
+use all available Sentinel-2 bands, while Prithvi v2-300 uses the subset of Sentinel-2 bands, matching the HLS [52] (orig-inal pretraining data distribution) bands, as input. The cor-responding loss functions, learning rates, and the number of epochs for fine-tuning all corresponding benchmark FMs can be found in the Sec. 9 of supplementary materials .
+
+## 5. Results 
+
+This section details our empirical findings. We begin by evaluating reconstruction quality and report the perfor-mance of adapted pretrainings to several downstream tasks. Finally, we present the benchmarks and experiments used to investigate the label efficiency of our approach. 
+
+Pretraining. Figure 3 provides a visual overview of the model’s generative capabilities when tasked with recon-structing the underlying data at a specific geographic lo-cation (x, y, t ) for a range of acquisition times t (differ-ent seasons). The figure compares results obtained using two decoder configurations of different capacity, namely 
+
+Dbase and Dlarge , where the latter results in a sharper ap-pearing reconstruction for high-frequency features (com-pare marked areas A and B in Fig. 3). The generated sam-ples also show that the temporal embeddings are effective in capturing the changes across different seasons. In addi-tion to the qualitative reconstructions, Fig. 3 also reports the corresponding structural similarity index (SSIM) as a func-tion of the pretraining epochs. Overall, the results highlight two key factors that influence reconstruction quality dur-ing pretraining: the model size and the spatial extent of the encoded area A. Increasing the decoder size consistently improves reconstruction quality, while conversely, enlarg-ing the encoded spatial area leads to a degradation in re-construction quality. An extended analysis with respect to reconstruction quality investigated with tools from the im-age compression literature can be found in the Sec. 11 of 
+
+supplementary materials .Figure 4. Performance across five downstream tasks as a func-tion of the encoded area of interest A and as a function of the two model sizes. For regression tasks, we report 1 − MAE to high-light the overall trend more clearly. Note that the regression task of building footprints reported in yellow is the prediction of the percentage of the buildings present in each pixel. 
+
+Downstream Task Performance. Before discussing the results, it is important to clarify the scope of the proposed method. LIANet adopts a hyper-local design, focusing solely on a target area rather than generalizing to unseen re-gions, which is the main objective of GFMs. Accordingly, the benchmarking results should be interpreted in this con-text: LIANet is region-specific and provides an alternative EO representation learning approach, whereas FMs target global applicability. These experiments aim to show that, within its intended setting, LIANet achieves strong perfor-mance compared to state-of-the-art methods. The results for adapting the pretrained LIANet models to the five downstream tasks can be found in Tab. 2 (for the three pixel-wise classification tasks and the two regression tasks), together with the three FM baselines as well as from-scratch-training of the UNet [23] and Micro UNet with re-duced tunable parameters. Tab. 2 contains the results of the experiments on A0. For results on A+ and A++ , as well as visual examples, see Sec. 9 in supplementary materials .Comparing the results of Tab. 2, LIANet consistently per-forms within the top three approaches across all metrics (for both Dbase and Dlarge ), even with the relatively small tun-able parameter count of 0.5 M in the fine-tuning. Compar-ing this to the FMs, one can observe a significant perfor-mance gain of the hyper-local approach of LIANet when choosing a comparable parameter count ( Embedding con-figuration) and even a performance gain when comparing against the fully fine-tuned ( ≈ 100 M parameters) setup. 
+
+Ablation: Scaling of the Encoded Area. Figure 4 com-pares Intersection over Union (IoU) for pixel-wise classifi-cation tasks and Mean Absolute Error (MAE) for regression tasks of both LIANet model sizes and all encoded areas. The results reveal a consistent trend of decreasing downstream performance with increasing area size, and a slight improve-ment in performance with larger model capacity, mirroring the reconstruction quality patterns observed in Fig. 3. The numerical results underlying Fig. 4 are provided in Tab. 2 and in the Tab. 4 and Tab. 6 within Sec. 9 of the supple-mentary materials .
+
+## 6. Discussion 
+
+Downstream Task Performance. Across the evaluated downstream classification tasks, the proposed hyper-local LIANet is consistently competitive with the best baseline methods, despite the latter using significantly fewer param-eters (see Tab. 2). To verify that these findings are not lim-ited to our custom dataset, we further evaluate LIANet on two adapted PANGAEA benchmark datasets (see Sec. 10 in the supplementary material). Under these independent benchmark protocols, LIANet maintains competitive per-formance compared to established GFMs. These obser-vations align with recent EO benchmarks, which demon-strate that training from scratch can remain competitive with large-scale pretrained GFMs (see [22, 35]). For the regres-sion task, LIANet outperforms both the evaluated GFMs and Micro UNet. Overall, light-weight fine-tuning of LIANet 
+
+achieves performance comparable to full from-scratch train-ing and surpasses the evaluated GFM baselines, while elim-inating the need for end users to access and preprocess data. The primary limitation of LIANet lies in its spatial scope: it operates exclusively within the geographic region in which it was originally encoded and does not general-ize to other areas. As discussed earlier, this restriction is only justified in scenarios where pretraining is conducted centrally, and the resulting region-specific models are dis-tributed to a broad range of end users. 
+
+Model Size, Area Size, and Label Efficiency. Two de-coder configurations are evaluated: a base-sized decoder (Dbase ) and a larger variant ( Dlarge ), comprising 75 M and 
+
+133 M tunable parameters, respectively. Although the larger decoder yields visibly improved reconstruction quality (see Fig. 3), its advantage is only marginal (compare Tab. 2 and Fig. 4). Figure 4 illustrates the effect of increasing the tar-get area A. Both reconstruction quality (see Fig. 3) and downstream task performance (Fig. 4, Tab. 2, and additional tables in Sec. 9 of supplementary material) exhibit a consis-tent trend of decreasing performance as the target area in-creases. As this study is a proof of concept, future research could explore more systematic scaling of model size and extend A from the municipality to the country level. Table 2. (Top) Pixel-wise classification task performance measured with Intersection-over-Union (IoU), Accuracy (Acc), and F1-score (all calculated with macro averaging) along with the tunable parameter counts for the area of interest A0. (Bottom) Regression task performance (Mean Absolute Error (MAE) and Mean Squared Error (MSE)) along with the tunable parameter counts for the area of interest A0. The from-scratch trainings and FMs are evaluated in different configurations with a varying number of tunable parameters. For all metrics reported, the corresponding top three performances are printed bold . Due to the limited number of comparisons, we are not marking any models for the task of building footprint segmentation.                                                                                                                                                    
+
+> Task Model / Setting # Tunable Params (M) IoU ACC F1
+> Dynamic World UNet / Micro UNet 17.3 / 0.49 0.75 / 0.66 0.82 / 0.73 0.84 / 0.74 TerraMind-base (Full / Frozen / Embedding) 102 / 15.5 / 0.39 0.72 /0.71 / 0.66 0.78 / 0.77 / 0.73 0.81 /0.80 / 0.73 Prithvi v2-300 (Full / Frozen / Embedding) 324 / 20.3 / 0.46 0.71 / 0.67 / 0.60 0.77 / 0.74 / 0.68 0.80 / 0.76 / 0.69 DOFA-Large (Full / Frozen / Embedding) 357 / 20.3 / 0.46 0.70 / 0.64 / 0.47 0.76 / 0.71 / 0.54 0.79 / 0.74 / 0.57 LIANet-Base 0.5 0.72 0.82 0.81
+> LIANet-Large 0.5 0.72 0.81 0.81
+> Dominant Leaf Type UNet / Micro UNet 17.3 / 0.49 0.83 / 0.79 0.90 / 0.87 0.90 / 0.88 TerraMind-base (Full / Frozen / Embedding) 102 / 15.5 / 0.39 0.80 / 0.79 / 0.76 0.88 / 0.86 / 0.85 0.89 / 0.87 / 0.86 Prithvi v2-300 (Full / Frozen / Embedding) 324 / 20.3 / 0.46 0.80 / 0.77 / 0.71 0.88 / 0.85 / 0.81 0.89 / 0.86 / 0.82 DOFA-Large (Full / Frozen / Embedding) 357 / 20.3 / 0.46 0.78 / 0.72 / 0.62 0.86 / 0.81 / 0.73 0.87 / 0.83 / 0.74 LIANet-Base 0.5 0.84 0.91 0.91
+> LIANet-Large 0.5 0.84 0.91 0.91
+> Building Footprint Segmentation UNet / Micro UNet 17.3 / 0.49 0.76 / 0.69 0.87 / 0.76 0.85 / 0.78 LIANet-Base 0.5 0.68 0.77 0.77 LIANet-Large 0.5 0.70 0.81 0.79
+> Task Model / Setting # Tunable Params (M) MAE MSE
+> Canopy Height UNet / Micro UNet 17.3 / 0.49 0.053 / 0.072 0.013 / 0.023 TerraMind-base (Full / Frozen / Embedding) 102 / 15.5 / 0.39 0.051 /0.053 / 0.113 0.013 /0.013 / 0.056 Prithvi v2-300 (Full / Frozen / Embedding) 324 / 20.3 / 0.46 0.051 / 0.056 / 0.113 0.012 / 0.015 / 0.056 DOFA-Large (Full / Frozen / Embedding) 357 / 20.3 / 0.46 0.055 / 0.061 / 0.113 0.014 / 0.018 / 0.056 LIANet-Base 0.5 0.052 0.013
+> LIANet-Large 0.5 0.055 0.014
+> Building Density UNet / Micro UNet 17.3 / 0.49 0.018 / 0.024 0.006 / 0.013 TerraMind-base (Full / Frozen / Embedding) 102 / 15.5 / 0.39 0.023 / 0.024 / 0.025 0.009 /0.009 / 0.010 Prithvi v2-300 (Full / Frozen / Embedding) 324 / 20.3 / 0.46 0.022 / 0.024 / 0.029 0.008 /0.009 / 0.011 DOFA-Large (Full / Frozen / Embedding) 357 / 20.3 / 0.46 0.024 / 0.026 / 0.023 0.009 / 0.010 / 0.014 LIANet-Base 0.5 0.022 0.009
+> LIANet-Large 0.5 0.021 0.008
+
+End-User Impact and Future Directions. This manuscript introduced the concept of hyper-local con-tinuous representations of EO data. Similar to embedding-based workflows, our approach can be viewed as aprovider-side abstraction that reduces the need for transfer-ring and preprocessing large volumes of imagery. For end users, this enables adapting a pretrained regional model to downstream tasks without accessing raw data or aligning it with the requirements of large foundation models. While our initial results demonstrate strong performance, scaling and centralized pretraining remain important challenges to establish LIANet as a practical alternative to existing approaches. Future work will focus on analyzing grid configurations, improving temporal representations for smoother transitions over time, and developing efficient update strategies for newly acquired data. We will also conduct a more comprehensive comparison with state-of-the-art embedding-based methods and location encoders. 
+
+## 7. Conclusion 
+
+We introduced LIANet , a coordinate-based neural represen-tation inspired by INRs to learn continuous spatiotemporal embeddings of the Earth’s surface. Pretrained generatively from individual (x, y, t ) coordinates, the model reconstructs multispectral imagery and enables dense few-shot adapta-tion to downstream tasks with minimal tunable parameters. Designed as a provider-side abstraction, LIANet allows end users to fine-tune models for their applications without ac-cessing or preprocessing raw satellite data. Rather than pur-suing global generalization, it serves a different audience: users who require a high-performing, region-specific model that eliminates data preparation overhead while preserving access to the underlying observations through reconstruc-tion. The model remains lightweight, adaptable to diverse downstream tasks, and tailored to a given area and time of interest. Our extensive experiments demonstrate competi-tive performance across seven diverse applications. Future work will scale geographic coverage and temporal depth to further position LIANet as a practical EO system model. Acknowledgments 
+
+This research is partially funded by the Embed2Scale project, co-funded by the EU Horizon Europe programme (Grant Agreement No. 101131841), with support from the Swiss State Secretariat for Education, Research and Inno-vation (SERI) and UK Research and Innovation (UKRI). 
+
+## References 
+
+[1] Hanbo Bi, Yingchao Feng, Boyuan Tong, Mengyu Wang, Haichen Yu, Yongqiang Mao, Hao Chang, Wenhui Diao, Peijin Wang, Yue Yu, et al. RingMoE: Mixture-of-modality-experts multi-modal foundation models for uni-versal remote sensing image interpretation. arXiv preprint arXiv:2504.03166 , 2025. 2 [2] Nassim Ait Ali Braham, Conrad M. Albrecht, Julien Mairal, Jocelyn Chanussot, Yi Wang, and Xiao Xiang Zhu. Spec-tralEarth: Training hyperspectral foundation models at scale. 
+
+IEEE J. Sel. Topics Appl. Earth Observ. Remote Sens. , 18: 16780–16797, 2025. 2 [3] Christopher F. Brown, Steven P. Brumby, Brookie Guzder-Williams, Tanya Birch, Samantha Brooks Hyde, Joseph Mazzariello, Wanda Czerwinski, Valerie J. Pasquarella, Robert Haertel, Simon Ilyushchenko, et al. Dynamic World, near real-time global 10 m land use land cover mapping. Sci-entific Data , 9(1):251, 2022. 5, 1 [4] Christopher F. Brown, Michal R. Kazmierski, Valerie J. Pasquarella, William J. Rucklidge, Masha Samsikova, Chen-hui Zhang, Evan Shelhamer, Estefania Lahera, Olivia Wiles, Simon Ilyushchenko, et al. AlphaEarth founda-tions: An embedding field model for accurate and effi-cient global mapping from sparse label data. arXiv preprint arXiv:2507.22291 , 2025. 1, 2, 3 [5] Simon J. Cantrell, Jeff Clauson, and Cody Anderson. Earth observation remote sensing tools—assessing systems, trends, and characteristics. Technical report, US Geological Survey, 2024. 1 [6] Woojin Cho, Steve Andreas Immanuel, Junhyuk Heo, and Darongsae Kwon. Neural compression for multispectral satellite images. In NeurIPS workshop , 2024. 3 [7] Yezhen Cong, Samar Khanna, Chenlin Meng, Patrick Liu, Erik Rozi, Yutong He, Marshall Burke, David Lobell, and Stefano Ermon. SatMAE: Pre-training transformers for tem-poral and multi-spectral satellite imagery. NeurIPS , 35:197– 211, 2022. 1, 2 [8] Qubvel contributors. segmentation_models.pytorch, 2019–. Accessed 1 August 2025. 4 [9] Matthias Drusch, Umberto Del Bello, Sébastien Carlier, Olivier Colin, Veronica Fernandez, Ferran Gascon, Bianca Hoersch, Claudia Isola, Paolo Laberinti, Philippe Martimort, et al. Sentinel-2: ESA’s optical high-resolution mission for GMES operational services. Remote Sensing of Environ-ment , 120:25–36, 2012. 5 [10] Iris Dumeur, Silvia Valero, and Jordi Inglada. Self-supervised spatio-temporal representation learning of satel-lite image time series. IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing , 17:4350– 4367, 2024. 2 [11] Emilien Dupont, Adam Goli´ nski, Milad Alizadeh, Yee Whye Teh, and Arnaud Doucet. COIN: Compression with implicit neural representations. arXiv preprint arXiv:2103.03123 ,2021. 3, 5 [12] Amer Essakine, Yanqi Cheng, Chun-Wun Cheng, Lipei Zhang, Zhongying Deng, Lei Zhu, Carola-Bibiane Schön-lieb, and Angelica I Aviles-Rivero. Where do we stand with implicit neural representations? A technical and per-formance survey. arXiv preprint arXiv:2411.03688 , 2024. 1[13] European Environment Agency (EEA) and Copernicus Land Monitoring Service (CLMS). Dominant leaf type 2018–present (raster 10m), europe, yearly, 2024. Dataset. Accessed 12 October 2025. 5, 1 [14] Zhengpeng Feng, Clement Atzberger, Sadiq Jaffer, Jovana Knezevic, Silja Sormunen, Robin Young, Madeline C. Li-saius, Markus Immitzer, Toby Jackson, James Ball, David A. Coomes, Anil Madhavapeddy, Andrew Blake, and Srini-vasan Keshav. Tessera: Temporal embeddings of surface spectra for earth representation and analysis. arXiv preprint arXiv:2506.20380 , 2025. 3 [15] Casper Fibaek, Luke Camilleri, Andreas Luyts, Nikolaos Dionelis, and Bertrand Le Saux. PhilEO bench: Evaluating geo-spatial foundation models. In IEEE Int. Geosci. Remote Sens. Symp. , pages 2739–2744. IEEE, 2024. 5 [16] Anthony Fuller, Koreen Millard, and James Green. CROMA: Remote sensing representations with contrastive radar-optical masked autoencoders. NeurIPS , 36:5506–5538, 2023. 2 [17] Carlos Gomes, Benedikt Blumenstiel, Joao Lucas de Sousa Almeida, Pedro Henrique de Oliveira, Paolo Fraccaro, Francesc Marti Escofet, Daniela Szwarcman, Naomi Si-mumba, Romeo Kienzler, and Bianca Zadrozny. TerraTorch: The geospatial foundation models toolkit. arXiv preprint arXiv:2503.20563 , 2025. 6 [18] Carlos Gomes, Isabelle Wittmann, Damien Robert, Johannes Jakubik, Tim Reichelt, Stefano Maurogiovanni, Rikard Vinge, Jonas Hurst, Erik Scheurer, Rocco Sedona, Thomas Brunschwiler, Stefan Kesselheim, Matej Batiˇ c, Philip Stier, Jan Dirk Wegner, Gabriele Cavallaro, Edzer Pebesma, Michael Marszalek, Miguel A. Belenguer-Plomer, Kennedy Adriko, Paolo Fraccaro, Romeo Kienzler, Rania Briq, Sab-rina Benassou, Michele Lazzarini, and Conrad M. Albrecht. Lossy neural compression for geospatial analytics: A review. 
+
+IEEE Geoscience and Remote Sensing Magazine , 13(3):97– 135, 2025. 3, 5 [19] Xin Guo, Jiangwei Lao, Bo Dang, Yingying Zhang, Lei Yu, Lixiang Ru, Liheng Zhong, Ziyuan Huang, Kang Wu, Dingxiang Hu, et al. Skysense: A multi-modal remote sens-ing foundation model towards universal interpretation for earth observation imagery. In CVPR , pages 27672–27683, 2024. 2 [20] Danfeng Hong, Bing Zhang, Xuyang Li, Yuxuan Li, Chenyu Li, Jing Yao, Naoto Yokoya, Hao Li, Pedram Ghamisi, Xi-uping Jia, et al. SpectralGPT: Spectral remote sensing foun-dation model. arXiv preprint arXiv:2311.07113 , 2023. 2 [21] Johannes Jakubik, Sujit Roy, CE Phillips, Paolo Fraccaro, Denys Godwin, Bianca Zadrozny, Daniela Szwarcman, Car-los Gomes, Gabby Nyirjesy, Blair Edwards, et al. Foundation models for generalist geospatial artificial intelligence. arXiv preprint arXiv:2310.18660 , 2023. 1, 2 [22] Johannes Jakubik, Felix Yang, Benedikt Blumenstiel, Erik Scheurer, Rocco Sedona, Stefano Maurogiovanni, Jente Bosmans, Nikolaos Dionelis, Valerio Marsocci, Niklas Kopp, et al. TerraMind: Large-scale generative multimodal-ity for earth observation. arXiv preprint arXiv:2504.11171 ,2025. 1, 2, 3, 7 [23] Wang Jiangtao, Nur Intan Raihana Ruhaiyem, and Fu Pan-pan. A comprehensive review of U-Net and its variants: Ad-vances and applications in medical image segmentation. IET Image Processing , 19(1):e70019, 2025. 7 [24] Argyro Kavvada, Douglas Cripe, and Lawrence Friedl. Earth observation applications and global policy frameworks . Wi-ley Online Library, 2022. 1 [25] Samar Khanna, Patrick Liu, Linqi Zhou, Chenlin Meng, Robin Rombach, Marshall Burke, David Lobell, and Stefano Ermon. DiffusionSat: A generative foundation model for satellite imagery. arXiv preprint arXiv:2312.03606 , 2023. 2, 3[26] Katerina Kikaki, Ioannis Kakogeorgiou, Ibrahim Hoteit, and Konstantinos Karantzalos. Detecting marine pollutants and sea surface features with deep learning in sentinel-2 im-agery. ISPRS Journal of Photogrammetry and Remote Sens-ing , 210:39–54, 2024. 3 [27] Konstantin Klemmer, Esther Rolf, Caleb Robinson, Lester Mackey, and Marc Rußwurm. SatCLIP: Global, general-purpose location embeddings with satellite imagery. In 
+
+AAAI , pages 4347–4355, 2025. 1, 2, 3 [28] Alexandre Lacoste, Nils Lehmann, Pau Rodriguez, Evan Sherwin, Hannah Kerner, Björn Lütjens, Jeremy Irvin, David Dao, Hamed Alemohammad, Alexandre Drouin, et al. Geo-bench: Toward foundation models for earth monitoring. 
+
+Advances in Neural Information Processing Systems , 36: 51080–51093, 2023. 3 [29] Nico Lang, Walter Jetz, Konrad Schindler, and Jan Dirk Wegner. A high-resolution canopy height model of the earth. 
+
+Nature Ecology & Evolution , 7(11):1778–1789, 2023. 1 [30] Xin Li, Baile Sun, Jixiu Liao, and Xiaofei Zhao. Remote sensing image compression method based on implicit neu-ral representation. In Proceedings of the International Con-ference on Computing and Pattern Recognition , pages 432– 439, 2023. 3 [31] Xiang Li, Congcong Wen, Yuan Hu, and Nan Zhou. RS-CLIP: Zero shot remote sensing scene classification via con-trastive vision-language supervision. International Jour-nal of Applied Earth Observation and Geoinformation , 124: 103497, 2023. 2 [32] Chenyang Liu, Keyan Chen, Rui Zhao, Zhengxia Zou, and Zhenwei Shi. Text2Earth: Unlocking text-driven remote sensing image generation with a global-scale dataset and a foundation model. IEEE Geosci. Remote Sens. Mag. , 13(3): 238–259, 2025. 3 [33] Fan Liu, Delong Chen, Zhangqingyun Guan, Xiaocong Zhou, Jiale Zhu, Qiaolin Ye, Liyong Fu, and Jun Zhou. Re-moteCLIP: A vision language foundation model for remote sensing. IEEE Trans. Geosci. Remote Sens. , 62:10504785, 2024. 2 [34] Yidan Liu, Jun Yue, Shaobo Xia, Pedram Ghamisi, Weiy-ing Xie, and Leyuan Fang. Diffusion models meet remote sensing: Principles, methods, and perspectives. IEEE Trans. Geosci. Remote Sens. , page 10684806, 2024. 3 [35] Valerio Marsocci, Yuru Jia, Georges Le Bellier, David Kerekes, Liang Zeng, Sebastian Hafner, Sebastian Gerard, Eric Brune, Ritu Yadav, Ali Shibli, et al. PANGAEA: A global and inclusive benchmark for geospatial foundation models. arXiv preprint arXiv:2412.04204 , 2024. 2, 7, 1, 3[36] Meta and World Resources Institute (WRI). High resolution canopy height maps (chm), 2024. Source imagery for CHM © 2016 Maxar. Accessed 13 June 2025. 5, 1 [37] Microsoft. Microsoft building footprints, 2022. Accessed: 2022-11-01. 5, 2 [38] Thomas Müller, Alex Evans, Christoph Schied, and Alexan-der Keller. Instant neural graphics primitives with a multires-olution hash encoding. TOG , 41(4), 2022. 1, 3, 4 [39] Christopher Phillips, Sujit Roy, Kumar Ankur, and Rahul Ra-machandran. HLS Foundation Burnscars Dataset, 2023. 5, 3[40] Jonathan Prexl and Michael Schmitt. Multi-modal multi-objective contrastive learning for Sentinel-1/2 imagery. In 
+
+Proceedings of CVPR Workshops , pages 2135–2143, 2023. 2[41] Jonathan Prexl and Michael Schmitt. The potential of Sentinel-2 data for global building footprint mapping with high temporal resolution. In Joint Urban Remote Sensing Event , page 10144166. IEEE, 2023. 5 [42] Jonathan Prexl and Michael Schmitt. SenPa-MAE: Sensor parameter aware masked autoencoder for multi-satellite self-supervised pretraining. In Proceedings of GCPR , pages 317– 331, 2024. 2 [43] Jonathan Prexl, Anton Baumann, and Michael Schmitt. Acomparison of uncertainty estimation methods for building footprint change detection from Sentinel-2 imagery. ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences , 10:339–346, 2024. 5 [44] Jonathan Prexl, Michael Recla, and Michael Schmitt. SAR-Former – an acquisition parameter aware vision transformer for synthetic aperture radar data. In Proceedings of CVPR Workshops , pages 2225–2234, 2025. 2 [45] Shima Rezasoltani and Faisal Z Qureshi. Hyperspectral im-age compression using sampling and implicit neural repre-sentations. IEEE Trans. Geosci. Remote Sens. , 63:10804213, 2024. 3 [46] Vivien Sainte Fare Garnot and Loic Landrieu. Panoptic seg-mentation of satellite image time series with convolutional temporal attention networks. ICCV , 2021. 5, 3 [47] Srikumar Sastry, Subash Khanal, Aayush Dhakal, and Nathan Jacobs. GeoSynth: Contextually-aware high-resolution satellite image synthesis. In CVPR , pages 460– 470, 2024. 3 [48] Johannes Schmude, Sujit Roy, Will Trojak, Johannes Jaku-bik, Daniel Salles Civitarese, Shraddha Singh, Julian Kuehn-ert, Kumar Ankur, Aman Gupta, Christopher E Phillips, et al. Prithvi wxc: Foundation model for weather and climate. 
+
+arXiv preprint arXiv:2409.13598 , 2024. 2 [49] Ahmad Sebaq and Mohamed ElHelw. RSDiff: Remote sensing image generation from text using diffusion model. 
+
+Neural Computing and Applications , 36(36):23103–23111, 2024. 3 [50] Vincent Sitzmann, Julien Martel, Alexander Bergman, David Lindell, and Gordon Wetzstein. Implicit neural representa-tions with periodic activation functions. NeurIPS , 33:7462– 7473, 2020. 3 [51] Yannick Strümpler, Janis Postels, Ren Yang, Luc Van Gool, and Federico Tombari. Implicit neural representations for image compression. In ECCV , pages 74–91. Springer, 2022. 3[52] Daniela Szwarcman, Sujit Roy, Paolo Fraccaro, Þorsteinn Éli Gíslason, Benedikt Blumenstiel, Rinki Ghosal, Pedro Hen-rique de Oliveira, Joao Lucas de Sousa Almeida, Rocco Sedona, Yanghui Kang, et al. Prithvi-eo-2.0: A versatile multi-temporal foundation model for earth observation ap-plications. arXiv preprint arXiv:2412.02732 , 2024. 2, 3, 6 [53] Datao Tang, Xiangyong Cao, Xingsong Hou, Zhongyuan Jiang, Junmin Liu, and Deyu Meng. CRS-Diff: Control-lable remote sensing image generation with diffusion model. 
+
+IEEE Trans. Geosci. Remote Sens. , 62:10663449, 2024. 3 [54] Aysim Toker, Lukas Kondmann, Mark Weber, Marvin Eisenberger, Andrés Camero, Jingliang Hu, Ariadna Pregel Hoderlein, Ça˘ glar ¸Senaras, Timothy Davis, Daniel Cre-mers, Giovanni Marchisio, Xiao Xiang Zhu, and Laura Leal-Taixé. Dynamicearthnet: Daily multi-spectral satellite dataset for semantic change segmentation. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , pages 21158–21167, 2022. 3 [55] Xin-Yi Tong, Gui-Song Xia, and Xiao Xiang Zhu. Enabling country-scale land cover mapping with meter-resolution satellite imagery. ISPRS Journal of Photogrammetry and Re-mote Sensing , 196:178–196, 2023. 3 [56] Mehmet Ozgur Turkoglu, Stefano D’Aronco, Gregor Perich, Frank Liebisch, Constantin Streit, Konrad Schindler, and Jan Dirk Wegner. Crop mapping from image time series: Deep learning with multi-scale label hierarchies. Remote Sensing of Environment , 264:112603, 2021. 1 [57] Tobias Uelwer, Jan Robine, Stefan Sylvius Wagner, Marc Höftmann, Eric Upschulte, Sebastian Konietzny, Maike Behrendt, and Stefan Harmeling. A survey on self-supervised methods for visual representation learning. Ma-chine Learning , 114(4):111, 2025. 1 [58] Adam Van Etten, Daniel Hogan, Jesus Martinez Manso, Ja-cob Shermeyer, Nicholas Weir, and Ryan Lewis. The multi-temporal urban development spacenet dataset. In Proceed-ings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , pages 6398–6407, 2021. 3 [59] Diego Velazquez, Pau Rodriguez, Sergio Alonso, Josep M Gonfaus, Jordi Gonzalez, Gerardo Richarte, Javier Marin, Yoshua Bengio, and Alexandre Lacoste. EarthView: a large scale remote sensing dataset for self-supervision. In Pro-ceedings of the Winter Conference on Applications of Com-puter Vision , pages 1228–1237, 2025. 2 [60] Vicente Vivanco Cepeda, Gaurav Kumar Nayak, and Mubarak Shah. Geoclip: Clip-inspired alignment be-tween locations and images for effective worldwide geo-localization. Advances in Neural Information Processing Systems , 36:8690–8701, 2023. 1, 3 [61] Yi Wang, Conrad M Albrecht, Nassim Ait Ali Braham, Lichao Mou, and Xiao Xiang Zhu. Self-supervised learning in remote sensing: A review. IEEE Geoscience and Remote Sensing Magazine , 10(4):213–247, 2022. 1 [62] R Wilkinson, MM Mleczko, RJW Brewin, KJ Gaston, M Mueller, JD Shutler, X Yan, and K Anderson. Environmen-tal impacts of earth observation data in the constellation and cloud computing era. Science of the Total Environment , 909: 168584, 2024. 1 [63] Zhitong Xiong, Yi Wang, Fahong Zhang, Adam J. Stewart, Joëlle Hanna, Damian Borth, Ioannis Papoutsis, Bertrand Le Saux, Gustau Camps-Valls, and Xiao Xiang Zhu. Neural plasticity-inspired foundation model for observing the earth crossing modalities. CoRR , abs/2403.15356, 2024. 1, 2, 3 [64] Zhiping Yu, Chenyang Liu, Liqin Liu, Zhenwei Shi, and Zhengxia Zou. MetaEarth: A generative foundation model for global-scale remote sensing image generation. IEEE TPAMI , 47(3):10768939, 2024. 2, 3 [65] Lili Zhang, Tianpeng Pan, Jiahui Liu, and Lin Han. Com-pressing hyperspectral images into multilayer perceptrons using fast-time hyperspectral neural radiance fields. IEEE Geosci. Remote Sensing Lett. , 21:10433191, 2024. 3 Location Is All You Need: Continuous Spatiotemporal Neural Representations of Earth Observation Data 
+
+# Supplementary Material 
+
+In this supplementary material, we provide additional technical and experimental details that complement the main paper. • In Sec. 8, we describe the pretraining configuration of 
+
+LIANet , including optimization settings and an analysis of hash collisions in the multiresolution hash tables. • In Sec. 9, we outline the fine-tuning strategy across the downstream EO tasks presented in the main paper, includ-ing dataset descriptions, evaluation protocols, and com-plete results tables for A+ and A++ . We further provide qualitative predictions and an ablation study on the effect of varying the fine-tuning area size. • In Sec. 10, we report fine-tuning results on two datasets from the PANGAEA benchmark [35], and detail the cor-responding experimental setup. • Finally, in Sec. 11, we analyze LIANet from a neural com-pression perspective, quantifying its implicit encoding ef-ficiency and reconstruction fidelity. 
+
+The source code and the dataset that is used for pretraining and fine-tuning of the proposed frame-work can be found in https : / / github . com / mojganmadadi/LIANet/tree/v1.0.1 .
+
+## 8. Pretraining Setup 
+
+To pretrain the proposed LIANet on different-sized areas, we use L1 loss, AdamW optimizer with a base learning rate of 5 × 10 −4, and a Cosine learning rate scheduler that has 5 warm-up epochs. Every epoch is backpropa-gated with 1,024,000 randomly selected points, trained with a batch size of 64. The number of training epochs for A0
+
+is 225, for A+ is 393, and for A++ is 897 where the train-ing converges. The encoder layers of LIANet-Base contain 
+
+ResNet50 blocks, whereas LIANet-Large advantages from deeper layers of ResNet101 .
+
+Hash Collisions. Monitoring hash collisions is essential to ensure that the encoded embedding gx,y,t remains dis-criminative for each spatial coordinate (x, y ). At resolution level ℓ ∈ { 1, . . . , L } with hash function hℓ(·), a collision occurs when two distinct grid nodes map to the same table index: 
+
+(xi, y i)̸ = ( xj , y j ) and hℓ(xi, y i) = hℓ(xj , y j ). (1) Collisions become more likely at higher resolutions, where the number of grid nodes exceeds the hash table length. In principle, this may lead to conflicting gradi-ent updates if spatially distant locations alias across all resolution levels and therefore share identical concate-nated embeddings. However, the final representation is constructed by concatenating multi-resolution encod-ings, each generated with an independent random seed (see 
+
+LIANet/Pretraining/src/models/LIANet.py ). Consequently, simultaneous collisions across all levels are statistically unlikely. The chosen hyperparameters balance memory efficiency and representational capacity while keeping the empirical collision rate negligible. 
+
+## 9. Fine-Tuning on A+ and A++ 
+
+We evaluate on five downstream tasks, including regres-sion, binary, and multi-class segmentation, to assess the utility of the learned representations. Three visual sample patches from two seasons together with their reconstruction results of LIANet-Base and LIANet-Large , as well as their predicted labels for all tasks, are illustrated in Fig. 7. 
+
+Dynamic World Land Cover. Dynamic World provides near-real-time, 10 m global land-cover maps predicted from Sentinel-2 imagery [3]. Each scene is labeled into nine classes (Water, Trees, Grass, Crops, Shrub & Scrub, Flooded Vegetation, Built-up, Bare Ground, Snow & Ice). For our area of interest, we form a 6-class pixel-wise seg-mentation (0: Water, 1: Trees, 2: Grass, merging Shrub & Scrub, 3: Crops, 4: Built-up, 5: Bare—merging Snow & Ice). Because labels are available per timestamp, this task probes how temporal embeddings are exploited during fine-tuning. 
+
+Canopy Height. We use canopy height maps derived from high-resolution Maxar imagery [36]. This is a single-output regression task with one label per location across all timestamps, evaluating absolute height estimation from multispectral inputs. 
+
+Dominant Leaf Type. We use the Copernicus High Res-olution Layer on tree cover/forests [13] labels that include three classes: broadleaf, coniferous, and no-forest. This multi-class segmentation leverages all 12 Sentinel-2 bands and tests the model’s ability to discriminate forest func-tional types. 
+
+Building Coverage Percentage. We estimate the frac-tion of building coverage per 10 m × 10 m pixel using labels derived from Microsoft building footprints (from Table 3. The pixel-wise classification performance evaluation of two datasets from the PANGAEA benchmark, measured with Intersection-over-Union (IoU), Accuracy (Acc), and F1-score (all calculated with macro averaging), along with the tunable parameter counts. For all metrics reported, the corresponding top three performances are printed bold .
+
+Task Model / Setting # Tunable Params (M) IoU ACC F1 
+
+PASTIS UNet / Micro UNet 17.3 / 0.49 0.18 / 0.13 0.26 / 0.19 0.26 / 0.19 TerraMind-base (Full / Frozen / Embedding) 102 / 15.5 / 0.39 0.26 / 0.23 / 0.24 0.35 / 0.30 / 0.31 0.33 / 0.32 / 0.32 
+
+Prithvi v2-300 (Full / Frozen / Embedding) 324 / 20.3 / 0.46 0.23 / 0.21 / 0.19 0.29 / 0.28 / 0.25 0.32 / 0.30 / 0.27 DOFA-Large (Full / Frozen / Embedding) 357 / 20.3 / 0.46 0.19 / 0.17 / 0.14 0.23 / 0.24 / 0.19 0.28 / 0.25 / 0.19 LIANet-Modified 0.87 0.34 0.46 0.46 
+
+Burn Scars UNet / Micro UNet 17.3 / 0.49 0.45 / 0.47 0.65 / 0.62 0.62 / 0.62 
+
+TerraMind-base (Full / Frozen / Embedding) 92 / 5.0 / 0.39 0.39 / 0.41 / 0.35 0.58 / 0.60 / 0.52 0.55 / 0.57 / 0.51 Prithvi v2-300 (Full / Frozen / Embedding) 313 / 7.7 / 0.46 0.44 / 0.43 / 0.42 0.60 / 0.63 / 0.61 0.59 / 0.59 / 0.58 DOFA-Large (Full / Frozen / Embedding) 357 / 7.7 / 0.46 0.37 / 0.41 / 0.38 0.59 / 0.59 / 0.55 0.51 / 0.58 / 0.55 LIANet-Modified 0.87 0.47 0.63 0.63 
+
+Table 4. (Top) Pixel-wise classification task performance measured with Intersection-over-Union (IoU), Accuracy (Acc), and F1-score (all calculated with macro averaging) along with the tunable parameter counts for the area of interest A+. (Bottom) Regression task performance (Mean Absolute Error (MAE) and Mean Squared Error (MSE)) along with the tunable parameter counts for the area of interest A+. The from-scratch trainings and FMs are evaluated in different configurations with a varying number of tunable parameters. For all metrics reported, the corresponding top three performances are printed bold . Due to the limited number of comparisons, we are not marking any models for the task of building footprint segmentation. 
+
+Task Model / Setting # Tunable Params (M) IoU ACC F1 
+
+Dynamic World UNet / Micro UNet 17.3 / 0.49 0.75 / 0.66 0.82 / 0.76 0.84 / 0.76 TerraMind-base (Full / Frozen / Embedding) 102 / 15.5 / 0.39 0.70 / 0.70 / 0.65 0.78 / 0.77 / 0.72 0.80 / 0.80 / 0.72 Prithvi v2-300 (Full / Frozen / Embedding) 324 / 20.3 / 0.46 0.69 / 0.65 / 0.58 0.77 / 0.73 / 0.68 0.79 / 0.75 / 0.67 DOFA-Large (Full / Frozen / Embedding) 357 / 20.3 / 0.46 0.68 / 0.62 / 0.46 0.75 / 0.71 / 0.54 0.78 / 0.72 / 0.56 LIANet-Base 0.5 0.69 0.80 0.79 
+
+LIANet-Large 0.5 0.70 0.80 0.80 
+
+Dominant Leaf Type UNet / Micro UNet 17.3 / 0.49 0.82 / 0.78 0.89 / 0.86 0.90 / 0.87 
+
+TerraMind-base (Full / Frozen / Embedding) 102 / 15.5 / 0.39 0.79 / 0.78 / 0.75 0.87 / 0.85 / 0.84 0.88 / 0.86 / 0.85 Prithvi v2-300 (Full / Frozen / Embedding) 324 / 20.3 / 0.46 0.79 / 0.76 / 0.70 0.87 / 0.84 / 0.79 0.88 / 0.85 / 0.80 DOFA-Large (Full / Frozen / Embedding) 357 / 20.3 / 0.46 0.76 / 0.71 / 0.62 0.85 / 0.80 / 0.72 0.86 / 0.81 / 0.73 LIANet-Base 0.5 0.82 0.90 0.90 
+
+LIANet-Large 0.5 0.83 0.90 0.90 
+
+Building Footprint Segmentation UNet / Micro UNet 17.3 / 0.49 0.76 / 0.68 0.87 / 0.79 0.84 / 0.77 LIANet-Base 0.5 0.64 0.71 0.72 LIANet-Large 0.5 0.67 0.87 0.76 
+
+Task Model / Setting # Tunable Params (M) MAE MSE 
+
+Canopy Height UNet / Micro UNet 17.3 / 0.49 0.049 / 0.065 0.012 / 0.019 TerraMind-base (Full / Frozen / Embedding) 102 / 15.5 / 0.39 0.048 / 0.050 / 0.110 0.012 / 0.012 / 0.056 Prithvi v2-300 (Full / Frozen / Embedding) 324 / 20.3 / 0.46 0.048 / 0.053 / 0.110 0.012 / 0.014 / 0.056 DOFA-Large (Full / Frozen / Embedding) 357 / 20.3 / 0.46 0.051 / 0.057 / 0.110 0.013 / 0.016 / 0.056 LIANet-Base 0.5 0.049 0.011 
+
+LIANet-Large 0.5 0.047 0.011 
+
+Building Density UNet / Micro UNet 17.3 / 0.49 0.017 / 0.022 0.006 / 0.012 TerraMind-base (Full / Frozen / Embedding) 102 / 15.5 / 0.39 0.022 / 0.023 / 0.023 0.008 / 0.009 / 0.009 
+
+Prithvi v2-300 (Full / Frozen / Embedding) 324 / 20.3 / 0.46 0.020 / 0.023 / 0.027 0.008 / 0.008 / 0.010 DOFA-Large (Full / Frozen / Embedding) 357 / 20.3 / 0.46 0.022 / 0.024 / 0.021 0.008 / 0.009 / 0.013 LIANet-Base 0.5 0.021 0.009 
+
+LIANet-Large 0.5 0.021 0.008 
+
+Maxar/Airbus) [37]. This is a scalar regression task that requires resolving sub-pixel structure from a multispectral context. 
+
+Building Footprint Segmentation. We perform binary building segmentation at 2.5 m ground sampling. This task evaluates transfer to higher spatial resolution quality beyond the 10 m Sentinel-2 scale. 
+
+Fine-tuning Setup. We fine-tune both LIANet-Base and 
+
+LIANet-Large across all downstream tasks using a batch size of 32 and input patches of  128 × 128  pixels. Each task is trained for 50 epochs with a Cosine learning rate sched-uler that has 5 warm-up epochs. We employ cross-entropy loss for segmentation tasks, L1 loss for canopy height re-gression, and Huber loss for building coverage estimation. Learning rates are set to  1 × 10 −3 for segmentation and 
+
+5 × 10 −5 for regression. The training regions correspond to 500 km 2 within each study area, resulting in 20% of  A0,10% of  A+, and 4% of  A++  used for training, with the re-mainder reserved for validation. This limited-data setup is designed to evaluate the robustness and data efficiency of the learned representations. All benchmark models are trained under consistent con-figurations: batch size of 32, input patch size of  128 × 128 
+
+pixels, and 50 epochs. We employ cross-entropy loss for segmentation tasks, L1 loss for canopy height regression, and Huber loss for building density estimation. Optimiza-tion is performed using AdamW with a learning rate of 
+
+1×10 −4 for segmentation and  5×10 −5 for regression tasks. Training and validation splits follow the same setup as de-fined in Sec. 9.                                    
+
+> Table 5. Comparison of the pixel-wise land cover classification performance measured with Intersection-over-Union (IoU), Accu-racy (Acc), and F1-score (all calculated with macro averaging) with respect to the different training area sizes.
+> Model Train Area ( km 2)IoU ACC F1
+> LIANet-Base 80 0.62 0.70 0.72 160 0.66 0.75 0.75 320 0.71 0.79 0.80 500 0.72 0.82 0.81 640 0.73 0.82 0.82 LIANet-Large 80 0.63 0.71 0.73 160 0.65 0.74 0.75 320 0.71 0.79 0.80 500 0.72 0.81 0.81 640 0.73 0.82 0.82
+
+Ablation: Varying amount of annotated data during Fine-tuning. Table 5 presents the performance of the 
+
+LIANet-Base and LIANet-Large models when fine-tuned on varying fractions of the target area for pixel-wise land cover classification. This experiment investigates how much the training area can be reduced while still maintaining reason-able accuracy. As shown in Tab. 5, although performance decreases with smaller training regions, both models still achieve satisfactory results even when fine-tuned on only 
+
+3% of the target area, A0.Tab. 5 shows the performance of the LIANet-Base and 
+
+LIANet-Large models in few-shot settings where the fine-tuning area varies from 25% to 3% of the target region. As observed, performance decreases as the fine-tuning area be-comes smaller, yet both models maintain reasonable accu-racy even with limited training data. This property is partic-ularly valuable in scenarios with scarce labeled samples. 
+
+## 10. Fine-Tuning on Standard Benchmark Datasets 
+
+Selecting appropriate benchmarks for evaluating LIANet re-quires compatibility between the benchmark input modality and the pretraining modality of LIANet , the availability of georeferencing, and extensive spatial coverage. Since our framework models multispectral Sentinel-2 data within ge-ographically contiguous regions, benchmarks must provide compatible imagery and sufficient spatial density. Datasets such as Five Billion Pixels [55], DynamicEarthNet [54], and 
+
+SpaceNet 7 [58] are based on very high-resolution commer-cial imagery (e.g., Gaofen-2, PlanetFusion, Planet), which differs substantially from the Sentinel-2 modality consid-ered in this work. In addition, some of these datasets are not fully open-access, limiting their suitability for large-scale generative pretraining. Other benchmarks, such as 
+
+MADOS [26], predominantly contain low-frequency spa-tial content (e.g., water bodies), making them less suit-able for assessing the high-frequency reconstruction capa-bilities of LIANet . Furthermore, several datasets included in GeoBench [28] lack explicit georeferencing or require extensive preprocessing to ensure spatial alignment, which conflicts with the coordinate-based design of our approach. We therefore select two datasets from the PANGAEA bench-mark [35], namely PASTIS [46] and HLS BurnScars [39], and adapt them to match the experimental protocol of this study. 
+
+LIANet-Modified . For benchmarking on PASTIS and HLS BurnScars , we introduce a modified configuration of 
+
+LIANet . Since pretraining spans multiple locations and a larger number of timestamps, we increase the encoding ca-pacity while keeping the overall parameter count compara-ble to LIANet-Base . The modified variant, referred to as 
+
+LIANet-Modified , uses a feature dimension of F = 128 , a hash table size of T = 2 19 , and Ngrids = 13 resolution lev-els covering a complete Sentinel-2 tile. As in the original setup, 12 spectral channels are reconstructed. To maintain a comparable total parameter count, the CNN decoder head is reduced accordingly. 
+
+PASTIS dataset provides 19-class panoptic annota-tions of agricultural parcels together with multi-temporal Sentinel-2 image patches derived from four Sentinel-2 tiles in France. In total, the dataset contains 2,433 labeled patches. For our experiments, we select two of the four available tiles, namely T31TFM and T32ULU , and use all 
+
+available patches and timestamps within these tiles. This corresponds to 1,279 patches, i.e., 52.6% of the full dataset. Within the selected tiles, 19 cloud-free timestamps are available for one location and 18 for the other. LIANet-Modified is pretrained on all timestamps of both tiles. The Table 6. (Top) Pixel-wise classification task performance measured with Intersection-over-Union (IoU), Accuracy (Acc), and F1-score (all calculated with macro averaging) along with the tunable parameter counts for the area of interest A++ . (Bottom) Regression task performance (Mean Absolute Error (MAE) and Mean Squared Error (MSE)) along with the tunable parameter counts for the area of interest A++ . The from-scratch trainings and FMs are evaluated in different configurations with a varying number of tunable parameters. For all metrics reported, the corresponding top three performances are printed bold . Due to the limited number of comparisons, we are not marking any models for the task of building footprint segmentation.                                                                                                                                                       
+
+> Task Model / Setting # Tunable Params (M) IoU ACC F1
+> Dynamic World UNet / Micro UNet 17.3 / 0.49 0.76 / 0.68 0.83 / 0.76 0.85 / 0.78 TerraMind-base (Full / Frozen / Embedding) 102 / 15.5 / 0.39 0.73 /0.72 / 0.63 0.79 /0.78 / 0.70 0.82 /0.81 / 0.71 Prithvi v2-300 (Full / Frozen / Embedding) 324 / 20.3 / 0.46 0.71 / 0.68 / 0.61 0.78 / 0.75 / 0.70 0.80 / 0.77 / 0.70 DOFA-Large (Full / Frozen / Embedding) 357 / 20.3 / 0.46 0.67 / 0.64 / 0.42 0.73 / 0.72 / 0.51 0.77 / 0.74 / 0.53 LIANet-Base 0.5 0.70 0.78 0.79 LIANet-Large 0.5 0.70 0.78 0.80 Dominant Leaf Type UNet / Micro UNet 17.3 / 0.49 0.79 / 0.76 0.88 / 0.85 0.88 / 0.85 TerraMind-base (Full / Frozen / Embedding) 102 / 15.5 / 0.39 0.77 / 0.75 / 0.73 0.86 / 0.83 / 0.82 0.86 / 0.85 / 0.83 Prithvi v2-300 (Full / Frozen / Embedding) 324 / 20.3 / 0.46 0.77 / 0.73 / 0.68 0.86 / 0.82 / 0.78 0.86 / 0.83 / 0.79 DOFA-Large (Full / Frozen / Embedding) 357 / 20.3 / 0.46 0.74 / 0.69 / 0.59 0.83 / 0.78 / 0.70 0.84 / 0.79 / 0.71 LIANet-Base 0.5 0.78 0.87 0.87
+> LIANet-Large 0.5 0.78 0.87 0.87
+> Building Footprint Segmentation UNet / Micro UNet 17.3 / 0.49 0.75 / 0.67 0.88 / 0.79 0.84 / 0.76 LIANet-Base 0.5 0.60 0.65 0.68 LIANet-Large 0.5 0.63 0.83 0.72
+> Task Model / Setting # Tunable Params (M) MAE MSE
+> Canopy Height UNet / Micro UNet 17.3 / 0.49 0.053 / 0.069 0.013 / 0.020 TerraMind-base (Full / Frozen / Embedding) 102 / 15.5 / 0.39 0.052 / 0.056 / 0.120 0.013 /0.014 / 0.060 Prithvi v2-300 (Full / Frozen / Embedding) 324 / 20.3 / 0.46 0.055 / 0.058 / 0.120 0.014 /0.015 / 0.060 DOFA-Large (Full / Frozen / Embedding) 357 / 20.3 / 0.46 0.058 / 0.062 / 0.120 0.015 / 0.017 / 0.060 LIANet-Base 0.5 0.055 0.013
+> LIANet-Large 0.5 0.055 0.013
+> Building Density UNet / Micro UNet 17.3 / 0.49 0.021 / 0.027 0.008 / 0.016 TerraMind-base (Full / Frozen / Embedding) 102 / 15.5 / 0.39 0.027 / 0.028 / 0.028 0.011 /0.011 /0.011
+> Prithvi v2-300 (Full / Frozen / Embedding) 324 / 20.3 / 0.46 0.025 / 0.028 / 0.033 0.010 /0.011 / 0.012 DOFA-Large (Full / Frozen / Embedding) 357 / 20.3 / 0.46 0.027 / 0.029 / 0.025 0.011 / 0.012 / 0.016 LIANet-Base 0.5 0.027 0.012 LIANet-Large 0.5 0.026 0.012
+
+labels are provided at 10 m GSD with patch size 128 × 128 
+
+and are partitioned into five folds for cross-validation. We follow the official fold protocol, selecting each fold once for validation. The results reported in Tab. 3 correspond to the average performance across both tiles and all validation folds. 
+
+HLS Burn Scars dataset contains 804 labeled wild-fire burn-scar patches derived from Harmonized Landsat and Sentinel-2 (HLS) imagery (2018–2021), sparsely dis-tributed across the United States. Since LIANet models a geographically contiguous Sentinel-2 tile, we select the tile containing the largest number of labeled samples. Within this tile, seven training patches and two validation patches are available, resulting in a total of 9 labeled patches used for fine-tuning. This corresponds to approximately 1.1% of the full labeled dataset. For each labeled patch, a cloud-free post-event Sentinel-2 acquisition is used. Temporally close labels may share the same post-event image. In total, seven timestamps are used for generative pretraining over the se-lected tile. The original train/validation split is preserved. To ensure spatial consistency, label masks are aligned to the generated imagery by matching resolution, coordinate ref-erence system, and patch dimensions. The resulting perfor-mance is reported in Tab. 3. 
+
+Pretraining and Fine-Tuning Setup. For the pretraining on both tasks, the loss, optimizer, scheduler, and batch size are as reported in Sec. 8. We implement the fine-tuning on 50 epochs with cross-entropy loss, AdamW optimizer, batch size of 32, and a fixed learning rate of  1×10 −4. Base-lines are fine-tuned using the same setup as LIANet , similar to Sec. 9. To improve learning stability for the end-to-end GFM methods on the relatively small BurnScars dataset, we reduce the number of channels in the U-Net decoder. This decreases the number of trainable parameters compared to the other benchmark tasks. 11. Neural Compression Analysis 
+
+Implicit neural representations are related to the field of neural compression [11, 18]. Although LIANet is not meant to serve as an EO image compressor, we study compression performance in terms of reconstruction error as complemen-tary information. Given coordinates (x, y, t ), LIANet is able to regenerate images I over an area A. Consequently, the image data is encoded by D ◦ E in a number of neural net-work parameters consuming a given amount of B bytes of disk space. Provided the number of image channels C(=12 for Sentinel-2 L2A), and assuming a total number of Pc spa-tial pixels in channel c = 1 . . . C over area A for which Q
+
+number of timestamps have been encoded, we derive the bits per pixel (bpp) according to: 
+
+1/bpp = Q
+
+8B
+
+> C
+
+X
+
+> c=1
+
+Pc . (2) It is worth noting that bpp ∝ 1/Q . Compression methods that efficiently handle the temporal dimension t in (x, y, t )
+
+have the potential to significantly lower the bpp. LIANet ’s number of parameters to encode time, Q · Ngrid · F , is sub-stantially smaller compared to the remaining number of pa-rameters of the network, in particular wrt. the decoder D.The peak-signal-to-noise-ratio with the definition of spatio-spectral averaging, ⟨·⟩ , reads 
+
+PSNR (I|S) = 10 · log 10 
+
+ max I2
+
+⟨(I − S)2⟩
+
+
+
+. (3) It quantifies the deviation of the LIANet -generated image I
+
+against the corresponding Sentinel-2 L2A data S by com-puting the logarithm of the ratio: maximal image amplitude over the mean-squared error of reconstruction. In the limit where I → S, PSNR → ∞ . If the LIANet image strongly deviates from the Sentinel-2 reference, PSNR → −∞ .When the root mean square error (RMSE) p⟨(I − S)2⟩ ≳
+
+max I dominates over the maximum image signal strength 
+
+|I|, PSNR is negative. At PSNR=0, the RMSE is equal to the maximal amplitude of pixel values in the reconstructed im-age. For a maximum signal ten times stronger than the error, PSNR ≈20. For excellent reconstruction where PSNR ≳40, the error is at least 100 times weaker than the maximum signal. Figure 5 provides PSNR as a function of bpp for var-ious flavors of LIANet . Our results demonstrate that the reconstruction quality reaches acceptable (PSNR>30, sig-nal approx. 30 times stronger than mean error) to excellent (PSNR>40) levels with minor inaccuracies, with the latter often imperceptible to the human eye. The advancement in neural compression will guide fu-ture design updates of LIANet to improve compression while maintaining downstream task utility. Based on the 0 1 2 3 4 5 6 7
+
+> bits per pixel (bpp)
+> 20
+> 30
+> 40
+> 50
+> 60
+> peak signal-to-noise ratio (PSNR)
+> LIANet-Base  0
+> LIANet-Base  +
+> LIANet-Base  + +
+> LIANet-Large  0
+> LIANet-Large  +
+> LIANet-Large  + +
+> LIANet: Rate-Distortion-Plot for Sentinel-2
+> PSNR excellent
+> PSNR acceptable
+> bpp Sentinel-2
+> LIANet
+> LIANet (RGB only)
+
+Figure 5. Rate-Distortion analysis for LIANet’s Sentinel-2 image generation. In summary, our models perform decent (purple dash-dotted line) to excellent (red dashed line) with a distribution of PSNR-values derived from 100 randomly sampled spatial patches of size 128x128 pixels over the areas A0, A+, and A++ . The label 
+
+LIANet-Large A++ for instance, refers to the LIANet-Large model that is pretrained on area A++ . Blue and orange labels correspond to PSNR statistics for all Sentinel-2 bands and RGB channels, re-spectively. Dots indicate minimum and maximum values, bars cover the 1.5σ interval, the cross marks the mean, and the open cir-cle indicates the median. The bold solid blue and orange lines pro-vide a logarithmic interpolation PSNR(bpp) ∼ P3 [log(1 + bpp )] 
+
+of the median PSNR (RGB) values with QLIANet = 4 where we fixed PSNR(bpp=0)=0. P3[z] denotes a polynomial of third de-gree in z. A vertical dashed line (gray) indicates the bpp of the raw Sentinel-2 data in JPEG2000 format as a reference. 
+
+compression–quality trade-off summarized in Fig. 5, the best model to pick is currently LIANet-Large A+ : it provides enough parameter capacity to properly model a mid-size area of |A +| = 5000 km 2 for (close to) excellent recon-struction across the entire Sentinel-2 spectral bands while keeping variability low 2, i.e ., the model deals well with di-verse remotely sensed scenes. To further assess the quality of reconstructed images by two LIANet variants on A0, we illustrate two more examples in Fig. 6 with high-frequency details as well as clouds present in the scene. Each of the re-constructed images in Fig. 6 is generated with four forward passes and then stitching the patches horizontally.    
+
+> 2The standard deviation of all models is about ∆PSNR ≳2around PSNR=40 which corresponds to signal-to-noise fluctuations of about two orders of magnitude.
+
+Figure 6. Two examples of reconstruction quality of LIANet-Base and LIANet-Large on A0 area. It can be seen that LIANet-Large has an improved performance in reconstructing the high-frequency details, including buildings within the city. It can also be seen that cloudy areas are reconstructed as they are present in the Sentinel-2 image. Figure 7. Three example visualization of LIANet-Base and LIANet-Large reconstruction and prediction performances on downstream ap-plications. The landcover labels have seasonal predictions, whereas the other tasks have a single label for all timestamps. The improvement in the prediction of LIANet-Large can clearly be seen in the tasks concerning the segmentation and density estimation of building footprints.

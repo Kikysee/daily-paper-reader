@@ -1,0 +1,62 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.07182v1/fig-001.webp",
+      "caption": "Fig. 2. Sample images from dataset",
+      "page": 2,
+      "index": 1,
+      "width": 477,
+      "height": 333
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07182v1/fig-002.webp",
+      "caption": "Fig. 4. Confusion Matrix of MobileNetV2 architecture",
+      "page": 3,
+      "index": 2,
+      "width": 460,
+      "height": 367
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07182v1/fig-003.webp",
+      "caption": "Fig. 8. Confusion Matrix of DenseNet201",
+      "page": 4,
+      "index": 3,
+      "width": 448,
+      "height": 356
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07182v1/fig-004.webp",
+      "caption": "Fig. 6. Confusion Matrix of InceptionV3",
+      "page": 4,
+      "index": 4,
+      "width": 465,
+      "height": 368
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07182v1/fig-005.webp",
+      "caption": "TABLE III. PERFORMANCE COMPARISON OF EVALUATED CNN ARCHITECTURES",
+      "page": 5,
+      "index": 5,
+      "width": 508,
+      "height": 542
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07182v1/fig-006.webp",
+      "caption": "Fig. 11. TeaLeafVision web application for Tea Leaf Disease classification",
+      "page": 5,
+      "index": 6,
+      "width": 506,
+      "height": 464
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07182v1/fig-007.webp",
+      "caption": "Fig. 9. Tea Leaf Disease identification using Grad-CAM",
+      "page": 5,
+      "index": 7,
+      "width": 525,
+      "height": 246
+    }
+  ]
+}

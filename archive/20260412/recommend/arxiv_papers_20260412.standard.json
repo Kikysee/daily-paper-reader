@@ -1,0 +1,657 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-12T20:14:51.568076+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 7,
+    "deep_cap": 6,
+    "deep_selected": 6,
+    "quick_candidates": 20,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2604.03874v1",
+      "source": "arxiv",
+      "title": "Spatiotemporal Interpolation of GEDI Biomass with Calibrated Uncertainty",
+      "abstract": "Monitoring deforestation-driven carbon emissions requires both spatially explicit and temporally continuous estimates of aboveground biomass density (AGBD) with calibrated uncertainty. NASA's Global Ecosystem Dynamics Investigation (GEDI) provides reliable LIDAR-derived AGBD, but its orbital sampling causes irregular spatiotemporal coverage, and occasional operational interruptions, including a 13-month hibernation from March 2023 to April 2024, leave extended gaps in the observational record. Prior work has used machine learning approaches to fill GEDI's spatial gaps using satellite-derived features, but temporal interpolation of biomass through unobserved periods, particularly across active disturbance events, remains largely unaddressed. Moreover, standard ensemble methods for biomass mapping have been shown to produce systematically miscalibrated prediction intervals. To address these gaps, we extend the Attentive Neural Process (ANP) framework, previously applied to spatial biomass interpolation, to jointly sparse spatiotemporal settings using geospatial foundation model embeddings. We treat space and time symmetrically, empirically validating a form of space-for-time substitution in which observations from nearby locations at other times inform predictions at held-out periods. Our results demonstrate that the ANP produces well-calibrated uncertainty estimates across disturbance regimes, supporting its use in Measurement, Reporting, and Verification (MRV) applications that require reliable uncertainty quantification for forest carbon accounting.",
+      "authors": [
+        "Robin Young",
+        "Srinivasan Keshav"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CE"
+      ],
+      "published": "2026-04-04T21:41:38+00:00",
+      "link": "https://arxiv.org/pdf/2604.03874v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Spatiotemporal interpolation of GEDI biomass data",
+      "llm_evidence_cn": "GEDI生物量数据的时空插值",
+      "llm_evidence": "GEDI生物量数据的时空插值",
+      "canonical_evidence": "GEDI生物量数据的时空插值",
+      "llm_tldr_en": "Addresses spatiotemporal gaps in satellite-derived biomass estimates using machine learning.",
+      "llm_tldr_cn": "利用机器学习解决了卫星反演生物量估算中的时空缺失问题。",
+      "llm_tldr": "利用机器学习解决了卫星反演生物量估算中的时空缺失问题。",
+      "llm_tags": [
+        "query:q6"
+      ],
+      "matched_query_tag": "query:q6",
+      "matched_query_text": "Using SAR backscatter to estimate crop biophysical parameters like LAI and biomass",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.07656v1",
+      "source": "arxiv",
+      "title": "MVOS_HSI: A Python Library for Preprocessing Agricultural Crop Hyperspectral Data",
+      "abstract": "Hyperspectral imaging (HSI) allows researchers to study plant traits non-destructively. By capturing hundreds of narrow spectral bands per pixel, it reveals details about plant biochemistry and stress that standard cameras miss. However, processing this data is often challenging. Many labs still rely on loosely organized collections of lab-specific MATLAB or Python scripts, which makes workflows difficult to share and results difficult to reproduce. MVOS_HSI is an open-source Python library that provides an end-to-end workflow for processing leaf-level HSI data. The software handles everything from calibrating raw ENVI files to detecting and clipping individual leaves based on multiple vegetation indices (NDVI, CIRedEdge and GCI). It also includes tools for data augmentation to create training-time variations for machine learning and utilities to visualize spectral profiles. MVOS_HSI can be used as an importable Python library or run directly from the command line. The code and documentation are available on GitHub. By consolidating these common tasks into a single package, MVOS_HSI helps researchers produce consistent and reproducible results in plant phenotyping",
+      "authors": [
+        "Rishik Aggarwal",
+        "Krisha Joshi",
+        "Pappu Kumar Yadav",
+        "Jianwei Qin",
+        "Thomas F. Burks",
+        "Moon S. Kim"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "cs.CV"
+      ],
+      "published": "2026-04-08T23:48:02+00:00",
+      "link": "https://arxiv.org/pdf/2604.07656v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "preprocessing agricultural crop hyperspectral data to study plant traits and biochemistry",
+      "llm_evidence_cn": "预处理农作物高光谱数据以研究植物性状和生化指标",
+      "llm_evidence": "预处理农作物高光谱数据以研究植物性状和生化指标",
+      "canonical_evidence": "预处理农作物高光谱数据以研究植物性状和生化指标",
+      "llm_tldr_en": "MVOS_HSI is a Python library for processing crop hyperspectral data to analyze plant traits non-destructively.",
+      "llm_tldr_cn": "MVOS_HSI 是一个用于处理作物高光谱数据以非破坏性分析植物性状的 Python 库。",
+      "llm_tldr": "MVOS_HSI 是一个用于处理作物高光谱数据以非破坏性分析植物性状的 Python 库。",
+      "llm_tags": [
+        "query:q2"
+      ],
+      "matched_query_tag": "query:q2",
+      "matched_query_text": "crop parameter estimation",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.08442v1",
+      "source": "arxiv",
+      "title": "Ecohydrological Controls on Moist Convection and Long-Term Rainfall Feedback",
+      "abstract": "To elucidate how land surface state and soil moisture dynamics regulate moist convection, and how convective rainfall subsequently reshapes surface and root-zone hydrology, we develop a stochastic dynamical model that couples soil moisture, vegetation hydraulics, atmospheric boundary layer evolution, and convective available potential energy (CAPE). We show that CAPE depends not only on the free-tropospheric environment but also on soil moisture, through its control of surface fluxes, boundary-layer growth, and the timing of the intersection between the atmospheric boundary layer and the lifting condensation level (LCL). Soil texture and plant properties strongly modulate convective potential during dry-down. Loamy sand favors convection at relatively high soil moisture and maintains the largest CAPE at the time of LCL-ABL crossing across drying conditions. In contrast, sandy soils exhibit high CAPE when wet but lose convective potential rapidly as they dry. As matric potential becomes more negative, convection is increasingly suppressed in finer, loamy clay textures. Plant functional type further shapes dry-down dynamics: water-use-maximizing strategies can enhance dry persistence via stomatal closure during drying, whereas more conservative strategies can sustain convection for longer periods. On longer timescales, stochastic rainfall forcing with CAPE-dependent precipitation intensity produces persistent wet and dry soil moisture regimes, with switching times that depend on soil hydraulic properties, plant physiological traits, and atmospheric conditions.",
+      "authors": [
+        "Elizabeth Cultra",
+        "Jun Yin",
+        "Mark Bartlett",
+        "Amilcare Porporato"
+      ],
+      "primary_category": "physics.ao-ph",
+      "categories": [
+        "physics.ao-ph"
+      ],
+      "published": "2026-04-09T16:39:16+00:00",
+      "link": "https://arxiv.org/pdf/2604.08442v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "soil moisture dynamics and vegetation hydraulics modeling",
+      "llm_evidence_cn": "土壤水分动态与植被水力学建模",
+      "llm_evidence": "土壤水分动态与植被水力学建模",
+      "canonical_evidence": "土壤水分动态与植被水力学建模",
+      "llm_tldr_en": "A model coupling soil moisture and vegetation hydraulics to study land surface state and rainfall feedback.",
+      "llm_tldr_cn": "一种耦合土壤水分和植被水力学的模型，用于研究地表状态和降雨反馈。",
+      "llm_tldr": "一种耦合土壤水分和植被水力学的模型，用于研究地表状态和降雨反馈。",
+      "llm_tags": [
+        "query:q1"
+      ],
+      "matched_query_tag": "query:q1",
+      "matched_query_text": "soil moisture retrieval",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.06988v1",
+      "source": "arxiv",
+      "title": "Canopy Tree Height Estimation Using Quantile Regression: Modeling and Evaluating Uncertainty in Remote Sensing",
+      "abstract": "Accurate tree height estimation is vital for ecological monitoring and biomass assessment. We apply quantile regression to existing tree height estimation models based on satellite data to incorporate uncertainty quantification. Most current approaches for tree height estimation rely on point predictions, which limits their applicability in risk-sensitive scenarios. In this work, we show that, with minor modifications of a given prediction head, existing models can be adapted to provide statistically calibrated uncertainty estimates via quantile regression. Furthermore, we demonstrate how our results correlate with known challenges in remote sensing (e.g., terrain complexity, vegetation heterogeneity), indicating that the model is less confident in more challenging conditions.",
+      "authors": [
+        "Karsten Schrödter",
+        "Jan Pauls",
+        "Fabian Gieseke"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-08T12:05:13+00:00",
+      "link": "https://arxiv.org/pdf/2604.06988v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "tree height estimation for biomass assessment using satellite data",
+      "llm_evidence_cn": "利用卫星数据进行生物量评估的树高估计",
+      "llm_evidence": "利用卫星数据进行生物量评估的树高估计",
+      "canonical_evidence": "利用卫星数据进行生物量评估的树高估计",
+      "llm_tldr_en": "Applies quantile regression to satellite data for calibrated uncertainty in tree height and biomass estimation.",
+      "llm_tldr_cn": "将分位数回归应用于卫星数据，以实现树高和生物量估计的校准不确定性。",
+      "llm_tldr": "将分位数回归应用于卫星数据，以实现树高和生物量估计的校准不确定性。",
+      "llm_tags": [
+        "query:q2"
+      ],
+      "matched_query_tag": "query:q2",
+      "matched_query_text": "crop parameter estimation",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.06844v1",
+      "source": "arxiv",
+      "title": "CloudMamba: An Uncertainty-Guided Dual-Scale Mamba Network for Cloud Detection in Remote Sensing Imagery",
+      "abstract": "Cloud detection in remote sensing imagery is a fundamental, critical, and highly challenging problem. Existing deep learning-based cloud detection methods generally formulate it as a single-stage pixel-wise binary segmentation task with one forward pass. However, such single-stage approaches exhibit ambiguity and uncertainty in thin-cloud regions and struggle to accurately handle fragmented clouds and boundary details. In this paper, we propose a novel deep learning framework termed CloudMamba. To address the ambiguity in thin-cloud regions, we introduce an uncertainty-guided two-stage cloud detection strategy. An embedded uncertainty estimation module is proposed to automatically quantify the confidence of thin-cloud segmentation, and a second-stage refinement segmentation is introduced to improve the accuracy in low-confidence hard regions. To better handle fragmented clouds and fine-grained boundary details, we design a dual-scale Mamba network based on a CNN-Mamba hybrid architecture. Compared with Transformer-based models with quadratic computational complexity, the proposed method maintains linear computational complexity while effectively capturing both large-scale structural characteristics and small-scale boundary details of clouds, enabling accurate delineation of overall cloud morphology and precise boundary segmentation. Extensive experiments conducted on the GF1_WHU and Levir_CS public datasets demonstrate that the proposed method outperforms existing approaches across multiple segmentation accuracy metrics, while offering high efficiency and process transparency. Our code is available at https://github.com/jayoungo/CloudMamba.",
+      "authors": [
+        "Jiajun Yang",
+        "Keyan Chen",
+        "Zhengxia Zou",
+        "Zhenwei Shi"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-08T09:04:43+00:00",
+      "link": "https://arxiv.org/pdf/2604.06844v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "cloud detection in remote sensing imagery",
+      "llm_evidence_cn": "遥感影像中的云检测",
+      "llm_evidence": "遥感影像中的云检测",
+      "canonical_evidence": "遥感影像中的云检测",
+      "llm_tldr_en": "A dual-scale Mamba network for accurate cloud detection, a fundamental task in remote sensing applications.",
+      "llm_tldr_cn": "一种用于精确云检测的双尺度Mamba网络，是遥感应用中的基础任务。",
+      "llm_tldr": "一种用于精确云检测的双尺度Mamba网络，是遥感应用中的基础任务。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.05415v1",
+      "source": "arxiv",
+      "title": "Learning to Synergize Semantic and Geometric Priors for Limited-Data Wheat Disease Segmentation",
+      "abstract": "Wheat disease segmentation is fundamental to precision agriculture but faces severe challenges from significant intra-class temporal variations across growth stages. Such substantial appearance shifts make collecting a representative dataset for training from scratch both labor-intensive and impractical. To address this, we propose SGPer, a Semantic-Geometric Prior Synergization framework that treats wheat disease segmentation under limited data as a coupled task of disease-specific semantic perception and disease boundary localization. Our core insight is that pretrained DINOv2 provides robust category-aware semantic priors to handle appearance shifts, which can be converted into coarse spatial prompts to guide SAM for the precise localization of disease boundaries. Specifically, SGPer designs disease-sensitive adapters with multiple disease-friendly filters and inserts them into both DINOv2 and SAM to align their pretrained representations with disease-specific characteristics. To operationalize this synergy, SGPer transforms DINOv2-derived features into dense, category-specific point prompts to ensure comprehensive spatial coverage of all disease regions. To subsequently eliminate prompt redundancy and ensure highly accurate mask generation, it dynamically filters these dense candidates by cross-referencing SAM's iterative mask confidence with the category-specific semantic consistency derived from DINOv2. Ultimately, SGPer distills a highly informative set of prompts to activate SAM's geometric priors, achieving precise and robust segmentation that remains strictly invariant to temporal appearance changes. Extensive evaluations demonstrate that SGPer consistently achieves state-of-the-art performance on wheat disease and organ segmentation benchmarks, especially in data-constrained scenarios.",
+      "authors": [
+        "Shijie Wang",
+        "Zijian Wang",
+        "Yadan Luo",
+        "Scott Chapman",
+        "Xin Yu",
+        "Zi Huang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-07T04:19:39+00:00",
+      "link": "https://arxiv.org/pdf/2604.05415v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "wheat disease segmentation in precision agriculture",
+      "llm_evidence_cn": "精准农业中的小麦病害分割",
+      "llm_evidence": "精准农业中的小麦病害分割",
+      "canonical_evidence": "精准农业中的小麦病害分割",
+      "llm_tldr_en": "Proposes a semantic-geometric prior synergization framework for wheat disease segmentation under limited data.",
+      "llm_tldr_cn": "提出一种语义-几何先验协同框架，用于有限数据下的小麦病害分割。",
+      "llm_tldr": "提出一种语义-几何先验协同框架，用于有限数据下的小麦病害分割。",
+      "llm_tags": [
+        "query:q4"
+      ],
+      "matched_query_tag": "query:q4",
+      "matched_query_text": "agricultural remote sensing",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.07814v1",
+      "source": "arxiv",
+      "title": "AgriChain Visually Grounded Expert Verified Reasoning for Interpretable Agricultural Vision Language Models",
+      "abstract": "Accurate and interpretable plant disease diagnosis remains a major challenge for vision-language models (VLMs) in real-world agriculture. We introduce AgriChain, a dataset of approximately 11,000 expert-curated leaf images spanning diverse crops and pathologies, each paired with (i) a disease label, (ii) a calibrated confidence score (High/Medium/Low), and (iii) an expert-verified chain-of-thought (CoT) rationale. Draft explanations were first generated by GPT-4o and then verified by a professional agricultural engineer using standardized descriptors (e.g., lesion color, margin, and distribution). We fine-tune Qwen2.5-VL-3B on AgriChain, resulting in a specialized model termed AgriChain-VL3B, to jointly predict diseases and generate visually grounded reasoning. On a 1,000-image test set, our CoT-supervised model achieves 73.1% top-1 accuracy (macro F1 = 0.466; weighted F1 = 0.655), outperforming strong baselines including Gemini 1.5 Flash, Gemini 2.5 Pro, and GPT-4o Mini. The generated explanations align closely with expert reasoning, consistently referencing key visual cues. These findings demonstrate that expert-verified reasoning supervision significantly enhances both accuracy and interpretability, bridging the gap between generic multimodal models and human expertise, and advancing trustworthy, globally deployable AI for sustainable agriculture. The dataset and code are publicly available at: https://github.com/hazzanabeel12-netizen/agrichain",
+      "authors": [
+        "Hazza Mahmood",
+        "Yongqiang Yu",
+        "Rao Anwer"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-09T05:13:37+00:00",
+      "link": "https://arxiv.org/pdf/2604.07814v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "interpretable agricultural vision language models for plant disease diagnosis",
+      "llm_evidence_cn": "用于植物病害诊断的可解释农业视觉语言模型",
+      "llm_evidence": "用于植物病害诊断的可解释农业视觉语言模型",
+      "canonical_evidence": "用于植物病害诊断的可解释农业视觉语言模型",
+      "llm_tldr_en": "AgriChain provides a dataset and model for interpretable plant disease diagnosis in real-world agriculture.",
+      "llm_tldr_cn": "AgriChain 为现实农业中的可解释植物病害诊断提供了数据集和模型。",
+      "llm_tldr": "AgriChain 为现实农业中的可解释植物病害诊断提供了数据集和模型。",
+      "llm_tags": [
+        "query:q4"
+      ],
+      "matched_query_tag": "query:q4",
+      "matched_query_text": "agricultural remote sensing",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2604.04306v1",
+      "source": "arxiv",
+      "title": "HighFM: Towards a Foundation Model for Learning Representations from High-Frequency Earth Observation Data",
+      "abstract": "The increasing frequency and severity of climate related disasters have intensified the need for real time monitoring, early warning, and informed decision-making. Earth Observation (EO), powered by satellite data and Machine Learning (ML), offers powerful tools to meet these challenges. Foundation Models (FMs) have revolutionized EO ML by enabling general-purpose pretraining on large scale remote sensing datasets. However most existing models rely on high-resolution satellite imagery with low revisit rates limiting their suitability for fast-evolving phenomena and time critical emergency response. In this work, we present HighFM, a first cut approach towards a FM for high temporal resolution, multispectral EO data. Leveraging over 2 TB of SEVIRI imagery from the Meteosat Second Generation (MSG) platform, we adapt the SatMAE masked autoencoding framework to learn robust spatiotemporal representations. To support real time monitoring, we enhance the original architecture with fine grained temporal encodings to capture short term variability. The pretrained models are then finetuned on cloud masking and active fire detection tasks. We benchmark our SEVIRI pretrained Vision Transformers against traditional baselines and recent geospatial FMs, demonstrating consistent gains across both balanced accuracy and IoU metrics. Our results highlight the potential of temporally dense geostationary data for real-time EO, offering a scalable path toward foundation models for disaster detection and tracking.",
+      "authors": [
+        "Stella Girtsou",
+        "Konstantinos Alexis",
+        "Giorgos Giannopoulos",
+        "Harris Kontoes"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-04-05T23:01:24+00:00",
+      "link": "https://arxiv.org/pdf/2604.04306v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Foundation model for high-frequency Earth Observation data",
+      "llm_evidence_cn": "高频地学观测数据的遥感大模型",
+      "llm_evidence": "高频地学观测数据的遥感大模型",
+      "canonical_evidence": "高频地学观测数据的遥感大模型",
+      "llm_tldr_en": "Presents HighFM, a foundation model for high temporal resolution multispectral remote sensing data.",
+      "llm_tldr_cn": "提出了HighFM，一种针对高时间分辨率多光谱遥感数据的地学大模型。",
+      "llm_tldr": "提出了HighFM，一种针对高时间分辨率多光谱遥感数据的地学大模型。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.03585v1",
+      "source": "arxiv",
+      "title": "From 8 Seconds to 370ms: Kernel-Fused SAR Imaging on Apple Silicon via Single-Dispatch FFT Pipelines",
+      "abstract": "We present the first kernel-fused SAR Range Doppler pipeline on any GPU platform. By fusing FFT, matched-filter multiply, and IFFT into a single Metal compute dispatch -- keeping all intermediate data in 32\\,KiB on-chip memory -- we process a $4096\\!\\times\\!4096$ complex SAR scene in \\textbf{370\\,ms} on an Apple M1 GPU, a \\textbf{22$\\times$} speedup over the multi-dispatch baseline (8.16\\,s). We further report the first FFT to exploit Apple's \\texttt{simdgroup\\_matrix} 8$\\times$8 hardware MMA, enabled by an in-place Cooley--Tukey decimation-in-frequency formulation that halves the memory footprint versus Stockham. Radar image quality is preserved: all five point targets show 0.0\\,dB SNR deviation from the unfused FP32 reference.",
+      "authors": [
+        "Mohamed Amine Bergach"
+      ],
+      "primary_category": "cs.PF",
+      "categories": [
+        "cs.PF"
+      ],
+      "published": "2026-04-04T04:20:00+00:00",
+      "link": "https://arxiv.org/pdf/2604.03585v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "high-speed SAR imaging pipeline on GPU for complex SAR scenes",
+      "llm_evidence_cn": "用于复杂 SAR 场景的 GPU 高速 SAR 成像流水线",
+      "llm_evidence": "用于复杂 SAR 场景的 GPU 高速 SAR 成像流水线",
+      "canonical_evidence": "用于复杂 SAR 场景的 GPU 高速 SAR 成像流水线",
+      "llm_tldr_en": "This paper presents a kernel-fused SAR imaging pipeline that significantly speeds up SAR data processing.",
+      "llm_tldr_cn": "本文提出了一种内核融合的 SAR 成像流水线，显著加快了 SAR 数据的处理速度。",
+      "llm_tldr": "本文提出了一种内核融合的 SAR 成像流水线，显著加快了 SAR 数据的处理速度。",
+      "llm_tags": [
+        "query:q6"
+      ],
+      "matched_query_tag": "query:q6",
+      "matched_query_text": "Using SAR backscatter to estimate crop biophysical parameters like LAI and biomass",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.05384v1",
+      "source": "arxiv",
+      "title": "Near real-time monitoring of global land-ocean cover dynamics",
+      "abstract": "Monitoring the dynamics of global land-ocean cover is fundamental for regulating the Earth's climate and sustaining terrestrial and marine ecosystems. However, existing datasets and research often exhibit limitations in temporal resolution and timeliness, lack coupled analysis of land cover and sea ice dynamics, and fail to incorporate the perspective of Earth system safety thresholds. Here, we developed an integrated monitoring framework by fusing multi-source remote sensing and reanalysis data, generating a 5-day resolution time series (2018-2025) of global land cover and sea ice coverage with near-real-time update capability. Our analysis reveals distinct latitudinal and regional patterns, with forests dominating (27.0% of global land area) tropical and subtropical regions. At the national scale, land cover composition and seasonal rhythms vary significantly, with countries like China, India, and the US exhibiting divergent patterns such as bimodal cropland fluctuations and alternating snow/ice dominance. Temporally, vegetated cover types exhibit seasonal cycles peaking during Northern Hemisphere summer, and a pronounced anti-phase seasonal pattern is observed between Arctic and Antarctic sea ice coverage. Crucially, safety threshold analysis indicates the global forest cover indicator (~60%) is approaching the 54% lower safe limit, with a declining trend in recent years. Concurrently, Arctic sea ice coverage in September occasionally drops to 23%, below its critical upper limit of 27.6%. Temperature presents a significant negative correlation with sea ice cover (R = -0.78, p < 0.001), with asymmetric freezing and melting rates. By quantifying the proximity of key indicators to their safety thresholds, this study provides a robust, integrated framework for early-warning assessment, thereby offering vital scientific support for global climate adaptation and sustainable policymaking.",
+      "authors": [
+        "Lixing Wang",
+        "Tao Li",
+        "Xinyu Dou",
+        "Zhu Liu"
+      ],
+      "primary_category": "physics.ao-ph",
+      "categories": [
+        "physics.ao-ph",
+        "physics.geo-ph"
+      ],
+      "published": "2026-04-07T03:31:04+00:00",
+      "link": "https://arxiv.org/pdf/2604.05384v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "fusing multi-source remote sensing for land cover monitoring",
+      "llm_evidence_cn": "融合多源遥感数据进行土地覆盖监测",
+      "llm_evidence": "融合多源遥感数据进行土地覆盖监测",
+      "canonical_evidence": "融合多源遥感数据进行土地覆盖监测",
+      "llm_tldr_en": "Develops a framework for near real-time global land cover monitoring using multi-source remote sensing data.",
+      "llm_tldr_cn": "开发了一个利用多源遥感数据进行近实时全球土地覆盖监测的框架。",
+      "llm_tldr": "开发了一个利用多源遥感数据进行近实时全球土地覆盖监测的框架。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.03768v1",
+      "source": "arxiv",
+      "title": "RL-Driven Sustainable Land-Use Allocation for the Lake Malawi Basin",
+      "abstract": "Unsustainable land-use practices in ecologically sensitive regions threaten biodiversity, water resources, and the livelihoods of millions. This paper presents a deep reinforcement learning (RL) framework for optimizing land-use allocation in the Lake Malawi Basin to maximize total ecosystem service value (ESV). Drawing on the benefit transfer methodology of Costanza et al., we assign biome-specific ESV coefficients -- locally anchored to a Malawi wetland valuation -- to nine land-cover classes derived from Sentinel-2 imagery. The RL environment models a 50x50 cell grid at 500m resolution, where a Proximal Policy Optimization (PPO) agent with action masking iteratively transfers land-use pixels between modifiable classes. The reward function combines per-cell ecological value with spatial coherence objectives: contiguity bonuses for ecologically connected land-use patches (forest, cropland, built area etc.) and buffer zone penalties for high-impact development adjacent to water bodies. We evaluate the framework across three scenarios: (i) pure ESV maximization, (ii) ESV with spatial reward shaping, and (iii) a regenerative agriculture policy scenario. Results demonstrate that the agent effectively learns to increase total ESV; that spatial reward shaping successfully steers allocations toward ecologically sound patterns, including homogeneous land-use clustering and slight forest consolidation near water bodies; and that the framework responds meaningfully to policy parameter changes, establishing its utility as a scenario-analysis tool for environmental planning.",
+      "authors": [
+        "Ying Yao"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-04-04T15:39:33+00:00",
+      "link": "https://arxiv.org/pdf/2604.03768v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Sentinel-2 imagery for land-use allocation and ecosystem service valuation",
+      "llm_evidence_cn": "利用Sentinel-2影像进行土地利用分配和生态系统服务价值评估",
+      "llm_evidence": "利用Sentinel-2影像进行土地利用分配和生态系统服务价值评估",
+      "canonical_evidence": "利用Sentinel-2影像进行土地利用分配和生态系统服务价值评估",
+      "llm_tldr_en": "Applies RL and Sentinel-2 data for sustainable land-use optimization in a lake basin.",
+      "llm_tldr_cn": "应用强化学习和Sentinel-2数据优化马拉维湖流域的可持续土地利用。",
+      "llm_tldr": "应用强化学习和Sentinel-2数据优化马拉维湖流域的可持续土地利用。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.05959v1",
+      "source": "arxiv",
+      "title": "Multi-Modal Landslide Detection from Sentinel-1 SAR and Sentinel-2 Optical Imagery Using Multi-Encoder Vision Transformers and Ensemble Learning",
+      "abstract": "Landslides represent a major geohazard with severe impacts on human life, infrastructure, and ecosystems, underscoring the need for accurate and timely detection approaches to support disaster risk reduction. This study proposes a modular, multi-model framework that fuses Sentinel-2 optical imagery with Sentinel-1 Synthetic Aperture Radar (SAR) data, for robust landslide detection. The methodology leverages multi-encoder vision transformers, where each data modality is processed through separate lightweight pretrained encoders, achieving strong performance in landslide detection. In addition, the integration of multiple models, particularly the combination of neural networks and gradient boosting models (LightGBM and XGBoost), demonstrates the power of ensemble learning to further enhance accuracy and robustness. Derived spectral indices, such as NDVI, are integrated alongside original bands to enhance sensitivity to vegetation and surface changes. The proposed methodology achieves a state-of-the-art F1 score of 0.919 on landslide detection, addressing a patch-based classification task rather than pixel-level segmentation and operating without pre-event Sentinel-2 data, highlighting its effectiveness in a non-classical change detection setting. It also demonstrated top performance in a machine learning competition, achieving a strong balance between precision and recall and highlighting the advantages of explicitly leveraging the complementary strengths of optical and radar data. The conducted experiments and research also emphasize scalability and operational applicability, enabling flexible configurations with optical-only, SAR-only, or combined inputs, and offering a transferable framework for broader natural hazard monitoring and environmental change applications. Full training and inference code can be found in https://github.com/IoannisNasios/sentinel-landslide-cls.",
+      "authors": [
+        "Ioannis Nasios"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-04-07T14:51:05+00:00",
+      "link": "https://arxiv.org/pdf/2604.05959v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Fusing Sentinel-1 SAR and Sentinel-2 optical imagery for geohazard detection",
+      "llm_evidence_cn": "融合Sentinel-1 SAR和Sentinel-2光学影像进行地质灾害检测",
+      "llm_evidence": "融合Sentinel-1 SAR和Sentinel-2光学影像进行地质灾害检测",
+      "canonical_evidence": "融合Sentinel-1 SAR和Sentinel-2光学影像进行地质灾害检测",
+      "llm_tldr_en": "Uses multi-modal SAR and optical data fusion for landslide detection, applicable to environmental monitoring.",
+      "llm_tldr_cn": "利用多模态SAR和光学数据融合进行滑坡检测，适用于环境监测。",
+      "llm_tldr": "利用多模态SAR和光学数据融合进行滑坡检测，适用于环境监测。",
+      "llm_tags": [
+        "query:q8"
+      ],
+      "matched_query_tag": "query:q8",
+      "matched_query_text": "Applications of remote sensing in agriculture for crop and soil monitoring",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.03837v1",
+      "source": "arxiv",
+      "title": "Task-Guided Multi-Annotation Triplet Learning for Remote Sensing Representations",
+      "abstract": "Prior multi-task triplet loss methods relied on static weights to balance supervision between various types of annotation. However, static weighting requires tuning and does not account for how tasks interact when shaping a shared representation. To address this, the proposed task-guided multi-annotation triplet loss removes this dependency by selecting triplets through a mutual-information criteria that identifies triplets most informative across tasks. This strategy modifies which samples influence the representation rather than adjusting loss magnitudes. Experiments on an aerial wildlife dataset compare the proposed task-guided selection against several triplet loss setups for shaping a representation in an effective multi-task manner. The results show improved classification and regression performance and demonstrate that task-aware triplet selection produces a more effective shared representation for downstream tasks.",
+      "authors": [
+        "Meilun Zhou",
+        "Alina Zare"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-04T19:30:38+00:00",
+      "link": "https://arxiv.org/pdf/2604.03837v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Multi-annotation triplet learning for remote sensing representations",
+      "llm_evidence_cn": "用于遥感表征的多标注三元组学习",
+      "llm_evidence": "用于遥感表征的多标注三元组学习",
+      "canonical_evidence": "用于遥感表征的多标注三元组学习",
+      "llm_tldr_en": "Proposes a task-guided triplet loss to improve multi-task representation learning in remote sensing.",
+      "llm_tldr_cn": "提出一种任务引导的三元组损失，以改进遥感中的多任务表征学习。",
+      "llm_tldr": "提出一种任务引导的三元组损失，以改进遥感中的多任务表征学习。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.07092v1",
+      "source": "arxiv",
+      "title": "Location Is All You Need: Continuous Spatiotemporal Neural Representations of Earth Observation Data",
+      "abstract": "In this work, we present LIANet (Location Is All You Need Network), a coordinate-based neural representation that models multi-temporal spaceborne Earth observation (EO) data for a given region of interest as a continuous spatiotemporal neural field. Given only spatial and temporal coordinates, LIANet reconstructs the corresponding satellite imagery. Once pretrained, this neural representation can be adapted to various EO downstream tasks, such as semantic segmentation or pixel-wise regression, importantly, without requiring access to the original satellite data. LIANet intends to serve as a user-friendly alternative to Geospatial Foundation Models (GFMs) by eliminating the overhead of data access and preprocessing for end-users and enabling fine-tuning solely based on labels. We demonstrate the pretraining of LIANet across target areas of varying sizes and show that fine-tuning it for downstream tasks achieves competitive performance compared to training from scratch or using established GFMs. The source code and datasets are publicly available at https://github.com/mojganmadadi/LIANet/tree/v1.0.1.",
+      "authors": [
+        "Mojgan Madadikhaljan",
+        "Jonathan Prexl",
+        "Isabelle Wittmann",
+        "Conrad M Albrecht",
+        "Michael Schmitt"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-08T13:44:49+00:00",
+      "link": "https://arxiv.org/pdf/2604.07092v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "neural representation for Earth observation downstream tasks like pixel-wise regression",
+      "llm_evidence_cn": "用于像素级回归等地球观测下游任务的神经表示",
+      "llm_evidence": "用于像素级回归等地球观测下游任务的神经表示",
+      "canonical_evidence": "用于像素级回归等地球观测下游任务的神经表示",
+      "llm_tldr_en": "Proposes LIANet, a neural field model for reconstructing and analyzing multi-temporal satellite imagery.",
+      "llm_tldr_cn": "提出LIANet，一种用于重建和分析多时相卫星图像的神经场模型。",
+      "llm_tldr": "提出LIANet，一种用于重建和分析多时相卫星图像的神经场模型。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.07092v2",
+      "source": "arxiv",
+      "title": "Location Is All You Need: Continuous Spatiotemporal Neural Representations of Earth Observation Data",
+      "abstract": "In this work, we present LIANet (Location Is All You Need Network), a coordinate-based neural representation that models multi-temporal spaceborne Earth observation (EO) data for a given region of interest as a continuous spatiotemporal neural field. Given only spatial and temporal coordinates, LIANet reconstructs the corresponding satellite imagery. Once pretrained, this neural representation can be adapted to various EO downstream tasks, such as semantic segmentation or pixel-wise regression, importantly, without requiring access to the original satellite data. LIANet intends to serve as a user-friendly alternative to Geospatial Foundation Models (GFMs) by eliminating the overhead of data access and preprocessing for end-users and enabling fine-tuning solely based on labels. We demonstrate the pretraining of LIANet across target areas of varying sizes and show that fine-tuning it for downstream tasks achieves competitive performance compared to training from scratch or using established GFMs. The source code and datasets are publicly available at https://github.com/mojganmadadi/LIANet/tree/v1.0.1.",
+      "authors": [
+        "Mojgan Madadikhaljan",
+        "Jonathan Prexl",
+        "Isabelle Wittmann",
+        "Conrad M Albrecht",
+        "Michael Schmitt"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-08T13:44:49+00:00",
+      "link": "https://arxiv.org/pdf/2604.07092v2",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "continuous spatiotemporal neural representations of Earth observation data for pixel-wise regression",
+      "llm_evidence_cn": "用于像素级回归的地球观测数据连续时空神经表示",
+      "llm_evidence": "用于像素级回归的地球观测数据连续时空神经表示",
+      "canonical_evidence": "用于像素级回归的地球观测数据连续时空神经表示",
+      "llm_tldr_en": "LIANet models Earth observation data as a continuous neural field for downstream tasks like pixel-wise regression.",
+      "llm_tldr_cn": "LIANet将地球观测数据建模为连续神经场，支持像素级回归等下游遥感任务。",
+      "llm_tldr": "LIANet将地球观测数据建模为连续神经场，支持像素级回归等下游遥感任务。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.07182v1",
+      "source": "arxiv",
+      "title": "TeaLeafVision: An Explainable and Robust Deep Learning Framework for Tea Leaf Disease Classification",
+      "abstract": "As the worlds second most consumed beverage after water, tea is not just a cultural staple but a global economic force of profound scale and influence. More than a mere drink, it represents a quiet negotiation between nature, culture, and the human desire for a moment of reflection. So, the precise identification and detection of tea leaf disease is crucial. With this goal, we have evaluated several Convolutional Neural Networks (CNN) models, among them three shows noticeable performance including DenseNet201, MobileNetV2, InceptionV3 on the teaLeafBD dataset. teaLeafBD dataset contains seven classes, six disease classes and one healthy class, collected under various field conditions reflecting real world challenges. Among the CNN models, DenseNet201 has achieved the highest test accuracy of 99%. In order to enhance the model reliability and interpretability, we have implemented Gradient weighted Class Activation Mapping (Grad CAM), occlusion sensitivity analysis and adversarial training techniques to increase the noise resistance of the model. Finally, we have developed a prototype in order to leverage the models capabilities on real life agriculture. This paper illustrates the deep learning models capabilities to classify the disease in real life tea leaf disease detection and management.",
+      "authors": [
+        "Rafi Ahamed",
+        "Sidratul Moon Nafsin",
+        "Md Abir Rahman",
+        "Tasnia Tarannum Roza",
+        "Munaia Jannat Easha",
+        "Abu Raihan"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-04-08T15:11:33+00:00",
+      "link": "https://arxiv.org/pdf/2604.07182v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "crop disease classification under field conditions",
+      "llm_evidence_cn": "田间条件下的作物病害分类",
+      "llm_evidence": "田间条件下的作物病害分类",
+      "canonical_evidence": "田间条件下的作物病害分类",
+      "llm_tldr_en": "A deep learning framework for tea leaf disease classification to support agricultural monitoring.",
+      "llm_tldr_cn": "一种用于茶叶病害分类的深度学习框架，支持农业监测。",
+      "llm_tldr": "一种用于茶叶病害分类的深度学习框架，支持农业监测。",
+      "llm_tags": [
+        "query:q8"
+      ],
+      "matched_query_tag": "query:q8",
+      "matched_query_text": "Applications of remote sensing in agriculture for crop and soil monitoring",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.07574v1",
+      "source": "arxiv",
+      "title": "Mathematical Analysis of Image Matching Techniques",
+      "abstract": "Image matching is a fundamental problem in Computer Vision with direct applications in robotics, remote sensing, and geospatial data analysis. We present an analytical and experimental evaluation of classical local feature-based image matching algorithms on satellite imagery, focusing on the Scale-Invariant Feature Transform (SIFT) and the Oriented FAST and Rotated BRIEF (ORB). Each method is evaluated through a common pipeline: keypoint detection, descriptor extraction, descriptor matching, and geometric verification via RANSAC with homography estimation. Matching quality is assessed using the Inlier Ratio - the fraction of correspondences consistent with the estimated homography. The study uses a manually constructed dataset of GPS-annotated satellite image tiles with intentional overlaps. We examine the impact of the number of extracted keypoints on the resulting Inlier Ratio.",
+      "authors": [
+        "Oleh Samoilenko"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "math.NA"
+      ],
+      "published": "2026-04-08T20:24:40+00:00",
+      "link": "https://arxiv.org/pdf/2604.07574v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Image matching algorithms on satellite imagery for geospatial data analysis",
+      "llm_evidence_cn": "卫星图像匹配算法用于地理空间数据分析",
+      "llm_evidence": "卫星图像匹配算法用于地理空间数据分析",
+      "canonical_evidence": "卫星图像匹配算法用于地理空间数据分析",
+      "llm_tldr_en": "Evaluates SIFT and ORB algorithms for matching satellite imagery, a core remote sensing preprocessing task.",
+      "llm_tldr_cn": "评估用于卫星图像匹配的SIFT和ORB算法，这是遥感预处理的核心任务。",
+      "llm_tldr": "评估用于卫星图像匹配的SIFT和ORB算法，这是遥感预处理的核心任务。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

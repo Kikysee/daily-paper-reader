@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.06844v1/fig-001.webp",
+      "caption": "Fig. 2. Network structure of the dual-scale Mamba (DS-Mamba) block. (a) Structure of the DS-Mamba block. (b) Structure of the Mamba block [65].",
+      "page": 6,
+      "index": 1,
+      "width": 518,
+      "height": 428
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06844v1/fig-002.webp",
+      "caption": "TABLE I COMPARISON RESULTS ON THE GF1 WHU AND LEVIR CS CLOUD DETECTION TEST SETS. THE BEST SCORES ARE HIGHLIGHTED IN BOLD",
+      "page": 11,
+      "index": 2,
+      "width": 1054,
+      "height": 449
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06844v1/fig-003.webp",
+      "caption": "Fig. 4. Visualization results of different methods on the GF1 WHU and Levir CS test sets. (a–h) represent the prediction results of different methods on various samples.",
+      "page": 11,
+      "index": 3,
+      "width": 1055,
+      "height": 777
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06844v1/fig-004.webp",
+      "caption": "Fig. 3. Four-directional scanning mechanism of 2D Selective Scan (SS2D).",
+      "page": 7,
+      "index": 4,
+      "width": 1064,
+      "height": 259
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06844v1/fig-005.webp",
+      "caption": "Fig. 6. Visualization examples of different stages in the CloudMamba framework. (a) Input image IRSI, (b) ground-truth cloud mask Y , (c) coarse cloud probability map Pc, (d) coarse cloud mask Ŷc, (e) uncertainty estimation map U , (f) acceptance mask M , (g) refined cloud probability map Pr , (h) refined cloud mask Ŷr , and (i) output cloud mask Ŷ . The test samples are from the GF1 WHU dataset.",
+      "page": 14,
+      "index": 5,
+      "width": 1063,
+      "height": 353
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06844v1/fig-006.webp",
+      "caption": "Fig. 1. Overall architecture of CloudMamba. (a) The complete framework consisting of a base segmentation network generating a coarse prediction mask and a second-stage uncertainty-guided refinement network. (b) The encoder-decoder architecture of the base segmentation network. (c) The CNN-SSM Hybrid Perception Block. (d) The mask fusion module.",
+      "page": 5,
+      "index": 6,
+      "width": 1068,
+      "height": 1253
+    }
+  ]
+}
