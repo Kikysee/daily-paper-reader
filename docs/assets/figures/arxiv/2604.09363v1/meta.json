@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.09363v1/fig-001.webp",
+      "caption": "Figure 8: (a) Lidar data for a single corn canopy row and (b) its corresponding density map along the row; (c) Lidar data of a single soybean row and (d) corresponding Kernel-processed height map along the row",
+      "page": 7,
+      "index": 1,
+      "width": 500,
+      "height": 542
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09363v1/fig-002.webp",
+      "caption": "Figure 7: Example height profile along (a) X axis without regular row structure, and (b) Y axis with periodic peaks detected as rows; (c) Example of Row lines detected and visualized inter-row boundary delineation",
+      "page": 7,
+      "index": 2,
+      "width": 506,
+      "height": 454
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09363v1/fig-003.webp",
+      "caption": "Figure 16: GreenScatter is capable of tracking daily soil moisture variations.",
+      "page": 10,
+      "index": 3,
+      "width": 498,
+      "height": 469
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09363v1/fig-004.webp",
+      "caption": "Figure 9: Our UAV prototype Figure 10: Calibration setup",
+      "page": 8,
+      "index": 4,
+      "width": 506,
+      "height": 250
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09363v1/fig-005.webp",
+      "caption": "Table 1: Prior work comparison across design dimensions.",
+      "page": 4,
+      "index": 5,
+      "width": 986,
+      "height": 315
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09363v1/fig-006.webp",
+      "caption": "Figure 21: Comparison of LiDAR-derived estimates and ground-truth: (a) Leaf Area Index, (b) Average Canopy Density, and (c) Average Canopy Height.",
+      "page": 12,
+      "index": 6,
+      "width": 500,
+      "height": 692
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09363v1/fig-007.webp",
+      "caption": "Figure 12: Snapshots of our experimental sites with different canopy coverage, spanning over 9 acres.",
+      "page": 9,
+      "index": 7,
+      "width": 498,
+      "height": 421
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09363v1/fig-008.webp",
+      "caption": "Figure 14: GreenScatter retrieval maintains positive estimation-groundtruth correlations over a wide range of groundtruth soil moistures.",
+      "page": 9,
+      "index": 8,
+      "width": 440,
+      "height": 442
+    }
+  ]
+}

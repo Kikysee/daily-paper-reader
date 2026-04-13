@@ -1,0 +1,78 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.05742v1/fig-001.webp",
+      "caption": "Fig. 1. Anisotropy response map of the input image. Brighter regions indicate stronger anisotropy, demonstrating that the image contains substantial directional features.",
+      "page": 1,
+      "index": 1,
+      "width": 504,
+      "height": 381
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05742v1/fig-002.webp",
+      "caption": "TABLE I QUANTITATIVE COMPARISON ON THE CAVE AND HARVARD DATASETS. BEST RESULTS ARE IN BOLD AND THE SECOND BEST ARE UNDERLINED.",
+      "page": 6,
+      "index": 2,
+      "width": 1076,
+      "height": 286
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05742v1/fig-003.webp",
+      "caption": "Fig. 5. Visual comparison on the CAVE dataset. From left to right: DHIF-Net, DSPNet, LRTN, MIMO-SST, SINet, OTIAS, SRLF, ASSR-Net (ours), and GT.",
+      "page": 7,
+      "index": 3,
+      "width": 1071,
+      "height": 187
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05742v1/fig-004.webp",
+      "caption": "Fig. 9. Classification results before and after fusion. (a) Classification result of LR-HSI. (b) Classification result of the predicted HR-HSI. (c) Reference.",
+      "page": 10,
+      "index": 4,
+      "width": 1007,
+      "height": 529
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05742v1/fig-005.webp",
+      "caption": "Fig. 10. Spectral profiles of three points (marked in the RGB images) for three different scenes.Stage 2 consistently reduces spectral deviations compared to Stage 1 and outperforms other methods.",
+      "page": 10,
+      "index": 5,
+      "width": 1074,
+      "height": 234
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05742v1/fig-006.webp",
+      "caption": "TABLE III HYPERPARAMETER SENSITIVITY ANALYSIS OF THE NUMBER OF PROJECTION DIRECTIONS K IN ASSE AND THE NUMBER OF TRANSFORMER BLOCKS (TB) IN GSRT ON THE CAVE DATASET, INCLUDING COMPUTATIONAL COMPLEXITY AND INFERENCE TIME (MEASURED ON A 64× 64 PATCH, AVERAGED OVER 10 RUNS).",
+      "page": 8,
+      "index": 6,
+      "width": 1076,
+      "height": 350
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05742v1/fig-007.webp",
+      "caption": "TABLE IV ABLATION STUDY ON CAVE DATASET. ✓ DENOTES MODULE INCLUDED, × DENOTES MODULE EXCLUDED.",
+      "page": 8,
+      "index": 7,
+      "width": 1076,
+      "height": 201
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05742v1/fig-008.webp",
+      "caption": "Fig. 8. Visual comparison of Stage I and Stage II outputs. Top row: Spectral error maps (SAM) after Stage I; middle row: Spectral error maps after Stage II; bottom row: Pseudo-color RGB images of the final fusion result. Warmer colors in error maps indicate larger spectral deviation. Stage II significantly reduces errors, especially in complex regions.",
+      "page": 9,
+      "index": 8,
+      "width": 1076,
+      "height": 271
+    },
+    {
+      "url": "assets/figures/arxiv/2604.05742v1/fig-009.webp",
+      "caption": "TABLE VI CLASSIFICATION RESULTS (F1 SCORES, %) OF LR-HSI AND THE HR-HSI PREDICTED BY ASSR-NET ON THE HOUSTON DATASET.",
+      "page": 9,
+      "index": 9,
+      "width": 529,
+      "height": 521
+    }
+  ]
+}

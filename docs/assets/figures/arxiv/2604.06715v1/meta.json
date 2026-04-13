@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.06715v1/fig-001.webp",
+      "caption": "Figure 2. Overview of Quantum Circuits used in HQF-Net - a) Enrichment Multiscale Circuit, b) Local Circuit, c) Global Circuit, and d) Diagonal Circuit",
+      "page": 6,
+      "index": 1,
+      "width": 1036,
+      "height": 644
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06715v1/fig-002.webp",
+      "caption": "Figure 5. Qualitative segmentation results on the SeasoNet dataset showing original images, ground-truth masks, and comparisons with other models.",
+      "page": 15,
+      "index": 2,
+      "width": 1038,
+      "height": 970
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06715v1/fig-003.webp",
+      "caption": "Table 2. Comparison on OpenEarthMap with State-of-the-Art Methods (mIoU %)",
+      "page": 7,
+      "index": 3,
+      "width": 433,
+      "height": 348
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06715v1/fig-004.webp",
+      "caption": "Figure 1. Overview of the proposed HQF-Net architecture. The model integrates a frozen DINOv3 ViT-L/16 encoder with Deformable Multi-Scale Cross-Attention Fusion (DMCAF) module. The main hybrid components are Quantum Skip (QSkip) refinement blocks and a bottleneck with Quantum Mixture-of-Experts (QMoE) block that adaptively combines local, global, and diagonal quantum experts. CT2D denotes transposed convolution.",
+      "page": 3,
+      "index": 4,
+      "width": 990,
+      "height": 629
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06715v1/fig-005.webp",
+      "caption": "Table 4. Ablation study showing the impact of different fusion strategies and quantum components on the LandCover.ai dataset.",
+      "page": 8,
+      "index": 5,
+      "width": 844,
+      "height": 283
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06715v1/fig-006.webp",
+      "caption": "Figure 3. Qualitative segmentation on the LandCover.ai dataset, showing input images, ground-truth masks, and predictions by HQF-Net.",
+      "page": 8,
+      "index": 6,
+      "width": 1038,
+      "height": 601
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06715v1/fig-007.webp",
+      "caption": "Figure 7. Qualitative segmentation results on the OpenEarthMap and SeasoNet datasets showing original images, ground-truth masks, and HQF-Net predictions.",
+      "page": 17,
+      "index": 7,
+      "width": 1038,
+      "height": 429
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06715v1/fig-008.webp",
+      "caption": "Figure 6. Qualitative segmentation results on the OpenEarthMap dataset showing original images, ground-truth masks, and comparisons with other models.",
+      "page": 16,
+      "index": 8,
+      "width": 1038,
+      "height": 957
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.04445v1/fig-001.webp",
+      "caption": "FIGURE 10. Practical deployment pipeline integrating TinyNina with existing environmental monitoring infrastructure. Sentinel-2 satellite observations undergo preprocessing before spectral enhancement using TinyNina. The enhanced imagery is then used for NO2 prediction through a trained ResNet-based regression model. The resulting predictions are integrated with ground monitoring stations and deployed through edge/cloud inference systems to support large-scale environmental monitoring and decision-making platforms.",
+      "page": 11,
+      "index": 1,
+      "width": 356,
+      "height": 554
+    },
+    {
+      "url": "assets/figures/arxiv/2604.04445v1/fig-002.webp",
+      "caption": "FIGURE 5. Training convergence comparison of super-resolution models across Naive SR and Channel SR tasks. The proposed TinyNina model demonstrates faster and more stable convergence compared to baseline architectures (EDSR, RCAN, and NinaB1). In the Channel SR setting, TinyNina achieves optimal performance within 50 epochs, while requiring substantially fewer training iterations than EDSR, which requires approximately 200 epochs to converge despite having 800× more parameters.",
+      "page": 8,
+      "index": 2,
+      "width": 1051,
+      "height": 392
+    },
+    {
+      "url": "assets/figures/arxiv/2604.04445v1/fig-003.webp",
+      "caption": "FIGURE 6. Qualitative comparison between the reference image, the native low-resolution input, and the corresponding TinyNina super-resolved output. The zoomed-in regions highlight that TinyNina restores finer spatial structures and local intensity variations that are degraded in the low-resolution input while preserving the overall scene layout.",
+      "page": 8,
+      "index": 3,
+      "width": 508,
+      "height": 327
+    },
+    {
+      "url": "assets/figures/arxiv/2604.04445v1/fig-004.webp",
+      "caption": "FIGURE 2. Detailed information on the twelve Sentinel-2 spectral bands for a specific location. The rows are color-coded to differentiate spatial resolutions: yellow highlights the 10m bands, red represents the 20m bands, and blue indicates the 60m bands, providing a clear overview of the wavelength and resolution for each band.",
+      "page": 4,
+      "index": 4,
+      "width": 408,
+      "height": 342
+    },
+    {
+      "url": "assets/figures/arxiv/2604.04445v1/fig-005.webp",
+      "caption": "FIGURE 7. Convergence behavior of NO2 prediction models trained on super-resolved inputs from different architectures. Models trained on TinyNina-enhanced images learn much faster, typically reaching their best performance 40 to 50 epochs earlier than those using outputs from traditional models. TinyNina also achieves higher accuracy, with a lower final validation MAE of 7.4 µg/m3 compared to 8.2 µg/m3 for EDSR.",
+      "page": 9,
+      "index": 5,
+      "width": 1051,
+      "height": 423
+    },
+    {
+      "url": "assets/figures/arxiv/2604.04445v1/fig-006.webp",
+      "caption": "FIGURE 3. End-to-end architecture for NO2 prediction integrating (1) Sentinel-2 data preprocessing, (2) TinyNina spectral super-resolution, and (3) ResNet50-based concentration estimation. The system maintains temporal synchronization between satellite acquisitions and ground station measurements while preserving spectral-spatial features critical for accurate pollution mapping.",
+      "page": 5,
+      "index": 6,
+      "width": 506,
+      "height": 425
+    }
+  ]
+}
