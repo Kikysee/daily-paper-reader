@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.08896v1/fig-001.webp",
+      "caption": "Table 2. Evaluation results of MLLMs and text-only LLM baselines on the GeoMMBench val and test sets. The best-performing model in each category is highlighted in bold. Abbreviations: Full names of all dimensions and their subtasks are listed in the Appendix.",
+      "page": 7,
+      "index": 1,
+      "width": 1036,
+      "height": 814
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08896v1/fig-002.webp",
+      "caption": "Figure A11. A sample error case in remote sensing perception. Subfield: SAR imagery perception.",
+      "page": 14,
+      "index": 2,
+      "width": 495,
+      "height": 418
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08896v1/fig-003.webp",
+      "caption": "Figure 2. Examples from GeoMMBench, covering multiple disciplines, diverse sensor modalities, and a wide range of task types. Answering these questions requires advanced geoscience and RS expertise, along with specialized reasoning and interpretation skills.",
+      "page": 3,
+      "index": 3,
+      "width": 1027,
+      "height": 559
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08896v1/fig-004.webp",
+      "caption": "Figure A18. The multimodal query for aircraft counting. The question is: ”How many aircraft are there in the image?” The options are: (A) 13, (B) 10, (C) 12, (D) 9. The answer is C.",
+      "page": 18,
+      "index": 4,
+      "width": 496,
+      "height": 497
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08896v1/fig-005.webp",
+      "caption": "Figure 4. Representative error cases from advanced MLLMs specific to geospatial tasks. : GPT-4o; : Gemini-1.5 pro.",
+      "page": 8,
+      "index": 5,
+      "width": 1023,
+      "height": 854
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08896v1/fig-006.webp",
+      "caption": "Table 1. Comparison of geoscience and RS benchmarks for MLLMs across key evaluation dimensions. Full names of all dimensions are listed in the Appendix.",
+      "page": 4,
+      "index": 6,
+      "width": 1022,
+      "height": 223
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08896v1/fig-007.webp",
+      "caption": "Figure 3. Overview of GeoMMAgent, a multi-agent framework that plans, executes, and self-evaluates multimodal tasks for expert-level geospatial understanding.",
+      "page": 5,
+      "index": 7,
+      "width": 1036,
+      "height": 383
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08896v1/fig-008.webp",
+      "caption": "Figure A17. The multimodal query for our case study. The question is: ”Which of the following statements about Band 1⃝ is accurate?” The options are: (A) It is suitable for thermal remote sensing, (B) It is used in passive remote sensing, (C) It operates only during the day and is affected by weather conditions, and (D) It can penetrate vegetation to detect subsurface targets. The answer is D.",
+      "page": 16,
+      "index": 8,
+      "width": 496,
+      "height": 258
+    }
+  ]
+}
