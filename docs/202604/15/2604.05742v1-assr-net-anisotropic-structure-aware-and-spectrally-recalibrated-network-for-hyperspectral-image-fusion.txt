@@ -1,0 +1,780 @@
+Title: ASSR-Net: Anisotropic Structure-Aware and Spectrally Recalibrated Network for Hyperspectral Image Fusion
+
+URL Source: https://arxiv.org/pdf/2604.05742v1
+
+Published Time: Wed, 08 Apr 2026 01:07:42 GMT
+
+Number of Pages: 12
+
+Markdown Content:
+> 1
+
+# ASSR-Net: Anisotropic Structure-Aware and Spectrally Recalibrated Network for Hyperspectral Image Fusion 
+
+Qiya Song, Hongzhi Zhou, Lishan Tan, Renwei Dian Member, IEEE and Shutao Li Fellow, IEEE 
+
+Abstract —Hyperspectral image fusion aims to reconstruct high-spatial-resolution hyperspectral images (HR-HSI) by inte-grating complementary information from multi-source inputs. Despite recent progress, existing methods still face two critical challenges: (1) inadequate reconstruction of anisotropic spatial structures, resulting in blurred details and compromised spa-tial quality; and (2) spectral distortion during fusion, which hinders fine-grained spectral representation. To address these issues, we propose ASSR-Net: an Anisotropic Structure-Aware and Spectrally Recalibrated Network for Hyperspectral Image Fusion. ASSR-Net adopts a two-stage fusion strategy comprising anisotropic structure-aware spatial enhancement (ASSE) and hierarchical prior-guided spectral calibration (HPSC). In the first stage, a directional perception fusion module adaptively captures structural features along multiple orientations, effec-tively reconstructing anisotropic spatial patterns. In the second stage, a spectral recalibration module leverages the original low-resolution HSI as a spectral prior to explicitly correct spectral deviations in the fused results, thereby enhancing spectral fi-delity. Extensive experiments on various benchmark datasets demonstrate that ASSR-Net consistently outperforms state-of-the-art methods, achieving superior spatial detail preservation and spectral consistency. 
+
+Index Terms —Hyperspectral image fusion, Anisotropic struc-ture modeling, Spectral recalibration 
+
+I. I NTRODUCTION 
+
+# HYPERSPECTRAL imaging acquires fine-grained spec-tral information across hundreds of narrow, contiguous bands. This capability provides distinct advantages for precise material identification and quantitative analysis, rendering it indispensable in applications such as environmental monitor-ing [1], precision agriculture [2], [3], mineral exploration [4], and defense reconnaissance [5]. Nevertheless, physical limi-tations of imaging sensors introduce a fundamental trade-off between spatial and spectral resolution [6], which significantly constrains the practical utility of hyperspectral imaging in scenarios that require high spatial detail. To address this limitation, hyperspectral and multispectral fusion imaging has emerged as a promising computational strategy. Its objective is to reconstruct high-spatial-resolution hyperspectral images (HR-HSI) by integrating complemen-tary information from multiple sources. Early fusion meth-ods predominantly relied on traditional approaches, including component substitution [7], multi-resolution analysis [8], [9], and linear models based on matrix factorization [10], [11]  
+
+> This work is supported in part by the National Natural Science Foundation of China under Grant 62401204. Qiya Song and Hongzhi Zhou are with School of Information Science and Engineering, Hunan Normal University, Changsha, Hunan 410081, China. Lisan Tan, Renwei Dian and Shutao Li are with the School of Robotics, Hunan University, Changsha, Hunan 410082, China.
+> Fig. 1. Anisotropy response map of the input image. Brighter regions indicate stronger anisotropy, demonstrating that the image contains substantial directional features.
+
+and tensor decomposition [12], [13]. While these methods offer theoretical interpretability, their linear assumptions and limited capacity for nonlinear modeling often result in spatial blurring and spectral distortion [14], [15]. The advent of deep learning has brought substantial advancements to this field. Convolutional neural networks (CNNs) [16], [17] and Transformer architectures [18]–[20] have demonstrated supe-rior ability to capture complex spatial-spectral relationships. More recently, attention-based fusion networks [21] and state-space models [22] have introduced new paradigms for model-ing intricate dependencies in hyperspectral data, effectively mitigating some limitations of traditional methods through enhanced nonlinear representation. Despite these advances, contemporary deep learning meth-ods still encounter challenges in modeling complex spatial-spectral characteristics. Spatially, standard CNNs [16], [17], [23] employ isotropic kernels, which are insufficient for cap-turing anisotropic structures such as edges and boundaries. Subsequent methods [18], [24]–[26] have incorporated direc-tional encoding or multi-scale designs to address this issue. Nevertheless, they remain inadequate in modeling orientation-dependent features across multiple scales, often producing blurred reconstructions of linear structures. As illustrated in Fig. 1, the input hyperspectral image exhibits pronounced anisotropic features, underscoring the necessity of explicitly modeling directional structures [27]–[29]. In addition to spa-tial limitations, maintaining spectral fidelity remains a criti-cal challenge. Existing methods [30]–[32] typically rely on implicit feature learning or indirect constraints to preserve 
+
+> arXiv:2604.05742v1 [cs.CV] 7 Apr 2026 2
+
+spectral consistency, lacking explicit mechanisms to anchor the reconstructed spectra to the original LR-HSI. These limitations in directional representation and spectral fidelity fundamen-tally constrain the performance of existing hyperspectral image fusion methods. Furthermore, a fundamental limitation of existing single-stage fusion methods arises from the inherent conflict between spatial enhancement and spectral fidelity. In conventional single-stage approaches, joint spatial-spectral optimization is performed within a unified network. During this process, the broadband spectral characteristics of the MSI inevitably interfere with the narrowband spectral signatures of the HSI, thereby impeding fine-grained spectral representation. To overcome these challenges, we propose a novel Anisotropic Structure-Aware and Spectrally Recalibrated Net-work (ASSR-Net). Our method employs a dual-stage fusion strategy that progressively enhances spatial structures and opti-mizes spectral calibration. In the Anisotropic Structure-Aware Spatial Enhancement (ASSE) stage, an Variable Direction-Aware Encoders (VDAE) module captures anisotropic features through a multi-scale geometric transformation framework, integrating multi-scale subband decomposition with directional feature extraction to effectively reconstruct detailed spatial patterns. In the Hierarchical Prior-Guided Spectral Calibration (HPSC) stage, a Global Spectral Recalibration Transformer (GSRT) mitigates spectral distortions via hierarchical spectral prior integration. This module establishes a spectral-guided attention mechanism that dynamically adjusts feature repre-sentations based on low-resolution HSI characteristics. By incorporating multi-scale spectral constraints, our network maintains spectral consistency while enhancing spatial reso-lution. The two-stage architecture of ASSR-Net is explicitly designed to address spectral contamination by decoupling spatial enhancement from spectral calibration. (1) correcting spectral distortions within an already spatially coherent struc-ture is more effective than simultaneous spatial-spectral opti-mization in a single stage; (2) spectral contamination can be proactively mitigated by first establishing a spatially plausible foundation, even if minor spectral deviations are introduced, followed by targeted spectral calibration; (3) a decoupled design allows each stage to be specialized and optimized for its specific objective (spatial detail injection versus spectral fidelity restoration) without forcing a compromise between these conflicting goals within a single network. The main contributions of this work are summarized as follows:  
+
+> •
+
+We propose ASSR-Net, an end-to-end dual-stage fusion network that progressively refines spatial structures and spectral fidelity to achieve high-quality hyperspectral image reconstruction.  
+
+> •
+
+We design an VDAE module that effectively captures anisotropic spatial structures through geometric transfor-mation and multi-scale directional analysis, significantly improving the reconstruction of detailed spatial patterns.  
+
+> •
+
+We develop a GSRT module that preserves spectral char-acteristics through hierarchical prior guidance and cross-scale attention mechanisms, effectively reducing spectral distortion in heterogeneous regions. II. R ELATED WORK 
+
+A. Traditional Methods 
+
+Traditional HSI-MSI fusion techniques depend on manually designed priors and linear modeling assumptions. Among them, the component substitution (CS) methods [7] replace certain components of the LR-HSI with spatial information from the HR-MSI. While these approaches are computation-ally efficient, they frequently introduce significant spectral distortion arising from mismatches between the substituted components and the original spectral characteristics of the LR-HSI. Multiresolution analysis (MRA) methods [8], [9] enhance spatial resolution by injecting high-frequency details derived from multi-scale decomposition of the HR-MSI. Although MRA methods generally achieve superior spectral preservation compared to CS approaches, their reliance on isotropic filters inherently limits their capacity to reconstruct anisotropic or directional structures. Matrix factorization [10], [33], [34] and tensor decomposition [13] methods represent the HSI data via low-rank factorized models to capture inherent spatial-spectral correlations. However, their underlying linearity assumptions prove inadequate for modeling the complex, nonlinear rela-tionships inherent between the LR-HSI and HR-MSI data. To overcome these limitations, recent tensor-based approaches have introduced more sophisticated regularization and learning strategies. For instance, Dian et al. proposed a generalized tensor nuclear norm regularization that flexibly exploits the low-rank structure of hyperspectral data [12]. Wang et al. developed an unsupervised deep Tucker decomposition net-work integrating spatial-spectral manifold learning for blind fusion [14]. 
+
+B. Deep Learning-Based Methods 
+
+Deep learning has significantly advanced HSI-MSI fusion, yet prevailing approaches continue to face two interconnected challenges: effectively preserving directional structures and maintaining accurate spectral fidelity. In spatial reconstruc-tion, CNNs like HSRNet [16] establish mappings through local feature extraction, but their isotropic kernels treat all spatial directions uniformly, often blurring linear features and edges. While Transformer architectures [18], [24] overcome limited receptive fields via self-attention and capture long-range dependencies, their uniform attention weights still fail to emphasize dominant orientations. To address these limitations, multi-scale and multi-stage architectures have been explored. Dong et al. proposed a feature pyramid fusion network that aggregates multi-resolution representations for hyperspectral pansharpening [27]. Wu et al. designed a multistage spatial-spectral fusion network that cascades multiple U-shaped sub-networks for spectral super-resolution [28]. These designs show the benefit of progressive refinement, yet most still stack functionally similar blocks. More recent innovations, including state-space models such as FusionMamba [22] and diffusion models [35], offer efficient global modeling and generate high-frequency details. Despite these strengths, their sequential scanning or stochastic denoising mechanisms re-main non-adaptive to anisotropic structures, often prioritizing general detail over directional accuracy. In spectral fidelity, 3Anisotropic Structure -Aware Fusion 
+
+> HR -MSI
+> LR -HSI
+> VDAE
+> VDAE
+> VDAE
+> Fusion
+> Fusion
+> Fusion
+
+C C
+
+> Zinit
+> GSRT
+> GSRT
+> GSRT
+> GSRT
+> መ𝑍
+> Conv
+> SPGA
+> FFN
+> Conv
+> X0
+> GT
+> 𝜆 1
+> 𝜆 2
+> Hierarchical Prior -Guided Spectral Calibration ( Stage II)
+> Anisotropic Structure -Aware Spatial Enhancement (Stage I)
+
+𝑋 1
+
+𝑌 1
+
+𝑋 2
+
+𝑌 2
+
+𝑋 3
+
+𝑌 3
+
+𝑋 1 𝑌 1𝑋 2 𝑌 2
+
+𝑇 1 𝑇 2
+
+𝑇 3
+
+> Zinit
+
+SP 
+
+> LR -HSI
+> GSPE
+> Conv
+> Norm
+> ReLU
+> MP
+> GSPE
+> GAP
+> Spectral prior extraction
+
+SP 
+
+> DAE
+> CA DACI
+> DAE
+> 𝑋 i
+> 𝑌 i
+> 𝑇 i
+> VDAE
+
+C Gate 
+
+> Conv
+> Conv
+> AST
+
+𝑋 i
+
+𝑇 i
+
+𝑌 i
+
+> Fusion
+> SGA
+> SDA
+> SPGA
+
+SP  
+
+> Hn-1
+> Xattn
+> C
+> Xspe
+> Xspa
+> Gate
+> Spectral prior
+> Feature
+> Concatenate
+> L1 Loss
+> Addition
+> Matrix
+> multiplication
+> 𝜆 1
+> 𝜆 2
+
+Fig. 2. Architecture of the proposed ASSR-Net. Stage I enhances anisotropic spatial structures from the low-resolution hyperspectral image (LR-HSI) X and high-resolution multispectral image (HR-MSI) Y using a cascade of Variable Direction-Aware Encoder (VDAE), producing an intermediate estimate Zinit .Stage II then refines spectral fidelity via a Global Spectral Recalibration Transformer (GSRT) that incorporates a spectral prior extracted from LR − HSI ,yielding the Reconstructed HR-HSI ˆZ. Two L1 losses, λ1 (for ˆZ) and λ2 (for Zinit ), jointly supervise training. 
+
+researchers have employed spectral attention [36] and selective re-learning [37] to model inter-band relationships and address distortions. However, these methods primarily rely on indirect constraints or static physical priors [18], lacking explicit mechanisms to directly anchor the output spectrum to the high-fidelity reference of the original LR-HSI. This limitation restricts dynamic spectral calibration during reconstruction, particularly in heterogeneous regions with mixed materials, leading to persistent spectral distortion. III. P ROPOSED METHOD 
+
+A. Overview 
+
+The proposed ASSR-Net adopts a dual-stage architecture that decouples spatial enhancement from spectral calibration. As illustrated in Fig. 2, the network takes a low-resolution hyperspectral image (LR-HSI) X ∈ RC×H×W and a high-resolution multispectral image (HR-MSI) Y ∈ Rc×H×W as inputs, and reconstructs a high-resolution hyperspectral image 
+
+ˆZ ∈ RC×H×W .The first stage performs anisotropic spatial enhancement, generating an initial estimate Zinit that inherits high-frequency details from Y while preserving the spectral structure of X. The second stage refines the spectral fidelity by using the original LR-HSI X as a spectral prior. The overall computation can be expressed as: 
+
+Zinit = ASSE (X, Y),
+
+ˆZ = HPSC (Zinit , X). (1) 
+
+B. Stage I: Anisotropic Structure-Aware Spatial Enhancement (ASSE) 
+
+ASSE aims to produce an initial high-resolution estimate 
+
+Zinit with rich spatial details. It first pre-processes the inputs: 
+
+X0 = UpSample (X),
+
+Y0 = Conv 3×3(Y), (2) where UpSample is bilinear upsampling to match the spatial dimensions of Y. The core of ASSE is a cascade of three Variable Direction-Aware Encoder (VDAE), each of which refines the features while extracting directional cross-modal correspondences: 
+
+(Xk, Yk, Tk) = VDAE k(Xk−1, Yk−1), k = 1 , 2, 3. (3) After the three encoding stages, the multi-scale directional tensors Tk and the features Xk, Yk are progressively fused through three learnable fusion modules: 
+
+F1 = Fusion 1(T3, X3, Y3),
+
+F2 = Fusion 2([ F1, T2], X2, Y2),
+
+F3 = Fusion 3([ F2, T1], X1, Y1),
+
+(4) where [·, ·] denotes channel-wise concatenation. Finally, the initial estimate is obtained by a residual addition: 
+
+Zinit = X0 + F3. (5) This residual formulation ensures that the network learns to predict the high-frequency residual details F3 rather than the 4AST AVG Conv       
+
+> Conv
+> Norm
+> Tanh Gate
+> CA
+> EEE
+> DAE
+> Conv
+> ReLu
+> Pool
+> MLP
+> 𝑙𝑒𝑛 𝜃 =k
+> 𝜃 AST
+> Radon
+> Radon
+> Radon
+> Radon
+> Conv
+> 𝜃
+> 𝜃
+> 𝜃
+> 𝜃
+> Conv
+> Conv
+> Conv Norm
+> Reshape
+> Conv2d
+> ReLu
+> Fig. 3. Detailed architecture of the Directional Attention Enhancement (DAE) module and its core component, the Anisotropic Structure Transform (AST). DAE enhances directional features via a global-local decomposition followed by a learnable gating fusion. AST performs multi-scale subband decomposition, differentiable Radon approximation along adaptively predicted directions, and frequency-adaptive enhancement in the wavelet domain to capture anisotropic structures.
+
+full image, thereby stabilizing training and preserving the spectral structure of the upsampled LR-HSI X0.
+
+Variable Direction-Aware Encoder (VDAE). As illus-trated in Fig. 2, each VDAE consists of three steps. First, a Directional Attention Enhancement (DAE) module indepen-dently enhances anisotropic structures: 
+
+F(k) 
+
+> x
+
+= DAE (k)(Xk−1),
+
+F(k) 
+
+> y
+
+= DAE (k)(Yk−1). (6) Second, a Dual-pathway Adaptive Cross Interaction (DACI) module establishes cross-modal directional correspondences: 
+
+Tk = DACI (k)(F(k) 
+
+> x
+
+, F(k) 
+
+> y
+
+). (7) Here, Tk serves as a directional correlation tensor that en-codes how anisotropic structures (edges, textures) in the high-resolution MSI Y should guide the spatial enhancement of the low-resolution HSI X, enabling cross-modal information transfer while maintaining modality-specific characteristics. Third, Tk is refined by a channel attention and used to update the features: 
+
+Tref  
+
+> k
+
+= Tk ⊙ σ MLP (GAP (Tk)) ,
+
+Xk = F(k) 
+
+> x
+
++ Conv (k) 
+
+> X
+
+(Tref  
+
+> k
+
+),
+
+Yk = F(k) 
+
+> y
+
++ Conv (k) 
+
+> Y
+
+(Tref  
+
+> k
+
+),
+
+(8) where Conv (k) 
+
+> X
+
+, Conv (k) 
+
+> Y
+
+are 1×1 convolutions. The channel at-tention mechanism (via GAP and MLP) adaptively recalibrates the importance of different directional features based on global context, suppressing irrelevant orientations while emphasizing dominant structural directions present in the scene. 
+
+Directional Attention Enhancement (DAE). DAE en-hances anisotropic structures via the Anisotropic Structure Transform (AST), as illustrated in Fig. 3. The overall DAE process is: 
+
+Fdirectional = AST (F),
+
+Fglobal = GlobalPath (Fdirectional ),
+
+Flocal = LocalPath (Fdirectional − Fglobal ),
+
+DAE (F) = G(Fglobal , Flocal ) + F,
+
+(9) where GlobalPath captures context via average pooling and pointwise convolution, LocalPath enhances fine details via two 
+
+3×3 convolutions with instance normalization and Tanh activa-tion, and G is a learnable gate. This global-local decomposition follows the classical image processing paradigm of separat-ing low-frequency structure from high-frequency detail. The learnable gate G dynamically balances these components based on local image statistics, ensuring that directional features are enhanced without over-amplifying noise. 
+
+Anisotropic Structure Transform (AST). AST performs multi-scale directional analysis to produce a feature map rich in orientation information. It decomposes the input, extracts directional responses along adaptively predicted angles, and enhances them in the frequency domain. In principle, the ideal way to capture linear structures aligned with a direction θ is the Radon transform, which computes line integrals: 
+
+R[Dk]( θi, ρ ) = 
+
+Z Z 
+
+Dk(x, y ) δ(x cos θi + y sin θi − ρ) dx dy. 
+
+(10) This transform maps the image space to a projection space, where each point (θi, ρ ) represents the integral intensity along a line at angle θi and distance ρ from the origin. Linear structures aligned with θi produce distinctive peak responses, enabling explicit detection of directional patterns regardless of their spatial position. However, this operator is non-differentiable, making it un-suitable for end-to-end gradient-based learning. To overcome this limitation, AST employs a differentiable approximation 
+
+eR[·] that replaces the exact line integral with a combination of coordinate rotation, grid sampling, and average pooling. The complete AST operation is: 
+
+Fdirectional = Ψ 
+
+Denhanced 
+
+> k
+> Kk=1
+
+, C
+
+
+
+, (11) with 
+
+Denhanced  
+
+> k
+
+= Dk + αk · W −1W[ eR[Dk]] ⊙ M k
+
+, (12) where {Dk}4 
+
+> k=1
+
+are detail subbands at different scales, the coarse approximation is C = D4, αk is a learnable scalar, W
+
+and W−1 denote the Haar wavelet transform and its inverse, 
+
+Mk is a learnable frequency modulation mask, eR[·] is the differentiable Radon approximation, and Ψ reconstructs the directional feature map via upsampling and learned convolu-tions. Equation (12) performs frequency-adaptive enhancement of directional features. The wavelet transform W decomposes the Radon projection into different frequency bands, where the learnable mask Mk selectively amplifies frequency compo-nents corresponding to significant directional structures while suppressing noise, thereby implementing a data-driven multi-scale anisotropic filter. The individual steps are defined as follows: 
+
+Multi-scale Subband Decomposition. Starting from the input feature F ∈ RC×H×W , set F1 = F. For k = 1 , 2, 3, 4:
+
+Dk = Fk ∗x gxsk ∗y gysk ,
+
+Fk+1 = AvgPool 2×2(Dk), (13) where ∗x and ∗y are 1D convolutions along the horizontal and vertical axes with Gaussian kernels gxsk , gysk of sizes 
+
+(7 , 5, 3, 3) . Fk is the feature map at the k-th scale, Dk is the 5
+
+detail subband at scale k, and AvgPool 2×2 is average pooling with stride 2. The coarse approximation is C = D4. This Laplacian-style pyramid decomposition separates the feature map into band-pass detail layers Dk (capturing structures at specific scales) and a low-pass residual C. The Gaussian smoothing ensures that each scale captures directional features at a specific spatial frequency range, enabling scale-specific anisotropic analysis. 
+
+Adaptive Direction Prediction. Instead of using fixed projection angles, AST predicts K projection angles θ =[θ1, . . . , θ K ] ∈ [0 , π )K via a lightweight network: 
+
+H1 = ReLU (Conv 3×3(F)) ,
+
+H2 = ReLU (Conv 3×3(H1)) ,
+
+hpool = AdaptiveAvgPool2d (8 ,8) (H2),
+
+hflat = Flatten (hpool ),
+
+hfc1 = ReLU (W1hflat + b1),
+
+θ = π · Sigmoid (W2hfc1 + b2).
+
+(14) Rather than using fixed orientations , this subnetwork ana-lyzes the global feature statistics to predict the most relevant projection angles θ for the current image. This data-adaptive approach ensures that computational resources are focused on the dominant structural directions actually present in the scene, improving both efficiency and accuracy. 
+
+Differentiable Radon approximation. For each detail sub-band Dk and each predicted direction θi, we approximate the Radon transform using coordinate rotation, grid sampling, and average projection: 
+
+x′
+
+y′
+
+
+
+=
+
+ cos θi sin θi
+
+− sin θi cos θi
+
+  xy
+
+
+
+,
+
+Ri = GridSample (Dk, Grot ),
+
+sp (k) 
+
+> θi
+
+= 1
+
+H
+
+> H
+
+X
+
+> h=1
+
+Ri[: , h, :] ,
+
+(15) where Grot is the rotated coordinate grid normalized to [−1, 1] ,and GridSample performs bilinear interpolation. The complete approximation is: 
+
+eR[Dk] = 
+
+> K
+
+M
+
+> i=1
+
+sp (k) 
+
+> θi
+
+, (16) with L denoting concatenation along the channel dimension. This approximation implements the Radon transform through differentiable operations: rotation aligns the image with the projection axis, grid sampling resamples the rotated image, and average pooling along the vertical axis computes the line integral. The concatenation stacks projections from all K
+
+directions, creating a multi-orientation feature representation that encodes the strength of linear structures at each angle. 
+
+Frequency-adaptive Enhancement. The Radon represen-tation is enhanced in the wavelet domain: 
+
+Denhanced  
+
+> k
+
+= Dk + αk · W −1W[ eR[Dk]] ⊙ M k
+
+. (17) Here, W[ eR[Dk]] transforms the directional projection into wavelet coefficients, where the learnable mask Mk performs Conv3d   
+
+> Q
+> K
+> V
+> SP G
+> Aspe
+> Hn-1
+> Xspe
+> MLP
+> MLP
+> g
+> gT
+
+SGA 
+
+> Conv3d
+> Q
+> K
+> V
+> Xspa
+
+SDA         
+
+> Hn-1
+> Conv
+> Conv
+> Xspe
+> Fig. 4. Illustration of the two complementary attention mechanisms in the Spectral Prior-Guided Attention (SPGA) module. Spectral-Guided Attention (SGA): the spectral prior sp generates a channel modulation vector sand a guidance matrix G, biasing self-attention weights toward spectrally consistent regions. Spatial Differential Attention (SDA): a spatial mask Mspa computed from local gradients highlights edges and textures, followed by standard self-attention. The outputs of both branches are adaptively fused via a learnable gating mechanism.
+
+element-wise modulation. This allows the network to selec-tively enhance or suppress specific frequency components of the directional response, effectively implementing a data-driven directional filter that emphasizes salient structures while attenuating noise. The enhanced subbands and coarse com-ponent are aggregated via Ψ to produce the final directional feature map Fdirectional .
+
+Dual-pathway Adaptive Cross Interaction (DACI). DACI injects HR-MSI directional details into the LR-HSI spectral representation by operating at multiple scales. It progressively downsamples the features, concatenates corresponding scale representations, modulates them with channel attention, and upsamples back. Formally, 
+
+Tk =
+
+> L
+
+X
+
+> l=1
+
+γl · A (l) D(l)(F(k) 
+
+> x
+
+), D(l)(F(k) 
+
+> y
+
+), (18) where A(l)(·) implements cross-attention at scale l, D(l)(·)
+
+performs spatial downsampling to level l, and γl are learnable fusion coefficients that balance multi-scale contributions. This multi-scale cross-attention mechanism enables fine-grained spatial-spectral alignment: at each scale l, the attention A(l)
+
+determines which high-resolution MSI features should guide the enhancement of low-resolution HSI features. The learnable coefficients γl adaptively weight the contribution of each scale, ensuring that fine details (small l) and contextual structures (large l) are appropriately balanced in the final fusion. 
+
+C. Stage II: Hierarchical Prior-Guided Spectral Calibration 
+
+The core of HPSC is a Global Spectral Recalibration Trans-former(GSRT), which corrects spectral distortions introduced during spatial enhancement by explicitly using the original LR-HSI X as a high-fidelity spectral prior. A compact spectral prior sp ∈ RC is first extracted from X via the Spectral Guidance (SG) module. The module is composed of N cas-caded transformer blocks, each processing the input Hn−1
+
+(with H0 = Zinit ) and the spectral prior sp .
+
+Spectral Prior Extraction. A compact spectral prior 
+
+(sp ) ∈ RC is obtained via: 
+
+sp = SG( X) = AvgPool  Conv down (X), (19) where Conv down stacks three stride-2 3×3 convolutions, each followed by layer normalization and ReLU, followed by global 6     
+
+> TABLE I QUANTITATIVE COMPARISON ON THE CAVE AND HARVARD DATASETS . B EST RESULTS ARE IN BOLD AND THE SECOND BEST ARE UNDERLINED .
+
+Method CAVE Dataset Harvard Dataset PSNR ↑ SAM ↓ UIQI ↑ SSIM ↑ ERGAS ↓ PSNR ↑ SAM ↓ UIQI ↑ SSIM ↑ ERGAS ↓
+
+DHIF-Net 47 .2893 2.41 0.9733 0.9947 0.6034 47 .7261 2.73 0.8938 0.9855 0.5667 
+
+DSPNet 47 .8060 2.50 0.9729 0.9944 0.5756 47 .6887 2.73 0.8941 0.9852 0.5677 
+
+LRTN 47 .8958 2.36 0.9704 0.9945 0.5612 47 .6663 2.74 0.8941 0.9852 0.5687 
+
+MIMO-SST 48 .2001 2.56 0.9697 0.9942 0.5575 47 .6364 2.77 0.8939 0.9851 0.5697 
+
+SINet 48 .6726 2.30 0.9743 0.9950 0.5261 47 .8412 2.71 0.8961 0.9855 0.5627 
+
+OTIAS 47 .9541 2.45 0.9728 0.9945 0.5646 47 .6621 2.75 0.8939 0.9851 0.5687 
+
+SRLF 49.2959 2.15 0.9749 0.9954 0.4924 47.8924 2.68 0.8956 0.9856 0.5617 Ours 49.5820 2.05 0.9769 0.9961 0.4725 47.9943 2.66 0.8961 0.9856 0.5587       
+
+> TABLE II NO-REFERENCE QUALITY ASSESSMENT (QNR) ON THE GAOFEN 5DATASET . T HE BEST RESULT IS IN BOLD AND THE SECOND BEST IS UNDERLINED .
+
+Method DHIF-Net DSPNet LRTN MIMO-SST SINet OTIAS SRLF Ours 
+
+QNR ↑ 0.9711 0.9870 0.9862 0.9871 0.9869 0.9871 0.9872 0.9873 
+
+average pooling. sp encodes the essential spectral distribution of the original scene. 
+
+Spectral Prior-Guided Attention (SPGA) Module. The SPGA module combines two complementary attention path-ways and a learnable gate to produce an attention-enhanced feature Xatt . As illustrated in Fig. 4, it consists of Spectral-Guided Attention (SGA) and Spatial Differential Attention (SDA), whose outputs are adaptively fused. 
+
+Spectral-Guided Attention (SGA). SGA uses sp to mod-ulate both feature channels and attention weights. First, a channel-wise modulation vector s is derived: 
+
+s = σ(MLP (sp )) ,
+
+Fmod = LN (Hn−1) ⊙ (s · 11×H×W ). (20) A guidance matrix G = gg ⊤ is built from g = MLP proj (sp ).The self-attention then becomes: 
+
+Q, K, V = Proj (Fmod ),
+
+Aspe = Softmax 
+
+ QK ⊤
+
+√d ⊙ G
+
+
+
+,
+
+Xspe = Aspe V.
+
+(21) 
+
+Spatial Differential Attention (SDA). SDA preserves fine spatial details without using sp . It computes a spatial mask that highlights regions with high local gradients: 
+
+Mspa = σ Conv 1×1
+
+ Conv 3×3(LN (Hn−1)) − LN (Hn−1) .
+
+(22) The subtraction Conv 3×3(·) − · acts as a discrete Laplacian, emphasizing edges and textures. The subsequent 1 × 1 convo-lution and sigmoid produce a mask Mspa ∈ [0 , 1] 1×H×W . The input is then modulated: 
+
+Fspa mod = LN (Hn−1) ⊙ Mspa . (23) Standard self-attention is applied to Fspa mod :
+
+Q′, K′, V′ = Proj (Fspa mod ),
+
+Aspa = Softmax 
+
+ Q′K′⊤ 
+
+√d
+
+
+
+,
+
+Xspa = Aspa V′.
+
+(24) This branch preserves high-frequency spatial information by forcing the attention to focus on locations where the gradient is strong, effectively acting as a structure-preserving regularizer. 
+
+Gated Fusion. The outputs of the two branches are adap-tively blended via a learnable spatial gate: 
+
+[g1, g2] = Softmax  Conv 1×1([ Xspe , Xspa ]) ,
+
+Xatt = g1 ⊙ Xspe + g2 ⊙ Xspa , (25) where g1 + g2 = 1. The gate weights are spatially varying, allowing the network to dynamically adjust the relative im-portance of spectral and spatial information according to local image content. 
+
+Transformer Block Update. Each GSRT block incorpo-rates the SPGA module and a feed-forward network with residual connections. The block update is: 
+
+Hn = Hn−1 + Xatt + FFN  LN (Hn−1 + Xatt ), (26) where Xatt is the output of the SPGA module. Multiple such blocks are cascaded to progressively enhance spectral fidelity, yielding the final output ˆZ.
+
+D. Loss Function 
+
+To supervise the network, we employ a combined L1 loss: 
+
+L = αλ 1 + βλ 2, (27) where λ1 = L1(ˆZ, Z) and λ2 = L1(Zinit , Z) denote the L1 losses for the intermediate and final outputs, respectively. 
+
+L1(·, ·) denotes the element-wise L1 distance, and α, β are balancing weights. In our experiments, we set α = 0.8,
+
+β = 0 .2 to prioritize the final reconstruction quality. 7DHIF-Net DSPNet LRTN MIMO-SST SINet OTIAS SRLF Ours GT  
+
+> 0
+> 2
+> 4
+> 6
+> 8
+> 10
+> 12
+> 14 SAM Error (degrees)
+
+Fig. 5. Visual comparison on the CAVE dataset. From left to right: DHIF-Net, DSPNet, LRTN, MIMO-SST, SINet, OTIAS, SRLF, ASSR-Net (ours), and GT. DHIF-Net DSPNet LRTN MIMO-SST SINet OTIAS SRLF Ours GT  
+
+> 0
+> 1
+> 2
+> 3
+> 4
+> 5
+> 6
+> 7
+> 8SAM Error (degrees)
+
+Fig. 6. Visual comparison on the Harvard dataset. From left to right: DHIF-Net, DSPNet, LRTN, MIMO-SST, SINet, OTIAS, SRLF, ASSR-Net (ours), and GT. (a) LRHSI (b) DHIF-Net (c) DSPNet (d) LRTN (e) MIMO-SST (f) SINet (g) OTIAS (h) SRLF (i) Ours 
+
+Fig. 7. Visual results on the Gaofen5 dataset. From left to right: DHIF-Net, DSPNet, LRTN, MIMO-SST, SINet, OTIAS, SRLF, ASSR-Net (ours), and GT. 
+
+IV. E XPERIMENTS 
+
+A. Experimental Settings 
+
+The proposed ASSR-Net is evaluated on three publicly available datasets: CAVE [38], Harvard [39], and Gaofen5. For quantitative assessment, five full-reference metrics are employed. These comprise the Peak Signal-to-Noise Ra-tio (PSNR), Spectral Angle Mapper (SAM), Universal Im-age Quality Index (UIQI) [40], Structural Similarity Index (SSIM) [41], and the Erreur Relative Globale Adimension-nelle de Synth` ese (ERGAS). Additionally, the no-reference metric QNR is utilized for evaluating real data in the ab-sence of ground truth. We compare ASSR-Net with seven state-of-the-art deep learning-based methods: DHIF-Net [42], DSPNet [19], LRTN [18], MIMO-SST [21], SINet [43], OTIAS [44], and SRLF [37]. 
+
+B. Training Configuration. 
+
+All models are trained using the Adam optimizer with β1 =0.9 and β2 = 0 .999 , employing a cosine annealing learning rate schedule. The batch size is set to 16, and input patches are of size 64 × 64 . The training epochs and initial learning rates are dataset-dependent: for CAVE, we train for 1000 epochs with an initial learning rate of 4 × 10 −4; for Harvard, 200 epochs with 2 × 10 −4; and for Gaofen5, 2000 epochs with 
+
+4 × 10 −4. For CAVE and Harvard, the degradation pipeline applies a Gaussian blur kernel of size 8 × 8 (σ = 3 ) followed by 8× spatial downsampling.All experiments are conducted on a single NVIDIA RTX 4090 GPU. 
+
+C. Experimental Results on Simulated Data 
+
+Quantitative comparisons on the CAVE and Harvard datasets are summarized in Table I. The proposed ASSR-Net achieves superior performance on both datasets across all evaluation metrics. On the CAVE dataset, ASSR-Net surpasses the second-best method, SRLF, by a margin of 0.2861 dB in PSNR while reducing the SAM by 0.10. These quantitative improvements signify enhanced capabilities in both spatial reconstruction and spectral preservation. Similarly, on the Harvard dataset, ASSR-Net attains a PSNR gain of 0.1019 dB and an SAM reduction of 0.02 compared to SRLF, thereby cor-roborating its robust generalization capability across diverse scenes and imaging conditions. Qualitative comparisons are provided in Fig. 5 and Fig. 6. Magnified local regions demon-strate that the proposed method reconstructs sharper textual details and achieves higher spectral fidelity. Furthermore, it exhibits significantly mitigated spectral distortion in both edge regions and homogeneous areas. 
+
+D. Experimental Results on Real Data 
+
+For the Gaofen5 dataset, we follow the standard protocol: we spatially downsample the existing LR-HSI and MSI to gen-8                   
+
+> TABLE III HYPERPARAMETER SENSITIVITY ANALYSIS OF THE NUMBER OF PROJECTION DIRECTIONS KIN ASSE AND THE NUMBER OF TRANSFORMER BLOCKS
+> (TB) IN GSRT ON THE CAVE DATASET ,INCLUDING COMPUTATIONAL COMPLEXITY AND INFERENCE TIME (MEASURED ON A 64 ×64 PATCH ,
+> AVERAGED OVER 10 RUNS ).
+
+K TB Params (M) ↓ GFLOPs ↓ PSNR ↑ SAM ↓ Inference Time (ms) ↓
+
+8 1 10 .553 18 .423 49 .1465 2.18 11 .55 8 2 13 .308 24 .169 49 .1377 2.14 13 .09 8 3 12 .357 31 .815 49 .0961 2.11 14 .39 16 1 10 .577 18 .471 49 .2673 2.15 12 .09 16 2 13 .332 24 .218 49 .1294 2.09 13 .69 16 3 14 .668 31 .964 49 .1649 2.07 14 .95 32 1 10 .626 18 .569 49 .2741 2.14 11 .73 32 2 13 .380 24 .315 49 .3275 2.09 12 .87 32 3 14 .379 33 .061 49 .2314 2.08 14 .75 64 1 10 .722 19 .050 49 .3013 2.12 12 .26 64 2 13 .477 24 .509 49 .5820 2.05 13 .59 64 3 16 .232 34 .255 49 .6217 2.04 15 .93       
+
+> TABLE IV ABLATION STUDY ON CAVE DATASET .✓DENOTES MODULE INCLUDED ,×DENOTES MODULE EXCLUDED .
+
+DACI DAE Fusion GSRT PSNR ↑ SAM ↓ UIQI ↑ SSIM ↑ ERGAS ↓× × × × 47 .8014 2.48 0.9704 0.9932 0.5675 
+
+✓ × × × 48 .1632 2.37 0.9712 0.9939 0.5586 
+
+✓ ✓ × × 48 .4457 2.32 0.9721 0.9941 0.5412 
+
+✓ ✓ ✓ × 48 .8363 2.23 0.9742 0.9952 0.5144 
+
+× ✓ ✓ ✓ 49 .2151 2.12 0.9746 0.9955 0.4976 
+
+✓ ✓ ✓ ✓ 49.5820 2.05 0.9769 0.9961 0.4725        
+
+> TABLE V IMPACT OF LOSS -WEIGHT BALANCE (αλ 1+βλ 2)ON FINAL PERFORMANCE (CAVE DATASET ).
+
+α β PSNR ↑ SAM ↓
+
+1.0 0.0 49 .1982 2.14 0.9 0.1 49 .0507 2.07 
+
+0.8 0.2 49.5820 2.05 
+
+0.7 0.3 49 .3841 2.08 0.6 0.4 48 .9343 2.12 0.5 0.5 49 .0914 2.08 
+
+erate training data. During testing, we input the original LR-HSI and MSI to obtain the HR-HSI. Since the Gaofen5 dataset lacks ground truth HR-HSI, we use the no-reference metric QNR for quantitative evaluation. Table II shows that ASSR-Net achieves the highest QNR score of 0.9873, outperforming all compared methods. Fig. 7 presents visual comparisons on the Gaofen5 dataset. The results show that ASSR-Net main-tains robust performance in real-world conditions. It produces more natural-looking textures and preserves fine spatial details better, while avoiding common artifacts like over-smoothing or spectral contamination. 
+
+E. Ablation Studies 
+
+To systematically evaluate the contribution of each core component, we conduct ablation experiments on the CAVE dataset. The results are summarized in Table IV, where we pro-gressively add modules to the baseline (no DACI, no DAE, no Fusion, no GSRT). The baseline achieves a PSNR of 47.80dB and a SAM of 2.48. Adding the DACI module improves PSNR by 0.36dB and reduces SAM by 0.11, demonstrating the benefit of cross-modal directional interaction. Subsequently incorporating the DAE module further increases PSNR by 0.28dB and lowers SAM by 0.06, validating its ability to capture anisotropic spatial structures. Introducing the Fusion modules yields a notable gain of 0.39dB in PSNR and a SAM reduction of 0.09, underscoring the importance of multi-scale adaptive feature aggregation. The final addition of the GSRT module (full model, row 6) brings the most substantial improvement: PSNR rises by 0.75dB and SAM decreases by 0.18 compared to the model without GSRT. This confirms that explicit spectral prior guid-ance is crucial for correcting spectral contamination. We also examine the necessity of DACI by comparing the full model with a variant that replaces DACI with a simple addition. Removing DACI causes a PSNR drop of 0.37dB and a SAM increase of 0.06, indicating that directional cross-modal interaction is essential for optimal spatial–spectral fusion. Overall, the full ASSR-Net configuration achieves a cumulative PSNR gain of 1.78dB (3.72% relative) and a SAM reduction of 0.43 (17.3% relative) compared to the baseline. The improvement is substantially larger than the sum of individual module gains, evidencing strong synergy between the directional-awareness mechanisms and the spectral-fidelity 9         
+
+> Fig. 8. Visual comparison of Stage I and Stage II outputs. Top row: Spectral error maps (SAM) after Stage I; middle row: Spectral error maps after Stage II; bottom row: Pseudo-color RGB images of the final fusion result. Warmer colors in error maps indicate larger spectral deviation. Stage II significantly reduces errors, especially in complex regions. TABLE VI CLASSIFICATION RESULTS (F1 SCORES , %) OF LR-HSI AND THE HR-HSI
+> PREDICTED BY ASSR-N ET ON THE HOUSTON DATASET .
+
+Category F1 scores(%) LR-HSI Predicted HR-HSI 
+
+Healthy grass 87.5 92.7 
+
+Stressed grass 88.7 94.1 
+
+Synthetic grass 92.7 99.9 
+
+Trees 83.6 96.5 
+
+Soil 97.8 98.8 
+
+Water 81.1 97.4 
+
+Residential 75.0 91.1 
+
+Commercial 89.6 87.5 Road 77.4 83.5 
+
+Highway 82.3 88.5 
+
+Railway 73.4 91.5 
+
+Parking lot 1 89.4 84.7 Parking lot 2 77.9 87.8 
+
+Tennis court 99.4 98.3 Running track 91.7 98.2 Average F1 85.8 92.7 Average Accuracy (%) 85.3 91.9 
+
+components in jointly addressing the dual challenges of HSI–MSI fusion. 
+
+F. Hyperparameter Sensitivity and Complexity Analysis 
+
+We conduct extensive sensitivity analysis on key hyperpa-rameters: the loss weights ( α, β), the number of projection directions K in ASSE, and the number of Transformer Blocks (TB) in GSRT. Table V shows that an optimal balance of 
+
+α = 0.8 and β = 0.2 yields the best performance on the CAVE dataset. This ratio indicates that Stage 1 (ASSE) should provide sufficient spatial guidance without excessive spectral distortion, while Stage 2 requires stronger supervision to effectively correct spectral deviations. Table III presents the performance with varying K and TB. While K = 64 with 
+
+TB = 3 achieves the highest PSNR, the configuration K = 64 
+
+with TB = 2 offers a better trade-off between performance and computational cost, and is selected as our final model. We provide a comprehensive analysis of the model’s ef-ficiency. The full ASSR-Net has 13.477M parameters and requires 24.509 GFLOPs for a single forward pass on a 
+
+64 × 64 × 31 patch. The average inference time is 13.59 ms 
+
+on an NVIDIA RTX 4090 GPU. For comparison, the first stage (ASSE) alone has 6.856M parameters, 11.124 GFLOPs, and an inference time of 9.43 ms. This demonstrates that the two-stage design, while more sophisticated than single-stage baselines, maintains competitive inference speed due to the efficient design of ASSE. The complexity is comparable to recent advanced fusion methods while delivering superior reconstruction quality, justifying the added computational cost. 
+
+G. Effectiveness of the Two-Stage Design 
+
+To validate the necessity of decoupling spatial enhancement from spectral calibration, we visually compare the outputs of Stage 1 (ASSE) and Stage 2 (HPSC) on representative scenes. As shown in Fig. 8, the spectral error maps (SAM) after Stage 1 exhibit noticeable deviations, especially in het-erogeneous regions and along object boundaries. After Stage 2, the errors are substantially reduced, demonstrating the efficacy of the GSRT module in correcting spectral distortions. The pseudo-color RGB images confirm that Stage 2 preserves fine spatial details while restoring spectral fidelity.urthermore, we evaluate spectral fidelity at the pixel level by plotting spectral curves of selected points. Fig. 10 shows three scenes.The curves compare the ground truth, Stage 1 output, Stage 2 output, and several competing methods. Stage 1 often captures the overall shape but exhibits consistent bias across bands, while Stage 2 aligns much closer to the ground truth, partic-ularly in absorption and reflection regions. This confirms that the dedicated spectral calibration step effectively rectifies the spectral contamination introduced during spatial enhancement. 
+
+H. The Impact of Fusion on Classification 
+
+To further validate the practical value of the reconstructed HR-HSI, we evaluate its impact on land-cover classification using the Houston dataset [45]. Following the protocol in [18], we generate LR-HSI and MSI from the original HSI (144 10 
+
+(a) Classification result of LR-HSI 
+
+(b) Classification result of the predicted HR-HSI 
+
+(c) Reference  
+
+> Undefined
+> Healthy grass
+> Stressed grass
+> Synthetic grass
+> Trees
+> Soil
+> Water
+> Residential
+> Commercial
+> Road
+> Highway
+> Railway
+> Parking Lot 1
+> Parking Lot 2
+> Tennis Court
+> Running Track
+> Fig. 9. Classification results before and after fusion. (a) Classification result of LR-HSI. (b) Classification result of the predicted HR-HSI. (c) Reference.
+
+(a) Scene A (b) Scene B (c) Scene C  
+
+> Fig. 10. Spectral profiles of three points (marked in the RGB images) for three different scenes.Stage 2 consistently reduces spectral deviations compared to Stage 1 and outperforms other methods.
+
+bands, 349 × 1905 ) via spatial and spectral downsampling. The proposed ASSR-Net is trained on degraded pairs and then applied to the original LR-HSI and MSI to produce the HR-HSI. A Support Vector Machine (SVM) classifier with RBF kernel is employed, where optimal parameters ( C and 
+
+γ) are selected via grid search. 20% of labeled pixels per class are used for training, and the remaining 80% for testing. Classification performance is measured by per-class F1 scores and average accuracy. Table VI reports the per-class F1 scores, overall accuracy, and Kappa coefficient for classification on the Houston dataset. Compared with the LR-HSI baseline, the HR-HSI recon-structed by our ASSR-Net achieves substantial improvements across all metrics: the average F1 score increases from 85.8% to 92.7% (an improvement of 6.9 percentage points), the overall accuracy rises from 85.3% to 91.9% (a gain of 6.6 per-centage points), and the Kappa coefficient grows from 0.841 to 0.912 (an increase of 0.071). These results demonstrate that the enhanced spatial resolution and preserved spectral fidelity of our fusion method effectively facilitate more accurate land-cover discrimination. Figure 9 visualizes the classification maps. The result from LR-HSI contains notable noise and misclassifications, partic-ularly in mixed regions and along boundaries. In contrast, the map produced from the predicted HR-HSI is significantly cleaner, with more homogeneous regions and improved consis-tency with the ground truth. This qualitative comparison fur-ther confirms that the HR-HSI reconstructed by our ASSR-Net preserves discriminative spectral information while enhancing spatial details, leading to superior performance in downstream tasks. V. C ONCLUSION 
+
+This paper introduces a novel Anisotropic Structure-Aware and Spectrally Recalibrated Network (ASSR-Net), which inte-grates two principal innovative components. The first compo-nent is a Anisotropic Structure-Aware Fusion (ASSE) module, which performs adaptive orientation analysis through learnable geometric transformations, enabling the model to effectively capture the inherent anisotropic spatial structure in remote sensing images. The second is the Global Spectral Recalibra-tion Transformer (GSRT) module, which leverages spectral priors derived from the LR-HSI. It preserves spectral fidelity through a hierarchical guided attention mechanism. Extensive 11 
+
+experiments on multiple benchmark datasets demonstrate that the proposed ASSR-Net achieves state-of-the-art performance. REFERENCES [1] H. Flores, S. Lorenz, R. Jackisch, L. Tusa, I. C. Contreras, R. Zim-mermann, and R. Gloaguen, “Uas-based hyperspectral environmental monitoring of acid mine drainage affected waters,” Minerals , vol. 11, no. 2, 2021. [2] J. Jia, J. Chen, X. Zheng, Y. Wang, S. Guo, H. Sun, C. Jiang, M. Karjalainen, K. Karila, Z. Duan, T. Wang, C. Xu, J. Hyypp¨ a, and Y. Chen, “Tradeoffs in the spatial and spectral resolution of airborne hyperspectral imaging systems: A crop identification case study,” IEEE Transactions on Geoscience and Remote Sensing , vol. 60, pp. 1–18, 2022. [3] B. Zhang, L. Zhao, and X. Zhang, “Three-dimensional convolutional neural network model for tree species classification using airborne hyperspectral images,” Remote Sensing of Environment , vol. 247, p. 111938, 2020. [4] S. Hajaj, A. El Harti, A. B. Pour, A. Jellouli, Z. Adiri, and M. Hashim, “A review on hyperspectral imagery application for lithological map-ping and mineral prospecting: Machine learning techniques and future prospects,” Remote Sensing Applications: Society and Environment ,vol. 35, p. 101218, 2024. [5] M. Shimoni, R. Haelterman, and C. Perneel, “Hyperspectral imaging for military and security applications: Combining myriad processing and sensing techniques,” IEEE Geoscience and Remote Sensing Magazine ,vol. 7, no. 2, pp. 101–117, 2019. [6] L. Loncan, L. B. de Almeida, J. M. Bioucas-Dias, X. Briottet, J. Chanus-sot, N. Dobigeon, S. Fabre, W. Liao, G. A. Licciardi, M. Sim˜ oes, J.-Y. Tourneret, M. A. Veganzones, G. Vivone, Q. Wei, and N. Yokoya, “Hyperspectral pansharpening: A review,” IEEE Geoscience and Remote Sensing Magazine , vol. 3, no. 3, pp. 27–46, 2015. [7] B. Aiazzi, S. Baronti, and M. Selva, “Improving component substitution pansharpening through multivariate regression of ms +pan data,” IEEE Transactions on Geoscience and Remote Sensing , vol. 45, no. 10, pp. 3230–3239, 2007. [8] B. Aiazzi, L. Alparone, S. Baronti, A. Garzelli, and M. Selva, “Mtf-tailored multiscale fusion of high-resolution ms and pan imagery,” 
+
+Photogrammetric Engineering and Remote Sensing , vol. 72, pp. 591– 596, 05 2006. [9] J. G. Liu, “Smoothing filter-based intensity modulation: A spectral pre-serve image fusion technique for improving spatial details,” International Journal of Remote Sensing , vol. 21, no. 18, pp. 3461–3472, 2000. [10] C. Lanaras, E. Baltsavias, and K. Schindler, “Hyperspectral super-resolution by coupled spectral unmixing,” in 2015 IEEE International Conference on Computer Vision (ICCV) , 2015, pp. 3586–3594. [11] C. Liu, J. Qian, and F. Fang, “Isgm-fus: Internal structure-guided model for multispectral and hyperspectral image fusion,” Neurocomputing , vol. 650, p. 130777, 2025. [12] R. Dian, Y. Liu, and S. Li, “Hyperspectral image fusion via a novel generalized tensor nuclear norm regularization,” IEEE Transactions on Neural Networks and Learning Systems , vol. 36, no. 4, pp. 7437–7448, 2025. [13] Y. Xu, Z. Wu, J. Chanussot, P. Comon, and Z. Wei, “Nonlocal coupled tensor cp decomposition for hyperspectral and multispectral image fusion,” IEEE TRANSACTIONS ON GEOSCIENCE AND REMOTE SENSING , vol. 58, no. 1, pp. 348–362, JAN 2020. [14] H. Wang, Y. Xu, Z. Wu, and Z. Wei, “Unsupervised hyperspectral and multispectral image blind fusion based on deep tucker decomposition network with spatial–spectral manifold learning,” IEEE Transactions on Neural Networks and Learning Systems , vol. 36, no. 7, pp. 12 721– 12 735, 2025. [15] J. Yang, L. Xiao, Y.-Q. Zhao, and J. C.-W. Chan, “Unsupervised deep tensor network for hyperspectral–multispectral image fusion,” IEEE Transactions on Neural Networks and Learning Systems , vol. 35, no. 9, pp. 13 017–13 031, 2024. [16] J.-F. Hu, T.-Z. Huang, L.-J. Deng, T.-X. Jiang, G. Vivone, and J. Chanus-sot, “Hyperspectral image super-resolution via deep spatiospectral at-tention convolutional neural networks,” IEEE Transactions on Neural Networks and Learning Systems , vol. 33, no. 12, pp. 7251–7265, 2022. [17] Y. Zheng, J. Li, Y. Li, J. Guo, X. Wu, and J. Chanussot, “Hyperspectral pansharpening using deep prior and dual attention residual network,” 
+
+IEEE Transactions on Geoscience and Remote Sensing , vol. 58, no. 11, pp. 8059–8076, 2020. [18] S. L. Renwei Dian, Yuanye Liu, “Low-rank transformer for high-resolution hyperspectral computational imaging,” International Journal of Computer Vision , pp. 1–16, 2024. [19] Y. Sun, H. Xu, Y. Ma, M. Wu, X. Mei, J. Huang, and J. Ma, “Dual spatial–spectral pyramid network with transformer for hyperspectral image fusion,” IEEE Transactions on Geoscience and Remote Sensing ,vol. 61, pp. 1–16, 2023. [20] Q. Song, S. Guo, T. Yang, B. Sun, R. Dian, and S. Li, “S 2-differential feature awareness network for hyperspectral image fusion,” IEEE Trans-actions on Geoscience and Remote Sensing , 2026. [21] J. Fang, J. Yang, A. Khader, and L. Xiao, “Mimo-sst: Multi-input multi-output spatial-spectral transformer for hyperspectral and multispectral image fusion,” IEEE Transactions on Geoscience and Remote Sensing ,vol. 62, pp. 1–20, 2024. [22] S. Peng, X. Zhu, H. Deng, L.-J. Deng, and Z. Lei, “Fusionmamba: Efficient remote sensing image fusion with state space model,” IEEE Transactions on Geoscience and Remote Sensing , vol. 62, pp. 1–16, 2024. [23] L. Li, H. He, N. Chen, X. Kang, and B. Wang, “Slrcnn: Integrating sparse and low-rank with a cnn denoiser for hyperspectral and multispec-tral image fusion,” International Journal of Applied Earth Observation and Geoinformation , vol. 134, p. 104227, 2024. [24] X. Wu, Z.-H. Cao, T.-Z. Huang, L.-J. Deng, J. Chanussot, and G. Vivone, “Fully-connected transformer for multi-source image fusion,” IEEE Transactions on Pattern Analysis and Machine Intelligence , vol. 47, no. 3, pp. 2071–2088, 2025. [25] Q. Song, F. Mo, K. Ding, L. Xiao, R. Dian, X. Kang, and S. Li, “Mcfnet: Multiscale cross-domain fusion network for hsi and lidar data joint classification,” IEEE Transactions on Geoscience and Remote Sensing ,2025. [26] J. Sun, B. Chen, R. Lu, Z. Cheng, C. Qu, and X. Yuan, “Advancing hyperspectral and multispectral image fusion: An information-aware transformer-based unfolding network,” IEEE Transactions on Neural Networks and Learning Systems , vol. 36, no. 4, pp. 7407–7421, 2025. [27] W. Dong, Y. Yang, J. Qu, Y. Li, Y. Yang, and X. Jia, “Feature pyramid fusion network for hyperspectral pansharpening,” IEEE Transactions on Neural Networks and Learning Systems , vol. 36, no. 1, pp. 1555–1567, 2025. [28] Y. Wu, R. Dian, and S. Li, “Multistage spatial-spectral fusion network for spectral super-resolution,” IEEE Transactions on Neural Networks and Learning Systems , vol. 36, no. 7, pp. 12 736–12 746, 2025. [29] J. Li, S. Du, R. Song, Y. Li, and Q. Du, “Progressive spatial information-guided deep aggregation convolutional network for hyperspectral spec-tral super-resolution,” IEEE Transactions on Neural Networks and Learning Systems , vol. 36, no. 1, pp. 1677–1691, 2025. [30] X. Wang, X. Wang, R. Song, X. Zhao, and K. Zhao, “Mct-net: Multi-hierarchical cross transformer for hyperspectral and multispectral image fusion,” Knowledge-Based Systems , vol. 264, p. 110362, 2023. [31] H. Wu, Z. Sun, J. Qi, T. Zhan, Y. Xu, and Z. Wei, “Spatial–spectral cross mamba network for hyperspectral and multispectral image fusion,” 
+
+IEEE Transactions on Geoscience and Remote Sensing , vol. 63, pp. 1– 13, 2025. [32] J. Qu, J. Cui, W. Dong, Q. Du, X. Wu, S. Xiao, and Y. Li, “A principle design of registration-fusion consistency: Toward interpretable deep unregistered hyperspectral image fusion,” IEEE Transactions on Neural Networks and Learning Systems , vol. 36, no. 5, pp. 9648–9662, 2025. [33] S. Asadzadeh, X. Zhou, and S. Chabrillat, “Assessment of the space-borne enmap hyperspectral data for alteration mineral mapping: A case study of the reko diq porphyry cuau deposit, pakistan,” Remote Sensing of Environment , vol. 314, p. 114389, 2024. [34] C.-H. Lin, F. Ma, C.-Y. Chi, and C.-H. Hsieh, “A convex optimization-based coupled nonnegative matrix factorization algorithm for hyper-spectral and multispectral data fusion,” IEEE TRANSACTIONS ON GEOSCIENCE AND REMOTE SENSING , vol. 56, no. 3, pp. 1652–1667, MAR 2018. [35] X. Rui, X. Cao, L. Pang, Z. Zhu, Z. Yue, and D. Meng, “Unsupervised hyperspectral pansharpening via low-rank diffusion model,” Information Fusion , vol. 107, p. 102325, 2024. [36] A. Bastos, A. Nadgeri, K. Singh, H. Kanezashi, T. Suzumura, and I. O. Mulang’, “How expressive are transformers in spectral domain for graphs?” Transactions on Machine Learning Research , 2022. [37] Y. Liu, J. Liu, R. Dian, and S. Li, “A selective re-learning mechanism for hyperspectral fusion imaging,” in 2025 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , 2025, pp. 7437– 7446. 12 
+
+[38] F. Yasuma, T. Mitsunaga, D. Iso, and S. K. Nayar, “Generalized assorted pixel camera: Postcapture control of resolution, dynamic range, and spectrum,” IEEE Transactions on Image Processing , vol. 19, no. 9, pp. 2241–2253, 2010. [39] A. Chakrabarti and T. Zickler, “Statistics of real-world hyperspectral images,” in CVPR 2011 , 2011, pp. 193–200. [40] Z. Wang and A. Bovik, “A universal image quality index,” IEEE Signal Processing Letters , vol. 9, no. 3, pp. 81–84, 2002. [41] Z. Wang, A. Bovik, H. Sheikh, and E. Simoncelli, “Image quality assess-ment: from error visibility to structural similarity,” IEEE Transactions on Image Processing , vol. 13, no. 4, pp. 600–612, 2004. [42] T. Huang, W. Dong, J. Wu, L. Li, X. Li, and G. Shi, “Deep hyperspectral image fusion network with iterative spatio-spectral regularization,” IEEE Transactions on Computational Imaging , vol. 8, pp. 201–214, 2022. [43] L. Xiao, S. Guo, F. Mo, Q. Song, Y. Yang, Y. Liu, X. Wei, T. Yang, and R. Dian, “Spatial invertible network with mamba-convolution for hyperspectral image fusion,” IEEE Journal of Selected Topics in Signal Processing , pp. 1–12, 2025. [44] S. Deng, J. Ma, L.-J. Deng, and P. Wei, “Otias: Octree implicit adaptive sampling for multispectral and hyperspectral image fusion,” in AAAI-25, Sponsored by the Association for the Advancement of Artificial Intelligence, February 25 - March 4, 2025, Philadelphia, PA, USA ,T. Walsh, J. Shah, and Z. Kolter, Eds. AAAI Press, 2025, pp. 2708– 2716. [45] C. Debes, A. Merentitis, R. Heremans, J. Hahn, N. Frangiadakis, T. van Kasteren, W. Liao, R. Bellens, A. Piˇ zurica, S. Gautama, W. Philips, S. Prasad, Q. Du, and F. Pacifici, “Hyperspectral and lidar data fusion: Outcome of the 2013 grss data fusion contest,” IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing , vol. 7, no. 6, pp. 2405–2418, 2014.

@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.07656v3/fig-001.webp",
+      "caption": "Table 1: Code Metadata for MVOS_HSI",
+      "page": 2,
+      "index": 1,
+      "width": 791,
+      "height": 413
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07656v3/fig-002.webp",
+      "caption": "Figure 1: MVOS_HSI end-to-end workflow for leaf-level hyperspectral preprocessing.",
+      "page": 5,
+      "index": 2,
+      "width": 492,
+      "height": 1334
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07656v3/fig-003.webp",
+      "caption": "Figure 2: Example leaf segmentation and clipping workflow using a vegetation index (e.g., NDVI) and objective thresholding (Otsu).",
+      "page": 7,
+      "index": 3,
+      "width": 783,
+      "height": 463
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07656v3/fig-004.webp",
+      "caption": "Figure 3: Example spectral profiles produced by MVOS_HSI plotting utilities, enabling comparison of spectral profiles across multiple leaf samples.",
+      "page": 8,
+      "index": 4,
+      "width": 783,
+      "height": 460
+    }
+  ]
+}

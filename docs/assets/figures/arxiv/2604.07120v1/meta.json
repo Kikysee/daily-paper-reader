@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.07120v1/fig-001.webp",
+      "caption": "TABLE I SERVICE-LEVEL COMPARISON OF OPERATIONAL BURNT-AREA MAPPING SYSTEMS, WITH EMPHASIS ON OVERALL TIMELINESS",
+      "page": 3,
+      "index": 1,
+      "width": 523,
+      "height": 298
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07120v1/fig-002.webp",
+      "caption": "Fig. 1. System-level architecture of IRIDE’s three core segments: upstream (spaceborne sensors including HEO), downstream (FOS, CMPM, PDGS), and service (marketplace-enabled user delivery). Arrows indicate command and data flow paths.",
+      "page": 4,
+      "index": 2,
+      "width": 504,
+      "height": 979
+    }
+  ]
+}
