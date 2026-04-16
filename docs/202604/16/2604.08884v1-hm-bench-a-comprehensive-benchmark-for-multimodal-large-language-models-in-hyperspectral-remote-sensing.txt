@@ -1,0 +1,1381 @@
+Title: HM-Bench: A Comprehensive Benchmark for Multimodal Large Language Models in Hyperspectral Remote Sensing
+
+URL Source: https://arxiv.org/pdf/2604.08884v1
+
+Published Time: Mon, 13 Apr 2026 00:26:41 GMT
+
+Number of Pages: 17
+
+Markdown Content:
+# HM-Bench: A Comprehensive Benchmark for Multimodal Large Language Models in Hyperspectral Remote Sensing 
+
+## Xinyu Zhang 1,∗ , Zurong Mai 1,∗ , Qingmei Li 2,∗ , Zjin Liao 1, Yibin Wen 1, Yuhang Chen 1,
+
+## Xiaoya Fan 5, Chan Tsz Ho 1, Bi Tianyuan 1, Haoyuan Liang 1, Ruifeng Su 1, Zihao Qian 1,
+
+## Juepeng Zheng 1,6,† , Jianxi Huang 3,4 , Yutong Lu 1,6 , Haohuan Fu 2,6 
+
+1Sun Yat-sen University, 2Tsinghua Shenzhen International Graduate School, 3China Agricultural University 
+
+4Southwest Jiaotong University, 5Southwest University, 6National Supercomputing Center in Shenzhen 
+
+∗Equal contribution, †Corresponding author. 
+
+Abstract 
+
+While multimodal large language models (MLLMs) have made sig-nificant strides in natural image understanding, their ability to per-ceive and reason over hyperspectral image (HSI) remains underex-plored, which is a vital modality in remote sensing. The high di-mensionality and intricate spectral-spatial properties of HSI pose unique challenges for models primarily trained on RGB data. To ad-dress this gap, we introduce Hyperspectral Multimodal Bench mark (HM-Bench ), the first benchmark designed specifically to evalu-ate MLLMs in HSI understanding. We curate a large-scale dataset of 19,337 question-answer pairs across 13 task categories, rang-ing from basic perception to spectral reasoning. Given that exist-ing MLLMs are not equipped to process raw hyperspectral cubes natively, we propose a dual-modality evaluation framework that transforms HSI data into two complementary representations: PCA-based composite images and structured textual reports. This ap-proach facilitates a systematic comparison of different represen-tation for model performance. Extensive evaluations on 18 repre-sentative MLLMs reveal significant difficulties in handling com-plex spatial-spectral reasoning tasks. Furthermore, our results de-monstrate that visual inputs generally outperform textual inputs, highlighting the importance of grounding in spectral-spatial evi-dence for effective HSI understanding. Dataset and appendix can be accessed at https://github.com/HuoRiLi-Yu/HM-Bench. 
+
+CCS Concepts 
+
+• Computing methodologies → Artificial intelligence .
+
+Keywords 
+
+HM-Bench, Hyperspectral Image, Multimodal Large Language Mod-els, Benchmark, Remote Sensing 
+
+1 Introduction 
+
+Hyperspectral image (HSI) is an important modality in remote sens-ing, capturing detailed electromagnetic signatures across hundreds of narrow, contiguous bands from the ultraviolet to the short-wave infrared range [40]. This high spectral resolution enables a variety of applications, including mineral mapping, agricultural monitor-ing [57], and environmental observation [43]. With the rapid ad-vancement of remote sensing platforms and sensors, HSI has be-come increasingly accessible, emphasizing the need for effective interpretation of this complex data. ·RGB / Visible-spectrum only   
+
+> ·Lack spectral reasoning
+> ·No HSI-specific benchmark
+> ·Trained on natural images
+> ·Cannot ingest raw hyperspectral cubes
+> ·HSI understanding remains unexplored
+> Current MLLMs Limitations of Previous Benchmarks
+> Our HM-bench
+> Hundreds of
+> spectral bands
+> ……
+> ·Focus: How MLLMs understand HSI
+> ·Scale: 13 tasks | nearly 20K QA
+> ·Cubes →Textual Report + PCA Image
+> ·A first step toward understanding HSI
+> Spectral
+> Perception
+> Input Modality
+> Comparison
+> Capabilities
+> Spatial–Spectral
+> Reasoning
+
+Figure 1: Overview of the advantages of HM-Bench over pre-vious benchmarks and the evaluation paradigm for MLLMs in the hyperspectral domain. 
+
+Recent advances in multimodal large language models (MLLMs) have demonstrated remarkable capabilities in visual perception, language understanding, and complex reasoning. Models such as GPT-4 [1], Qwen-VL [2], InternVL [5], and LLaVA [29] excel in tasks such as visual question answering (VQA), image captioning, and multimodal reasoning. Such progress has driven interest in ap-plying MLLMs to remote sensing and geo-semantic analysis. How-ever, most existing MLLMs rely on visual encoders and training paradigms optimized for natural images, leaving their effective-ness on HSI largely unexplored. However, existing benchmarks for multimodal models primarily focus on natural images and do not address the spatial-spectral challenges inherent in HSI data. Remote sensing benchmarks such as XLRS-Bench [48] and RSHR-Bench [8] mostly consider RGB or visible-spectrum image. To the best of our knowledge, no benchmark currently exists to system-atically evaluate MLLMs on HSI and spectral reasoning. Furthermore, a fundamental challenge in HSI arises from its unique characteristics: its high dimensionality, strong spectral-spa-tial redundancy, and complex continuous spectral dependencies. Current models are unable to process raw HSI cubes directly, nor can they effectively capture band-wise interactions and cross-band relationships. One practical solution is to transform raw HSI cubes into intermediate representations compatible with current MLLMs. We construct two such formats: (a) Image input: Principal com-ponent analysis (PCA)-based visual representation, where the top principal components of the HSI cube are arranged into a grayscale panel. (b) Report input: Structured textual report, which organizes spectral statistics, band characteristics, and spatial attributes into text, allowing MLLMs to reason over HSI in natural language form. 
+
+> arXiv:2604.08884v1 [cs.CV] 10 Apr 2026
+
+Table 1: Comparison of HM-Bench with representative MLLM benchmarks. HM-Bench stands out for its HSI speci-ficity and its unique dual-aligned data representation. 
+
+Benchmark Domain QA Pairs Tasks Input Forms HSI-specific 
+
+MMBench [35] General ∼3k 20 1 7
+
+SEED-Bench-1 [28] General 19k 12 1 7
+
+AgroBench [42] RS 4.3k 7 1 7
+
+AgroMind [31] RS 28k 13 1 7
+
+AgroCoT [49] RS 4.7k 15 1 7
+
+VRSBench [33] RS 12.3k 10 1 7
+
+XLRS-Bench [48] RS 32k 16 1 7
+
+RSHR-Bench [8] RS 8.2k 13 1 7
+
+HM-Bench (Ours) RS 19k 13 2 3
+
+To address abovementioned gap, we introduce Hyperspectral 
+
+Multimodal Bench mark ( HM-Bench ), which is specifically de-signed to assess MLLMs for HSI understanding. For each hyper-spectral sample, both image input and report input are provided, enabling systematic evaluation of model performance across vi-sual and textual modalities. This design allows for comprehensive investigation of hyperspectral perception, representation, and rea-soning. Our main contributions are summarized as follows: 
+
+• We introduce HM-Bench, a dedicated benchmark for evalu-ating MLLMs on HSI understanding, comprising 19,337 question-answer pairs across 13 task categories, providing a diverse testbed for hyperspectral perception and reasoning. 
+
+• We develop a standardized HSI representation pipeline that transforms raw HSI cubes into two MLLM-friendly formats: PCA component composite images and structured textual reports, facil-itating a direct comparison of visual and textual processing paths. 
+
+• We establish a question-answering evaluation framework and benchmark with 18 MLLMs (4 closed-source and 14 open-source) under image and report input settings, offering a systematic explo-ration of existing MLLMs for HSI understanding. 
+
+2 Related Work 2.1 General MLLM Benchmarks 
+
+As MLLMs [4, 15, 21, 53] continue to advance, a growing num-ber of benchmarks have been developed to systematically eval-uate their capabilities across visual perception, language under-standing, and multimodal reasoning. Representative benchmarks include MME [13], MMBench [35], SEED-Bench [28], MME-Real-World [58], and MMT-Bench [54]. These benchmarks commonly assess tasks such as image captioning, VQA, object recognition, complex reasoning, and real-world scene understanding, provid-ing a comprehensive framework for multimodal evaluation. While these general-purpose benchmarks have significantly con-tributed to the field, they primarily focus on natural images and ev-eryday visual scenarios. Consequently, they offer limited insight into the ability to process specialized sensing modalities. In the case of HSI, critical information lies not only in visual patterns but also in high-dimensional spectral signatures and their interactions with spatial structures. Therefore, existing general benchmarks are insufficient for accurately evaluating MLLMs on HSI data. 
+
+2.2 Remote Sensing Multimodal Benchmarks 
+
+To support domain-specific applications, recent research has in-creasingly focused on developing multimodal benchmarks tailored QA Pairs 
+
+> Distribution
+> Change Detection
+> Target Quantification
+> Spatial Localization
+> Composition Interpretation
+> State Evaluation
+> Feature Recognition
+> QA Types
+> Multiple Choice
+> Judgment
+> Counting
+> HM -Bench
+> Total
+> Images
+> 2,178
+> QAs
+> 19,337
+> Scene
+> Category
+> Agriculture
+> Urban/Residential
+> Nature
+> Mars
+> 369
+> 1,758
+> 24
+> 27
+> 5,480
+> 11 ,208
+> 1,759
+> 890
+> Sensor
+> Platform
+> Airborne & UAV
+> Earth Satellite
+> Space Probe
+> 1,888
+> 263
+> 27
+> 17 ,545
+> 902
+> 890
+> Spatial
+> Resolution
+> Ultra -High (<1m)
+> High -Res (1m -10m)
+> Moderate (>10m)
+> 102
+> 661
+> 1,415
+> 4,683
+> 4,916
+> 9,738
+> Temporal
+> Mode
+> Single -temporal
+> (1 image)
+> Bi -temporal
+> (2 image)
+> 1,422
+> 1,296
+> 16 ,773
+> 2,564
+> Generation
+> Paradigm
+> Rule -driven
+> MLLM -driven
+> 2,038
+> 140
+> 13 ,802
+> 5,535
+> Answer
+> Type
+> Judgment
+> Counting
+> Choice
+> 1,857
+> 912
+> 1,677
+> 4,848
+> 1,429
+> 13 ,060
+
+(a)  (b) 
+
+Figure 2: Statistical overview of HM-Bench. (a) The quantita-tive distribution of four question types across six core task scenarios. (b) Detailed statistics of the benchmark across six evaluation dimensions in terms of unique images and QA pairs. (UAV: Unmanned Aerial Vehicle.) 
+
+for remote sensing. [14, 18, 22, 55, 56] Prominent examples include VRSBench [33], UrBench [61], AgroMind [31], XLRS-Bench [48], and RSHR-Bench [8] which evaluate model performance on tasks such as question answering, scene understanding, region localiza-tion, object relation analysis, and high-resolution scene reasoning. As summarized in Table 1, these domain-specific benchmarks highlight the importance of multimodal evaluation frameworks [17] for advancing intelligent remote sensing interpretation. They also emphasize the necessity of specialized metrics to assess model ca-pabilities in particular scenarios. Nevertheless, most existing data-sets focus primarily on RGB or visible-spectrum image and concen-trate on spatial semantics, object recognition, and visual reasoning, without fully capturing the continuous spectral information inher-ent in HSI data. As a result, a comprehensive and standardized benchmark for evaluating the comprehension of HSI for current MLLMs is still lacking and remains a significant challenge. 
+
+2.3 HSI Understanding 
+
+HSI understanding has been a central topic in remote sensing, driv-ing extensive research in tasks such as classification, target de-tection, anomaly detection, unmixing, change detection, and ob-ject recognition [32]. The high dimensionality, numerous spectral bands, and complex noise characteristics of HSI pose significant challenges for learning effective joint spatial–spectral represen-tations. With the rise of deep learning, convolutional neural net-works, Transformers, and various spatial–spectral fusion architec-tures have been widely applied, achieving strong performance ac-ross traditional hyperspectral tasks [60]. However, most existing studies focus on task-specific models, while rare attention has been given to how HSI data can be inter-preted and utilized by general MLLMs. Raw HSI cubes are typically incompatible with current MLLMs input formats, making repre-sentation adaptation essential [39]. Potential approaches include textual descriptions, pseudo-color visualizations [25], or reduced-dimensional embeddings [16]. Yet, systematic evaluation of these representation forms for MLLMs understanding remains largely unexplored. This gap motivates the creation of a dedicated bench-mark for HSI understanding across multiple input modalities. HM-Bench: Hyperspectral MLLMs Benchmark Expert Reasoning [7,203] 
+
+Feature 
+
+Recognition 
+
+Target 
+
+Quantification 
+
+Perception [12,134] 
+
+Composition 
+
+Interpretation 
+
+State 
+
+Evaluation 
+
+Change 
+
+Detection     
+
+> Spectral Feature Recognition
+> Q: Based on the spectral
+> signature extracted at pixel
+> (0,0) in t his image, which
+> standard material does it
+> best match?
+> A: Grass Stressed
+> Land Cover Classification
+> Q:Which class is spectrally
+> most similar to the blue
+> region in this block?
+> A:Rice stubble
+> Q:At pixel (1, 14), what specific
+> land cover transition occurred
+> from 2013 to 2015?
+> A:From Grass
+> Stressed to Concrete
+> Basic Change Identification
+> Change Area Localization
+> Q:Dividing the image into a 3x3
+> grid, which sector has the
+> highest count of changed
+> pixels from 2013 to 2015 ?
+> A:Top
+> Change Statistical Analysis
+> Q:Which land cover type
+> conversion was the most
+> frequent from 2013 to 2014 in
+> this block?
+> A:Bare Soil →Artificial
+> Presence Detection
+> Q:Is this image completely
+> devoid of the 'Water' land
+> cover type?
+> A:Yes
+> Counting
+> Q:How many separate and
+> distinct regions of
+> 'Asphalt' are visible in
+> this image?
+> A:4
+> Object Location Relationship
+> Q:Where is Rice mainly
+> located in this block ?
+> A:Lower left
+> Region Delineation
+> Q:In this block, a pink
+> triangular region in the
+> bottom-left area is
+> classified as?
+> A:Pear Trees
+> Spectral Anomaly Detection
+> Q: Which crop's spectral
+> feature exhibits anomalous
+> (rare) characteristics in this
+> block ?
+> A: Small_Brassica_chinensis
+> Spectral Unmixing
+> Q:In this block, what’s the
+> main challenge for pixel
+> classification at the water-
+> vegetation boundary?
+> A:Spectral mixing of
+> adjacent materials
+> Vegetation Health/
+> Stress Diagnosis
+> Q:What is the likely
+> age of the white wax
+> trees in this block?
+> A:Young to mature
+> Environmental Pollution
+> Severity Assessment
+> Q:How would you rate the
+> overall environmental
+> quality of this block ?
+> A:Poor quality (significant
+> degradation)
+
+Spatial 
+
+Localization        
+
+> [3,957] [4,399] [3,778] [2,682] [3,062] [1,459]
+> [2,328] [2,970]
+> [1,629] [1,429]
+> [1,909]
+> [1,869]
+> [1,329]
+> [1,353]
+> [1,766]
+> [1,296]
+> [751]
+> [588]
+> [120]
+
+Figure 3: Hierarchical task taxonomy of HM-Bench, illustrating 13 distinct HSI remote sensing tasks categorized under basic perception and advanced expert reasoning dimensions, alongside data statistics and representative VQA examples. 
+
+3 HM-Bench 
+
+To bridge the gap in MLLMs for complex HSI perception and rea-soning, we introduce Hyperspectral Multimodal Bench mark ( HM-Bench ), the first comprehensive HSI multimodal VQA benchmark. Differentiated from conventional practices that simplify HSI data into RGB image through dimensionality reduction, HM-Bench pre-serves complete spectral fingerprint information. Through a rig-orous standardization and refinement pipeline, we ultimately con-struct a comprehensive evaluation matrix consisting of 2,178 inde-pendent sample blocks and 19,337 meticulously annotated question-answer (QA) pairs, covering 6 task dimensions and 13 specific task types . This section delineates the data collection, pre-processing, and QA pairs construction workflows of HM-Bench. 
+
+3.1 Data Collection 
+
+The data of HM-Bench comprises 20 high-fidelity, publicly avail-able HSI datasets, including Indian Pines [3], Salinas [20], Xion-gan [52], Houston [10, 51], Washington DC Mall, Hermiston, Bay Area, Santa Barbara [36], Pavia (C/U) [20], Botswana [20], Kennedy Space Center (KSC), the WHU-Hi series (HanChuan, HongHu, and LongKou) [59], and the Martian exploration suite MARS [30]. The raw data encompass highly heterogeneous spectral-spatial charac-teristics sourced from mainstream spaceborne, airborne, and extra-planetary imaging sensors, with band counts ranging from 102 to 440, spectral coverage spanning 0.364𝜇 m to 3.8𝜇 m, and spatial res-olutions varying from 0.043m to 30m. The included scenes facili-tate a wide-ranging taxonomic coverage, extending from precision agriculture and complex urban landscapes to natural terrains, and even Martian geomorphology (See Appendix A for details). 
+
+3.2 Task Taxonomy and Data Distribution 
+
+Hierarchical Task Taxonomy. HM-Bench establishes a three-level task hierarchy that scales from ”basic perception” to ”expert-level reasoning.” As illustrated in the task tree (Fig. 3), the bench-mark bifurcates into two primary dimensions: Perception and 
+
+Reasoning . The benchmark encompasses six capability dimensions, including feature recognition, target quantification, spatial local-ization, composition interpretation, state evaluation, and change detection, instantiated across 13 specific task types. As shown in Fig. 2(a), each dimension is evenly equipped with judgment, mul-tiple choice, and even counting questions, demonstrating the ro-bustness of our assessment. While basic perception tasks empha-size object classification and counting, expert reasoning tasks (e.g., spectral unmixing, and vegetation health diagnosis) require mod-els to transcend simple RGB visual logic. Models must deeply in-terpret non-visible spatial-spectral information. This progressive structure, ranging from accessible to highly complex, serves as a comprehensive stress test for the hyperspectral cognitive capabili-ties of MLLMs.(See Appendix B for more details.) 
+
+Multi-dimensional Data Distribution. According to the fi-nal statistics in Fig. 2(b), HM-Bench demonstrates extensive scene coverage and significant sensor heterogeneity. The benchmark in-tegrates 2,178 images and 19,337 QA pairs, with scenarios spanning precision agriculture, complex urban environments, and natural landscapes to Martian geomorphology. Regarding dimensional dis-tribution, the dataset achieves cross-scale coverage from the cen-timeter level (Airborne/UAV) to the hectometer level (Spaceborne/-Deep Space). Furthermore, the inclusion of bi-temporal tasks de-mands advanced dynamic evolution reasoning from large models. By combining the rigor of rule-driven paradigms with the seman-tic richness of MLLM-driven generation, HM-Bench maintains a balanced distribution, ensuring that evaluation results are both au-tomatically quantifiable and objectively impartial. 
+
+3.3 Benchmark Curation 
+
+The construction of HM-Bench follows a comprehensive pipeline that transforms raw HSI blocks into benchmark-ready QA pairs. An overview of this curation process is illustrated in Fig. 4. Questions & Options & 
+
+Answers 
+
+Input Modalities Question Generation MLLMs Infere nce 
+
+Pseudo RGB + Label Prompt 
+
+· S cen ario d efin itio n 
+
+· T ask d efin itio n 
+
+· C o rrectn ess 
+
+· Q A tem p late 
+
+· N o n -h in ts 
+
+Qwen3 VL Plus 
+
++
+
+Qwen3-Max-Thinking 
+
+Human Check 
+
+· quality · answer 
+
+(a) Image Input 
+
+：
+
+For each cube ：        
+
+> 1. P C A → to p 12 co m p o n en ts
+> 2. 3×4g rid layo u t
+> 3. U n ified co m p o site im ag e
+> 4. C o n sisten t fo rm at fo r
+> im ag e ‑b ased evalu atio n
+
+Structured Textual Report               
+
+> •D ata b asics: size, ran g e, m ean , std
+> •G lo b al sp ectru m : p eak/valley, A U C ,
+> en tro p y, 1st d erivative
+> •S p atial reg io n s: 3 ×3 g rid b rig h tn ess
+> & h etero g en eity
+> •P ro xy in d ices: N D V I, E V I, N D W I, P R I,
+> S A V I, G N D V I
+> •R ed ‑ed g e: b an d & slo p e
+> •P C A : exp lain ed varian ce,
+> co m p o n en t stats
+
+Questions & Options & Answers        
+
+> Feature Extraction
+> •E vid en ce ‑b ased d escrip tio n o n ly
+> •N o sem an tic in feren ce
+> •N o p ro xy ‑to ‑sem an tic m ap p in g
+> Constraint
+
+Input Image 
+
+or 
+
+Report 
+
+……  
+
+> Output: Answer
+
+→
+
+> Calculate Accuracy
+> (overall/task-wise)
+
+Same Question 
+
+(b) Report Input 
+
+：
+
+> PCA Component Composite
+
+Figure 4: The overall curation and evaluation pipeline of HM-Bench. The framework consists of three main stages: (1) Ques-tion Generation, where QA pairs are synthesized using MLLMs and refined through manual check; (2) Input Modalities, where high-dimensional cubes are decoupled into two complementary representations: PCA component composite images and struc-tured textual reports based on spectral-spatial features; and (3) MLLMs Inference, where various models are benchmarked to evaluate their HSI understanding across different input formats. 
+
+Hyperspectral Data Preprocessing . To tackle the extreme het-erogeneity in spectral configurations and spatial resolutions across diverse datasets, we architect a unified and standardized prepro-cessing pipeline as follows. 
+
+• Normalization and Alignment. We first unify all disparate raw HSI cubes into a standardized (𝐻 , 𝑊 , 𝐵𝑎𝑛𝑑𝑠) tensor architec-ture. To guarantee cross-dataset physical consistency, we filter out invalid bands degraded by atmospheric water vapor absorption and sensor noise. We also perform rigorous radiometric normal-ization to align the data with real-world physical properties. 
+
+• Label Calibration. Rather than relying solely on raw anno-tations, we actively synchronize ground-truth labels with HSI and proactively discard misaligned or anomalous masks. For unlabeled or boundary-ambiguous regions, we integrate spectral clustering, physical indices ( e.g. , NDVI and MNDWI), and the Spectral Angle Mapper(SAM) algorithm to generate high-precision secondary an-notations, further optimized via neighborhood filtering. 
+
+• Adaptive Spatial Cropping. To handle large-scale remote sensing scenes without losing global spatial context, we design an adaptive grid-based cropping strategy. We apply non-overlapping sliding windows across core regions while enforcing dynamically overlapping patches at the image boundaries. Finally, we conduct manual visual inspections on all cropped sub-blocks to strictly ex-clude low-quality samples dominated by background or severe spec-tral distortion, guaranteeing the high purity of our benchmark. 
+
+Question-Answer Pair Construction . To enhance the diver-sity and cognitive depth of the benchmark while maintaining a unified QA format, we adopt a dual-paradigm generation strategy that synergizes rule-driven and MLLM-driven methodologies. 
+
+• Hybrid Generation Paradigm. We develop a dual-engine framework to synthesize QA pairs. Specifically, we design a rule-driven module that systematically extracts label matrices and sec-ondary annotations to formulate objective queries, such as pixel proportions and land-cover existence. To complement this, we en-gineer an MLLM-driven pipeline where we actively extract special-ized HSI statistics ( e.g. , band indices, mean, variance, and global re-flectance) to construct expert-level prompts. By feeding these tai-lored prompts into MLLMs, we steer the model to generate ques-tions that demand advanced spectral analysis and reasoning.(See Appendix B for detailed description.) 
+
+• Spectral-Forced Anti-Cheating. To rigorously validate that evaluated models do not bypass the spectral modality, we inten-tionally design our reasoning questions to mandate the direct in-terpretation of raw hyperspectral data. We explicitly craft tasks that require the comprehension of non-visible spectral fingerprints (e.g., Red-Edge shifts and specific absorption valleys), fundamen-tally preventing models from guessing answers solely based on pseudo-color RGB visualizations. 
+
+• Quality Control. To validate the highest data quality, we implement a strict human-in-the-loop auditing protocol across all generated QA pairs. Human experts thoroughly review and filter the generated dataset to eliminate hallucinations, illogical artifacts, and ambiguous references. The intensive manual curation ensures that our benchmark faithfully and accurately measures the gen-uine cognitive capabilities of MLLMs in HSI understanding. 
+
+4 Evaluation Setup 
+
+We evaluate MLLMs on HM-Bench under a unified multiple-choice setting to assess their generalization ability across various tasks. To ensure fair comparison, all models are tested on the same bench-mark instances with standardized prompts, consistent decoding HM-Bench: Hyperspectral MLLMs Benchmark 
+
+Table 2: Task-wise performance comparison of different models on HM-Bench under image and report input settings. The benchmark contains 13 tasks organized into a three-level taxonomy, including 6 perception tasks and 7 reasoning tasks. Values are reported as accuracy (%). Highlighting : the best score under Image input is highlighted in blue, and the best score under Report input is highlighted in red.                                                                                                                                                                                                                                                   
+
+> Perception Reasoning Model Input FR TQ SL CI SA CD Overall SFR LCC PD CS OLR RD SAD SU VH EPSA BCI CAL CSA
+> Random Image 20.03 20.51 35.29 22.88 21.31 22.28 35.46 22.86 22.72 26.82 28.76 12.85 32.77 24.96 Report 20.03 20.51 35.29 22.88 21.31 22.28 35.46 22.86 22.72 26.82 28.76 12.85 32.77 24.96 Grok-4 [9] Image 33.12 23.02 27.91 27.57 22.00 38.20 51.32 39.84 34.71 50.46 24.63 8.84 9.17 32.26 Report 33.33 15.41 26.73 21.90 23.73 39.86 54.40 0.22 2.55 44.75 22.37 10.71 24.17 25.56 GPT-5.4-mini [41] Image 50.60 35.48 46.06 32.05 28.55 42.00 64.18 47.30 41.79 51.31 35.55 12.41 35.00 42.35 Report 39.60 19.77 32.96 39.05 27.24 43.77 60.27 37.32 47.85 44.52 31.96 20.41 29.17 37.45 Gemini-2.5-pro [7] Image 20.06 13.69 18.48 15.26 14.04 25.31 36.19 24.54 24.01 31.40 20.11 5.95 22.50 20.97 Report 17.01 8.16 14.11 17.35 11.26 21.62 30.17 13.16 13.14 22.30 13.18 6.46 16.67 15.89 Claude Sonnet 4.6 [41] Image 10.09 2.33 12.63 3.15 3.14 7.65 11.29 12.42 12.63 11.73 13.05 13.10 11.67 9.19 Report 9.06 2.27 8.62 2.10 1.83 1.87 14.37 5.25 11.10 16.82 3.20 12.93 1.67 7.15 Qwen3-VL-4B [2] Image 51.89 37.63 36.06 32.33 27.50 28.04 66.29 41.98 43.60 66.05 44.87 10.20 37.50 40.96 Report 36.25 20.20 25.19 44.37 27.03 24.34 60.27 37.40 56.29 59.72 36.62 13.95 35.00 35.93 InternVL3.5-14B [5] Image 43.26 32.72 49.39 32.26 25.72 50.08 64.11 44.27 47.11 57.72 38.75 12.59 33.33 43.08 Report 39.91 21.67 28.48 48.99 28.50 49.28 53.42 39.39 55.44 52.08 40.08 19.22 31.67 39.52 LLaVA-Next-8B [34] Image 39.82 24.43 41.52 38.35 29.65 32.58 64.48 39.76 39.58 58.56 37.55 12.76 46.67 39.03 Report 40.08 20.20 31.45 37.72 26.30 29.37 61.55 34.44 54.19 57.72 26.23 13.10 41.67 36.71 GeoChat [27] Image 39.39 44.51 64.07 37.72 23.94 27.07 21.90 28.01 31.65 16.74 30.76 10.37 30.00 35.27 Report 37.33 43.28 62.02 36.88 23.36 25.41 20.32 27.86 30.69 16.36 30.49 10.03 28.33 34.06 GeoLLaVA-8K [47] Image 42.44 32.78 40.17 42.48 23.31 30.02 40.56 36.81 47.68 56.48 34.09 12.07 35.00 37.79 Report 41.71 34.99 41.25 43.11 23.73 32.26 45.97 35.70 46.38 59.72 33.42 12.24 39.17 38.76 GLM-4.6V-flash [19] Image 44.93 31.18 40.81 34.57 28.92 47.19 62.75 44.49 42.98 62.42 44.61 9.52 36.67 42.06 Report 38.62 20.38 30.71 39.82 28.55 44.25 60.72 38.58 51.93 46.22 30.09 18.37 25.83 37.72 DeepSeek-VL2-Small [37, 50] Image 15.59 16.45 39.43 20.92 21.69 13.06 12.26 19.07 12.80 15.12 20.77 7.48 14.17 19.75 Report 23.28 19.09 24.98 13.79 9.80 9.47 10.08 13.01 16.08 10.65 4.93 0.34 3.33 15.16 Kimi-VL-A3B-Instruct [45] Image 15.88 27.75 52.53 27.36 25.41 37.24 32.58 39.47 40.20 55.02 46.21 15.31 40.00 38.93 Report 36.90 22.96 31.48 33.52 27.40 40.02 63.36 36.14 52.15 52.47 37.02 14.80 41.67 37.57 Llama-3.1-Nemotron-Nano-VL-8B-V1 [11] Image 39.82 25.66 42.69 26.87 30.02 28.30 65.69 40.87 43.71 56.10 44.61 13.95 30.00 38.67 Report 38.83 21.85 38.55 31.70 29.65 23.70 59.44 39.84 48.13 52.78 36.62 18.20 35.83 37.00
+
+constraints, and answer extraction rules. The key components of our evaluation setup are summarized below, with further details available in Appendix C 
+
+4.1 Input Modalities 
+
+Each hyperspectral sample is associated with two aligned input modalities derived from the same underlying cube: (1) image in-put , constructed as a PCA component composite images, which represents spectral features; and (2) report input , constructed as a structured textual summary of quantitative HSI characteristics. Since both inputs originate from the same source data, they enable a controlled comparison of model performance across different in-put representations without variations in source content. 
+
+Image Input Generation . To obtain a vision-compatible rep-resentation, each HSI cube is transformed into a PCA-based com-posite image. Given a cube of size 𝐻 × 𝑊 × 𝐵 , it is first reshaped into a two-dimensional matrix in which each pixel corresponds to a 𝐵 -dimensional spectral signature. PCA is then applied along the spectral dimension to extract the dominant low-dimensional struc-ture of the data. For benchmarking purposes, these maps are normalized to [0, 1] 
+
+and rendered as grayscale images with preserved aspect ratios. Our final dataset retains the top 12 principal components for every sam-ple and arrange them into a standardized 4-column multi-row com-posite layout. Each sub-image is annotated with its component in-dex and explained variance ratio. This design yields a unified visual representation that compresses high-dimensional HSI information into a form directly consumable by image-capable MLLMs, while preserving a consistent presentation format across all samples. 
+
+Report Input Generation. To obtain a text-compatible repre-sentation, each HSI cube is converted into a structured textual re-port derived from quantitative descriptors. Specifically, it includes evidence-based information across several categories: basic data properties (shape, range, mean, standard deviation, saturation ra-tio), global spectral features (average spectrum, peaks and valleys, entropy, derivative statistics), regional spatial variation (grid-level statistics), and proxy spectral indices (water and vegetation indices). A central principle of the report construction process is that it remains strictly evidence-based. The generated text is intended to describe only measurable numerical and structural properties of the HSI sample, without introducing speculative semantic in-terpretations. In particular, the report avoids unsupported claims regarding scene category, sensor type, material identity or geo-graphic context. This design enhances consistency across samples and makes the textual modality suitable for benchmark evaluation. 4.2 Evaluated Models 
+
+Experiments include proprietary models ( e.g. , Claude-Sonnet, Gem-ini [44], Grok [24] and GPT [2]) and representative open-source models, ( e.g. , Qwen-VL [2], InternVL [5], LLaVA [29] series, Deep-Seek-VL2 [37], Kimi-VL [45], Llama-3.1-Nemotron-Nano-VL [11] and GLM-4.6V [19]). In addition, we evaluate remote sensing mod-els ( e.g. , GeoChat [27] and GeoLLaVA [12]). Overall, these 18 mod-els span diverse architectures, parameter scales, and domain spe-cializations. 50.08    
+
+> 68.17 47.3
+> SFR
+> LCC
+> PD
+> CS
+> OLR
+> SAD SU
+> VH
+> EPSA
+> CAL
+> RD
+> BCI
+> CSA 51.89
+> 37.63
+> 49.39
+> 38.35
+> 29.65
+> 47.11
+> 66.05
+> 44.87
+> 12.85
+> 46.67
+> 49.28
+> 63.81 39.39
+> SFR
+> LCC
+> PD
+> CS
+> OLR
+> SAD SU
+> VH
+> EPSA
+> CAL
+> RD
+> BCI
+> CSA 40.08
+> 21.67
+> 35.29
+> 48.99
+> 29.07
+> 56.29
+> 59.72
+> 40.08
+> 20.41
+> 41.67
+> (a) (b)
+
+Figure 5: Performance comparison of 5 representative MLLMs across 13 tasks in HM-Bench conducted under two input modalities: (a) PCA Component Composite Images and (b) Structured Textual Reports. 
+
+4.3 Evaluation Strategy 
+
+HM-Bench is evaluated in a unified multiple-choice format. Each question is associated with multiple candidate answers depending on the task. Each question contains exactly one correct answer, while the remaining options serve as distractors. All models are evaluated in a zero-shot setting using a standardized prompt tem-plate. For each instance, the prompt includes the question and its corresponding candidate options. The model is instructed to out-put only the label of the most appropriate answer. The primary distinction between modalities lies in the contextual input: for the text modality, the structured report serves as the textual context, whereas for the image modality, the PCA-based composite image is provided as the visual input. To ensure consistency across evaluations, model outputs are constrained to a maximum length of 64 tokens with a decoding temperature set to 0, unless stricter limitations are imposed by the model interface. Proprietary models are evaluated via their official APIs (as of March 2026), while open-source models are deployed locally using publicly available weights and standardized configu-rations. For answer parsing, only the first valid option label from each generated response is considered. Responses that do not in-clude a valid label are marked as incorrect. 
+
+4.4 Evaluation Metrics 
+
+We utilize accuracy as the primary evaluation metric. A prediction is considered correct if the extracted option label exactly matches the ground-truth answer. Accuracy is reported at two levels: task-wise and overall. For each task, we report task-wise accuracy, cal-culated as the proportion of correctly predicted answers within that task. To provide a summary across all tasks, we compute over-all accuracy as the micro-averaged performance across all evalu-ated questions. Each model is evaluated twice on the same ques-tion, once with text modality and once with image modality. This setup ensures a fair and consistent comparison across modalities. 
+
+5 Main Results 
+
+Table 4 summarizes the performance of representative models from each series on HM-Bench under two input modalities: Image and Report, covering 13 tasks. The results demonstrate that HM-Bench presents a substantial challenge for current MLLMs. Even the best-performing model, InternVL3.5-14B, achieves only 43.08% accuracy with image input and 39.52% with report input, indicating consid-erable room for improvement in HSI understanding. As illustrated in Figure 5, the radar chart compares the performance of five rep-resentative MLLMs across the 13 tasks, providing a concise visual summary of their results under both modalities. More comprehen-sive results and discussions are provided in Appendix D. 
+
+Image input provides a consistent advantage. For most mod-els, predictions based directly on images yield higher accuracy than those based on reports. For instance, GPT-5.4-mini improves from 37.45% to 42.35%, Qwen3-VL-4B from 35.93% to 40.96%, and Intern-VL3.5-14B from 39.52% to 43.08%. This trend suggests that textual priors alone are insufficient for reliable performance on HM-Bench and that grounded visual understanding is essential. Nevertheless, the report modality remains moderately competitive for certain models, indicating that condensed textual descriptions can still pro-vide useful cues for some tasks. 
+
+Reasoning is the primary bottleneck. Compared to perception-oriented tasks, reasoning subtasks exhibit substantially lower and less stable performance across models. In particular, the CAL task emerges as one of the most challenging in the benchmark, with nearly all models scoring below 20% under both modalities. Even the highest results reach only 20.41% (GPT-5.4-mini, report) and 19.22% (InternVL3.5-14B, report). These findings indicate that cur-rent models struggle with the multi-step inference and knowledge integration required for complex clinical reasoning, despite captur-ing some surface-level patterns. 
+
+Open-source models are surprisingly strong on HM-Bench. 
+
+For image input, the top three models are InternVL3.5-14B (43.08%), GPT-5.4-mini (42.35%), and GLM-4.6V-flash (42.06%); under report input, InternVL3.5-14B again ranks first (39.52%), followed by Geo-LLaVA-8K (38.76%) and Kimi-VL-A3B-Instruct (37.57%). Notably, several open-source models match or outperform proprietary sys-tems such as Claude Sonnet 4.6 and Gemini-2.5-pro. This pattern can be attributed to three factors. First, HM-Bench emphasizes spe-cialized visual discrimination over general world knowledge, favor-ing models with stronger vision-language backbones or targeted visual instruction tuning. Second, the benchmark employs a strict multiple-choice protocol with concise outputs, which limits the ad-vantages of models optimized primarily for open-ended dialogue and fluency. Third, hyperspectral inputs differ substantially from the natural-image and web-text distributions that dominate general-purpose pretraining. Consequently, strong performance on general-domain tasks does not guarantee success on this benchmark. HM-Bench: Hyperspectral MLLMs Benchmark 
+
+6 Conclusion 
+
+In this paper, we introduce Hyperspectral Multimodal Bench mark (HM-Bench ), the first benchmark specifically designed to evalu-ate the HSI understanding capabilities of MLLMs. By transform-ing raw hyperspectral cubes into two complementary modalities: PCA-based composite images and structured textual reports, we es-tablish a standardized evaluation framework to systematically ex-plore how different representations influence model performance. Through extensive experiments across 18 representative models, we demonstrate that while current MLLMs exhibit moderate profi-ciency in hyperspectral perception, they face significant challenges with complex spatial-spectral reasoning tasks, such as spectral un-mixing and change detection. Moreover, our results show that vi-sual inputs generally outperform textual inputs, underscoring the importance of grounding models in spectral-spatial evidence. We envision HM-Bench as a catalyst for the development of next-gene-ration models that exhibit advanced hyperspectral intelligence and robust multimodal interfaces for remote sensing applications. 
+
+References 
+
+[1] Josh Achiam, Steven Adler, Sandhini Agarwal, Lama Ahmad, Ilge Akkaya, Flo-rencia Leoni Aleman, Diogo Almeida, Janko Altenschmidt, Sam Altman, Shya-mal Anadkat, et al. 2023. Gpt-4 technical report. arXiv preprint arXiv:2303.08774 
+
+(2023). [2] Jinze Bai, Shuai Bai, Shusheng Yang, Shijie Wang, Sinan Tan, Peng Wang, Jun-yang Lin, Chang Zhou, and Jingren Zhou. 2023. Qwen-vl: A versatile vision-language model for understanding, localization. Text Reading, and Beyond 2, 1 (2023), 1. [3] Marion Baumgardner, Larry Biehl, and David Landgrebe. 2015. 220 band aviris hyperspectral image data set: June 12, 1992 indian pine test site 3. (No Title) 
+
+(2015). [4] Davide Caffagni, Federico Cocchi, Luca Barsellotti, Nicholas Moratelli, Sara Sarto, Lorenzo Baraldi, Marcella Cornia, and Rita Cucchiara. 2024. The revolu-tion of multimodal large language models: A survey. Findings of the association for computational linguistics: ACL 2024 (2024), 13590–13618. [5] Zhe Chen, Jiannan Wu, Wenhai Wang, Weijie Su, Guo Chen, Sen Xing, Muyan Zhong, Qinglong Zhang, Xizhou Zhu, Lewei Lu, et al. 2024. Internvl: Scaling up vision foundation models and aligning for generic visual-linguistic tasks. In 
+
+Proceedings of the IEEE/CVF conference on computer vision and pattern recognition .24185–24198. [6] Federico Cocchi, Nicholas Moratelli, Davide Caffagni, Sara Sarto, Lorenzo Baraldi, Marcella Cornia, and Rita Cucchiara. 2025. Llava-more: A comparative study of llms and visual backbones for enhanced visual instruction tuning. In 
+
+Proceedings of the IEEE/CVF International Conference on Computer Vision . 4278– 4288. [7] Gheorghe Comanici, Eric Bieber, Mike Schaekermann, Ice Pasupat, Noveen Sachdeva, Inderjit Dhillon, Marcel Blistein, Ori Ram, Dan Zhang, Evan Rosen, et al. 2025. Gemini 2.5: Pushing the frontier with advanced reasoning, multi-modality, long context, and next generation agentic capabilities. arXiv preprint arXiv:2507.06261 (2025). [8] Yunkai Dang, Meiyi Zhu, Donghao Wang, Yizhuo Zhang, Jiacheng Yang, Qi Fan, Yuekun Yang, Wenbin Li, Feng Miao, and Yang Gao. 2025. A Benchmark for Ultra-High-Resolution Remote Sensing MLLMs. arXiv preprint arXiv:2512.17319 
+
+(2025). [9] Murillo Edson de Carvalho Souza and Li Weigang. 2025. Grok, Gemini, ChatGPT and DeepSeek: Comparison and applications in conversational artificial intelli-gence. Inteligencia Artificial 2, 1 (2025). [10] Christian Debes, Andreas Merentitis, Roel Heremans, Jürgen Hahn, Nikolaos Frangiadakis, Tim Van Kasteren, Wenzhi Liao, Rik Bellens, Aleksandra Pižurica, Sidharta Gautama, et al. 2014. Hyperspectral and LiDAR data fusion: Outcome of the 2013 GRSS data fusion contest. IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing 7, 6 (2014), 2405–2418. [11] Amala Sanjay Deshmukh, Kateryna Chumachenko, Tuomas Rintamaki, Matthieu Le, Tyler Poon, Danial Mohseni Taheri, Ilia Karmanov, Guilin Liu, Jarno Seppanen, Guo Chen, et al. 2025. Nvidia nemotron nano v2 vl. arXiv preprint arXiv:2511.03929 (2025). [12] Hosam Elgendy, Ahmed Sharshar, Ahmed Aboeitta, Yasser Ashraf, and Mohsen Guizani. 2024. Geollava: Efficient fine-tuned vision-language models for tempo-ral change detection in remote sensing. arXiv preprint arXiv:2410.19552 (2024). [13] Chaoyou Fu, Peixian Chen, Yunhang Shen, Yulei Qin, Mengdan Zhang, Xu Lin, Jinrui Yang, Xiawu Zheng, Ke Li, Xing Sun, et al. 2023. Mme: A comprehensive evaluation benchmark for multimodal large language models. arXiv preprint arXiv:2306.13394 (2023). [14] Junyao Ge, Xu Zhang, Yang Zheng, Kaitai Guo, and Jimin Liang. 2025. RSTeller: Scaling up visual language modeling in remote sensing with rich linguistic se-mantics from openly available data and large language models. ISPRS Journal of Photogrammetry and Remote Sensing 226 (2025), 146–163. [15] Jiaming Han, Kaixiong Gong, Yiyuan Zhang, Jiaqi Wang, Kaipeng Zhang, Dahua Lin, Yu Qiao, Peng Gao, and Xiangyu Yue. 2024. Onellm: One framework to align all modalities with language. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition . 26584–26595. [16] Danfeng Hong, Zhu Han, Jing Yao, Lianru Gao, Bing Zhang, Antonio Plaza, and Jocelyn Chanussot. 2021. SpectralFormer: Rethinking hyperspectral image clas-sification with transformers. IEEE Transactions on Geoscience and Remote Sensing 
+
+60 (2021), 1–15. [17] Danfeng Hong, Jingliang Hu, Jing Yao, Jocelyn Chanussot, and Xiao Xiang Zhu. 2021. Multimodal remote sensing benchmark datasets for land cover classifica-tion with a shared and specific feature learning model. ISPRS Journal of Pho-togrammetry and Remote Sensing 178 (2021), 68–80. [18] Danfeng Hong, Chenyu Li, Xuyang Li, Gustau Camps-Valls, and Jocelyn Chanus-sot. 2026. Foundation Models in Remote Sensing: Evolving from unimodality to multimodality. IEEE Geoscience and Remote Sensing Magazine (2026). [19] Wenyi Hong, Wenmeng Yu, Xiaotao Gu, Guo Wang, Guobing Gan, Haomiao Tang, Jiale Cheng, Ji Qi, Junhui Ji, Lihang Pan, et al. 2025. Glm-4.5 v and glm-4.1 v-thinking: Towards versatile multimodal reasoning with scalable reinforcement learning. arXiv preprint arXiv:2507.01006 (2025). [20] Sikang Hou, Hongye Shi, Xianghai Cao, Xiaohua Zhang, and Licheng Jiao. 2021. Hyperspectral imagery classification based on contrastive learning. IEEE Trans-actions on Geoscience and Remote Sensing 60 (2021), 1–13. [21] Shaohan Huang, Li Dong, Wenhui Wang, Yaru Hao, Saksham Singhal, Shuming Ma, Tengchao Lv, Lei Cui, Owais Khan Mohammed, Barun Patra, et al. 2023. Lan-guage is not all you need: Aligning perception with language models. Advances in Neural Information Processing Systems 36 (2023), 72096–72109. [22] Ziyue Huang, Hongxi Yan, Qiqi Zhan, Shuai Yang, Mingming Zhang, Chenkai Zhang, YiMing Lei, Zeming Liu, Qingjie Liu, and Yunhong Wang. 2025. A sur-vey on remote sensing foundation models: From vision to multimodality. arXiv preprint arXiv:2503.22081 (2025). [23] Binyuan Hui, Jian Yang, Zeyu Cui, Jiaxi Yang, Dayiheng Liu, Lei Zhang, Tianyu Liu, Jiajun Zhang, Bowen Yu, Keming Lu, et al. 2024. Qwen2. 5-coder technical report. arXiv preprint arXiv:2409.12186 (2024). [24] Ahmed Imtiaz Humayun, Randall Balestriero, and Richard Baraniuk. 2024. Deep networks always grok and here is why. arXiv preprint arXiv:2402.15555 (2024). [25] Xudong Kang, Puhong Duan, and Shutao Li. 2020. Hyperspectral image visual-ization with edge-preserving filtering and principal component analysis. Infor-mation Fusion 57 (2020), 130–143. [26] Salman Khan, Muzammal Naseer, Munawar Hayat, Syed Waqas Zamir, Fa-had Shahbaz Khan, and Mubarak Shah. 2022. Transformers in vision: A survey. 
+
+ACM computing surveys (CSUR) 54, 10s (2022), 1–41. [27] Kartik Kuckreja, Muhammad Sohail Danish, Muzammal Naseer, Abhijit Das, Salman Khan, and Fahad Shahbaz Khan. 2024. Geochat: Grounded large vision-language model for remote sensing. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition . 27831–27840. [28] Bohao Li, Yuying Ge, Yixiao Ge, Guangzhi Wang, Rui Wang, Ruimao Zhang, and Ying Shan. 2024. Seed-bench: Benchmarking multimodal large language mod-els. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition . 13299–13308. [29] Feng Li, Renrui Zhang, Hao Zhang, Yuanhan Zhang, Bo Li, Wei Li, Zejun Ma, and Chunyuan Li. 2024. Llava-next-interleave: Tackling multi-image, video, and 3d in large multimodal models. arXiv preprint arXiv:2407.07895 (2024). [30] Jiaojiao Li, Shunyao Zi, Rui Song, Yunsong Li, Yinlin Hu, and Qian Du. 2022. A stepwise domain adaptive segmentation network with covariate shift alleviation for remote sensing imagery. IEEE Transactions on Geoscience and Remote Sensing 
+
+60 (2022), 1–15. [31] Qingmei Li, Yang Zhang, Zurong Mai, Yuhang Chen, Shuohong Lou, Henglian Huang, Jiarui Zhang, Zhiwei Zhang, Yibin Wen, Weijia Li, et al. 2025. Can large multimodal models understand agricultural scenes? benchmarking with agro-mind. arXiv preprint arXiv:2505.12207 (2025). [32] Shutao Li, Weiwei Song, Leyuan Fang, Yushi Chen, Pedram Ghamisi, and Jon Atli Benediktsson. 2019. Deep learning for hyperspectral image classification: An overview. IEEE transactions on geoscience and remote sensing 57, 9 (2019), 6690– 6709. [33] Xiang Li, Jian Ding, and Mohamed Elhoseiny. 2024. Vrsbench: A versatile vision-language benchmark dataset for remote sensing image understanding. Advances in Neural Information Processing Systems 37 (2024), 3229–3242. [34] Haotian Liu, Chunyuan Li, Yuheng Li, Bo Li, Yuanhan Zhang, Sheng Shen, and Yong Jae Lee. 2024. Llavanext: Improved reasoning, ocr, and world knowledge. [35] Yuan Liu, Haodong Duan, Yuanhan Zhang, Bo Li, Songyang Zhang, Wangbo Zhao, Yike Yuan, Jiaqi Wang, Conghui He, Ziwei Liu, et al. 2024. Mmbench: Is your multi-modal model an all-around player?. In European conference on com-puter vision . Springer, 216–233. [36] Javier López-Fandiño, Dora B. Heras, Francisco Argüello, and Mauro Dalla Mura. 2019. GPU framework for change detection in multitemporal hyperspectral im-ages. International Journal of Parallel Programming 47, 2 (2019), 272–292. [37] Haoyu Lu, Wen Liu, Bo Zhang, Bingxuan Wang, Kai Dong, Bo Liu, Jingxiang Sun, Tongzheng Ren, Zhuoshu Li, Hao Yang, et al. 2024. Deepseek-vl: towards real-world vision-language understanding. arXiv preprint arXiv:2403.05525 (2024). [38] Andrzej Maćkiewicz and Waldemar Ratajczak. 1993. Principal components anal-ysis (PCA). Computers & Geosciences 19, 3 (1993), 303–342. [39] Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sand-hini Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark, et al. 2021. Learning transferable visual models from natural language supervision. In 
+
+International conference on machine learning . PmLR, 8748–8763. [40] Behnood Rasti, Danfeng Hong, Renlong Hang, Pedram Ghamisi, Xudong Kang, Jocelyn Chanussot, and Jon Atli Benediktsson. 2020. Feature extraction for hy-perspectral imagery: The evolution from shallow to deep: Overview and toolbox. 
+
+IEEE Geoscience and Remote Sensing Magazine 8, 4 (2020), 60–88. [41] Marina Sánchez-Torrón, Daria Akselrod, and Jason Rauchwerk. 2026. To Write or to Automate Linguistic Prompts, That Is the Question. arXiv preprint arXiv:2603.25169 (2026). [42] Risa Shinoda, Nakamasa Inoue, Hirokatsu Kataoka, Masaki Onishi, and Yoshi-taka Ushiku. 2025. Agrobench: Vision-language model benchmark in agricul-ture. In Proceedings of the IEEE/CVF International Conference on Computer Vision .7634–7644. [43] Mary B Stuart, Andrew JS McGonigle, and Jon R Willmott. 2019. Hyperspec-tral imaging in environmental monitoring: A review of recent developments and technological advances in compact field deployable systems. Sensors 19, 14 (2019), 3071. [44] Gemini Team, Rohan Anil, Sebastian Borgeaud, Jean-Baptiste Alayrac, Jiahui Yu, Radu Soricut, Johan Schalkwyk, Andrew M Dai, Anja Hauth, Katie Millican, et al. 2023. Gemini: a family of highly capable multimodal models. arXiv preprint arXiv:2312.11805 (2023). [45] Kimi Team, Angang Du, Bohong Yin, Bowei Xing, Bowen Qu, Bowen Wang, Cheng Chen, Chenlin Zhang, Chenzhuang Du, Chu Wei, et al. 2025. Kimi-vl technical report. arXiv preprint arXiv:2504.07491 (2025). [46] Di Wang, Meiqi Hu, Yao Jin, Yuchun Miao, et al. 2025. HyperSIGMA: Hyper-spectral Intelligence Comprehension Foundation Model. IEEE Transactions on Pattern Analysis and Machine Intelligence 47, 8 (2025), 6427–6444. doi:10.1109/ TPAMI.2025.3557581 [47] Fengxiang Wang, Mingshuo Chen, Yueying Li, Di Wang, Haotian Wang, Zong-hao Guo, Zefan Wang, Boqi Shan, Long Lan, Yulin Wang, et al. 2025. GeoLLaVA-8K: scaling remote-sensing multimodal large language models to 8k resolution. 
+
+arXiv preprint arXiv:2505.21375 (2025). [48] Fengxiang Wang, Hongzhen Wang, Zonghao Guo, Di Wang, Yulin Wang, Ming-shuo Chen, Qiang Ma, Long Lan, Wenjing Yang, Jing Zhang, et al. 2025. Xlrs-bench: Could your multimodal llms understand extremely large ultra-high-resolution remote sensing imagery?. In Proceedings of the Computer Vision and Pattern Recognition Conference . 14325–14336. [49] Yibin Wen, Qingmei Li, Zi Ye, Jiarui Zhang, Jing Wu, Zurong Mai, Shuohong Lou, Yuhang Chen, Henglian Huang, Xiaoya Fan, et al. 2025. AgriCoT: A Chain-of-Thought Benchmark for Evaluating Reasoning in Vision-Language Models for Agriculture. arXiv preprint arXiv:2511.23253 (2025). [50] Zhiyu Wu, Xiaokang Chen, Zizheng Pan, Xingchao Liu, Wen Liu, Damai Dai, Huazuo Gao, Yiyang Ma, Chengyue Wu, Bingxuan Wang, et al. 2024. Deepseek-vl2: Mixture-of-experts vision-language models for advanced multimodal under-standing. arXiv preprint arXiv:2412.10302 (2024). [51] Yonghao Xu, Bo Du, Liangpei Zhang, Daniele Cerra, Miguel Pato, Emiliano Car-mona, Saurabh Prasad, Naoto Yokoya, Ronny Hänsch, and Bertrand Le Saux. 2019. Advanced multi-sensor optical remote sensing for urban land use and land cover classification: Outcome of the 2018 IEEE GRSS data fusion contest. 
+
+IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing 
+
+12, 6 (2019), 1709–1724. [52] CEN Yi, Lifu Zhang, Xia Zhang, WANG Yueming, QI Wenchao, TANG Senlin, and Peng Zhang. 2020. Aerial hyperspectral remote sensing classification dataset of Xiongan New Area (Matiwan Village). National Remote Sensing Bulletin 24, 11 (2020), 1299–1306. [53] Shukang Yin, Chaoyou Fu, Sirui Zhao, Ke Li, Xing Sun, Tong Xu, and Enhong Chen. 2024. A survey on multimodal large language models. National Science Review 11, 12 (2024), nwae403. [54] Kaining Ying, Fanqing Meng, Jin Wang, Zhiqian Li, Han Lin, Yue Yang, Hao Zhang, Wenbo Zhang, Yuqi Lin, Shuo Liu, et al. 2024. Mmt-bench: A compre-hensive multimodal benchmark for evaluating large vision-language models to-wards multitask agi. arXiv preprint arXiv:2404.16006 (2024). [55] Yang Zhan, Zhitong Xiong, and Yuan Yuan. 2025. Skyeyegpt: Unifying remote sensing vision-language tasks via instruction tuning with large language model. 
+
+ISPRS Journal of Photogrammetry and Remote Sensing 221 (2025), 64–77. [56] Xu Zhang, Jiabin Fang, Zhuoming Ding, Jin Yuan, Xuan Liu, Qianjun Zhang, and Zhiyong Li. 2026. Cross-modal Context-aware Learning for Visual Prompt Guided Multimodal Image Understanding in Remote Sensing. IEEE Transactions on Geoscience and Remote Sensing (2026). [57] Xia Zhang, Yanli Sun, Kun Shang, Lifu Zhang, and Shudong Wang. 2016. Crop classification based on feature band set construction and object-oriented ap-proach using hyperspectral images. IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing 9, 9 (2016), 4117–4128. [58] Yi-Fan Zhang, Huanyu Zhang, Haochen Tian, Chaoyou Fu, Shuangqing Zhang, Junfei Wu, Feng Li, Kun Wang, Qingsong Wen, Zhang Zhang, et al. 2024. Mme-realworld: Could your multimodal llm challenge high-resolution real-world sce-narios that are difficult for humans? arXiv preprint arXiv:2408.13257 (2024). [59] Yanfei Zhong, Xin Hu, Chang Luo, Xinyu Wang, Ji Zhao, and Liangpei Zhang. 2020. WHU-Hi: UAV-borne hyperspectral with high spatial resolution (H2) benchmark datasets and classifier for precise crop identification based on deep convolutional neural network with CRF. Remote Sensing of Environment 250 (2020), 112012. [60] Zilong Zhong, Jonathan Li, Zhiming Luo, and Michael Chapman. 2017. Spectral– spatial residual network for hyperspectral image classification: A 3-D deep learn-ing framework. IEEE transactions on geoscience and remote sensing 56, 2 (2017), 847–858. [61] Baichuan Zhou, Haote Yang, Dairong Chen, Junyan Ye, Tianyi Bai, Jinhua Yu, Songyang Zhang, Dahua Lin, Conghui He, and Weijia Li. 2025. Urbench: A com-prehensive benchmark for evaluating large multimodal models in multi-view urban scenarios. In Proceedings of the AAAI Conference on Artificial Intelligence ,Vol. 39. 10707–10715. [62] Feiyun Zhu. 2017. Hyperspectral unmixing: ground truth labeling, datasets, benchmark performances and survey. arXiv preprint arXiv:1708.05125 (2017). HM-Bench: Hyperspectral MLLMs Benchmark 
+
+Appendix 
+
+This appendix supplements the proposed HM-Bench with details excluded from the main paper due to space constraints. The appen-dix is organized into six sections as follows: 
+
+• Sec. A: Dataset Description – Detailed information of the 20 HSI datasets used in HM-Bench. 
+
+• Sec. B: Details of HM-Bench – Detailed description of bench-mark construction, including task taxonomy and QA generation. 
+
+• Sec. C: Details of the Evaluation – Complete evaluation setup, covering input processing, prompt templates, and accuracy cal-culation. 
+
+• Sec. D: Supplementary Results and Analysis – Extended ex-perimental results and a combined analysis of input modality and task dimensions. 
+
+• Sec. E:Limitations and Future Work – Discussion of current benchmark limitations and future directions. 
+
+• Sec. F: Case Study – Representative question-answer examples. 
+
+A Dataset Description 
+
+To provide a comprehensive and rigorous evaluation of Multimodal Large Language Models (MLLMs [4, 15, 21, 53]) in the hyperspec-tral domain, HM-Bench meticulously integrates 20 high-fidelity, publicly available hyperspectral datasets. Unlike existing bench-marks that predominantly focus on natural images or narrow re-mote sensing scenarios, our dataset collection is designed to maxi-mize diversity across imaging platforms, scene taxonomy, and spec-tral dimensions. In table 3, we summarize the detailed specifica-tions of each dataset included in HM-Bench, demonstrating its ex-tensive representativeness. 
+
+A.1 Multi-Platform and Multi-Scale Heterogeneity. 
+
+HM-Bench achieves an unprecedented platform coverage spanning ”UAV-Airborne-Spaceborne-Deep Space”. It includes UAV-borne sen-sors (e.g., WHU-Hi series equipped with Headwall Nano-Hypersp-ec [59]) for ultra-high-resolution precision agriculture, airborne sensors (e.g., AVIRIS [3, 20, 36], CASI [10, 51], ROSIS [20]) for classic large-scale mapping with high signal-to-noise ratios, and spaceborne/deep-space sensors (e.g., CRISM, NASA EO-1 [20, 30]) for macroscopic and planetary exploration. This hardware hetero-geneity naturally results in a massive cross-scale spatial resolution spanning from the centimeter level (0.043m, WHU-Hi-HongHu) to the decameter level (30m, Botswana). Such variance fundamentally challenges MLLMs: while ultra-high resolution tests fine-grained texture and local geometry perception [40], low resolution forces MLLMs to abandon RGB-like shape reliance and deeply interpret ”spectral fingerprints” for mixed pixel reasoning [62]. Perception 
+
+Reasoning 
+
+> Feature
+> Recognition
+> Target
+> Quantification
+> Spatial
+> Localization
+> Composition
+> Interpretation
+> State
+> Evaluation
+> Change
+> Detection
+> Spectral
+> Feature
+> Recognition
+> [2,328]
+> Land
+> Cover
+> Classification
+> [1,629]
+> Presence
+> Detection
+> [2,970]
+> Counting
+> [1,429]
+> Object
+> Location
+> Relationship
+> [1,909]
+> Region
+> Delineation
+> [1,869]
+> Spectral
+> Anomaly
+> Detection
+> [1,329]
+> Spectral
+> Unmixing
+> [1,353]
+> Vegetation Health/
+> Stress Diagnosis
+> [1,766]
+> Environmental
+> Pollution
+> Severity
+> Assessment
+> [1,296]
+> Basic
+> Change
+> Identification
+> [751]
+> Change
+> Area
+> Localization
+> [588]
+> Change
+> Statistical
+> Analysis
+> [120]
+
+Figure 6: Hierarchical task taxonomy of HM-Bench. 
+
+A.2 Multi-Scene and Multi-Domain Diversity. 
+
+The integrated datasets encompass a macroscopic to microscopic view of diverse environments, ensuring that the benchmark is not biased toward specific land covers. The scene taxonomy covers precision agriculture [3, 20] (e.g., Indian Pines, Salinas) involving complex crop classification and health monitoring, complex urban and residential landscapes [10, 51] (e.g., Houston, Washington DC) with dense buildings and structural occlusions, as well as natural terrains and ecology [20] (e.g., Botswana, KSC). Uniquely, HM-Bench incorporates extraterrestrial geomorphology [30] (MARS series), evaluating the capability of MLLMs to process unknown, extreme hyperspectral signatures beyond Earth. This extensive di-versity prevents scenario-overfitting and guarantees a holistic as-sessment of generalized hyperspectral intelligence. 
+
+A.3 Multi-Band and Multi-Dimensional Coverage. 
+
+Unlike standard visual benchmarks, HM-Bench preserves complete hyperspectral cubes rather than reducing them to low-dimensional RGB representations. Its spectral range spans ultraviolet and visi-ble wavelengths (0.364 𝜇 m) to short-wave infrared (SWIR, 2.5 𝜇 m), and extends to 3.8 𝜇 m for Martian datasets [30], with the number of spectral bands ranging from 102 to 440. This dense and continu-ous sampling of the electromagnetic spectrum captures physically meaningful properties that are invisible to conventional RGB sen-sors, including atmospheric water vapor absorption features, mois-ture content, and vegetation red-edge responses. Consequently, mo-dels must perform genuine spectral-spatial reasoning instead of re-lying on superficial patterns in pseudo-color images [16]. 
+
+B Details of HM-Bench B.1 Hierarchical Task Taxonomy 
+
+To rigorously evaluate the diverse capabilities of MLLMs, HM-Bench establishes a hierarchical taxonomy (detailed in Fig.6), comprising 13 distinct tasks categorized into two primary dimensions: Percep-tion and Reasoning. Table 3: Detailed statistics of the HSI datasets included in HM-Bench. Dataset Sensor Resolution Bands Wavelength Samples (Blocks) Patch Size Scene Type                                                                                                                                                                                                         
+
+> IndianPines [3] AVIRIS 20m 200 0.4 – 2.5 𝜇 m940 ×40 Agriculture/Nature Salinas [20] AVIRIS 3.7m 204 0.4 – 2.5 𝜇 m20 64 ×64 Agriculture Xiongan [52] VNIR Imaging Spectrometer (SITP) 0.5m 250 0.4 – 1 𝜇 m76 256 ×256 Agriculture Houston 2013 [10] CASI-1500 2.5m 144 0.364 – 1.046 𝜇 m18 100 ×100 Urban/Nature Houston 2018 [51] CASI-1500 2.5m 144 0.374 – 1.047 𝜇 m18 100 ×100 Urban/Nature WashingtonDC HYDICE —191 0.4 – 2.4 𝜇 m612 48 ×48 Urban/Nature Hermiston [36] EO-1 30m 242 0.4 – 2.5 𝜇 m128 32 ×32 Agriculture BayArea [36] AVIRIS 16.9m 224 0.4 – 2.5 𝜇 m750 32 ×32 Urban/Nature SantaBarbara [36] AVIRIS 15 – 18m 224 0.4 – 2.6 𝜇 m40 100 ×100 Urban/Nature Pavia Center [20] ROSIS 1.3m 102 0.43 – 0.86 𝜇 m9121 ×715 Urban/Residential Pavia University [20] ROSIS 1.3m 103 0.43 – 0.86 𝜇 m967 ×340 Urban/Campus Kennedy Space Center (KSC) NASA AVIRIS 18m 176 0.4 – 2.5 𝜇 m956 ×614 Space Launch Site Botswana [20] NASA EO-1 30m 145 0.4 – 2.5 𝜇 m9164 ×256 Desert WHU-Hi-HanChuan [59] Headwall Nano-Hyperspec 0.109m 274 0.4 – 1 𝜇 m9274 ×405 Agricultural WHU-Hi-HongHu [59] Headwall Nano-Hyperspec 0.043m 270 0.4 – 1 𝜇 m9270 ×313 Lake WHU-Hi-LongKou [59] Headwall Nano-Hyperspec 0.463m 270 0.4 – 1 𝜇 m9270 ×183 Coastal Zone/Urban Urban [62] HYDICE 2m 162 0.4 – 2.5 𝜇 m934 ×207 Urban/Residential MARS-Holden [30] CRISM 18m 440 0.4 – 3.8 𝜇 m946 ×595 Mars Terrain MARS-Utopia [30] CRISM 18m 432 0.4 – 3.8 𝜇 m953 ×595 Mars Terrain MARS-Nilifossae [30] CRISM 18m 425 0.4 – 3.8 𝜇 m953 ×595 Mars Terrain
+
+Feature Recognition: Includes Spectral Feature Recognition, which requires models to identify specific material types (e.g., dis-tinguishing between healthy and stressed grass) based on spec-tral curves, and Land Cover Classification, which tests semantic partitioning of image regions using both spatial texture and high-dimensional spectral cues. 
+
+Target Quantification: Consists of Presence Detection, a bi-nary task to determine the existence of specific land covers (e.g., verifying the absence of water pixels), and Counting, which re-quires models to enumerate independent object instances or esti-mate the total spatial area of specific categories. 
+
+Spatial Localization: Focuses on Object Location Relationship, where models must reason about the relative spatial orientation of targets (e.g., identifying the quadrant of a rice field), and Region Delineation, which mandates models to output the precise minimal bounding box of a target to verify fine-grained localization. 
+
+Composition Interpretation: Features Spectral Anomaly De-tection, which challenges models to pinpoint rare spectral signa-tures or abnormal physicochemical indicators in complex back-grounds, and Spectral Unmixing, requiring a deep understanding of mixed pixel phenomena to resolve sub-pixel endmember com-ponents and their relative abundances or concentrations. 
+
+State Evaluation: Includes Vegetation Health/Stress Diagno-sis, leveraging non-visible features like red-edge shifts and NIR reflectance to assess crop growth stages and stress levels, and Pol-lution Severity Assessment, guiding models to quantify ecological degradation based on the absorption features of water or soil. 
+
+Change Detection (Bi-temporal): Targets multi-temporal anal-ysis, including Basic Change Identification of land-cover transi-tions, Change Area Localization to identify specific grid sectors with the most intensive variations, and Change Statistical Analy-sis to infer macroscopic trends (e.g., urbanization of bare soil) or quantify global change metrics. 
+
+B.2 Rule-based QA Generation 
+
+The Rule-based Generation route serves as a deterministic logic engine that converts high-precision physical statistics and spatial-geometric parameters into structured QA pairs based on human-designed protocols [31, 61]. This pipeline ensures the absolute ve-racity of the ground truth through the following mechanisms: 
+
+Logic Triggering and Template Selection. Statistical profiles derived during pre-processing serve as the primary drivers for tem-plate dispatching [31]. For instance, a land-cover class is desig-nated as absent if its total pixel or connected component count 
+
+𝑁 = 0 , and conversely, any positive count ( 𝑁 > 0 ) prompts the system to invoke either ”object counting” or ”existence verifica-tion” templates. 
+
+Semantic Variable Embedding. Quantitative results calculated by the logic engine are treated as dynamic variables and embedded into predefined natural language slots [31, 48]. In target quantiza-tion tasks, the system populates the templates with the exact num-ber of objects or distinct regions identified. For spatial localization, the engine compares the geometric centroids (𝑥, 𝑦) of two target entities to compute a relative displacement vector. The direction of this vector is then automatically mapped to semantic orientation terms and filled into the directional description template to ensure spatial consistency. 
+
+Threshold-Based Hard Logic Determination. To address the specific physicochemical indicators of HSI, such as Normalized Dif-ference Vegetation Index (NDVI) or bi-temporal change intensity, the rule-based route employs rigorous physical thresholds to deter-mine ground-truth labels. The system evaluates whether calculated spectral feature values fall within predefined intervals (e.g., map-ping 𝑁 𝐷𝑉 𝐼 > 0.6 to ”Healthy Vegetation” or values exceeding the 
+
+3𝜎 criterion to ”Significant Change”), thereby automatically select-ing the correct multiple-choice option (A/B/C/D) based on objec-tive spectral evidence [8]. HM-Bench: Hyperspectral MLLMs Benchmark 
+
+B.3 MLLM-based QA Generation 
+
+The inherent complexity of advanced reasoning tasks such as spec-tral unmixing, ecological stress diagnosis, and anomaly detection often exceeds the descriptive capacity of rigid logical templates. To address this, we adopt a flexible generation paradigm where MLLM is employed to synthesize cognitively demanding QA pairs [42, 46]. This approach is underpinned by category-specific spectral pro-filing within each image block, which captures deep physical at-tributes such as effective band indices, reflectance statistics (mean, standard deviation, and extrema), and endmember abundance ma-trices. These highly structured, non-visible features are integrated into expert-designed prompt templates to serve as the factual foun-dation for model inference. By constraining the MLLM to reason over high-dimensional spectral fingerprints rather than relying on superficial RGB visualizations, the system generates challenging questions anchored in the intrinsic physical properties of the data. This methodology effectively bridges the gap between natural lin-guistic diversity and the specialized scientific rigor required for hyperspectral remote sensing analysis [8, 48]. 
+
+C Details of the Evaluation 
+
+This section provides a comprehensive description of the pipeline for data preprocessing, representation, and model evaluation em-ployed in our experiments. 
+
+C.1 Image Input Processing 
+
+The Image Input pipeline compresses the high-dimensional hyper-spectral cube X ∈ ℝ 𝐻 ×𝑊 ×𝐵 into a structured 2D composite image, rendering spectral information compatible with the architectural constraints of Vision Transformers [26] (ViTs). 
+
+Variance Analysis and Component Selection . As illustrated in Fig. 7 , empirical analysis indicates that the first 12 principal components account for 93.67% of the total spectral variance. This subset effectively captures the underlying manifold of the data. Consequently, our pipeline retains these top-12 components to max-imize signal preservation while mitigating the influence of high-frequency noise inherent in the lower-order components. 
+
+Data Standardization . To ensure numerical stability and con-vergence during eigen-decomposition, the input cube undergoes the following preprocessing steps: 
+
+• Band Filtering: Redundant bands with zero variance (con-stant values) are removed. 
+
+• Z-score Normalization: The flattened data matrix X2𝐷 is scaled to zero mean and unit variance: 
+
+Xscaled = X2𝐷 − 𝜇 𝜎 (1) 
+
+Principal Component Extraction . Following normalization, PCA [38]is applied to Xscaled to derive the projection basis. The top 12 components are extracted and reshaped into spatial maps of dimensions 𝐻 × 𝑊 . Each map is independently normalized to the [0, 1] range to facilitate 8-bit grayscale rendering. 
+
+Figure 7: An example of the PCA composite image from dataset BayArea_2013. The figure displays the first 12 princi-pal components of the hyperspectral cube arranged in a 3 × 4 
+
+grid. Each panel represents a specific component map (anno-tated with its explained variance), collectively forming the visual input for the model. 
+
+Composite Image Assembly . The 12 normalized component maps are organized into a single high-resolution composite using a 4-column grid ( 3 × 4 layout). To maintain spatial fidelity, each component preserves its original aspect ratio during resizing. The final composite is annotated with the explained variance ratio for each PC and exported at 300 DPI to prevent compression artifacts. 
+
+C.2 Report Input Generation 
+
+The Report Input is generated via a two-stage pipeline: Quantita-tive Feature Extraction and Controlled Text Generation . This process distills the HSI cube into a structured narrative that char-acterizes spectral signatures while strictly avoiding semantic pre-mature inference. 
+
+Feature Engineering . The raw cube is distilled into a struc-tured JSON object containing: 
+
+• Data Quality: Shape, NaN count, saturation ratio. 
+
+• Global Spectral Signatures: Mean spectrum, spectral en-tropy, and first derivative statistics (capturing slope extremes). 
+
+• Diagnostic Proxy Indices: Six vegetation/water indices (EVI, NDVI, NDWI, PRI, SAVI, GNDVI) are calculated using band ratios (e.g., Blue: 10%, Green: 25%, Red: 45%, NIR: 75%) to ac-commodate variable spectral resolutions. 
+
+• Spatial Distribution: A 3 × 3 spatial grid analysis captures regional heterogeneity, calculating brightness and variance for each sub-region. 
+
+Large Language Model Congifuration . The extracted features are processed by a LlaVA-1.5-7B [6]model. To ensure maximum objectivity, we implement a Strict Objective Mode protocol, de-fined by the following constraints: Structured Report 
+
+Data Summary 
+
+The dataset consists of 32 x32 spatial pixels across 224 spectral bands, 
+
+with each pixel's reflectance values ranging from 0.000000 to 1.000000 .
+
+The mean reflectance across all pixels and bands is 0.184491 , with a
+
+standard deviation of 0.210531 . Approximately 0.0009 % of the data 
+
+points have a value of zero, while less than 0.0004 % are saturated . No 
+
+NaN values were detected post -loading .
+
+Global Spectral Profile 
+
+The maximum derivative value is 0.246267 , occurring at band 43 , while 
+
+the minimum derivative is -0.259134 , found at band 42 . These values 
+
+indicate significant spectral variation within the dataset . Absorption -like 
+
+valleys are evident at bands 43 , 49 , and 95 , with depths of 0.252701 ,
+
+0.070915 , and 0.037814 , respectively . The red -edge proxy band is 
+
+identified at band 120 with a slope of 0.015831 .
+
+Spectral Variation and Derivative Features 
+
+The brightest region is located in the lower -right corner, while the 
+
+darkest region is in the upper -right corner . The highest NDVI -like region 
+
+is also in the upper -right, contrasting with the lowest NDWI -like region, 
+
+which is again in the upper -right . The most heterogeneous region is 
+
+noted in the lower -right . The horizontal brightness difference between 
+
+the right and left sides is -0.000222 , indicating a slight decrease from 
+
+right to left, while the vertical brightness difference from bottom to top is 
+
+0.009781 , showing a notable increase from bottom to top .
+
+PCA -based Variance Description 
+
+Principal Component Analysis (PCA) was applied to the dataset, 
+
+analyzing 12 components . The first three principal components account 
+
+for 62 .27 %, 35 .33 %, and 1.16 % of the total variance, respectively . PC 1
+
+has a mean of 0.0
+
+Spatial Distribution Statistics 
+
+The brightest region is located in the lower -right corner, while the darkest 
+
+region is in the upper -right corner . The highest NDVI -like region is also in the 
+
+upper -right, contrasting with the lowest NDWI -like region, which is again in 
+
+the upper -right . The most heterogeneous region is noted in the lower -right .
+
+The horizontal brightness difference between the right and left sides is -
+
+0.000222 , indicating a slight decrease from right to left, while the vertical 
+
+brightness difference from bottom to top is 0.009781 , showing a notable 
+
+increase from bottom to top .
+
+Proxy Index Summary 
+
+The NDVI_proxy has a value of -0.980645 , indicating a strong negative 
+
+correlation with vegetation indices . The EVI_proxy shows a positive value of 
+
+0.551195 , suggesting a moderate enhancement in vegetation . The 
+
+NDWI_proxy has a high value of 0.992885 , pointing towards a strong water 
+
+body presence . The PRI_proxy is 0.598033 , indicating a moderate pigment 
+
+ratio index . The SAVI_proxy has a value of -0.468502 , showing a negative 
+
+soil -adjusted vegetation index . The GNDVI_proxy mirrors the NDVI_proxy 
+
+with a value of -0.992885 . The red -edge proxy band is identified at band 120 ,
+
+with a slope of 0.015831 .
+
+Region -wise Statistics 
+
+The upper -left region exhibits a brightness of 0.186930 , with NDVI_proxy and 
+
+NDWI_proxy values of -0.980453 and 0.992305 , respectively, and a spectral 
+
+variance of 0.041771 . The upper -center region has a brightness of 0.181513 ,
+
+with similar proxy index values but slightly lower spectral variance . The 
+
+upper -right region is the darkest, with a brightness of 0.167500 , and the 
+
+highest NDVI_proxy and NDWI_proxy values . The middle -left and middle -
+
+center regions show higher brightness and spectral variance compared to the 
+
+upper regions, while the lower -right region is the brightest, with a brightness 
+
+of 0.200631 , and the highest NDVI_proxy and NDWI_proxy values .Figure 8: An example of structured report input generated from the same data block as the PCA composite image above. 
+
+• Objective Input: The model receives only quantitative statis-tics (means, variances, indices) without any human-annotated semantic labels or geographical metadata. 
+
+• Deterministic Decoding: We employ greedy decoding ( 𝑑𝑜 -_𝑠𝑎𝑚𝑝𝑙𝑒 = 𝐹 𝑎𝑙𝑠𝑒 ) to ensure reproducible outputs and elimi-nate stochastic variability. 
+
+• Rule-Based Synthesis: Text generation is governed by a set of logical constraints (see Section C.2.3) to mitigate hallucina-tions. 
+
+Prompt Engineering Constraints . To evaluate the model’s rea-soning across different data modalities, we developed two special-ized prompt templates for the Image Input and Report Input. This ensures that the instructions are optimized for the idiosyncratic features of each representation. 
+
+• Image-Oriented Prompt: For PCA composites, the prompt char-acterizes the input as a ”grayscale visualization of the top 12 principal components.” The instructions emphasize visual inspec-tion , directing the model to analyze spatial textures, morphol-ogy, and boundaries. 
+
+• Report-Oriented Prompt: For structured reports, the prompt defines the input as a ”quantitative spectral analysis.” The in-structions prioritize evidence-based reasoning , requiring the model to synthesize domain-specific knowledge with the provided nu-merical data. Both configurations utilize a standardized multiple-choice QA framework. To facilitate automated evaluation, models are con-strained to output exactly one uppercase letter representing the selected option. 
+
+C.3 Prompt Engineering and Decoding Rules 
+
+To evaluate the reasoning capabilities of MLLMs across distinct data representations, we formulated two specialized prompt tem-plates tailored to the Image Input and Report Input , respectively. This ensures that the instructions are optimized for the idiosyn-cratic characteristics of each modality. The input sequence for the MLLMs comprises the modal-specific data (composite image or structured report) paired with a standard-ized instruction set designed to guide the model’s evidentiary in-terpretation: 
+
+• Image-Oriented Prompt: For the PCA composite, the prompt explicitly defines the input as a “grayscale visualization de-rived from the top 12 principal components.” The instruction set emphasizes visual inspection , directing the model to ana-lyze spatial morphologies, textures, and edge boundaries to de-rive answers based purely on pixel-level evidence. 
+
+• Report-Oriented Prompt: For the structured report, the prompt characterizes the input as a “quantitative spectral analysis re-port.” The instructions prioritize evidence-based reasoning , re-quiring the model to synthesize domain-specific knowledge HM-Bench: Hyperspectral MLLMs Benchmark 
+
+Table 4: Task-wise performance comparison of additional models on HM-Bench under image and report input settings. The benchmark contains 13 tasks organized into a three-level taxonomy, including 6 perception tasks and 7 reasoning tasks. Values are reported as accuracy (%). Perception Reasoning Model Input FR TQ SL CI SA CD Overall SFR LCC PD CS OLR RD SAD SU VH EPSA BCI CAL CSA 
+
+Qwen2.5-VL-7B [23] Image 31.74 18.35 24.41 26.82 19.75 34.56 56.28 36.88 21.57 43.52 25.70 11.90 42.50 29.36 Report 31.31 14.30 26.20 28.83 23.10 26.70 57.71 28.82 52.72 44.75 16.25 13.27 33.33 31.03 InternVL2-8B [5] Image 41.80 29.47 43.37 38.14 27.40 31.03 34.24 43.39 39.18 65.28 37.55 11.05 41.67 38.09 Report 37.76 20.87 28.05 39.19 27.40 29.05 64.03 38.65 41.85 62.73 33.95 14.80 40.00 36.17 InternVL3-14B [5] Image 44.29 29.77 36.87 26.24 25.14 45.80 68.17 38.73 42.13 49.85 42.34 10.71 39.17 39.15 Report 37.24 19.77 25.69 37.44 29.07 46.50 63.81 37.32 51.53 48.77 35.15 18.54 20.83 37.26 LLaVA-1.5-7B [29] Image 37.46 43.09 61.65 36.46 23.57 26.48 20.99 27.05 29.11 17.67 29.29 9.69 28.33 33.98 Report 39.69 44.51 64.11 37.72 23.99 27.07 21.97 27.94 30.63 16.67 30.23 10.03 30.00 35.19 LLaVA-V1.6-Vicuna-13B [6] Image 33.33 20.93 30.71 25.54 31.59 24.56 59.67 33.92 54.98 50.08 37.15 14.63 35.00 34.83 Report 33.93 22.22 32.66 29.11 29.6 26.27 27.09 30.08 42.24 59.34 33.95 13.27 30.83 32.30 of spectral signatures while strictly adhering to the numerical data provided in the text. Both configurations utilize a standardized multiple-choice QA framework. To ensure a consistent and automated evaluation, MLLMs are constrained to synthesize the provided information and out-put exactly one uppercase letter corresponding to their selected answer. 
+
+D Supplementary Results and Analysis D.1 Additional Model Performance 
+
+Due to space limitations in the main manuscript, we present the detailed, task-wise performance of five additional MLLMs in Ta-ble 4. This expanded evaluation pool—comprising Qwen2.5-VL-7B [23], InternVL2-8B [5], InternVL3-14B [5], LLaVA-V1.6-Vicuna-13B [6], and LLaVA-1.5-7B [29] —provides a broader com-parative baseline for the analysis presented in the main text. Accu-racy metrics (%) for both image and report modalities are reported across 13 distinct tasks, categorized under the Perception and Rea-soning dimensions. These results corroborate the primary findings and facilitate a more granular understanding of model behavior. 
+
+D.2 Comprehensive Analysis: Input Modality and Task Dimensions 
+
+To facilitate a holistic analysis of MLLMs performance on HM-Bench, we examine the interplay between input modality and task complexity through a unified visual representation. Figure 9 illus-trates model accuracy via scatter plots for six Level-2 tasks. Each data point signifies a model’s performance on a specific task; points situated above the identity line (𝑦 = 𝑥 , indicated in blue) denote superior performance with Image Input, whereas those below the line (indicated in red) highlight a preference for the Report Input. 
+
+Combined Analysis of Modality and Task Dimensions. As illustrated in Fig. 9, a pronounced performance gap exists between input modalities and task dimensions. Image Input generally domi-nates in perceptual and interpretative tasks (e.g., FR , SL , SA ), where 0 10 20 30 40 50 60                               
+
+> Report Accuracy (%)
+> 0
+> 10
+> 20
+> 30
+> 40
+> 50
+> 60
+> Image Accuracy (%)
+> FR
+> 010 20 30 40 50 60
+> Report Accuracy (%)
+> 0
+> 10
+> 20
+> 30
+> 40
+> 50
+> 60
+> Image Accuracy (%)
+> TQ
+> 010 20 30 40 50 60
+> Report Accuracy (%)
+> 0
+> 10
+> 20
+> 30
+> 40
+> 50
+> 60
+> Image Accuracy (%)
+> SL
+> 010 20 30 40 50 60
+> Report Accuracy (%)
+> 0
+> 10
+> 20
+> 30
+> 40
+> 50
+> 60
+> Image Accuracy (%)
+> CI
+> 010 20 30 40 50 60
+> Report Accuracy (%)
+> 0
+> 10
+> 20
+> 30
+> 40
+> 50
+> 60
+> Image Accuracy (%)
+> SA
+> 010 20 30 40 50 60
+> Report Accuracy (%)
+> 0
+> 10
+> 20
+> 30
+> 40
+> 50
+> 60
+> Image Accuracy (%)
+> CD
+> Image Better
+> Report Better
+> Equal Performance
+
+Figure 9: Performance comparison across all models for Level-2 tasks: Image Input vs. Report Input. Blue markers represent superior performance using visual data; red mark-ers signify better performance with structured textual re-ports. 
+
+data points cluster above the identity line ( 𝑦 = 𝑥 ), underscor-ing the efficacy of PCA-based visual cues. Conversely, tasks re-quiring precise numerical or temporal reasoning, such as Trar-get Quantification (TQ) and Change Detection (CD) , exhibit higher modality complementarity, with many models performing better using Report Input. Dimensionally, Reasoning remains the primary performance bot-tleneck. While perception-oriented tasks ( FR , TQ , SL ) achieve high-er absolute accuracies, reasoning tasks ( CI , SA , CD ) are concen-trated in lower-accuracy regimes. Notably, CD emerges as the most formidable challenge across all models and modalities, confirming that MLLMs—despite having sophisticated visual encoders—still lack the robust logical frameworks required for the complex tem-poral and spectral comparisons inherent in hyperspectral change detection. 
+
+E Limitations and Future Work 
+
+This section outlines the limitations of the current HM-Bench bench-mark and points towards future research directions, aiming to en-hance the capabilities of MLLMs for HSI understanding. 
+
+E.1 Limitations of the HM-Bench Dataset 
+
+The current HM-Bench dataset, though pioneering in its design, presents limitations regarding scale and diversity. With 19,337 question-answer pairs across 13 task categories, the dataset offers a foundational evaluation. However, to foster more robust MLLMs generalization across a wider array of real-world HSI scenarios, a significantly larger volume and more diverse range of QA pairs are required. Future work will prioritize expanding the dataset’s quan-tity and breadth to cover more intricate aspects and challenging domain-specific expertise in HSI understanding. 
+
+E.2 Towards Direct Hyperspectral Image Understanding 
+
+A fundamental limitation observed is that current MLLMs cannot directly process raw HSI cubes. They rely on intermediate represen-tations (PCA-based images and structured textual reports), which inevitably lead to some information loss from the high-dimensional HSI data. Our primary future direction is to enable direct HSI understand-ing by developing and integrating specialized HSI encoders. These encoders will be designed to directly interpret raw HSI cubes, ex-tracting full spectral-spatial features without pre-processing-indu-ced information loss. This advancement will allow MLLMs to per-form more autonomous, efficient, and accurate HSI analysis, signif-icantly broadening their potential applications in areas like envi-ronmental monitoring, resource mapping, and disaster assessment. 
+
+F Case Study 
+
+In this section, we present the performance of the best-performing 
+
+InternVL3.5-14B model under two different inputs (image and report), showcasing three randomly selected tasks of HM-Bench. Spectral Feature Recognition          
+
+> Question: Based on the spectral signature extracted at pixel
+> (0,0) in this block, which standard material does it best match?
+> Option: (A) Concrete (B) Asphalt (C) Bare Soil
+> (D) Water (E) Grass Healthy (F) Building
+> The dataset consists
+> of 32x32 spatial
+> pixels across 224
+> spectral bands, with
+> each pixel‘s……
+> Image Input
+> Report Input
+> BInternVL3.5 -14B
+> Image Input Report Input
+> B
+
+Figure 10: A question case of the Spectral Feature Recogni-tion task Land Cover Classification       
+
+> Question: What is the most common non -background land
+> cover type in this block?
+> Option:
+> (A) Grass Stressed (B) Trees (C) Residential buildings
+> (D) Non -residential buildings (E) Grass Healthy (F) Road
+> The dataset consists
+> of 32x32 spatial
+> pixels across 224
+> spectral bands, with
+> each pixel‘s……
+> Image Input
+> Report Input
+> FInternVL3.5 -14B
+> Image Input Report Input
+> E
+
+Figure 11: A question case of the Land Cover Classification task HM-Bench: Hyperspectral MLLMs Benchmark Presence Detection 
+
+Question: Is this block completely devoid of the 'Grass Healthy' 
+
+land cover type? 
+
+Option: 
+
+(A) Yes (B) No 
+
+The dataset consists 
+
+of 32x32 spatial 
+
+pixels across 224 
+
+spectral bands, with 
+
+each pixel‘s…… 
+
+Image Input 
+
+Report Input 
+
+FInternVL3.5 -14B 
+
+Image Input  Report Input 
+
+E
+
+Figure 12: A question case of the Presence Detection task Counting 
+
+Question: What percentage of this block is occupied by 
+
+Asphalt? 
+
+Option: 
+
+(A) 0-2% (B) 2-5% (C)5 -10% 
+
+(D)10 -20% (E)20 -30% (F)More Than 30% 
+
+The dataset consists 
+
+of 32x32 spatial 
+
+pixels across 224 
+
+spectral bands, with 
+
+each pixel‘s…… 
+
+Image Input 
+
+Report Input 
+
+AInternVL3.5 -14B 
+
+Image Input  Report Input 
+
+A
+
+Figure 13: A question case of the Counting task Object Location Relationship 
+
+Question: In this block, where is the 'Grass Stressed' area 
+
+located in relation to the 'Water' area? 
+
+Option: (A) Above (B) Below (C) Left (D)Right 
+
+(E) Upper Left (F) Lower Left 
+
+(G) Upper Right (H) Lower Right 
+
+The dataset consists 
+
+of 32x32 spatial 
+
+pixels across 224 
+
+spectral bands, with 
+
+each pixel‘s…… 
+
+Image Input 
+
+Report Input 
+
+BInternVL3.5 -14B 
+
+Image Input  Report Input 
+
+E
+
+Figure 14: A question case of the Object Location Relation-ship task Region Delineation 
+
+Question: Find the most appropriate rectangular angular 
+
+coordinates that can enclose all the Road in the image. (The 
+
+upper left corner is xmin , ymin ; x is horizontal, y is vertical; 
+
+both range from 0 to 1) 
+
+Option: 
+
+(A)  [0.000, 0.000, 0.942, 0.991] 
+
+(B)  [0.000, 0.000, 0.922, 1.000] 
+
+(C)  [0.000, 0.000, 1.000, 0.999] 
+
+(D)  [0.000, 0.000, 1.000, 1.000] 
+
+(E)  [0.000, 0.000, 0.950, 1.000] 
+
+The dataset consists 
+
+of 32x32 spatial 
+
+pixels across 224 
+
+spectral bands, with 
+
+each pixel‘s…… 
+
+Image Input 
+
+Report Input 
+
+DInternVL3.5 -14B 
+
+Image Input  Report Input 
+
+C
+
+Figure 15: A question case of the Region Delineation task Spectral Anomaly Detection 
+
+Question: What type of spectral anomaly is detected in this 
+
+block? (Excluding normal land cover variations) 
+
+Option:        
+
+> (A) Excessively high reflectance in NIR band
+> (B) Abnormally low reflectance in red band
+> (C) Fluctuating reflectance in SWIR band
+> (D) Discontinuous spectral curve
+> (E) Mismatched spectral features with known land covers
+> (F) No spectral anomaly
+> (G) Multiple anomalies
+> The dataset consists
+> of 32x32 spatial
+> pixels across 224
+> spectral bands, with
+> each pixel‘s……
+> Image Input
+> Report Input
+
+EInternVL3.5 -14B  
+
+> Image Input Report Input
+
+EFigure 16: A question case of the Spectral Anomaly Detec-tion task Spectral Unmixing 
+
+Question: Based on spectral unmixing, what is the estimated 
+
+percentage of built -up area in the block? 
+
+Option: 
+
+(A) 20% (B) 25% (C)30% 
+
+(D)35% (E)40% (F)45 
+
+The dataset consists 
+
+of 32x32 spatial 
+
+pixels across 224 
+
+spectral bands, with 
+
+each pixel‘s…… 
+
+Image Input 
+
+Report Input 
+
+FInternVL3.5 -14B 
+
+Image Input  Report Input 
+
+A
+
+Figure 17: A question case of the Spectral Unmixing task Vegetation 
+
+Health/StressDiagnosis 
+
+Question: Based on the ratio of healthy to stressed grass in the 
+
+block, what is the overall vegetation health diagnosis? 
+
+Option: 
+
+(A) Mainly Healthy (B) Mainly Stressed 
+
+(C) Completely Dead (D) No Vegetation 
+
+The dataset consists 
+
+of 32x32 spatial 
+
+pixels across 224 
+
+spectral bands, with 
+
+each pixel‘s…… 
+
+Image Input 
+
+Report Input 
+
+AInternVL3.5 -14B 
+
+Image Input  Report Input 
+
+B
+
+Figure 18: A question case of the Vegetation Health/Stress Diagnosis task Environmental Pollution 
+
+Severity Assessment 
+
+Question: Evaluating the proportion of stressed vegetation and 
+
+bare soil in the block, what is the environmental assessment 
+
+rating? 
+
+Option: (A) Severe Degradation (B) Moderate Degradation 
+
+(C) Healthy/Good 
+
+The dataset consists 
+
+of 32x32 spatial 
+
+pixels across 224 
+
+spectral bands, with 
+
+each pixel‘s…… 
+
+Image Input 
+
+Report Input 
+
+AInternVL3.5 -14B 
+
+Image Input  Report Input 
+
+A
+
+Figure 19: A question case of the Environmental Pollution Severity Assessment task HM-Bench: Hyperspectral MLLMs Benchmark Basic Change Identification 
+
+Question: At pixel (1, 28), what specific land cover transition 
+
+occurred from block 2013 to 2015? 
+
+Option: 
+
+(A) From Concrete to Asphalt 
+
+(B) From Grass Healthy to Concrete 
+
+(C) From Grass Stressed to Water 
+
+(D) From Asphalt to Concrete 
+
+> The dataset consists of
+> 32x32 spatial pixels across
+> 224 spectral bands, with
+> each pixel‘s……
+
+Image Input 
+
+Report Input 
+
+BInternVL3.5 -14B 
+
+Image Input  Report Input 
+
+C
+
+> The dataset consists of
+> 32x32 spatial pixels across
+> 224 spectral bands, with
+> each pixel‘s……
+
+Figure 20: A question case of the Basic Change Identification task Change Area Localization 
+
+Question: Dividing the image into a 3x3 grid, which sector 
+
+contains the highest number of changed pixels from block 
+
+2013 to 2015? 
+
+Option: 
+
+(A)  Top -Left (B) Top (C) Top -Right (D) Left (E) Center 
+
+(F) Right (G) Bottom -Left (H) Bottom (I) Bottom -Right 
+
+> The dataset consists of
+> 32x32 spatial pixels across
+> 224 spectral bands, with
+> each pixel‘s……
+
+Image Input 
+
+Report Input 
+
+AInternVL3.5 -14B 
+
+Image Input  Report Input 
+
+E
+
+> The dataset consists of
+> 32x32 spatial pixels across
+> 224 spectral bands, with
+> each pixel‘s……
+
+Figure 21: A question case of the Change Area Localization task Change Statistical Analysis 
+
+Question: How did the area of artificial surfaces (Asphalt + 
+
+Concrete) change from 2013 to 2014 in this block? 
+
+Option: 
+
+(A ) Significant increased (B) Slight increased (C) Stable 
+
+(D) Slight decreased (E) Significant decreased 
+
+(F) No vegetation in both years 
+
+> The dataset consists of
+> 32x32 spatial pixels across
+> 224 spectral bands, with
+> each pixel‘s……
+
+Image Input 
+
+Report Input 
+
+BInternVL3.5 -14B 
+
+Image Input  Report Input 
+
+C
+
+> The dataset consists of
+> 32x32 spatial pixels across
+> 224 spectral bands, with
+> each pixel‘s……
+
+Figure 22: A question case of the Change Statistical Analysis task

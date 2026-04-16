@@ -1,0 +1,190 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-001.webp",
+      "caption": "Figure 1: Overview of the advantages of HM-Bench over previous benchmarks and the evaluation paradigm for MLLMs in the hyperspectral domain.",
+      "page": 1,
+      "index": 1,
+      "width": 495,
+      "height": 264
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-002.webp",
+      "caption": "Figure 7: An example of the PCA composite image from dataset BayArea_2013.The figure displays the first 12 principal components of the hyperspectral cube arranged in a 3×4 grid. Each panel represents a specific componentmap (annotated with its explained variance), collectively forming the visual input for the model.",
+      "page": 11,
+      "index": 2,
+      "width": 456,
+      "height": 365
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-003.webp",
+      "caption": "Figure 15: A question case of the Region Delineation task",
+      "page": 15,
+      "index": 3,
+      "width": 481,
+      "height": 455
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-004.webp",
+      "caption": "Figure 12: A question case of the Presence Detection task",
+      "page": 15,
+      "index": 4,
+      "width": 483,
+      "height": 385
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-005.webp",
+      "caption": "Figure 14: A question case of the Object Location Relationship task",
+      "page": 15,
+      "index": 5,
+      "width": 482,
+      "height": 386
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-006.webp",
+      "caption": "Figure 13: A question case of the Counting task",
+      "page": 15,
+      "index": 6,
+      "width": 483,
+      "height": 386
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-007.webp",
+      "caption": "Figure 2: Statistical overview of HM-Bench. (a)The quantitative distribution of four question types across six core task scenarios. (b) Detailed statistics of the benchmark across six evaluation dimensions in terms of unique images and QA pairs. (UAV: Unmanned Aerial Vehicle.)",
+      "page": 2,
+      "index": 7,
+      "width": 481,
+      "height": 265
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-008.webp",
+      "caption": "Table 3: Detailed statistics of the HSI datasets included in HM-Bench.",
+      "page": 10,
+      "index": 8,
+      "width": 1048,
+      "height": 404
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-009.webp",
+      "caption": "Figure 11: A question case of the Land Cover Classification task",
+      "page": 14,
+      "index": 9,
+      "width": 482,
+      "height": 386
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-010.webp",
+      "caption": "Figure 10: A question case of the Spectral Feature Recognition task",
+      "page": 14,
+      "index": 10,
+      "width": 482,
+      "height": 386
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-011.webp",
+      "caption": "Figure 3: Hierarchical task taxonomy of HM-Bench, illustrating 13 distinct HSI remote sensing tasks categorized under basic perception and advanced expert reasoning dimensions, alongside data statistics and representative VQA examples.",
+      "page": 3,
+      "index": 11,
+      "width": 1052,
+      "height": 347
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-012.webp",
+      "caption": "Figure 9: Performance comparison across all models for Level-2 tasks: Image Input vs. Report Input. Blue markers represent superior performance using visual data; redmarkers signify better performance with structured textual reports.",
+      "page": 13,
+      "index": 12,
+      "width": 497,
+      "height": 346
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-013.webp",
+      "caption": "Figure 4: The overall curation and evaluation pipeline of HM-Bench. The framework consists of three main stages: (1) Question Generation, where QA pairs are synthesized usingMLLMs and refined throughmanual check; (2) Input Modalities, where high-dimensional cubes are decoupled into two complementary representations: PCA component composite images and structured textual reports based on spectral-spatial features; and (3) MLLMs Inference, where various models are benchmarked to evaluate their HSI understanding across different input formats.",
+      "page": 4,
+      "index": 13,
+      "width": 1052,
+      "height": 424
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-014.webp",
+      "caption": "Figure 22: A question case of the Change Statistical Analysis task",
+      "page": 17,
+      "index": 14,
+      "width": 481,
+      "height": 454
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-015.webp",
+      "caption": "Figure 20: A question case of the Basic Change Identification task",
+      "page": 17,
+      "index": 15,
+      "width": 479,
+      "height": 454
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-016.webp",
+      "caption": "Figure 21: A question case of the Change Area Localization task",
+      "page": 17,
+      "index": 16,
+      "width": 479,
+      "height": 454
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-017.webp",
+      "caption": "Figure 8: An example of structured report input generated from the same data block as the PCA composite image above.",
+      "page": 12,
+      "index": 17,
+      "width": 1034,
+      "height": 654
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-018.webp",
+      "caption": "Figure 6: Hierarchical task taxonomy of HM-Bench.",
+      "page": 9,
+      "index": 18,
+      "width": 352,
+      "height": 351
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-019.webp",
+      "caption": "Table 2: Task-wise performance comparison of different models on HM-Bench under image and report input settings. The benchmark contains 13 tasks organized into a three-level taxonomy, including 6 perception tasks and 7 reasoning tasks. Values are reported as accuracy (%). Highlighting: the best score under Image input is highlighted in blue, and the best score under Report input is highlighted in red.",
+      "page": 5,
+      "index": 19,
+      "width": 981,
+      "height": 680
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-020.webp",
+      "caption": "Figure 19: A question case of the Environmental Pollution Severity Assessment task",
+      "page": 16,
+      "index": 20,
+      "width": 486,
+      "height": 389
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-021.webp",
+      "caption": "Figure 18: A question case of the Vegetation Health/Stress Diagnosis task",
+      "page": 16,
+      "index": 21,
+      "width": 486,
+      "height": 389
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-022.webp",
+      "caption": "Figure 16: A question case of the Spectral Anomaly Detection task",
+      "page": 16,
+      "index": 22,
+      "width": 479,
+      "height": 454
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08884v1/fig-023.webp",
+      "caption": "Figure 17: A question case of the Spectral Unmixing task",
+      "page": 16,
+      "index": 23,
+      "width": 484,
+      "height": 385
+    }
+  ]
+}
