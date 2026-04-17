@@ -1,0 +1,564 @@
+Title: Fast Model-guided Instance-wise Adaptation Framework for Real-world Pansharpening with Fidelity Constraints
+
+URL Source: https://arxiv.org/pdf/2604.08903v1
+
+Published Time: Mon, 13 Apr 2026 00:28:30 GMT
+
+Number of Pages: 14
+
+Markdown Content:
+# Fast Model-guided Instance-wise Adaptation Framework for Real-world Pansharpening with Fidelity Constraints 
+
+## Zhiqi Yang ∗
+
+zhiqi.Young@outlook.com University of Electronic Science and Technology of China Chengdu, China 
+
+## Jin-Liang Xiao ∗
+
+jinliang_xiao@163.com University of Electronic Science and Technology of China Chengdu, China 
+
+## Shan Yin 
+
+yins@std.uestc.edu.cn University of Electronic Science and Technology of China Chengdu, China 
+
+## Liang-Jian Deng 
+
+liangjian.deng@uestc.edu.cn University of Electronic Science and Technology of China Chengdu, China 
+
+## Gemine Vivone 
+
+gemine.vivone@imaa.cnr.it National Research Council, Institute of Methodologies for Environmental Analysis (CNR-IMAA) Tito, Italy 
+
+Abstract 
+
+Pansharpening aims to generate high-resolution multispectral (HRMS) images by fusing low-resolution multispectral (LRMS) and high-resolution panchromatic (PAN) images, with the goal of preserv-ing both spectral and spatial information. Although deep learning (DL)-based pansharpening methods have achieved impressive per-formance, they typically come with high training costs and require large amounts of training data. Moreover, their performance of-ten degrades significantly when the test data distribution differs from that of the training data, posing challenges for generalization ability. In recent years, zero-shot methods, which train on single test PAN/LRMS pair, have emerged as a promising alternative with strong generalization. However, most existing zero-shot methods suffer from limited fusion performance, incur significant computa-tional overhead, and slow convergence, hindering their practical deployment. To address these challenges, we propose FMG-Pan, a fast and generalizable model-guided Instance-wise adaptation framework for real-world pansharpening, designed to achieve both 
+
+cross-sensor generality and rapid training-inference processing . This flexible framework can incorporate any pre-trained model as guid-ance and fully leverages its representational capacity to guide a relatively lightweight adaptive network through joint optimization under spectral and physical fidelity constraints. In particular, we design a new physical fidelity term to enhance spatial detail preser-vation.Extensive experiments on multiple real-world datasets, in-cluding both intra-sensor and cross-sensor scenarios, demonstrate that FMG-Pan achieves state-of-the-art performance. Specifically, on the WorldView-3 dataset, it completes the training-inference process for a 512 × 512 × 8 image within 3 seconds on an RTX 3090 GPU, which is markedly faster than existing zero-shot methods, making it highly suitable for deployment. 
+
+Keywords 
+
+Fidelity constraint, Model guided, Instance-wise adaptation, Gen-eralization, Real-world pansharpening. Traditional DL Methods Zero-shot Methods         
+
+> Pretrained
+> Model
+> Training
+> Model
+> Limited generalization Good generalization
+> High Efficiency Low Efficiency
+> Good
+> FMG-PAN
+> Pretrained
+> Model
+> Training
+> Model
+> Good generalization
+> Good Efficiency Great
+> Okay
+> Froze Trainable Quality Bad Good
+> LRMS
+> PAN
+> HRMS LRMS
+> PAN
+> HRMS
+> LRMS
+> PAN
+> HRMS* HRMS
+
+Figure 1: Comparison among traditional deep learning meth-ods, zero-shot methods, and the proposed FMG-Pan frame-work in terms of performance, efficiency, and generalization. FMG-Pan achieves a better trade-off by leveraging pretrained models for fast, image-specific adaptation without modify-ing model architecture or requiring external training data. 
+
+1 Introduction 
+
+High-resolution remote sensing imagery is crucial for applications such as urban planning, precision agriculture, and environmen-tal monitoring [ 13 , 30 , 31 ]. However, due to hardware limitations, satellite sensors cannot simultaneously acquire imagery with both high spectral and spatial resolution. Consequently, modern satel-lites (e.g., WorldView series) typically capture two complementary types of data: low-resolution multispectral (LRMS) images retaining spectral content and high-resolution panchromatic (PAN) images providing spatial detail. Pansharpening aims to fuse the LRMS and 
+
+> ∗
+
+These authors contributed equally to this work. 1
+
+> arXiv:2604.08903v1 [cs.CV] 10 Apr 2026
+
+PAN images into a high-resolution multispectral (HRMS) image, combining spectral fidelity and spatial sharpness. This task is funda-mental in remote sensing image processing, enabling high-quality data acquisition overcoming the limitations of the actual hardware devices in capturing images with both high spectral and spatial resolutions. Over the past decades, researchers have proposed a variety of pansharpening methods, which can be broadly classified into four categories: (i) component substitution (CS), (ii) multi-resolution analysis (MRA), (iii) variational optimization (VO), and (iv) deep learning (DL)-based approaches. The first three are traditional model-driven methods based on explicit mathematical formula-tions: CS methods [ 7 , 20 ], inject PAN details by replacing intensity components of the LRMS image; MRA methods [ 21 , 32 ] employ pyramid or wavelet decomposition to extract multi-scale spatial information from the PAN image. VO methods[ 10 , 43 ], treat HRMS generation as an optimization problem with carefully designed fi-delity constraints. These methods are computationally efficient and require only a single PAN-LRMS input pair, without external train-ing [ 38 ]. However, they often rely on simplified linear assumptions (e.g., linear correlation between PAN and HRMS images), which do not hold in complex or cross-sensor scenarios, leading to spectral or spatial distortions. In recent years, deep learning methods have significantly ad-vanced pansharpening by leveraging powerful representation capa-bilities of neural networks [ 5, 6 , 17 , 19 , 23 , 25 , 34 , 35 , 39 ]. Supervised CNN-based models (e.g., PNN [ 23 ], PanNet [ 39 ]) learn nonlinear mappings between PAN and LRMS through end-to-end training. Later works introduced attention mechanisms, Transformer ar-chitectures, and diffusion models to further improve fusion qual-ity [ 14 , 37 , 40 ]. Trained networks generally exhibit strong repre-sentational capacity and fast inference. However, deep learning approaches face three major challenges in practical deployment: (1) most models are trained on simulated downsampled data but 
+
+tested on full resolution images , resulting in resolution mismatch and performance drop; (2) they heavily depend on large-scale train-ing datasets , leading to high training costs ; (3) They exhibit poor cross-domain generalization , with performance degrading signifi-cantly when the test data distribution differs from the training set, even falling behind traditional methods. Although unsupervised methods reduce label dependence to some extent, they often rely on idealized degradation models and still require multiple samples to ensure robustness. To address the above limitations, zero-shot or single-image train-ing strategies have been proposed [ 4, 27 , 33 ]. These approaches eliminate external data requirements by training directly on the tar-get image via customized self-supervised loss functions, ensuring consistency between training and testing. This image-specific self-supervision enhances real-world performance without relying on additional datasets. However, such methods are often structurally complex, require precise degradation modeling, and involve time-consuming optimization on each image, which limits their practical use. We propose a fast, model-guided pansharpening framework with strong generalization and plug-and-play adaptability. Different from conventional training-based methods, we treat the pretrained model as a black-box module and utilize its single-image output to guide a relatively lightweight adaptive network during image-specific training. With carefully designed spectral and physical fidelity losses, the adaptive network preserves prior structural in-formation from the pretrained model while correcting potential dis-tortions, achieving enhanced performance on the source dataset and improved generalization across sensors. Importantly, our method requires no access to the internal structure of the pretrained model and can be flexibly combined with existing models to support de-ployment across diverse sensors, resolutions, and domains with low cost and high adaptability. Fig. 1 compares traditional deep learning methods, zero-shot strategies, and the proposed FMG-Pan framework in terms of performance, efficiency, and generalization. Our contributions are summarized as follows: (1) We propose a model-guided framework (FMG-Pan) that addresses the challenges of quality, efficiency, and cross-sensor adaptability in real-world pansharpening, overcom-ing the low efficiency of zero-shot methods and the weak generalization of traditional DL methods. (2) We introduce a novel physical fidelity loss that effectively utilizes input images information to further enhance the spatial and spectral quality of the fused HRMS image. (3) Extensive experiments demonstrate that our method achieves state-of-the-art performance on multiple real-world remote sensing datasets within seconds, exhibiting strong adapt-ability and deployment efficiency. In particular, we achieved best results on WorldView-3 data completing the training-inference process within 3 seconds and on the WorldView-2 data within 10 seconds. The remainder of this paper is organized as follows. Section 2 reviews related works and presents our motivations. Section 3 introduces the proposed framework. Section 4 reports experimental results on both intra-sensor and cross-sensor datasets, followed by ablation studies and discussions. Finally, Section 5 concludes the paper. 
+
+2 Related Works and Motivations 2.1 Deep Learning-based Pansharpening 
+
+Deep learning, with its superior feature representation and nonlin-ear modeling capabilities, has become the mainstream approach for pansharpening. From early methods, such as PNN [ 23 ], to DiCNN [ 17 ] and LAGNet [ 19 ], CNN-based models have achieved remarkable performance in spatial-spectral fusion. However, due to the limited receptive field of convolutional kernels, these meth-ods often fail to capture global dependencies, leading to noticeable spatial distortions. To overcome these limitations, Transformer-based architectures (e.g., Panformer [ 41 ] and WFANet [ 18 ]) have been proposed, which leverage attention mechanisms to model long-range spatial-spectral relationships and improve global consistency. Nonetheless, Trans-formers typically incur high computational costs and training com-plexity, making them difficult to deploy in resource-constrained scenarios. More recently, diffusion models have also been explored for pansharpening, showing potential in preserving spectral and spatial details [ 24 , 40 ]. However, most of these methods are trained on downsampled data and ignore full resolution information, which limits their applicability in real-world scenarios [ 8] and often leads 
+
+> 2
+
+to significant performance degradation in cross-sensor settings. In summary, although conventional deep learning methods can produce high-quality fusion results, they still suffer from limita-tions in training cost, cross-domain adaptability, and inference on real-world images. 
+
+2.2 Traditional and Single-image Deep Pansharpening Methods 
+
+Before the widespread adoption of deep learning, traditional model-driven approaches dominated pansharpening research, including component substitution methods (e.g., IHS [ 7 ], PCA [ 20 ]), multi-resolution analysis methods (e.g., Laplacian pyramid [ 3], wavelet transform [ 42 ]), and variational optimization methods [ 11 , 12 , 43 ]. These approaches offer strong interpretability, high computational efficiency, and independence from external training data. How-ever, due to their reliance on overly simplified linear assumptions, they are prone to spectral/spatial distortions in complex scenarios leading to a performance reduction. In recent years, researchers have introduced deep learning into single-image training strategies, which require no external train-ing datasets and perform self-supervised optimization directly on the single target image. For example, ZS-Pan [ 4] employs a two-stage self-supervised process that combines degradation modeling with reconstruction, while PsDip [ 27 ] embed CNNs into variational frameworks to achieve strong performance without external train-ing. These methods exhibit inherent robustness in cross-domain tasks but face challenges such as complex loss function design and low inference efficiency, with inference speeds often significantly slower than conventional deep learning methods. To solve this problem, we propose the FMG-Pan framework. It combines the strong representation ability of pretrained models with the adaptability of zero-shot methods. By using the pretrained output as guidance, our adaptive network converges faster, while spectral and physical fidelity losses help to reduce distortions. This results in a lightweight model-guided framework that preserves structure, achieves efficient inference, and shows strong general-ization in real-world pansharpening tasks. 
+
+3 Proposed Method 3.1 Notations 
+
+The notations used throughout this paper are summarized as fol-lows. Let P ∈ R𝐻 ×𝑊 denote the high-resolution PAN image, where 
+
+𝐻 and 𝑊 represent the height and width, respectively. The LRMS image is denoted by Y ∈ Rℎ×𝑤 ×𝑐 , with ℎ, 𝑤 , and 𝑐 denoting the height, width, and number of spectral bands. The desired HRMS image is represented as X ∈ R𝐻 ×𝑊 ×𝑐 . The reduced-resolution PAN image, obtained by downsampling the original PAN image, is de-noted by eP ∈ Rℎ×𝑤 , while the upsampled LRMS image is expressed as bY ∈ R𝐻 ×𝑊 ×𝑐 . Finally, we define 𝑟 = 𝐻 ℎ = 𝑊 𝑤 as the resolution scale factor between PAN and MS images. 
+
+3.2 Overall Framework 
+
+The overall framework of our proposed method, FMG-Pan, is il-lustrated in Fig. 2. Given an LRMS image Y ∈ Rℎ×𝑤 ×𝑐 and a high-resolution PAN image P ∈ R𝐻 ×𝑊 , the framework aims to generate a high-resolution multispectral (HRMS*) image X∗ ∈ R𝐻 ×𝑊 ×𝑐 that simultaneously preserves spectral fidelity and spatial details. The framework consists of four core components: a pretrained model, an adaptive model, a spectral fidelity module, and a phys-ical fidelity module (PF module). At the beginning, the input im-ages Y and P are fed into both the pretrained model and the PF module. The pretrained model, with fixed parameters, generates a pseudo-reference HRMS image, denoted as X, serving as a soft label. Simultaneously, the PF module extracts spatial detail features from the PAN image, forming a detail map. The adaptive model is then trained in a self-supervised man-ner, guided by three loss functions: the pseudo-reference loss, the spectral fidelity loss, and the physical fidelity loss. After the adaptive model converges, the trained adaptive model is directly applied to the input image pair to produce the final HRMS output X∗.It is worth noting that we adopt modulation transfer function (MTF)-matched filters to blur PAN and MS images. These filters approximate the MTF of the MS sensor, usually Gaussian-shaped, with the standard deviation set through the Nyquist frequency gain (typically from sensor manufacturers). The use of such filters is common in pansharpening, see [2, 29] for details. 
+
+3.3 Adaptive Model 
+
+The adaptive model serves as the core learnable component in our framework, responsible for image-specific adaptation under a self-supervised training scheme. Given the nature of our task-adapting from a single PAN-LRMS image pair without access to large-scale datasets, we adopt a relatively lightweight design that strikes a balance between expressiveness and efficiency. As illustrated in Fig. 4, the default adaptive model follows an encoder-residual-decoder architecture. It consists of an initial con-volutional layer for shallow feature extraction, followed by a single residual block, and a final reconstruction layer to generate the HRMS output. This minimal backbone is sufficient to capture es-sential spatial-spectral cues from a single scene, enabling rapid convergence with limited computational cost. The model input is constructed as the spectral difference be-tween the upsampled LRMS image bY and a channel-wise replicated PAN image, denoted as P𝐷 ∈ R𝐻 ×𝑊 ×𝑐 . The difference tensor Δ is computed as: 
+
+Δ = P𝐷 − bY, (1) and serves as the input to the adaptive network, yielding the pre-dicted HRMS image X∗:
+
+X∗ = Fadapt (Δ; 𝜙 ) + bY, (2) where Fadapt (·) denotes the adaptive model and 𝜙 its parameters. In addition to the default model, Fig. 4 also presents a more lightweight variant that further reduces computational complexity while maintaining key adaptation capabilities. This variant employs depthwise separable convolutions and uses fewer parameters. While not used as the main architecture in this paper, its performance and trade-offs are analyzed in detail in 4.4. Unless otherwise specified, all results and comparisons reported in this paper are based on the default adaptive model described above. 
+
+> 3
+
+Inputs 
+
+MTF 
+
+> r
+
+LRMS 
+
+PAN 
+
+LRMS 
+
+*
+
+HRMS 
+
+> Spectral
+> Loss
+
+PF Module Physical Loss 
+
+Detail Detail* 
+
+HRMS* 
+
+> Pseudo -
+> Reference Loss
+
+Dataflow Loss Froze Trainable Downsample r Subtraction 
+
+Pretrained 
+
+Model 
+
+Adaptive 
+
+Model Figure 2: Overall framework of the proposed FMG-Pan framework. The pretrained model and the PF module are first executed independently. Subsequently, the parameters of the adaptive model are optimized using three core loss functions: pseudo-reference loss, spectral loss, and physical loss. In the reasoning stage, the final HRMS image is generated by applying the trained adaptive model to the input PAN and LRMS images. MTF 
+
+Solving 
+
+Problem 
+
+(14) 3
+
+coefficient Generation 
+
+> Detail
+
+MS and PAN 
+
+# H
+
+## PF Module 
+
+Figure 3: Flowchart of the PF module. At the downsampled resolution, the coefficient matrix H is obtained by solving Eq. (14) .The reconstructed LRMS bY is then multiplied with H along mode-3 to generate the reference detail image for guiding the fusion process. 
+
+3.4 Pretrained Model 
+
+To leverage the powerful representation capability of deep net-works, we employ a pretrained model as a reliable prior. This model is trained on reduced pansharpening datasets and possesses both good fidelity reconstruction performance and efficient inference speed. When given an input pair of PAN and LRMS images, it pro-duces a high-quality HRMS image with strong spatial and spectral consistency. 
+
+> 4∈RH×W×c
+> Conv(c,3 ×3,32)
+> ReLU
+> Conv(32,3 ×3,32)
+> ReLU
+> Conv(32,3 ×3,32)
+> Conv(32,3 ×3,c)
+> ∈RH×W×c
+> ∈RH×W×c
+> Conv(c,3 ×3,32)
+> ReLU
+> DWConv (32,3 ×3)
+> ReLU
+> Conv(32, 1 ×1, 32)
+> Conv(32,3 ×3,c)
+> ∈RH×W×c
+> ReLU
+> (1) Default convolutional
+> neural network
+> (2) Lighter depth -wise separable
+> convolutional network
+
+Figure 4: Comparison of two adaptive models. (1) Standard conv backbone with residual blocks. (2) Lightweight vari-ant using depthwise separable convolutions and fewer chan-nels for reduced complexity. Model (1) is used by default. DWConv (· , ·) is the depthwise separable convolution and Conv (· , ·, ·) is the standard convolution. 
+
+In our framework, the pretrained model serves two purposes. First, it provides a high-quality pseudo-reference HRMS image 
+
+X for guiding the adaptation process. Second, since the model is frozen during adaptation, it offers a stable supervisory signal that allows the adaptive model to converge rapidly, even though in a single-image training scenario. To effectively utilize the pretrained output as supervision, we define the pseudo-reference loss, Lpr , as the ℓ2 distance between the output of the adaptive model ( X∗) and that of the pretrained model ( X): 
+
+Lpr = ∥X ∗ − X∥ 2 
+
+> 𝐹
+
+, (3) where ∥ · ∥ 2 
+
+> 𝐹
+
+is the ℓ2 norm. This loss encourages the adaptive model to mimic the struc-ture and spectral information captured by the pretrained network, fostering stable and accurate local adaptation. 
+
+3.5 Spectral Loss 
+
+To ensure that the generated HRMS image maintains spectral con-sistency with the input LRMS image, we introduce a spectral fidelity loss. This loss measures the deviation between the LRMS input and a reduced-resolution version of the predicted HRMS image (i.e., the consistency property). Specifically, the predicted HRMS image is first passed through a sensor degradation simulation, including a blurring step modeled by the multispectral sensor’s MTF, followed by spatial decimation to match the scale of the LRMS input. The spectral fidelity loss, 
+
+Lspe , is then formulated as: 
+
+Lspe = ∥Y − ( MTF (X ∗)) ↓ ∥ 2 
+
+> 𝐹
+
+, (4) where X∗ is the output HRMS image from the adaptive model, Y
+
+denotes the original LRMS image, MTF (·) represents the sensor-specific spatial blurring, and the ↓ symbol indicates the decimation operation. The ℓ2 norm penalizes spectral differences between the LRMS input and the spatial reduced-resolution version of the gener-ated HRMS image. Hence, this loss term encourages the network to retain the original spectral characteristics during the pansharpening process. 
+
+3.6 Physical Loss 
+
+To further ensure the spatial consistency with the input PAN image and make more full use of the input information, we propose a novel physical loss. The PAN image contains spatial details that are critical for the target HRMS image. However, the detail extraction is challenging since the relationship between HRMS and PAN images is unclear. To describe the above relationship, the band-dependent spatial-detail (BDSD) framework could provide a general scheme for detail preservation: 
+
+X𝑖 = bY𝑖 + 𝑔 𝑖 · P −
+
+> 𝑐
+
+∑︁ 
+
+> 𝑘 =1
+
+𝑤 𝑘,𝑖 · bY𝑘 
+
+!
+
+, 𝑖 = 1, · · · , 𝑐, (5) where bY𝑖 denotes the 𝑖 -th spectral band of the upsampled LRMS image bY, and X𝑖 is the 𝑖 -th spectral band of the BDSD fused result. 
+
+𝑤 𝑘,𝑖 and 𝑔 𝑖 (𝑘, 𝑖 = 1, · · · 𝑐 ) are injection coefficients that match the high-frequency details of PAN and HRMS images. While this classic framework has been proven effective in [ 15 , 16 , 28 ], the upsampling operation inevitably introduces wrong information, which leads to inaccuracy of spatial information. However, this constraint cannot help optimize the adaptive model well, so we propose to just use its high-frequency detail information. To accurately describe the spatial relationship, we propose a novel physical fidelity as follows: 
+
+X𝑖 = X𝑖 B + 𝑔 𝑖 · P −
+
+> 𝑐
+
+∑︁ 
+
+> 𝑘 =1
+
+𝑤 𝑘,𝑖 · bY𝑘 
+
+!
+
+, 𝑖 = 1, · · · , 𝑐, (6) where B ∈ R𝐻𝑊 ×𝐻𝑊 is the blurring operation. For convenience, we reformulate the fidelity as: 
+
+X − MTF (X) = M × 3 H, (7) where M ∈ R𝐻 ×𝑊 × ( 𝑐 +1) denotes the concatenation of bY𝑘 and P,
+
+×3 is the mode-3 multiplication, and H ∈ R𝑐 × ( 𝑐 +1) is the coefficient, which satisfies: 
+
+H(𝑖, 𝑗 ) =
+
+ −𝑔 𝑖 𝑤 𝑗,𝑖 , 𝑗 = 1, · · · , 𝑐, 𝑔 𝑖 , 𝑗 = 𝑐 + 1. (8) Thus, we can build the physical loss, Lphy , as: 
+
+Lphy = ∥X ∗ − MTF (X ∗) − M × 3 H∥2 
+
+> 𝐹
+
+. (9) 
+
+> 5
+
+Table 1: Performance comparison on real-world data of WorldView-3 (WV3) and WorldView-2 (WV2) datasets. The reported values represent the average performance over 20 test images. ( Red : best; Blue : second best) 
+
+Method WV3 (Real Data): Avg ±std WV2 (Real Data): Avg ±std HQNR ↑ 𝐷 𝜆 ↓ 𝐷 𝑠 ↓ HQNR ↑ 𝐷 𝜆 ↓ 𝐷 𝑠 ↓
+
+BT-H 2017 0.8659 ±0.0568 0.0656 ±0.0262 0.0742 ±0.0383 0.8300 ±0.0430 0.0860 ±0.0301 0.0925 ±0.0208 C-BDSD 2014 0.8562 ±0.0233 0.0874 ±0.0236 0.0618 ±0.0128 0.6956 ±0.0461 0.2253 ±0.0488 0.1019 ±0.0296 BDSD-PC 2019 0.8673 ±0.0543 0.0634 ±0.0246 0.0749 ±0.0359 0.8286 ±0.0432 0.1413 ±0.0320 0.0356 ± 0.0213 
+
+MTF-GLP 2006 0.9026 ±0.0444 0.0373 ±0.0124 0.0628 ±0.0359 0.8549 ±0.0475 0.0582 ±0.0221 0.0930 ±0.0320 MTF-GLP-FS 2018 0.9127 ±0.0348 0.0357 ±0.0106 0.0537 ±0.0273 0.8658 ±0.0415 0.0563 ±0.0212 0.0830 ±0.0260 MF 2016 0.9014 ±0.0358 0.0452 ±0.0121 0.0561 ±0.0268 0.8508 ±0.0538 0.0704 ±0.0308 0.0857 ±0.0297 PsDip 2024 0.9215 ±0.0176 0.0191 ±0.0078 0.0607 ±0.0117 0.8980 ±0.0226 0.0385 ± 0.0239 0.0659 ±0.0158 ZS-Pan 2024 0.9449 ±0.0208 0.0254 ±0.0071 0.0306 ±0.0153 0.9112 ± 0.0336 0.0476 ±0.0270 0.0435 ±0.0130 WFANet 2025 0.9437 ±0.0130 0.0172 ± 0.0097 0.0390 ±0.0077 0.9280 ±0.0240 0.0584 ±0.0089 0.0430 ±0.0203 DICNN 2019 0.9076 ±0.0288 0.0487 ±0.0148 0.0462 ±0.0171 0.7137 ±0.0120 0.1369 ±0.1731 0.0290 ±0.0170 LAGNet 2022 0.9133 ±0.0291 0.0389 ± 0.0133 0.0500 ±0.0196 0.8265 ±0.1356 0.0438 ±0.0458 0.1692 ±0.0580 FusionMamba 2024 0.9550 ± 0.0108 0.0183 ± 0.0076 0.0272 ± 0.0057 0.9064 ±0.0226 0.0526 ±0.0252 0.0432 ±0.0114 FMG-Pan LAGNet 0.9522 ±0.0195 0.0230 ±0.0065 0.0255 ± 0.0142 0.9401 ± 0.0193 0.0332 ± 0.0173 0.0276 ± 0.0490 
+
+FMG-Pan FusionMamba 0.9637 ± 0.0116 0.0213 ±0.0059 0.0153 ± 0.0077 0.9471 ± 0.0153 0.0315 ±0.0171 0.0221 ± 0.0048 
+
+We denote the right side of the equation (7) as Detail and the left side as Detail ∗. The coefficient H is critical for connecting the detail of the PAN image. To estimate it, we built the corresponding relationship at reduced scale. Thus, we have: 
+
+(X(3) B) ↓ −(( X(3) B)B) ↓ = (H(M(3) B)) ↓ , (10) where X(3) and M(3) denote the mode-3 unfolding of X and M,respectively. Since X is unavailable, we can assume there exist a Gaussian error 𝜖 satisfying the following equation [36]: 
+
+(( X(3) B)B) ↓ = (X(3) B + 𝜖 ) ↓ B. (11) Hence, equation (10) can be rewritten as: 
+
+(X(3) B) ↓ −( X(3) B + 𝜖 ) ↓ B = (H(M(3) B)) ↓ . (12) Combining the spectral fidelity (4) , we have the reduced scale spatial relationship as follows: 
+
+HM RD =(X(3) B) ↓ −( X(3) B + 𝜖 ) ↓ B
+
+≈Y(3) − Y(3) B, (13) where Y(3) denotes the mode-3 unfolding of Y, and MRD means 
+
+M(3) after the downsampling operation using MTF-based filters. Be-sides, following [ 28 ], we estimate the coefficient with non-negative constraints. Finally, the coefficient H can be estimated by solving the problem as follows: 
+
+min  
+
+> H
+
+∥HM RD − ( Y(3) − Y(3) B)∥ 2
+
+> 𝐹
+
+𝑠.𝑡 . 𝑔 𝑖 𝑤 𝑗,𝑖 , 𝑔 𝑖 ≥ 0, (14) which can be solved by the Newton method for the quadratic func-tions subject to bounds on some variables [ 9]. The purpose of the PF module is to pre-generate Detail. Fig. 3 shows its flowchart. It is worth noting that we can crop the original image pairs to estimate the coefficient faster, as we did in the experimental section. Accordingly, the total training loss is defined as the weighted sum of the above three terms: 
+
+Ltotal = 𝜆 1 Lpr + 𝜆 2 Lspe + 𝜆 3 Lphy . (15) 
+
+4 Experiments 4.1 Datasets, Metrics, and Implementation Details 
+
+4.1.1 Datasets. Due to our specific training strategy and loss func-tion design, our task is targeted to real-world pansharpening, thus we adopted full resolution datasets in main experiments. In our ex-periments, we adopted two widely used satellite datasets: WorldView-3 (WV3), WorldView-2 (WV2). These datasets consist of paired PAN and LRMS images, with PAN images uniformly cropped to 512 ×512 
+
+pixels at real full resolution. At simulated reduced resolution, we have a size of 256 × 256 for PAN images. All datasets have a res-olution ratio 𝑟 = 4 between PAN and MS images.All datasets are derived from the PanCollection database. Details and related data can be found at 1.For the training of pretrained methods, we employ only the downsampled samples from WV3. WV2 are used solely as cross-sensor test sets to assess generalization. 
+
+4.1.2 Evaluation Metrics. To quantitatively assess pansharpening performance, we adopt widely recognized evaluation metrics. For real-world images, we utilize the HQNR index [ 1], which is derived from two complementary components: the spatial distortion metric              
+
+> 1https://github.com/liangjiandeng/PanCollection
+> 6BT -HC-BDSD BDSD -PC MTF -GLP MTF -GLP -FS MF DiCNN ZS-Pan PsDip WFANet LAGNet FusionMamba FMG LAGNet FMG FusionMamba
+
+Figure 5: Visual fusion images and related HQNR maps on a full resolution WV3 example. BT -H C-BDSD BDSD -PC MTF -GLP MTF -GLP -FS MF DiCNN ZS-Pan PsDip WFANet LAGNet FusionMamba FMG LAGNet FMG FusionMamba 
+
+Figure 6: Visual fusion images and the related HQNR maps on a full resolution WV2 example. 
+
+𝐷 𝑠 and the spectral distortion metric 𝐷 𝜆 . These three metrics jointly reflect image quality in the absence of ground-truth. Ideal values are 𝐷 𝑠 = 0, 𝐷 𝜆 = 0, and HQNR = 1.
+
+4.1.3 Implementation Details. We use two pretrained networks as pretrained models in our framework: FusionMamba [ 25 ] and LAGNet [ 19 ], which are pretrained on WV3. To ensure fairness and validate generalization performance, all trainable networks in our framework are trained only on the training splits of WV3 and GF2, while evaluations are conducted on both in-domain WV3 and cross-sensor WV2 test sets. The adaptive model is initialized with pytorch default weights and optimized using the Adam optimizer with a learning rate of 
+
+1.8 × 10 −3. The number of epochs for training on WV3 is set to 80, and the number of epochs for the cross-sensor dataset WV2 is 350. The loss weights are set as follows: 𝜆 1 = 1, 𝜆 2 = 0.5, and 𝜆 3 = 10 . To accelerate inference in the PF module, we compute the coefficient using only a small central patch (64 ×64 for the PAN image size) rather than the entire image. This significantly improves runtime efficiency. For baseline comparisons, we adopt the default configurations specified in the original papers and codebases of each deep learning-based method. All the experiments were conducted on a hardware setup comprising an NVIDIA RTX 3090 GPU with 24GB memory and Intel Xeon Gold 6148 CPU. 
+
+4.2 Benchmark 
+
+We compare FMG-Pan with some representative pansharpening techniques, including 
+
+Traditional methods: MTF-GLP: MTF-tailored multiscale fu-sion of high-resolution MS and Pan imagery [ 2]. C-BDSD: Pan-sharpening of multispectral images based on nonlocal parameter optimization [ 15 ]. MF: Fusion of multispectral and panchromatic im-ages based on morphological operators [ 26 ]. BT-H: Haze correction for contrast-based multispectral pansharpening [ 22 ]. MTF-GLP-FS: Full scale regression-based injection coefficients for panchromatic sharpening [ 32 ]. BDSD-PC: Robust band-dependent spatial-detail approaches for panchromatic sharpening [28]. 
+
+Supervised DL methods: DICNN: Pansharpening via detail injection based convolutional neural networks [ 17 ]. LAGNet: Local-context adaptive convolution kernels with global harmonic bias for pansharpening [ 19 ]. FusionMamba: Efficient remote sensing image fusion with state space model [ 25 ]. WFANet: Wavelet-assisted multi-frequency attention network for pansharpening [18]. 
+
+Zero-shot methods: PsDip: Variational zero-shot multispectral pansharpening [ 27 ]. ZS-Pan: Zero-shot semi-supervised learning for pansharpening [4]. 
+
+4.3 Main Results 
+
+To evaluate the effectiveness of our method, we report the main real-world results on WV3 and WV2 and compare against representative pansharpening techniques. models are trained on WV3 and the quantitative results are reported in Table 1. The HQNR, 𝐷 𝜆 , and 𝐷 𝑠 metrics show that even when the pre-trained model itself is not the strongest performer, the FMG-Pan framework significantly enhances its performance. In particular, when using FusionMamba as the pretrained model, our framework achieves the best overall metrics on both WV3 and WV2, highlight-ing strong real-world performance and cross-sensor generalization. Figs. 5 and 6 further illustrate the fused results and HQNR heatmaps (with local zoom-in regions). The visual comparisons confirm that FMG-Pan delivers higher-quality fusion, simultane-ously preserving fine spatial details and spectral fidelity. In addition, Fig. 7 illustrates the improvement of the FMG-Pan framework when applied to FusionMamba and LAGNet across two datasets. The consistent gains in the overall HQNR metric clearly highlight both the effectiveness of our design and its strong generalization ability under diverse sensor conditions.     
+
+> 70.78
+> 0.8
+> 0.82
+> 0.84
+> 0.86
+> 0.88
+> 0.9
+> 0.92
+> 0.94
+> 0.96
+> WV3 WV3* WV2 WV2*
+> HQNR
+> Baseline with FMG
+
+Figure 7: Comparison of HQNR for FusionMamba and LAGNet with and without the FMG-Pan framework across two real-world datasets (WV3, WV2). Note: * denotes LAGNet, without * denotes FusionMamba. 
+
+4.4 Ablation Study 
+
+We evaluated the contribution of each component in our frame-work on 20 full resolution WV3 samples using FusionMamba as the pretrained model. Four settings were considered: full FMG-Pan,FMG-Pan with Lighter adaptive model, no pretrained model, no spectral loss, and no physical loss. Table 2 reports the mean and standard deviation of HQNR, 𝐷 𝜆 , and 𝐷 𝑠 . The Full FMG-Pan and FMG-Pan 𝐿 almost achieved all the best metrics. 
+
+4.4.1 FMG-Pan with lighter adaptive model. As shown in the ta-ble, even when employing a significantly lighter model—where the parameter count is reduced from 23k to 6k, performance re-mains nearly comparable to that of the full framework. This can be attributed to the fact that our framework is optimized solely for single-image processing. Furthermore, this result highlights the practical potential of our approach: the adaptive model param-eters involved in actual training can be further reduced without substantially compromising performance. 
+
+4.4.2 Impact of Pretrained Model. Removing the pretrained model resulted in a consistent performance drop in all metrics, see Table 2. HQNR decreased from 0.9637 to 0.9491 , while 𝐷 𝜆 and 𝐷 𝑠 both increased. This confirms that model-guided initialization provides a strong prior for our single-image adaptation: it stabilizes the optimization process, accelerates convergence, and enables the adaptive model to overcome the original output of the pretrained model. 
+
+4.4.3 Impact of Spectral Fidelity Loss. Discarding the spectral loss significantly compromises the balance between spatial and spectral quality. HQNR drops to 0.9308, while 𝐷 𝜆 increases and 𝐷 𝑠 swells from 0.0153 to 0.0473 (over 3 times), leading to oversharpening when spectral consistency is not explicitly constrained. Therefore, the spectral term is crucial for maintaining cross-band consistency. 
+
+4.4.4 Impact of Physical Fidelity Loss. Without the physical fidelity loss, 𝐷 𝜆 decreases slightly (to 0.0209 ), but 𝐷 𝑠 increases (from 0.0153 
+
+to 0.0193 ), and HQNR drops to 0.9602 . This trade-off demonstrates the importance of physical constraints in further balancing spatial and spectral fidelity. 
+
+Table 2: Average results of the ablation study for our FMG-Pan framework on 20 full-resolution WV3 examples. ( Red : best; Blue : second best) Name HQNR ↑ 𝑫 𝝀 ↓ 𝑫 𝒔 ↓
+
+FMG-Pan 0.9637 ±0.0116 0.0213 ±0.0059 0.0153 ±0.0077 FMG-Pan L 0.9636 ±0.0150 0.0227 ±0.0056 0.0140 ±0.0107 w/o pretrained model 0.9491 ±0.0128 0.0227 ±0.0059 0.0288 ±0.0085 w/o spectral loss 0.9308 ±0.0298 0.0232 ±0.0097 0.0473 ±0.0217 w/o physical loss 0.9602 ±0.0078 0.0209 ±0.0058 0.0193 ±0.0039 
+
+4.5 Running Time and Efficiency 
+
+We analyze the running time of our framework. As summarized in Table 3, FMG-Pan achieves superior pansharpening quality while being significantly faster than existing zero-shot methods. On WV3, FMG-Pan FusionMamba reaches an HQNR of 0.9637 with 𝐷 𝜆 = 0.0213 
+
+and 𝐷 𝑠 = 0.0153 in only 2.93 s per full resolution image, whereas ZS-Pan obtains an HQNR of 0.9449 in 67.24 s and PsDip reaches an HQNR of 0.9215 in 285.37 s. On WV2, our framework similarly delivers an HQNR of 0.9471 ( 𝐷 𝜆 = 0.0315 , 𝐷 𝑠 = 0.0221 ) within 9.75 s, outperforming ZS-Pan (HQNR of 0.9112, 68.52 s) and PsDip (HQNR of 0.8980, 280.23 s). When LAGNet is used as the pretrained model, the runtime remains comparable (2.84 s on WV3; 9.62 s on WV2) with only a slight decrease in accuracy relative to FusionMamba, suggesting that the efficiency stems from the FMG-Pan framework itself rather than the choice of the backbone. We do not report comparisons with conventional supervised deep learning pipelines, as their training on datasets usually takes hours to days, making them not directly comparable to our single-image adaptation scheme, although they often have fast inference speed in the test time without adaptation. 
+
+Table 3: Average performance comparison of zero-shot meth-ods and the proposed FMG-Pan framework on 20 full reso-lution test images for both WV3 and WV2 datasets. ( Red : best; Blue : second best)                                         
+
+> Dataset Method HQNR ↑𝐷 𝜆 ↓𝐷 𝑠 ↓Time ↓(s) WV3 PsDip 0.9215 0.0191 0.0607 285.37 ZS-Pan 0.9449 0.0254 0.0306 67.24 FMG-Pan LAGNet 0.9522 0.0230 0.0255 2.84 FMG-Pan FusionMamba 0.9637 0.0213 0.0153 2.93 WV2 PsDip 0.8980 0.0385 0.0659 280.23 ZS-Pan 0.9112 0.0476 0.0435 68.52 FMG-Pan LAGNet 0.9401 0.0332 0.0276 9.62 FMG-Pan FusionMamba 0.9471 0.0315 0.0221 9.75
+
+5 Conclusion 
+
+In this paper, we proposed a model-guided Instance adaptation framework to address two major challenges in pansharpening: the poor generalization ability of conventional deep learning methods 
+
+> 8
+
+and the low inference efficiency of existing single-image training ap-proaches. Our framework introduced a novel physical fidelity term, which, together with the spectral fidelity term, guides the adap-tive model training under the supervision of a pretrained network. This design enables the framework to achieve high performance and strong generalization on real-world datasets while maintaining fast inference speed. Extensive experiments on multiple satellite datasets demonstrated that the proposed FMG-Pan gets state-of-the-art results with rapid convergence, improving both the model’s accuracy and robustness on real-world datasets, highlighting its potential for real-world pansharpening. 
+
+References 
+
+[1] B Aiazzi, Luciano Alparone, S Baronti, R Carlà, Andrea Garzelli, and L Santurri. 2014. Full-scale assessment of pansharpening methods and data products. In 
+
+Image and signal processing for remote sensing XX , Vol. 9244. SPIE, 924402. [2] B. Aiazzi, L. Alparone, S. Baronti, A. Garzelli, and M. Selva. 2006. MTF-tailored multiscale fusion of high-resolution MS and Pan imagery. Photogrammetric Engineering and Remote Sensing 72, 5 (2006), 591–596. [3] P. J. Burt and E. H. Adelson. 1987. The Laplacian Pyramid as a Compact Image Code. In Readings in Computer Vision , Martin A. Fischler and Oscar Firschein (Eds.). Morgan Kaufmann, San Francisco (CA), 671–679. doi:10.1016/B978-0-08-051581-6.50065-9 [4] Q. Cao, L.-J. Deng, W. Wang, J. Hou, and G. Vivone. 2024. Zero-shot semi-supervised learning for pansharpening. Information Fusion 101 (2024), 102001. [5] Z.-H. Cao, S. Cao, L.-J. Deng, X. Wu, J. Hou, and G. Vivone. 2024. Diffusion model with disentangled modulations for sharpening multispectral and hyperspectral images. Information Fusion 104 (2024), 102158. [6] Z.-H. Cao, Y.-J. Liang, L.-J. Deng, and G. Vivone. 2025. An Efficient Image Fusion Network Exploiting Unifying Language and Mask Guidance. IEEE Transactions on Pattern Analysis and Machine Intelligence (2025), 1–18. doi:10.1109/TPAMI. 2025.3591930 [7] W. Carper, T. Lillesand, and R. Kiefer. 1990. The use of intensity-hue-saturation transformations for merging SPOT panchromatic and multispectral image data. 
+
+Photogrammetric Engineering and Remote Sensing 56, 4 (1990), 459–467. [8] M. Ciotola, S. Vitale, A. Mazza, G. Poggi, and G. Scarpa. 2022. Pansharpening by Convolutional Neural Networks in the Full Resolution Framework. IEEE Transactions on Geoscience and Remote Sensing 60 (2022), 1–17. doi:10.1109/TGRS. 2022.3163887 [9] T. F. Coleman and Y. Li. 1996. A reflective Newton method for minimizing a quadratic function subject to bounds on some of the variables. SIAM J. Optim. 6, 4 (1996), 1040–1058. [10] Liang-Jian Deng, Minyu Feng, and Xue-Cheng Tai. 2019. The fusion of panchro-matic and multispectral remote sensing images via tensor-based sparse modeling and hyper-Laplacian prior. Information Fusion 52 (2019), 76–89. [11] L.-J. Deng, M. Feng, and X.-C. Tai. 2019. The fusion of panchromatic and mul-tispectral remote sensing images via tensor-based sparse modeling and hyper-Laplacian prior. Information Fusion 52 (2019), 76–89. doi:10.1016/j.inffus.2018.11. 014 [12] L.-J. Deng, G. Vivone, W. Guo, M. Dalla Mura, and J. Chanussot. 2018. A Vari-ational Pansharpening Approach Based on Reproducible Kernel Hilbert Space and Heaviside Function. IEEE Transactions on Image Processing 27, 9 (2018), 4330–4344. doi:10.1109/TIP.2018.2839531 [13] L.-J. Deng, G. Vivone, M. E. Paoletti, G. Scarpa, J. He, Y. Zhang, J. Chanussot, and A. Plaza. 2022. Machine learning in pansharpening: A benchmark, from shallow to deep networks. IEEE Geoscience and Remote Sensing Magazine 10, 3 (2022), 279–315. [14] S.-Q. Deng, L.-J. Deng, X. Wu, R. Ran, D. Hong, and G. Vivone. 2023. PSRT: Pyramid shuffle-and-reshuffle transformer for multispectral and hyperspectral image fusion. IEEE Transactions on Geoscience and Remote Sensing 61 (2023), 1–15. [15] A. Garzelli. 2014. Pansharpening of multispectral images based on nonlocal parameter optimization. IEEE Transactions on Geoscience and Remote Sensing 53, 4 (2014), 2096–2107. [16] A. Garzelli, F. Nencini, and L. Capobianco. 2007. Optimal MMSE pan sharpening of very high resolution multispectral images. IEEE Transactions on Geoscience and Remote Sensing 46, 1 (2007), 228–236. [17] L. He, Y. Rao, J. Li, J. Chanussot, A. Plaza, J. Zhu, and B. Li. 2019. Pansharpening via Detail Injection Based Convolutional Neural Networks. IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing 12, 4 (2019), 1188–1204. doi:10.1109/JSTARS.2019.2898574 [18] J. Huang, R. Huang, J. Xu, S. Peng, Y. Duan, and L.-J. Deng. 2025. Wavelet-Assisted Multi-Frequency Attention Network for Pansharpening. In Proceedings of the AAAI Conference on Artificial Intelligence (AAAI) , Vol. 39. 3662–3670. [19] Z.-R. Jin, T.-J. Zhang, T.-X. Jiang, G. Vivone, and L.-J. Deng. 2022. LAGConv: Local-context adaptive convolution kernels with global harmonic bias for pan-sharpening. In Proceedings of the AAAI Conference on Artificial Intelligence (AAAI) ,Vol. 36. 1113–1121. [20] P. Kwarteng and A. Chavez. 1989. Extracting spectral contrast in Landsat The-matic Mapper image data using selective principal component analysis. Pho-togrammetric Engineering and Remote Sensing 55, 1 (1989), 339–348. [21] JG Liu. 2000. Smoothing filter-based intensity modulation: A spectral preserve image fusion technique for improving spatial details. International Journal of Remote Sensing 21, 18 (2000), 3461–3472. [22] S. Lolli, L. Alparone, A. Garzelli, and G. Vivone. 2017. Haze correction for contrast-based multispectral pansharpening. IEEE Geoscience and Remote Sensing Letters 14, 12 (2017), 2255–2259. [23] G. Masi, D. Cozzolino, L. Verdoliva, and G. Scarpa. 2016. Pansharpening by convolutional neural networks. Remote Sensing 8, 7 (2016), 594. [24] Q. Meng, W. Shi, S. Li, and L. Zhang. 2023. PanDiff: A novel pansharpening method based on denoising diffusion probabilistic model. IEEE Transactions on Geoscience and Remote Sensing 61 (2023), 1–17. [25] S. Peng, X. Zhu, H. Deng, L.-J. Deng, and Z. Lei. 2024. Fusionmamba: Efficient remote sensing image fusion with state space model. IEEE Transactions on Geoscience and Remote Sensing 62 (2024), 1–16. [26] R. Restaino, G. Vivone, M. Dalla Mura, and J. Chanussot. 2016. Fusion of mul-tispectral and panchromatic images based on morphological operators. IEEE Transactions on Image Processing 25, 6 (2016), 2882–2895. [27] X. Rui, X. Cao, Y. Li, and D. Meng. 2024. Variational Zero-Shot Multispectral Pansharpening. IEEE Transactions on Geoscience and Remote Sensing 62 (2024), 1–16. doi:10.1109/TGRS.2024.3492059 [28] G. Vivone. 2019. Robust band-dependent spatial-detail approaches for panchro-matic sharpening. IEEE Transactions on Geoscience and Remote Sensing 57, 9 (2019), 6421–6433. [29] G. Vivone, L. Alparone, J. Chanussot, M. Dalla Mura, A. Garzelli, G. A. Licciardi, R. Restaino, and L. Wald. 2014. A critical comparison among pansharpening algorithms. IEEE Transactions on Geoscience and Remote Sensing 53, 5 (2014), 2565–2586. [30] G. Vivone, L.-J. Deng, S. Deng, D. Hong, M. Jiang, C. Li, W. Li, H. Shen, X. Wu, J.-L. Xiao, J. Yao, M. Zhang, J. Chanussot, S. García, and A. Plaza. 2025. Deep Learning in Remote Sensing Image Fusion: Methods, protocols, data, and future perspectives. IEEE Geoscience and Remote Sensing Magazine 13, 1 (2025), 269–310. doi:10.1109/MGRS.2024.3495516 [31] G. Vivone, M. Dalla Mura, A. Garzelli, R. Restaino, G. Scarpa, M. O. Ulfarsson, L. Alparone, and J. Chanussot. 2020. A new benchmark based on recent advances in multispectral pansharpening: Revisiting pansharpening with classical and emerging pansharpening methods. IEEE Geoscience and Remote Sensing Magazine 
+
+9, 1 (2020), 53–81. [32] G. Vivone, R. Restaino, and J. Chanussot. 2018. Full scale regression-based injection coefficients for panchromatic sharpening. IEEE Transactions on Image Processing 27, 7 (2018), 3418–3431. [33] H. Wang, H. Zhang, X. Tian, and J. Ma. 2024. Zero-Sharpen: A universal pan-sharpening method across satellites for reducing scale-variance gap via zero-shot variation. Information Fusion 101 (2024), 102003. [34] Wu Wang, Liang-Jian Deng, Ran Ran, and Gemine Vivone. 2024. A general paradigm with detail-preserving conditional invertible network for image fusion. 
+
+International Journal of Computer Vision 132, 4 (2024), 1029–1054. [35] X. Wu, Z.-H. Cao, T.-Z. Huang, L.-J. Deng, J. Chanussot, and G. Vivone. 2025. Fully-Connected Transformer for Multi-Source Image Fusion. IEEE Transactions on Pattern Analysis and Machine Intelligence 47, 3 (2025), 2071–2088. [36] Z.-C. Wu, T.-Z. Huang, L.-J. Deng, J. Huang, J. Chanussot, and G. Vivone. 2023. LRTCFPan: Low-rank tensor completion based framework for pansharpening. 
+
+IEEE Transactions on Image Processing 32 (2023), 1640–1655. [37] J.-L. Xiao, T.-Z. Huang, L.-J. Deng, G. Lin, Z. Cao, C. Li, and Q. Zhao. 2025. Hyperspectral Pansharpening via Diffusion Models with Iteratively Zero-Shot Guidance. In Proc. IEEE Conf. Comput. Vis. Pattern Recognit. (CVPR) . 12669–12678. [38] J.-L. Xiao, T.-Z. Huang, L.-J. Deng, Z.-C. Wu, X. Wu, and G. Vivone. 2023. Varia-tional pansharpening based on coefficient estimation with nonlocal regression. 
+
+IEEE Transactions on Geoscience and Remote Sensing 61 (2023), 1–15. [39] J. Yang, X. Fu, Y. Hu, Y. Huang, X. Ding, and J. Paisley. 2017. PanNet: A deep network architecture for pan-sharpening. In Proceedings of the IEEE International Conference on Computer Vision (ICCV) . 5449–5457. [40] Y. Zhong, X. Wu, Z. Cao, H.-X. Dou, and L.-J. Deng. 2024. Ssdiff: Spatial-spectral integrated diffusion model for remote sensing pansharpening. Advances in Neural Information Processing Systems 37 (2024), 77962–77986. [41] H. Zhou, Q. Liu, and Y. Wang. 2022. PanFormer: A transformer based model for pan-sharpening. In 2022 IEEE international conference on multimedia and expo (ICME) . IEEE, 1–6. [42] J. Zhou, D.L. Civco, and J.A. Silander. 1998. A wavelet transform method to merge Landsat TM and SPOT panchromatic data. International Journal of Remote Sensing 19, 4 (1998), 743–757. doi:10.1080/014311698215973 
+
+> 9
+
+[43] Xiao Xiang Zhu and Richard Bamler. 2012. A sparse image fusion algorithm with application to pan-sharpening. IEEE Transactions on geoscience and remote sensing 51, 5 (2012), 2827–2836. 
+
+> 10
+
+# Supplementary Material 
+
+S1 Time Analysis 
+
+Fig. 8 shows our efficiency advantage compared to previous zero-shot methods. Fig. 9 provides a breakdown of runtime composition when using FusionMamba as the pretrained model. For WV3 (inner ring), training accounts for 73% of the total time, while pretrained model inference, PF module precomputation, adaptive-model infer-ence, and other processes account for 8%, 7%, 1%, and 11%, respec-tively. For WV2 (outer ring), training becomes even more dominant at 90.17%, with pretrained inference at 3.08%, PF module precom-putation 2.50%, adaptive-model inference 0.25%, and others 4.00%. These results confirm that the majority of time is spent on the single-image adaptation, whereas both inference and precompu-tation are relatively minor. The total time is consistent with the overall runtime, where FMG-Pan completes the full resolution in-ference within only a few seconds. 
+
+Figure 8: Time comparison (in seconds) between the proposed FMG-Pan framework (with LAGNet and FusionMamba as pretrained models) and previous zero-shot methods (PsDip, ZS-Pan) on WV3 and WV2 data. 
+
+S2 Additional Main Results on GF2 and QB 
+
+To evaluate the effectiveness of our method, we conduct experi-ments on the 4-band in-domain dataset GF2 and the cross-domain dataset QB using the same configuration. The quantitative results are reported in Table 4, where our method is compared with several representative pansharpening approaches. The evaluation metrics demonstrate that our model consistently achieves superior performance across both datasets. In particular, our method yields competitive or leading results in terms of key quantitative indicators, indicating its strong capability in both in-domain reconstruction and cross-domain generalization. Fig. 12 further compares the HQNR improvements across four datasets when using FusionMamba as the pretrained model. It can be observed that our framework consistently boosts the HQNR scores on all datasets, demonstrating its effectiveness in enhancing different backbone models. 73%    
+
+> 8%
+> 1%
+> 7%
+> 11%
+> 90.17%
+> 3.08%
+> 0.25%
+> 2.50% 4.00%
+> Training Pretrained-model inference
+> Adaptive-model inference PF Module precomputation
+> Others
+
+Figure 9: Runtime composition of the proposed FMG-Pan framework using FusionMamba as the pretrained model. The inner ring corresponds to WV3 and the outer ring to WV2, showing the proportion of time spent on training, pretrained model inference, adaptive-model inference, PF module pre-computation, and other processes. 
+
+Figs. 10 and 11 present the visual comparisons of the fused im-ages. As shown in the zoomed-in regions, our method is able to better preserve fine spatial details while maintaining high spec-tral fidelity. Compared with other methods, it effectively reduces spectral distortion and spatial artifacts, resulting in more visually pleasing and structurally consistent fusion results. Overall, our model achieves state-of-the-art performance on both GF2 and QB datasets in terms of quantitative metrics and visual quality, further validating its robustness and effectiveness in real-world scenarios. 
+
+S3 Lighter-weight Adaptive Model 
+
+To additionally investigate the efficiency of our framework, we evaluate a lighter-weight variant of the adaptive model. We use FusionMamba as the pretrained model. The parameter count is reduced from 23k to 6k in the 8-band setting and from 20k to 3.7k in the 4-band setting. This substantial reduction in model size leads to lower computational cost and faster inference within the FMG-Pan framework. As shown in Table 5, despite its extremely compact architecture, the lighter-weight adaptive model achieves fusion performance 
+
+> 11
+
+Table 4: Performance comparison on real-world GaoFen-2 (GF2) and QuickBird (QB) data. The reported values represent the average performance over 20 test images. ( Red : best; Blue : second best) 
+
+Method GF2 (Real-World Data): Avg ±std QB (Real-World Data): Avg ±std HQNR ↑ 𝐷 𝜆 ↓ 𝐷 𝑠 ↓ HQNR ↑ 𝐷 𝜆 ↓ 𝐷 𝑠 ↓
+
+BT-H 2017 0.8923 ±0.0312 0.0832 ±0.0180 0.0814 ±0.0110 0.8901 ±0.0980 0.0457 ±0.0136 0.0693 ±0.0109 C-BDSD 2014 0.8870 ±0.0210 0.0119 ±0.0094 0.0689 ±0.0079 0.8317 ±0.0750 0.0776 ±0.0385 0.0689 ±0.0089 BDSD-PC 2019 0.8710 ±0.0087 0.0633 ±0.0078 0.0742 ±0.0095 0.8699 ±0.0670 0.0671 ±0.0074 0.0780 ±0.0082 MTF-GLP 2006 0.8247 ±0.0462 0.0598 ±0.0072 0.0545 ±0.0011 0.8574 ±0.0840 0.0311 ±0.0079 0.0546 ±0.0087 MTF-GLP-FS 2018 0.8179 ±0.0912 0.0371 ±0.0015 0.0149 ±0.0099 0.8230 ±0.0970 0.0495 ±0.0058 0.1411 ±0.0083 MF 2016 0.8730 ±0.1200 0.0646 ±0.0088 0.0633 ±0.0136 0.8429 ±0.0997 0.0453 ±0.0120 0.0686 ±0.0083 PsDip 2024 0.8833 ±0.0221 0.0448 ±0.0212 0.0752 ±0.0205 0.7825 ±0.0325 0.1323 ± 0.0286 0.0981 ±0.0256 ZS-Pan 2024 0.8961 ±0.0274 0.0361 ±0.0157 0.0705 ±0.0185 0.8925 ± 0.0240 0.0778 ±0.0182 0.0323 ±0.0159 WFANet 2025 0.9463 ±0.0095 0.0162 ± 0.0078 0.0381 ±0.0042 0.8922 ±0.0223 0.0633 ±0.0221 0.0476 ±0.0073 DICNN 2019 0.9076 ±0.0288 0.0487 ±0.0148 0.0462 ±0.0171 0.8881 ±0.0213 0.0543 ±0.0273 0.0606 ±0.0162 LAGNet 2022 0.8815 ±0.0293 0.0423 ± 0.0310 0.0795 ±0.0107 0.8879 ±0.0386 0.0814 ±0.0315 0.0336 ±0.0128 FusionMamba 2024 0.9536 ± 0.0086 0.0174 ± 0.0094 0.0295 ± 0.0073 0.9128 ±0.0277 0.0553 ±0.0208 0.0339 ±0.0107 FMG-Pan LAGNet 0.9372 ±0.0156 0.0263 ±0.0136 0.0375 ±0.0127 0.9447 ± 0.0157 0.0333 ± 0.0117 0.0227 ± 0.0085 
+
+FMG-Pan FusionMamba 0.9631 ± 0.0159 0.0228 ±0.0143 0.0144 ± 0.0057 0.9471 ± 0.0245 0.0375 ± 0.0165 0.0161 ± 0.0103 
+
+Table 5: Comparison in terms of HQNR, 𝐷 𝜆 , 𝐷 𝑠 , and runtime (s), of FMG-Pan FusionMamba , its lighter-weight variant (FMG-Pan LFusionMamba ), and the fine-tuned variant (FMG-Pan FFusionMamba ) on 20 full resolution test images for both WV3 and WV2 datasets. ( Red : best; Blue : second best) 
+
+## Dataset Method HQNR ↑ 𝐷 𝜆 ↓ 𝐷 𝑠 ↓ Runtime ↓ (s) WV3 FMG-Pan FusionMamba 0.9637 ±0.0116 0.0213 ±0.0059 0.0153 ±0.0077 2.93 ±0.12 FMG-Pan LFusionMamba 0.9636 ±0.0150 0.0227 ±0.0056 0.0140 ±0.0107 2.82 ±0.13 FMG-Pan FFusionMamba 0.9644 ±0.0140 0.0205 ±0.0052 0.0154 ±0.0105 1.47 ±0.08 WV2 FMG-Pan FusionMamba 0.9471 ±0.0193 0.0315 ±0.0173 0.0221 ±0.0490 9.75 ±0.32 FMG-Pan LFusionMamba 0.9460 ±0.0256 0.0325 ±0.0179 0.0223 ±0.0096 9.55 ±0.29 FMG-Pan FFusionMamba 0.9439 ±0.0252 0.0330 ±0.0182 0.0239 ±0.0084 3.43 ±0.16 
+
+comparable to that of the original framework across two datasets while slightly improving computational speed. The HQNR, 𝐷 𝜆 , and 
+
+𝐷 𝑠 metrics indicate only marginal differences, suggesting that in our single-image adaptation setting, the adaptive model does not require a large number of parameters to effectively capture the spatial-spectral details of the PAN and LRMS inputs. These results demonstrate that the proposed framework can operate efficiently with a highly compact adaptive module, making it a promising option for scenarios with limited computational resources or graphics memory. 
+
+S4 FMG-Pan with Fine-tuning 
+
+In this experiment, we further investigate the potential to optimize the inference speed of our framework. For this experiment, we also use FusionMamba as the pretrained model. Inspired by the idea of fine-tuning, we can avoid training the adaptive model from scratch when we have the pretrained weights. For simplicity, we initialize the adaptive model on each dataset using the weights obtained from the single-image adaptation of the original FMG-Pan framework on the first sample (label 0) of that dataset, without performing full training on the corresponding training set.             
+
+> 12 BT -HC-BDSD BDSD -PC MTF -GLP MTF -GLP -FS MF DiCNN
+> ZS -Pan PsDip WFANet LAGNet FusionMamba FMG LAGNet FMG FusionMamba
+
+Figure 10: Visual fusion images and the related HQNR maps on a full resolution GF2 example. BT -H C-BDSD BDSD -PC MTF -GLP MTF -GLP -FS MF DiCNN       
+
+> ZS -Pan PsDip WFANet LAGNet FusionMamba FMG LAGNet FMG FusionMamba
+
+Figure 11: Visual fusion images and the related HQNR maps on a full resolution QB example. 0.87     
+
+> 0.88
+> 0.89
+> 0.9
+> 0.91
+> 0.92
+> 0.93
+> 0.94
+> 0.95
+> 0.96
+> 0.97
+> WV3 WV2 GF2 QB
+> HQNR
+> FusionMamba with FMG
+
+Figure 12: Comparison of HQNR for FusionMamba with and without the FMG-Pan framework across four real-world datasets (WV3, WV2, GF2, QB) 
+
+We then fine-tune the adaptive model for only 30 epochs on the WV3 dataset, and for 100 epochs on the cross-sensor dataset (i.e., WV2). This setting could further reduce running times by reducing the epochs for the adaptive model on the training part. As reported in Table 5, the fine-tuned FMG-Pan achieves com-petitive or even superior performance compared to the baseline, while significantly reducing runtime. On WV3, HQNR improves to 0.9644 with the lowest 𝐷 𝜆 , and runtime drops to 1.47 s per image. On WV2, HQNR remains comparable with a value equal to 0.9439, but the runtime decreases to 3.43 s. These findings demonstrate that fine-tuning is a promising strategy to reduce training cost and accelerate deployment for our framework, without compromising (sometimes even improving) fusion quality. 
+
+S5 Comparison with Test-time Fine-tuning 
+
+Our method fundamentally differs from conventional fine-tuning paradigms in that it learns an external adaptive model under the guidance of a frozen pretrained model, rather than updating the parameters within the pretrained network itself. In contrast, tradi-tional fine-tuning methods optimize weights inside the pretrained model, which requires maintaining a full computational graph dur-ing training. This results in substantial GPU memory consumption as well as increased computational overhead due to full-model forward and backward propagation. To provide a comparison, we conduct experiments on the WV3 dataset using FusionMamba as the pretrained backbone. Both our method and the competing approaches are trained with the same spectral and physical loss functions. We compare against (1) full fine-tuning (Full FT) and (2) parameter-efficient fine-tuning (PEFT) using LoRA. As illustrated in Fig. 13, the Full FT approach fails to converge to satisfactory performance even after 150 epochs. Although LoRA introduces only a small number of trainable parameters, it still relies on backpropagation through the large pretrained model, leading to a heavy computational graph and increased overhead. Consequently, LoRA exhibits slightly worse efficiency than Full FT in both time and memory consumption. Moreover, both Full FT and LoRA are inherently constrained by the parameter space of the pretrained model. Even when optimized with our designed spatial and spectral losses, their performance remains inferior to our method. In contrast, our approach achieves the best quantitative metrics. More importantly, FMG-Pan demon-strates significantly superior efficiency in both computational time and memory usage. This advantage becomes even more pronounced as the size of the pretrained model increases. Notably, once training begins, the memory consumption and training time of our method remain largely independent of the scale of the pretrained model, since no backpropagation is performed through it. These results collectively validate the effectiveness and practicality of our ap-proach. 
+
+S6 Results on Simulated Data 
+
+Although the primary goal of this work is to enhance the fusion quality and efficiency in real-world scenarios, we further conduct complementary experiments on simulated data from four datasets to provide a more comprehensive evaluation of the proposed frame-work. The pretrained strategies remain consistent with those used in the main experiments. As shown in Table 6, all pretrained models enhanced by FMG-Pan exhibit notable performance improvements under cross-sensor conditions, demonstrating the strong robustness of the proposed framework across different data distributions. 
+
+> 13
+
+Table 6: Performance comparison between the baseline pretrained models and the proposed FMG-Pan framework on simulated data. The reported values represent the average performance over 20 test images( Red : The improved results compared to the baseline.) Dataset Pretrained model Baseline FMG-Pan 
+
+SAM ↓ ERGAS ↓ SCC ↑ Q2n ↑ SAM ↓ ERGAS ↓ SCC ↑ Q2n ↑
+
+WV3 FusionMamba 2.8245 ±0.5534 2.0890 ±0.5008 0.9874 ±0.0039 0.9212 ±0.0834 3.0803 ±0.6404 2.2188 ±0.5275 0.9849 ±0.0048 0.9129 ±0.0845 LAGNet 3.8258 ±0.7352 2.8503 ±0.7677 0.9738 ±0.0091 0.8722 ±0.1139 3.5971 ±0.7639 2.7380 ±0.6882 0.9757 ±0.0084 0.8971 ±0.0872 WV2 FusionMamba 5.5330 ±0.5352 4.2925 ±0.4078 0.9272 ±0.0078 0.8408 ±0.0888 5.3988 ±0.5930 4.1908 ±0.4356 0.9288 ±0.0073 0.8438 ±0.0882 LAGNet 8.6509 ±1.0960 7.3129 ±0.8368 0.7987 ±0.0452 0.6693 ±0.0941 5.9802 ±0.7432 5.0153 ±0.4367 0.8846 ±0.0175 0.8046 ±0.0801 GF2 FusionMamba 0.7076 ±0.1329 0.6206 ±0.1052 0.9923 ±0.0014 0.9830 ±0.0076 0.9437 ±0.1791 0.7955 ±0.1371 0.9868 ±0.0023 0.9696 ±0.0096 LAGNet 1.3639 ±0.2689 1.1957 ±0.2197 0.9672 ±0.0073 0.9376 ±0.0226 1.3217 ±0.2630 1.1931 ±0.2183 0.9667 ±0.0075 0.9416 ±0.0164 QB FusionMamba 10.6492 ±0.7128 9.5755 ±0.8668 0.8622 ±0.0226 0.7182 ±0.1397 7.6485 ±1.7076 7.8914 ±0.8342 0.9015 ±0.0154 0.8178 ±0.0982 LAGNet 7.9303 ±1.5285 8.8132 ±1.0182 0.8721 ±0.0139 0.7506 ±0.0987 7.5542 ±1.5834 8.5561 ±1.0238 0.8805 ±0.0144 0.7674 ±0.0953 FMG Full FT LoRA 
+
+> 0
+> 10
+> 20
+> 30
+> 40
+> 50
+> 60
+> 70
+> Time (s)
+> 2.93
+> 56.15
+> 66.71
+
+(a) Runtime    
+
+> FMG Full FT LoRA
+> 0
+> 2
+> 4
+> 6
+> 8
+> 10
+> 12
+> Memory (GB)
+> 1.98
+> 12.70 13.21
+
+(b) Memory   
+
+> FMG Full FT LoRA
+> 0.954
+> 0.956
+> 0.958
+> 0.960
+> 0.962
+> 0.964
+> HQNR
+> 0.9637
+> 0.9540
+> 0.9622
+
+(c) HQNR 
+
+Figure 13: Comparison of efficiency and reconstruction quality on WV3. (a) Runtime, (b) GPU memory usage (c) HQNR. FMG achieves substantially lower runtime and memory consumption compared to Full and LoRA, while maintaining competitive reconstruction quality. 
+
+It is worth noting that for models such as FusionMamba , which have been highly optimized on intra-sensor datasets (thanks to the abundant labeled data available for supervised training, mak-ing most metrics nearly saturated), introducing additional spectral or physical fidelity constraints may not yield further gains, and slight metric declines occur. This phenomenon only appears in the extreme configuration of “strongly supervised models with test data in the same-domain.” In contrast, for supervised models such as LAGNet , which are not among the top-performing archi-tectures, FMG-Pan still brings stable and practically meaningful improvements on intra-sensor datasets. These results indicate that the proposed single-image adaptation mechanism can effectively leverage pretrained priors and further enhance both the perfor-mance and generalization ability of pretrained models, even on simulated data.

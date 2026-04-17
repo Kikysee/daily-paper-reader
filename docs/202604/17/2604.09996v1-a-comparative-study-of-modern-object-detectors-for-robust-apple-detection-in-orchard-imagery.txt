@@ -1,0 +1,213 @@
+Title: A Comparative Study of Modern Object Detectors for Robust Apple Detection in Orchard Imagery
+
+URL Source: https://arxiv.org/pdf/2604.09996v1
+
+Published Time: Tue, 14 Apr 2026 00:24:33 GMT
+
+Number of Pages: 8
+
+Markdown Content:
+# A Comparative Study of Modern Object Detectors for Robust Apple Detection in Orchard Imagery 
+
+Mohammed Asad 
+
+Dept. of Electronics and Communications Engineering Delhi Technological University New Delhi, India 
+
+mohammedasad_ec22a17_47@dtu.ac.in 
+
+Dr. Ajai Kumar Gautam 
+
+Dept. of Electronics and Communications Engineering Delhi Technological University New Delhi, India 
+
+ajai_gautam@dce.ac.in 
+
+Priyanshu Dhiman 
+
+Dept. of Electronics and Communications Engineering Delhi Technological University New Delhi, India 
+
+priyanshudhiman_ec22a17_71@dtu.ac.in 
+
+Rishi Raj Prajapati 
+
+Dept. of Electronics and Communications Engineering Delhi Technological University New Delhi, India 
+
+rishirajprajapati_ee22b17_60@dtu.ac.in 
+
+Abstract —For predicting yields, counting apples, robotic har-vesting, and monitoring crops, it is very important to be able to accurately detect apples in orchard images. But changes in light, leaf clutter, thick fruit clusters, and partial occlusion often make performance worse. To provide a fair and repro-ducible comparison, this study establishes a controlled bench-mark for single-class apple detection on the public AppleBBCH81 dataset using one deterministic train/validation/test split and a unified evaluation protocol across six representative detectors: YOLOv10n, YOLO11n, RT-DETR-L, Faster R-CNN (ResNet50-FPN), FCOS (ResNet50-FPN), and SSDLite320 (MobileNetV3-Large). Performance is evaluated primarily using COCO-style mAP@0.5 and mAP@0.5:0.95, and threshold-dependent behavior is further analyzed using precision-recall curves and fixed-threshold precision, recall, and F1-score at IoU = 0.5. On the validation split, YOLO11n achieves the best strict localization performance with mAP@0.5:0.95 = 0.6065 and mAP@0.5 =0.9620, followed closely by RT-DETR-L (0.6012 and 0.9506) and YOLOv10n (0.5941 and 0.9501). At a fixed operating point with confidence ≥ 0.05 , YOLOv10n attains the highest F1-score (0.780870), whereas RT-DETR-L achieves very high recall (0.970218) but minimum precision (0.224605) because of many false positives at low confidence. These findings show that detector selection for orchard deployment should be guided not only by localization-aware accuracy but also by threshold robustness and the requirements of the downstream task. 
+
+Index Terms —Apple Detection, Precision Agriculture, Orchard Vision, AppleBBCH81 Dataset, Object Detection, YOLOv10, YOLO11, RT-DETR, Faster R-CNN, FCOS, SSDLite, COCO mAP, mAP@0.5:0.95, Precision-Recall Curve, Model Bench-marking, Real-Time Detection. 
+
+I. P URPOSE 
+
+Apple detection is a basic task in precision agriculture. Its reliability impacts several applications, including yield esti-mation, fruit counting, robotic harvesting, thinning, and crop monitoring. However, in real orchard environments, detection is challenging due to significant variations in light, viewpoint, and fruit size. There are also a lot of leaves, branches, and shadows in the background. Apples often grow in thick clusters, which can make them hard to see. This makes it more likely that you will miss detections or get duplicates. These problems make it much harder to find orchards than to find controlled vision benchmarks. They also stress how important it is to test performance in real-world situations. Numerous studies employing deep learning have demon-strated significant efficacy in fruit detection, particularly with apples. But it’s hard to compare these studies because they often use different datasets, split methods, training resources, model types, and evaluation metrics. Specifically, studies that only report mAP@0.5 may conceal localization problems at stricter IoU thresholds and fail to elucidate how detector performance fluctuates with varying confidence levels. This limitation is important in orchards because systems that only count are prone to duplicate detections, and systems for harvesting need to be able to find things in messy places. This paper introduces a controlled benchmark for single-class apple detection utilizing the AppleBBCH81 dataset, which includes bounding-box annotations in YOLO format. All tested models are trained and assessed utilizing a con-sistent training, validation, and testing division, accompanied by a standardized evaluation protocol. This approach ensures a fair comparison. The benchmark includes six representa-tive detectors from various architectural families: YOLOv10n and YOLO11n as modern one-stage CNN baselines, RT-DETR-L as a real-time transformer detector, Faster R-CNN (ResNet50-FPN) as a two-stage baseline, FCOS (ResNet50-FPN) as an anchor-free one-stage baseline, and SSDLite320 (MobileNetV3-Large) as a lightweight deployment-oriented baseline. This work has three main contributions. First, it sets up a reproducible and controlled benchmark for apple detection on AppleBBCH81, using one fixed split and one common evaluation pipeline for all models. Second, it compares six representative detector families under the same training and testing conditions, allowing for a fairer assessment between families than what has been available in previous orchard detection studies. Third, it demonstrates that detector ranking depends on the evaluation goal: YOLO11n scores highest un-
+
+> arXiv:2604.09996v1 [cs.CV] 11 Apr 2026
+
+der strict COCO-style localization metrics, while YOLOv10n achieves the best fixed-threshold F1-score, which is important for deployment-oriented decision-making. The primary inquiry of this study is to determine which detector family offers the most dependable apple detection when employing stringent localization metrics in conjunction with threshold-dependent diagnostics. To solve this prob-lem, the main metrics used are COCO-style mAP@0.5 and mAP@0.5:0.95, along with fixed-threshold precision, recall, F1-score, and precision-recall curves at IoU = 0.5. This evaluation design helps with both comparisons that take into account where the orchard is and practical analyses for putting the orchard in place. The rest of this paper is set up like this. Section II talks about the workflow, how to prepare the dataset, how to preprocess it, how to train the model, and how to evaluate it. Section III presents the quantitative findings and comparative analysis. In Section IV, the main results are summarized, and ideas for future research are given. 
+
+A. Models Used 
+
+We evaluate six different types of object detectors for detecting apples as one class. We selected models from dif-ferent architectural types in order to evaluate the localization performance, ability to reject poor detections at various thresh-old levels, and deployment capabilities in the same orchard environment. 
+
+1) YOLOv10n: YOLOv10n is a compact one-stage de-tection model designed for real-time object detection and is efficient in terms of computation by providing compact predictions that are well suited for deployment. [1]. In dense orchard scenes, precise confidence-threshold selection may be required to eliminate duplicate detections. 
+
+2) YOLO11n: YOLO11n is a lightweight Ultralytics one-stage detector to improve the accuracy-efficiency trade-off while maintaining real-time usability [2]. Its multi-scale pre-dictions are relevant for orchard visuals, where dimensions differ greatly based on perspective and distance. 
+
+3) RT-DETR-L: RT-DETR-L is a real-time transformer-based detector that uses a DETR-style established prediction framework instead of dense anchor creation [3]. By modeling global context, it may be good to handle cluttered scenes, as its practical operating-point behavior can differ with threshold selection. 
+
+4) Faster R-CNN (ResNet50-FPN): Faster R-CNN is a two-step detector where a region proposal network creates potential regions that are subsequently classified and improved [4], [5]. It is considered a two-stage baseline because detection based on proposals frequently excels in situations with occlusion and dense clustering. 
+
+5) FCOS (ResNet50-FPN): FCOS is an anchor-less one-stage detector that forecasts object positions directly from feature-map locations and employs centerness to minimize poor-quality predictions [6]. It is included to investigate if anchor-free localization provides a benefit for small or partially hidden apples. 
+
+6) SSDLite320 (MobileNetV3-Large): SSDLite320 is alightweight SSD-based detector with a MobileNetV3 back-bone that is developed for inference with fewer resources on mobile and edge devices [7]–[9]. It is included as a deployment-oriented baseline to analyze the accuracy-efficiency trade-off in apple detection. 
+
+B. Literature Review 
+
+Fruit detection in orchards is a crucial element of precision farming as it aids in yield assessment, automated harvesting, thinning, and crop surveillance. Curation of visual benchmarks is a straightforward task. However, orchard photos provide unique challenges such as lighting variations as well as com-plicated backgrounds consisting of many leaves, branches, and skies surrounding and/or partially occluding clusters of fruit. These situations often result in overlooked detections of small or covered apples and repeated detections in densely populated areas. 
+
+1) Fruit and Apple Detection in Orchard Environments: 
+
+Early orchard vision studies demonstrated that deep learning-based detectors can exceed the performance of handcrafted feature pipelines in field conditions. DeepFruits showed that deep neural networks can effectively detect fruits despite vari-ations in the orchard [10]. Bargoti and Underwood highlighted that clutter, occlusion, annotation quality, and diversity of datasets significantly impact performance in the field [11]. These studies prompted the adoption of learning-based de-tectors in agricultural perception; however, they failed to es-tablish a controlled benchmark among contemporary detector families. 
+
+2) Datasets and Benchmarking: The MinneApple project has created a reference dataset to allow sufficient comparison of apple counting and detection between different algorithms [12]. Some of the more recent research has evaluated UAV-based orchards for monitoring and yield estimation. [13]. In this research, the apple at BBCH-stage 81 was selected as a point of comparison because it has a dataset publicly available in YOLO format, [14], which means these studies can easily be reproduced in the future [14]. 
+
+3) Apple-Specific Detection Improvements: There have been multiple research projects focused on developing task-specific modifications for detecting apples in difficult outdoor environments, such as orchards. BFPNet is an example of a reported network that has been modified with a balanced pyra-mid network design (to improve the recall of small objects) [15]. Several YOLO-based detection networks have also been modified to identify small apples and count them in difficult-to-detect conditions [16]. Many multitask networks have ex-tended the apple detection to include raw data estimation of other relevant orchard characteristics, such as estimating the size of apples [17]. Several augmentation methods have been examined; mosaic augmentation is considered effective in some orchard imaging [18]. 
+
+4) Modern Detection Architectures Relevant to This Study: 
+
+There are many different types of modern object detection, all of which have different tradeoffs in terms of speed, localization quality, and robustness. Two-stage detectors, such as Faster R-CNN, use a method of generating images that includes both proposals for items, as well as the ability to classify and refine those proposals once generated [4], while Feature Pyramid Network increases multi-scale representation and is used for small-object detection [5]. ResNet backbones enhance feature extraction and stabilize training further [19]. One-stage detectors such as YOLO unify localization and classification for real-time inference [20], and recent versions continue to enhance practical efficiency [1], [2], [21]. FCOS provides an anchor-free alternative [6], while lightweight SSD-based detectors paired with MobileNet backbones target deployment on resource-constrained devices [7]–[9], [22]. Transformer-based detection initiates in global attention-based context modeling [23], [24], and RT-DETR adapts this family for real-time detection [3]. 
+
+5) Comparative Summary of Prior Work: Although prior studies have substantially advanced orchard fruit detection, many published results are difficult to compare directly be-cause they use different datasets, task definitions, split strate-gies, detector families, and evaluation metrics. In particu-lar, many studies focus on improving a specific architecture rather than comparing diverse detector families under a single protocol. Table I summarizes representative prior work and highlights the gap addressed in this paper. 
+
+6) Positioning of the Present Study: Motivated by these limitations, the present work benchmarks six representative detector families for single-class apple detection on AppleB-BCH81 under one fixed deterministic split and one unified evaluation pipeline. We aim not to introduce a novel archi-tecture but to provide a controlled and reproducible com-parison to distinguish how contemporary, single-stage, dual-stage, anchor-less, transformer-based, and super-lightweight detectors produce results in orchard settings. This will dif-ferentiate this research from previous research, where only an individual architecture, a single change, a distinct dataset, or an alternative downstream effort was considered. II. M ETHODOLOGY 
+
+A. Proposed Workflow 
+
+The proposed benchmark operates a controlled workflow to provide a fair comparison over detector families. First, the dataset is standardized, and at the image level, it is split into training, validation, and test subsets. Second, all models are instructed for the same single-class apple detection task by using clearly stated initialization and training settings. Third, predictions are estimated on the validation split using one common matching protocol and a shared set of localization-aware and threshold-dependent metrics. Finally, the trained detectors are measured using quantitative tables and diagnostic plots to examine both ranking quality and operating-point behavior. The complete benchmark pipeline is illustrated in Figure 1.  
+
+> Fig. 1. Proposed workflow for apple detection on AppleBBCH81.
+
+B. Dataset and Split Protocol 
+
+AppleBBCH81 is a public orchard dataset of RGB images annotated with apple bounding boxes in YOLO text format [14]. Each annotation line follows the format 
+
+<class_id> <x_center> <y_center> <width> <height> 
+
+where all coordinates are organized by image width and image height. After preprocessing, the dataset contains 1,838 images and 15,309 apple bounding boxes. Among these images, 16 con-tain no apple annotations and are retained as valid negative samples. A fixed image-level split is used for all experiments to ensure direct comparability across models: 1,470 training images with 12,256 boxes, 183 validation images with 1,511 boxes, and 185 test images with 1,542 boxes. This corresponds approximately to an 80/10/10 split. All quantitative results reported in this paper are computed on the validation split. 
+
+C. Experimental Setup 
+
+All experiments were executed in Google Colab using an NVIDIA A100-SXM4-40GB GPU, Python 3.12.12, PyTorch 2.10.0+cu128, Torchvision 0.25.0+cu128, and CUDA 12.8. YOLOv10n, YOLO11n, and RT-DETR-L were trained and evaluated using Ultralytics, whereas Faster R-CNN, FCOS, and SSDLite320 were trained and evaluated using PyTorch and Torchvision. Randomness was controlled through deter-ministic seeding, and the Ultralytics run configuration files record seed = 0 . Dataset integrity checks confirmed that all images were readable, each image had a label file, and no samples required exclusion or correction. Empty-label images were retained throughout training and evaluation to reduce false-positive bias. Table II summarizes the main training configurations used for all six detectors. 
+
+D. Data Standardization and Preprocessing 
+
+To maintain a fair comparison, all detectors use the same fixed split described in Section II-B. Preprocessing is restricted to label conversion, consistent handling of negative images, and framework-specific input preparation. TABLE I SUMMARY OF REPRESENTATIVE PRIOR WORK ON FRUIT AND APPLE DETECTION AND THEIR LIMITATIONS RELATIVE TO THIS STUDY .
+
+Study Main focus Strength Limitation relative to this study 
+
+DeepFruits [10] Deep learning-based fruit detection in orchards Demonstrated the feasibil-ity of robust learning-based fruit detection in field im-agery Older detection setting; not a controlled benchmark across modern detector families Bargoti and Underwood [11] Fruit detection under or-chard clutter and occlusion Highlighted the importance of real orchard conditions, dataset quality, and occlu-sion handling Did not provide a unified cross-family bench-mark under one evaluation protocol MinneApple [12] Apple detection and seg-mentation dataset Enabled standardized eval-uation on a public apple dataset Focused on dataset creation; not a controlled comparison of multiple modern detector fam-ilies on AppleBBCH81 Hani et al. [25] Fruit detection versus counting performance Showed that detection qual-ity and counting quality are related but not identical Focused on detection and counting objectives rather than detector-family benchmarking un-der one shared protocol BFPNet [15] Small apple detection in complex orchard scenes Improved small-object re-call using a feature-pyramid design Specialized architecture study rather than a broad detector-family comparison Ma et al. [16] Improved YOLO-based de-tection and counting of small apples Strong task-specific opti-mization for challenging en-vironments Single-architecture focus; limited cross-family comparison Kodors et al. [13] UAV-based orchard moni-toring and yield estimation Connected detection outputs to downstream agricultural applications Different acquisition settings and objectives from controlled detector benchmarking Kodors et al. [18] Data augmentation for agri-cultural imagery Showed that augmentation choices influence agricul-tural detection performance Focused on training strategy rather than stan-dardized comparison of detector families TABLE II SUMMARY OF MODEL TRAINING CONFIGURATIONS USED IN THE BENCHMARK .
+
+Model Framework Initialization Input size Batch Epochs Optimizer Learning rate 
+
+YOLOv10n Ultralytics COCO pretrained 640 16 50 auto 0.01 YOLO11n Ultralytics COCO pretrained 640 16 50 auto 0.01 RT-DETR-L Ultralytics COCO pretrained 640 16 50 auto 0.01 Faster R-CNN (R50-FPN) Torchvision COCO pretrained 800 to 1333 4 10 AdamW 1 × 10 −4
+
+FCOS (R50-FPN) Torchvision COCO pretrained 800 to 1333 4 10 AdamW 1 × 10 −4
+
+SSDLite320 (MobileNetV3-Large) Torchvision COCO pretrained 320 4 10 AdamW 1 × 10 −4
+
+First, the task is formulated as single-class apple detection. For Ultralytics, Apple is assigned class ID 0. For Torchvision models, Apple is assigned the class label 1 because the label 0 is reserved for the background. Second, YOLO labels of the form (xc, y c, w, h ) are converted to absolute pixel coordinates (x1, y 1, x 2, y 2) for Torchvision targets, using the corresponding image width and height. Third, negative images are preserved by keeping empty label files and passing empty target tensors to Torchvision models. Input resizing and normalization follow the conventions of each framework. YOLOv10n, YOLO11n, and RT-DETR-L use a fixed input resolution of 640 × 640 with Ul-tralytics letterboxing. Faster R-CNN and FCOS use the Torchvision resize policy with min_size set to 800 and 
+
+max_size set to 1333, together with ImageNet normal-ization mean [0 .485 , 0.456 , 0.406] and standard deviation 
+
+[0 .229 , 0.224 , 0.225] . SSDLite320 uses a fixed input size of 320 with normalization mean [0 .5, 0.5, 0.5] and standard de-viation [0 .5, 0.5, 0.5] .For data augmentation, Ultralytics models use the training settings recorded in the run configuration files: hsv_h =0.015, 
+
+hsv_s =0.7, hsv_v =0.4, degrees =0.0, translate =0.1, 
+
+scale =0.5, shear =0.0, perspective =0.0, flipud =0.0, 
+
+fliplr =0.5, mosaic =1.0, mixup =0.0, copy_paste =0.0, and erasing =0.4. Torchvision models do not use mosaic or mixup and are trained with tensor conversion and the model-specific normalization described above. 
+
+E. Model Training 
+
+All six detectors are initialized from COCO-pretrained weights and fine-tuned for single-class apple detection using the same training split and the same validation split. For the Ultralytics models, YOLOv10n, YOLO11n, and RT-DETR-L are trained with imgsz =640, epochs =50, 
+
+batch =16, optimizer=auto , base learning rate 
+
+lr0 =0.01, weight_decay =0.0005, and seed =0. Initial checkpoints are yolov10n.pt , yolo11n.pt , and 
+
+rtdetr-l.pt . Reported Ultralytics results correspond to the best checkpoint picked by validation mAP@0.5:0.95 within each run. For the Torchvision models, Faster R-CNN (ResNet50-FPN), FCOS (ResNet50-FPN), and SSDLite320 (MobileNetV3-Large) are fine-tuned using a batch size of 4 for 10 epochs with the AdamW optimizer and learning rate 1×10 −4. Faster R-CNN and FCOS use the Torchvision resize policy of 800 to 1333 pixels with ImageNet normalization, whereas SSDLite320 uses a fixed input size of 320 with normalization mean and standard deviation equal to 0.5 in each channel. 
+
+F. Evaluation Protocol 
+
+All reported metrics are computed on the validation split. The evaluation protocol is designed to compare detectors using both strict localization quality and threshold-dependent deployment behavior. 
+
+1) Intersection over Union: For a prediction box Bp, a ground-truth box Bgt , the intersection over union is defined as 
+
+IoU = |Bp ∩ Bgt ||Bp ∪ Bgt | . (1) 
+
+2) One-to-One Matching Rule: To compute object-level true positives, false positives, and false negatives at a given confidence threshold, predictions are first sorted by confidence in descending order. Each prediction goes with the best unmatched ground-truth box. If the best IoU is at least 0.5 and the corresponding ground-truth box has not been matched previously, the prediction is calculated as a true positive. On the other hand, it is counted as a false positive. Any unmatched ground-truth boxes are calculated as false negatives. This one-to-one matching rule prevents multiple detections from being counted as correct for the same apple. 
+
+3) COCO-style mAP Metrics: The primary localization-aware metrics are mAP@0.5 and mAP@0.5:0.95. The former reports average precision at IoU = 0.5, whereas the latter averages average precision over IoU thresholds from 0.50 to 0.95 in increments of 0.05. These metrics are used as the primary basis for comparing detector quality because they evaluate both detection ranking and localization precision over a confidence sweep. 
+
+4) Fixed-Threshold Precision, Recall, and F1-score: To examine deployment-oriented operating-point behavior, pre-cision, recall, and F1-score are computed at IoU = 0.5 and confidence threshold ≥ 0.05 :
+
+Precision = T P T P + F P , Recall = T P T P + F N , (2) 
+
+F1 = 2 · Precision · Recall Precision + Recall . (3) These metrics are particularly relevant for orchard applications such as counting and robotic harvesting, where the practical operating threshold directly affects duplicate detections and missed fruit. 
+
+5) Precision-Recall Curves and PR AUC: Precision-recall curves are generated by sweeping the confidence threshold and plotting precision against recall using the one-to-one matching rule at IoU ≥ 0.5. PR AUC is computed by trapezoidal integration over recall. In this study, precision-recall analysis is treated as the main threshold-dependent diagnostic because it is more appropriate for object detection than ROC-based analysis.  
+
+> Fig. 2. Model taxonomy of the evaluated detectors.
+
+G. Statistical Uncertainty and Reporting 
+
+To strengthen the interpretation of fixed-threshold results, 95% Wilson confidence intervals are used for precision and recall. For precision, the number of trials is taken as T P +F P ,and for recall, the number of trials is taken as T P +F N . These intervals are reported only for the fixed-threshold operating-point metrics and are intended to provide uncertainty estimates for the observed precision and recall values on the validation split. The final comparison, therefore, includes three components: COCO-style mAP@0.5 and mAP@0.5:0.95 as the primary localization-aware metrics, precision-recall curves and PR AUC as threshold-dependent diagnostics, and object-level fixed-threshold precision, recall, and F1-score with TP, FP, and FN counts. Because true negatives are not well-defined at the object level in detection tasks, confusion-style reporting is restricted to TP, FP, and FN. Figure 2 groups the evaluated detectors by architectural fam-ily and highlights the diversity of one-stage, two-stage, anchor-free, transformer-based, and lightweight models included in the benchmark. III. R ESULTS & F INDINGS 
+
+A. Quantitative Results (Validation Set) 
+
+All results analyzed in this section are computed on the validation split, which contains 183 images and 1,511 ground-truth apple instances. Table III presents the primary COCO-style localization-aware metrics, namely mAP@0.5 and mAP@0.5:0.95. Table IV complements these outcomes with fixed-threshold operating-point diagnostics at IoU = 0 .5
+
+and confidence ≥ 0.05 , including TP, FP, FN, precision, recall, F1-score, PR AUC, and 95% Wilson confidence intervals for precision and recall. Figures 3 and 4 further illustrate threshold behavior and the low-threshold error profile of the best-mAP model.                      
+
+> TABLE III COCO-STYLE VALIDATION RESULTS FOR SINGLE -CLASS APPLE DETECTION .
+> Family Model mAP@0.5:0.95 mAP@0.5
+> Ultralytics YOLO11n 0.6065 0.9620 Ultralytics RT-DETR-L 0.6012 0.9506 Ultralytics YOLOv10n 0.5941 0.9501 Torchvision Faster R-CNN (R50-FPN) 0.5278 0.9091 Torchvision FCOS (R50-FPN) 0.4926 0.8993 Torchvision SSDLite320 (MobileNetV3-Large) 0.2125 0.5400
+
+Table III shows that YOLO11n achieves the best strict localization-aware performance on the validation split, with mAP@0.5:0.95 of 0.6065 and mAP@0.5 of 0.9620. RT-DETR-L and YOLOv10n follow closely, with only a nar-row gap separating the top three models under COCO-style evaluation. Among the Torchvision baselines, Faster R-CNN outperforms FCOS, while SSDLite320 is substantially lower, which is consistent with its lightweight design and reduced input resolution. The findings suggest that contemporary real-time detectors deliver the highest level of localization accuracy within the controlled benchmark framework applied in this research. 
+
+B. Operating-Point Analysis and Threshold Behavior 
+
+Table IV reports present fixed-threshold operating-point statistics calculated through one-to-one greedy matching at an Intersection over Union (IoU) of 0.5 and a confidence level of at least 0.05. This table is designed to enhance mAP-based ranking by illustrating the performance of the detectors at a particular deployment-focused threshold instead of across a comprehensive range of confidence levels. At this specific operating point, YOLOv10n shows the best balance between precision and recall, achieving the highest F1-score of 0.780870 with TP = 1445, FP = 745, and FN = 66. Faster R-CNN also performs competitively at this threshold, while YOLO11n, despite having the highest mAP, yields more false positives than YOLOv10n and, as a result, has a lower fixed-threshold F1-score of 0.752053. This distinction indicates that a detector with superior ranking quality across a confidence sweep is not necessarily the one that shows the best performance at a low threshold. RT-DETR-L clearly explains this difference. While it gains impressive COCO-style mAP and a high PR AUC of 0.950, it produces 5,061 false positives at a confidence level of 
+
+≥ 0.05 , leading to a precision of 0.224605 despite having a very high recall of 0.970218. These key aspects indicate that RT-DETR-L is capable of effectively ranking true detec-tions across various thresholds, but it still demands careful threshold adjustments to minimize the occurrence of excessive duplicates and false positives in practical applications like fruit counting. The 95% Wilson confidence intervals in Table IV improve the fixed-threshold interpretation by refining the uncertainty surrounding the measured precision and recall metrics in the validation set. For example, YOLOv10n and Faster R-CNN have similar precision ranges, while YOLO11n and RT-DETR-L illustrate higher recall ranges but remain lower precision compared to YOLOv10n. These ranges do not substitute for all significance testing of mAP, yet they offer a statistically sound estimate of uncertainty for the recorded operating-point outcomes. Figure 3 gives the main threshold-dependent compari-son across models. YOLO11n, RT-DETR-L, and YOLOv10n maintain high precision over most of the recall range, which is consistent with their strong mAP and PR AUC values. In con-trast, SSDLite320 deteriorates much earlier as recall increases, indicating that its detections become substantially less reliable when the model is pushed toward high recall. This figure,  
+
+> Fig. 3. Precision-recall curves for all models on the validation split at IoU
+> = 0 .5.
+
+therefore, explains why PR AUC is a useful complement to mAP when comparing the threshold robustness.      
+
+> Fig. 4. Object-level confusion summary for YOLO11n on the validation split at IoU = 0 .5and confidence ≥0.05 (TP = 1465, FP = 920, FN = 46; TN is not defined for object detection).
+
+Figure 4 clarifies the low-threshold error profile of YOLO11n, which is the best model by mAP@0.5:0.95. Although the model achieves the highest strict localization performance, it still produces 920 false positives at the se-lected operating point. This explains why YOLO11n does not achieve the highest fixed-threshold F1-score despite leading the benchmark in COCO-style evaluation. 
+
+C. Implications for Real-World Orchard Deployment 
+
+On the other hand, aggregate benchmark scores and the practical orchard deployment, introduces some additional con-straints. First, fruit counting and yield estimation are sensitive to duplicate detections, so a detector with high recall but many TABLE IV VALIDATION DIAGNOSTICS AT IOU = 0 .5 AND CONFIDENCE ≥ 0.05 USING ONE -TO -ONE GREEDY MATCHING .
+
+Model TP FP FN PR AUC Precision 95% CI Recall 95% CI F1 
+
+YOLO11n 1465 920 46 0.958 0.614256 [0.594551, 0.633593] 0.969557 [0.959632, 0.977099] 0.752053 RT-DETR-L 1466 5061 45 0.950 0.224605 [0.214645, 0.234890] 0.970218 [0.960383, 0.977669] 0.364767 YOLOv10n 1445 745 66 0.947 0.659817 [0.639710, 0.679365] 0.956320 [0.944806, 0.965520] 0.780870 Faster R-CNN (R50-FPN) 1391 717 120 0.900 0.659867 [0.639368, 0.679784] 0.920582 [0.905858, 0.933174] 0.768721 FCOS (R50-FPN) 1417 1289 94 0.904 0.523651 [0.504813, 0.542422] 0.937790 [0.924465, 0.948893] 0.672042 SSDLite320 (MobileNetV3-Large) 1323 30213 188 0.542 0.041952 [0.039795, 0.044221] 0.875579 [0.857978, 0.891275] 0.080068 
+
+false positives is not the best choice in practice. Secondly, robotic harvesting involves reliable localization regardless of occlusions, dense clustering, and varying lighting conditions, highlighting the importance of both localization precision and threshold resilience. Third, real-world deployment involves embedded or edge hardware, where model size, memory use, and latency may favor lightweight architectures even when their strict mAP is lower. Finally, generalization across orchards, cultivars, seasons, and camera viewpoints remains an important challenge that is not fully captured by a single-dataset benchmark. These considerations indicate that detector selection should be matched to the target agricultural applica-tion rather than based on a single headline metric alone. IV. C ONCLUSION & F UTURE SCOPE 
+
+This paper presented a controlled benchmark of six mod-ern object detectors for single-class apple detection on Ap-pleBBCH81 using one fixed train/validation/test split and a unified training and evaluation protocol. Under strict COCO-style localization-aware evaluation on the validation split, YOLO11n achieved the best overall performance with mAP@0.5:0.95 of 0.6065 and mAP@0.5 of 0.9620, where RT-DETR-L and YOLOv10n followed closely. However, detector ranking changed at a deployment-oriented operating point of IoU = 0 .5 and confidence ≥ 0.05 , where YOLOv10n achieved the highest F1-score of 0.780870, showing the best balance between precision and recall at a low threshold. RT-DETR-L also showed strong ranking quality over threshold sweeps but produced many false positives at the selected operating point, demonstrating that high mAP alone does not guarantee the most stable practical behavior for orchard deployment. Overall, the results show that detector selection for orchard applications should be analyzed with strict localization quality, threshold robustness, and the needs of the downstream task, mainly in settings such as fruit counting and robotic harvesting that are sensitive to duplicate detections and missed fruit. Future research should scale this benchmark to include cross-orchard and cross-season assessments, examine confidence calibration and the selection of uncertainty-aware thresholds, study counting-aware and occlusion-aware training methods, and analyze deployment trade-offs, such as inference speed, model size, and efficiency on edge devices. ACKNOWLEDGEMENTS 
+
+Experiments were conducted using Google Colab for train-ing and evaluation. The AppleBBCH81 dataset was obtained from Kaggle and is gratefully acknowledged. REFERENCES [1] A. Wang, H. Chen, L. Liu, K. Chen, Z. Lin, J. Han, and G. Ding, “Yolov10: Real-time end-to-end object detection,” arXiv preprint arXiv:2405.14458 , 2024. [Online]. Available: https://arxiv.org/abs/2405. 14458 [2] Ultralytics, “Ultralytics yolo11 documentation,” Online documentation, 2024, accessed: 2026-03-04. [Online]. Available: https://docs.ultralytics. com/models/yolo11/ [3] Y. Zhao, W. Lv, S. Xu, J. Wei, G. Wang, Q. Dang, Y. Liu, and J. Chen, “Detrs beat yolos on real-time object detection,” in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , 2024. [Online]. Available: https: //openaccess.thecvf.com/content/CVPR2024/papers/Zhao DETRs Beat YOLOs on Real-time Object Detection CVPR 2024 paper.pdf [4] S. Ren, K. He, R. Girshick, and J. Sun, “Faster r-cnn: Towards real-time object detection with region proposal networks,” in Advances in Neural Information Processing Systems (NeurIPS) , 2015. [Online]. Available: https://arxiv.org/abs/1506.01497 [5] T.-Y. Lin, P. Doll´ ar, R. Girshick, K. He, B. Hariharan, and S. Belongie, “Feature pyramid networks for object detection,” in Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR) ,2017. [Online]. Available: https://openaccess.thecvf.com/content cvpr 2017/papers/Lin Feature Pyramid Networks CVPR 2017 paper.pdf [6] Z. Tian, C. Shen, H. Chen, and T. He, “Fcos: Fully convolutional one-stage object detection,” in Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV) , 2019. [Online]. Available: https://openaccess.thecvf.com/content ICCV 2019/papers/Tian FCOS Fully Convolutional One-Stage Object Detection ICCV 2019 paper. pdf [7] W. Liu, D. Anguelov, D. Erhan, C. Szegedy, S. Reed, C.-Y. Fu, and A. C. Berg, “Ssd: Single shot multibox detector,” in 
+
+Computer Vision – ECCV 2016 , 2016, pp. 21–37. [Online]. Available: https://arxiv.org/abs/1512.02325 [8] A. Howard, M. Sandler, G. Chu, L.-C. Chen, B. Chen, M. Tan, W. Wang, Y. Zhu, R. Pang, V. Vasudevan, Q. V. Le, and H. Adam, “Searching for mobilenetv3,” in Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV) , 2019. [Online]. Available: https://openaccess.thecvf.com/content ICCV 2019/ papers/Howard Searching for MobileNetV3 ICCV 2019 paper.pdf [9] PyTorch Team, “Torchvision model docs: ss-dlite320 mobilenet v3 large,” Online documentation, 2024, accessed: 2026-03-04. [Online]. Available: https://docs.pytorch.org/vision/main/models/generated/torchvision. models.detection.ssdlite320 mobilenet v3 large.html [10] I. Sa, Z. Ge, F. Dayoub, B. Upcroft, T. Perez, and C. McCool, “Deepfruits: A fruit detection system using deep neural networks,” 
+
+Sensors , vol. 16, no. 8, p. 1222, 2016. [Online]. Available: https://www.mdpi.com/1424-8220/16/8/1222 [11] S. Bargoti and J. Underwood, “Deep fruit detection in orchards,” in 2017 IEEE International Conference on Robotics and Automation (ICRA) ,2017, pp. 3626–3633. [12] N. H¨ ani, P. Roy, and V. Isler, “Minneapple: A benchmark dataset for apple detection and segmentation,” IEEE Robotics and Automation Letters , vol. 5, no. 2, pp. 852–858, 2020. [13] S. Kodors, I. Zarembo, G. L¯ acis, L. Litavniece, I. Apein¯ ans, M. Sondors, and A. Pacejs, “Autonomous yield estimation system for small commercial orchards using uav and ai,” Drones , vol. 8, no. 12, p. 734, 2024. [Online]. Available: https://www.mdpi.com/2504-446X/8/12/734 [14] projectlzp201910094, “Applebbch81 dataset (apple fruits, bbch 81-85, yolo format),” Kaggle dataset, 2024, accessed: 2026-03-04. [On-line]. Available: https://www.kaggle.com/datasets/projectlzp201910094/ applebbch81 [15] M. Sun, L. Xu, X. Chen, Z. Ji, Y. Zheng, and W. Jia, “Bfp net: Balanced feature pyramid network for small apple detection in complex orchard environment,” Plant Phenomics , vol. 2022, p. 9892464, 2022. [16] L. Ma, L. Zhao, Z. Wang, J. Zhang, and G. Chen, “Detection and counting of small target apples under complicated environments by using improved yolov7-tiny,” Agronomy , vol. 13, no. 5, p. 1419, 2023. [Online]. Available: https://www.mdpi.com/2073-4395/13/5/1419 [17] M. Ferrer-Ferrer, J. Ruiz-Hidalgo, E. Gregorio, V. Vilaplana, J.-R. Mor-ros, and J. Gen´ e-Mola, “Simultaneous fruit detection and size estimation using multitask deep neural networks,” Biosystems Engineering , vol. 233, pp. 63–75, 2023. [18] S. Kodors, M. Sondors, I. Apeinans, I. Zarembo, G. Lacis, E. Rubauskis, and K. Karklina, “Importance of mosaic augmentation for agricultural image dataset,” Agronomy Research , vol. 22, no. 1, pp. 168–179, 2024. [19] K. He, X. Zhang, S. Ren, and J. Sun, “Deep residual learning for image recognition,” in Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR) , 2016. [Online]. Available: https://www.cv-foundation.org/openaccess/content cvpr 2016/papers/He Deep Residual Learning CVPR 2016 paper.pdf [20] J. Redmon, S. Divvala, R. Girshick, and A. Farhadi, “You only look once: Unified, real-time object detection,” in Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR) , 2016, pp. 779–788. [Online]. Available: https://www.cv-foundation.org/openaccess/content cvpr 2016/papers/Redmon You Only Look CVPR 2016 paper.pdf [21] Ultralytics, “Ultralytics yolo repository,” GitHub repository, 2026, accessed: 2026-03-04. [Online]. Available: https://github.com/ultralytics/ ultralytics [22] M. Sandler, A. Howard, M. Zhu, A. Zhmoginov, and L.-C. Chen, “Mobilenetv2: Inverted residuals and linear bottlenecks,” in Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR) , 2018. [Online]. Avail-able: https://openaccess.thecvf.com/content cvpr 2018/papers/Sandler MobileNetV2 Inverted Residuals CVPR 2018 paper.pdf [23] A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, L. Kaiser, and I. Polosukhin, “Attention is all you need,” in 
+
+Advances in Neural Information Processing Systems (NeurIPS) , 2017. [Online]. Available: https://arxiv.org/abs/1706.03762 [24] N. Carion, F. Massa, G. Synnaeve, N. Usunier, A. Kirillov, and S. Zagoruyko, “End-to-end object detection with transformers,” 
+
+arXiv preprint arXiv:2005.12872 , 2020. [Online]. Available: https: //arxiv.org/abs/2005.12872 [25] N. H¨ ani, P. Roy, and V. Isler, “A comparative study of fruit detection and counting methods for yield mapping in apple orchards,” Journal of Field Robotics , vol. 37, no. 2, pp. 263–282, 2020. [Online]. Available: https://onlinelibrary.wiley.com/doi/abs/10.1002/rob.21902

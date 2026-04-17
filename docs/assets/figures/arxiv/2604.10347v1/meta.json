@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.10347v1/fig-001.webp",
+      "caption": "Figure 3. A selection of samples from the ScaleALiBi dataset. Note that the rightmost column is double the size of the normal samples.",
+      "page": 3,
+      "index": 1,
+      "width": 431,
+      "height": 862
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10347v1/fig-002.webp",
+      "caption": "Figure 1. A block diagram of the full Scale-ALiBi model.",
+      "page": 2,
+      "index": 2,
+      "width": 851,
+      "height": 296
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10347v1/fig-003.webp",
+      "caption": "Table 2. GEO-Bench Benchmarks.",
+      "page": 4,
+      "index": 3,
+      "width": 429,
+      "height": 585
+    }
+  ]
+}

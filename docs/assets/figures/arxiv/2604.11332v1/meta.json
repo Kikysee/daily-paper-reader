@@ -1,0 +1,150 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.11332v1/fig-001.webp",
+      "caption": "TABLE II. MODEL ARCHITECTURE PD36-C",
+      "page": 6,
+      "index": 1,
+      "width": 489,
+      "height": 383
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11332v1/fig-002.webp",
+      "caption": "Fig. 12 Training History of PD36-C",
+      "page": 11,
+      "index": 2,
+      "width": 479,
+      "height": 539
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11332v1/fig-003.webp",
+      "caption": "TABLE IV. DEEP LEARNING MODELS COMPARISON",
+      "page": 11,
+      "index": 3,
+      "width": 464,
+      "height": 293
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11332v1/fig-004.webp",
+      "caption": "Fig. 13 Training History of PD36-C",
+      "page": 11,
+      "index": 4,
+      "width": 479,
+      "height": 298
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11332v1/fig-005.webp",
+      "caption": "TABLE V. TRAINING HISTORY",
+      "page": 11,
+      "index": 5,
+      "width": 460,
+      "height": 429
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11332v1/fig-006.webp",
+      "caption": "Fig. 8 PD36-C Classification Block",
+      "page": 7,
+      "index": 6,
+      "width": 481,
+      "height": 1027
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11332v1/fig-007.webp",
+      "caption": "Fig. 17 Gradient-weighted Class Activation Maps (Grad-CAM) for four correctly classified test samples.",
+      "page": 14,
+      "index": 7,
+      "width": 479,
+      "height": 587
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11332v1/fig-008.webp",
+      "caption": "Fig. 21 Application UI",
+      "page": 14,
+      "index": 8,
+      "width": 479,
+      "height": 383
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11332v1/fig-009.webp",
+      "caption": "Fig. 15 Confusion Matrix for the 38-class plant diseases. Rows represent ground-truth classes and columns represent predicted classes; diagonal cells indicate correct classifications.",
+      "page": 13,
+      "index": 9,
+      "width": 983,
+      "height": 898
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11332v1/fig-010.webp",
+      "caption": "Fig. 9 PD36-C Number of parameters for each layer",
+      "page": 8,
+      "index": 10,
+      "width": 994,
+      "height": 398
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11332v1/fig-011.webp",
+      "caption": "Fig. 1 Dataset categories spread number",
+      "page": 4,
+      "index": 11,
+      "width": 481,
+      "height": 292
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11332v1/fig-012.webp",
+      "caption": "Fig. 2 Dataset sample images",
+      "page": 4,
+      "index": 12,
+      "width": 479,
+      "height": 412
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11332v1/fig-013.webp",
+      "caption": "Fig. 14 Precision, recall, and F1 score for each class.",
+      "page": 12,
+      "index": 13,
+      "width": 477,
+      "height": 436
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11332v1/fig-014.webp",
+      "caption": "TABLE VI. MODEL CLASSIFICATION METRICS",
+      "page": 12,
+      "index": 14,
+      "width": 479,
+      "height": 1079
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11332v1/fig-015.webp",
+      "caption": "TABLE III. MODEL ARCHITECTURE COMPARISON",
+      "page": 9,
+      "index": 15,
+      "width": 850,
+      "height": 618
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11332v1/fig-016.webp",
+      "caption": "Fig. 11 Feature map activations extracted from each of the eight Conv2D layers of the trained plant disease CNN.",
+      "page": 9,
+      "index": 16,
+      "width": 862,
+      "height": 700
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11332v1/fig-017.webp",
+      "caption": "Fig. 5 Data augmentation pipeline",
+      "page": 5,
+      "index": 17,
+      "width": 479,
+      "height": 587
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11332v1/fig-018.webp",
+      "caption": "Fig. 6 PD36-C Architecture",
+      "page": 5,
+      "index": 18,
+      "width": 481,
+      "height": 1114
+    }
+  ]
+}
