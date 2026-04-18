@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.10217v1/fig-001.webp",
+      "caption": "Figure 3. Core protocol effects on SpaceNet9. Geometry choice and tiling interact strongly with matcher performance.",
+      "page": 7,
+      "index": 1,
+      "width": 976,
+      "height": 315
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10217v1/fig-002.webp",
+      "caption": "Figure 5. SpaceNet9 qualitative correspondence gallery. Panels show top matchers under their best zero-shot configurations; green lines denote affine-RANSAC inliers and orange lines matched outliers.",
+      "page": 8,
+      "index": 2,
+      "width": 877,
+      "height": 487
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10217v1/fig-003.webp",
+      "caption": "Figure 6. Normalization × matcher heatmap (SRIF). Cell values are mean corner reprojection error (px). Column-wise spread illustrates that normalization choice can have marked performance impacts on matchability. More spread indicates a matcher with greater sensitivity to normalization scheme. MINIMA-RoMa with Z-Score achieves the lowest error.",
+      "page": 8,
+      "index": 3,
+      "width": 460,
+      "height": 344
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10217v1/fig-004.webp",
+      "caption": "Table 2. SpaceNet9: Top-15 matchers (best norm per matcher). All 24 matchers evaluated under a single protocol: tiled inference (512 px tiles, 256 px overlap), affine geometry, 1024 px max side, RANSAC threshold 3.0 px, min 4 inliers. Each row shows the best normalization for that matcher. MeanErr in pixels; S@k in %; Fail in [0,1].",
+      "page": 5,
+      "index": 4,
+      "width": 492,
+      "height": 451
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.11444v1/fig-001.webp",
+      "caption": "Fig. 5. Comparison between (a) HuiYanEarth-SAR and other text-to-image models, including (b) GPT-4V, (c) Stable Diffusion, (d) LibLib F1, (e) Seedream, and (f) Jimeng. The prompt words given to these models are all the same. Taking mountains as an example, the text prompts are givens as:”A 10-meter resolution Synthetic Aperture Radar (SAR) image of mountainous terrain. The image should show bright slopes facing the radar and dark slopes facing away due to layover and shadowing effects. The image has speckle noise and is in grayscale.”",
+      "page": 6,
+      "index": 1,
+      "width": 572,
+      "height": 399
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11444v1/fig-002.webp",
+      "caption": "Fig. 6. Visual comparison of the core module ablation study. The blue bounding boxes highlight strong scatterers (e.g., bridges, large buildings). The complete model (c) accurately reconstructs these bright regions, whereas (d) appears significantly dimmer and blurred. The yellow circles indicate point targets, which are clearly visible in (c) but smoothed out or missing in (d). Column (e) demonstrates that the geospatial embedding is the fundamental prerequisite for generating valid imagery.",
+      "page": 6,
+      "index": 2,
+      "width": 574,
+      "height": 254
+    }
+  ]
+}

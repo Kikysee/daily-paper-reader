@@ -1,0 +1,62 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.09818v1/fig-001.webp",
+      "caption": "Figure 5: Example spatio-temporal analysis and conservation triage of ectomycorrhizal (EcM) fungal richness. Maps display predicted 2024 EcM fungal richness (left) alongside corresponding conservation triage zones (center) for woodland areas within the Lake District (top) and Cairngorms (bottom) National Parks. White outlines delineate designated Ancient Woodland boundaries. Forested pixels were classified into five EcM conservation categories based on their 2017-2019 average baseline diversity percentiles and 8-year regression trends: Refugia, Improving, Background, Degraded, and Vulnerable. Line plots track the 2017-2024 annual mean richness (solid lines) and linear trends (dashed lines) for each zone, with grey shading indicating the 25th and 75th EcM richness percentiles for a given park. Stacked bar charts show the proportional extent of each triage zone, separated by historical forest type.",
+      "page": 14,
+      "index": 1,
+      "width": 808,
+      "height": 512
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09818v1/fig-002.webp",
+      "caption": "Table C.2: Summary of environmental predictor variables used as baseline features for comparison with SSL satellite features.",
+      "page": 45,
+      "index": 2,
+      "width": 847,
+      "height": 642
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09818v1/fig-003.webp",
+      "caption": "Figure 4: Map showing geographic distribution of absolute prediction errors of satellite SSL only model, with point sizes and colors representing error magnitude",
+      "page": 13,
+      "index": 3,
+      "width": 814,
+      "height": 464
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09818v1/fig-004.webp",
+      "caption": "Table 1: Performance of models and feature set ablations for predicting fungal biodiversity. Models metrics reported as mean ± standard deviation over 50 runs varying the random seed of the data split. The best performance in each column is highlighted in bold. Data Sources: Sat = Satellite SSL features; Clim = WorldClim; Soil = SoilGrids; WC = ESA WorldCover. Metrics: R2 = Coefficient of Determination; RMSE = Root Mean Squared Error; MAE = Mean Absolute Error; ME = Mean Error (Bias).",
+      "page": 8,
+      "index": 4,
+      "width": 1100,
+      "height": 613
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09818v1/fig-005.webp",
+      "caption": "Figure 1: Overview of the satellite-to-fungi biodiversity prediction framework. Groundtruth ectomycorrhizal fungal richness estimates, derived from metabarcoding of soil eDNA samples across Europe and Asia, are paired with co-located satellite time series from Sentinel-1 (radar) and Sentinel-2 (optical) imagery. A self-supervised learning foundation model (Tessera) processes the multi-temporal, multi-modal satellite data to produce highdimensional embeddings that encode vegetation dynamics, phenology, and environmental conditions without requiring hand-crafted features. These learned representations, along with optional traditional environmental predictors (climate, soil, land cover), are used to train a gradient boosting model to predict fungal species richness. The output is a continuous, high-resolution prediction of below-ground fungal species richness at habitat scale (10m).",
+      "page": 4,
+      "index": 5,
+      "width": 814,
+      "height": 386
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09818v1/fig-006.webp",
+      "caption": "Figure 3: Visual comparison of model predictions for fungal richness in a mountainous landscape. (A) Satellite basemap provides the landscape context. (B) The high-resolution (10m) prediction from the SSL model with water or glacial areas masked. (C) The coarseresolution (1km) prediction from the climate-only model.",
+      "page": 12,
+      "index": 6,
+      "width": 814,
+      "height": 375
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09818v1/fig-007.webp",
+      "caption": "Figure 2: Feature importance by category, showing relative contributions of SSL features, climate, soil, topography, land cover, and geographic coordinates",
+      "page": 9,
+      "index": 7,
+      "width": 814,
+      "height": 543
+    }
+  ]
+}

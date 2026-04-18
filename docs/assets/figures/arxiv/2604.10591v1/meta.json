@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.10591v1/fig-001.webp",
+      "caption": "Figure 5. GeoMeld-FM pretraining architecture. Sentinel-2 (12-band) tiles are patchified and randomly masked, and visible patches are encoded by a ConvNeXtV2 MAE encoder to produce latent tokens. The same masking pattern is used for the JEPA context encoder, while a separate non-overlapping mask forms the JEPA target view. Lightweight modality-specific decoders (MP-MAE) reconstruct or predict aligned modalities, including Sentinel-2, Sentinel-1, DEM, canopy height, and land-cover. In parallel, a JEPA branch forms context and target views of the same Sentinel-2 tile; a predictor maps the context to the target representation from an EMA teacher. For language grounding, captions are encoded and aligned with pooled vision embeddings using a symmetric contrastive (InfoNCE) objective. The model is trained jointly with three losses: MP-MAE reconstruction, S2-JEPA predictive loss, and caption-vision contrastive alignment.",
+      "page": 6,
+      "index": 1,
+      "width": 986,
+      "height": 601
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10591v1/fig-002.webp",
+      "caption": "Table 1. Comparison of major multi-modal and vision-language Earth Observation datasets.",
+      "page": 2,
+      "index": 2,
+      "width": 902,
+      "height": 284
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10591v1/fig-003.webp",
+      "caption": "Figure 1. (a) Global spatial distribution of datapoints presented in 1°x1°cell, representing the number of tiles in 10.68 × 10.68 km2. (b) Land-cover distribution in GeoMeld showing pixel-wise coverage, dominant (top-1) class, and top-3 classes per tile, highlighting broad biome diversity under landscape-scale sampling.",
+      "page": 3,
+      "index": 3,
+      "width": 1002,
+      "height": 251
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10591v1/fig-004.webp",
+      "caption": "Figure 2. Agentic framework for generating semantically grounded captions. An Orchestrator aggregates modality-specific signals and metadata, a Captioner produces multiple candidate descriptions, an Evaluator ranks them via vision–text alignment, and a Verification agent enforces consistency with structured geospatial attributes. Comparision of generated captions against captions of other dataset (Right).",
+      "page": 4,
+      "index": 4,
+      "width": 1036,
+      "height": 387
+    }
+  ]
+}

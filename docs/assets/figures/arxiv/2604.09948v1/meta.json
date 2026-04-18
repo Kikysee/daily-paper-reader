@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.09948v1/fig-001.webp",
+      "caption": "Fig. 3: The classification map of (a) RF (b) SSRN (c) SSConvNeXt (d) DSNet (e) S2VNet (f) MambaHSI (g) SFMamba (h) SDMamba (i) Ours (j) PCA image (k) Ground Truth. QUH-Tangdaowan, Pavia University, Houston, Fanglu Tea Farm, from top to bottom. Yellow boxes highlight the detailed preservation.",
+      "page": 5,
+      "index": 1,
+      "width": 527,
+      "height": 484
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09948v1/fig-002.webp",
+      "caption": "Fig. 2: The proposed model contains (1) a semi-blind spectral unmixing branch for abundance learning and endmember variability modeling subsection II-B, (2) adaptive Top-K tokens selection from abundance subsection II-C, (3) the unmixingguided spatial-spectral Mamba block for learning selected sparse tokens subsection II-D, and (4) a multi-task learning part for balancing different tasks subsection II-E. Model outputs classification map, abundance map, and endmember with variability.",
+      "page": 3,
+      "index": 2,
+      "width": 1087,
+      "height": 521
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09948v1/fig-003.webp",
+      "caption": "TABLE I PERFORMANCE ON THE FOUR DATASETS.",
+      "page": 4,
+      "index": 3,
+      "width": 524,
+      "height": 498
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09948v1/fig-004.webp",
+      "caption": "Fig. 1: Traditional Mamba token sequencing treats an entire image or uses a pre-defined way—despite its highly heterogeneous spatial patterns—as a single long sequence, which suffers from being inefficient at modeling fine-scale structures. In contrast, our Unmixing-guided per-abundance token sequencing decomposes the hyperspectral image into physically meaningful abundance maps, which better capture subtle and weak patterns and edges, and constructs a dedicated token sequence from each abundance, leading to non-local, sparse, dynamic, and adaptive Mamba token sequence.",
+      "page": 1,
+      "index": 4,
+      "width": 534,
+      "height": 451
+    }
+  ]
+}

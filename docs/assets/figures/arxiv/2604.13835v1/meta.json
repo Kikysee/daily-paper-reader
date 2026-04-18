@@ -1,0 +1,86 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.13835v1/fig-001.webp",
+      "caption": "Figure 5: Training Bean-CNN on the original set",
+      "page": 6,
+      "index": 1,
+      "width": 449,
+      "height": 537
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13835v1/fig-002.webp",
+      "caption": "Figure 6: Training Bean-CNN-LSTM on the original set",
+      "page": 6,
+      "index": 2,
+      "width": 450,
+      "height": 563
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13835v1/fig-003.webp",
+      "caption": "Figure 7: Graph representation of the best test accuracy:",
+      "page": 6,
+      "index": 3,
+      "width": 450,
+      "height": 341
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13835v1/fig-004.webp",
+      "caption": "Figure 8: The average test accuracy on each training set: The",
+      "page": 7,
+      "index": 4,
+      "width": 464,
+      "height": 682
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13835v1/fig-005.webp",
+      "caption": "Figure 12: Misclassified images",
+      "page": 10,
+      "index": 5,
+      "width": 375,
+      "height": 698
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13835v1/fig-006.webp",
+      "caption": "Figure 11: GradCAM Feature maps. The heatmaps indicate",
+      "page": 10,
+      "index": 6,
+      "width": 454,
+      "height": 552
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13835v1/fig-007.webp",
+      "caption": "Figure 9: Box-plot representation: The average performance",
+      "page": 8,
+      "index": 7,
+      "width": 325,
+      "height": 1086
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13835v1/fig-008.webp",
+      "caption": "Figure 1: Three classes of bean leaf images in the ibean dataset",
+      "page": 4,
+      "index": 8,
+      "width": 449,
+      "height": 321
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13835v1/fig-009.webp",
+      "caption": "Figure 2: Augmentation effect",
+      "page": 4,
+      "index": 9,
+      "width": 475,
+      "height": 325
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13835v1/fig-010.webp",
+      "caption": "Figure 3: Custom architecture of lightweight models",
+      "page": 4,
+      "index": 10,
+      "width": 450,
+      "height": 640
+    }
+  ]
+}
