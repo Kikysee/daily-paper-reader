@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.09922v1/fig-001.webp",
+      "caption": "Figure 1: Diagram of capturing radargrams and generating corresponding labels. (a) How airborne radar sensor is used to",
+      "page": 2,
+      "index": 1,
+      "width": 477,
+      "height": 338
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09922v1/fig-002.webp",
+      "caption": "Table 3",
+      "page": 14,
+      "index": 2,
+      "width": 974,
+      "height": 239
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09922v1/fig-003.webp",
+      "caption": "Figure 2: Architecture of our proposed K-STEMIT.",
+      "page": 8,
+      "index": 3,
+      "width": 919,
+      "height": 305
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09922v1/fig-004.webp",
+      "caption": "Figure 7: Relative MAE on individual ice layers for each model.",
+      "page": 17,
+      "index": 4,
+      "width": 977,
+      "height": 259
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09922v1/fig-005.webp",
+      "caption": "Figure 5: Qualitative results of our proposed K-STEMIT. The blue line is used to generate the graphs. The green line is",
+      "page": 12,
+      "index": 5,
+      "width": 440,
+      "height": 534
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09922v1/fig-006.webp",
+      "caption": "Figure 6: Comparison between qualitative results of different graph models. The blue line is used to generate the graphs.",
+      "page": 16,
+      "index": 6,
+      "width": 877,
+      "height": 986
+    }
+  ]
+}

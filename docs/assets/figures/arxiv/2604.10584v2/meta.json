@@ -1,0 +1,86 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.10584v2/fig-001.webp",
+      "caption": "Figure 3: Schematic of SpeCAM and its core Spectral Coordinate Mixing (SCM) operator. This module employs frequency-domain decoupling and a coordinate-based traversal strategy to capture deep spectral correlations.",
+      "page": 11,
+      "index": 1,
+      "width": 710,
+      "height": 487
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10584v2/fig-002.webp",
+      "caption": "Table 1: Quantitative comparison of various methods on the Chikusei, CAVE, and PaviaU datasets across ×2, ×4, and ×8 scaling factors. Bold indicates the best performance, while underline denotes the second-best.",
+      "page": 15,
+      "index": 2,
+      "width": 716,
+      "height": 514
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10584v2/fig-003.webp",
+      "caption": "Figure 6: Pseudo-color images with spectral bands 20-10-3 (balloons) and 6-25-11 (Chart and Stuffed Toy) as RGB of ×4 fusion results, and corresponding SAM error maps produced by all methods on the CAVE dataset.",
+      "page": 18,
+      "index": 3,
+      "width": 707,
+      "height": 288
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10584v2/fig-004.webp",
+      "caption": "Figure 9: Model efficiency comparison for ×4 fusion on the PaviaU dataset. The bar chart compares the parameter count (in millions, M) and inference latency (in milliseconds, ms, measured on an Intel Xeon CPU). Note that both axes utilize a logarithmic scale to accommodate the wide range of values.",
+      "page": 23,
+      "index": 4,
+      "width": 691,
+      "height": 607
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10584v2/fig-005.webp",
+      "caption": "Figure 4: Architecture of SSCFM. It utilizes spatial and spectral branches to achieve finegrained inter-modal interaction and feature alignment.",
+      "page": 13,
+      "index": 5,
+      "width": 712,
+      "height": 337
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10584v2/fig-006.webp",
+      "caption": "Figure 1: Overall architecture of the proposed CoFusion framework. The framework features a three-level pyramidal pipeline driven by the Multi-Scale Generator (MSG) and employs dual-path coordinate-aware modules for collaborative spatial-spectral reconstruction.",
+      "page": 8,
+      "index": 6,
+      "width": 702,
+      "height": 464
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10584v2/fig-007.webp",
+      "caption": "Figure 5: Pseudo-color images with spectral bands 67-15-13 (first patch) and 64-58-16 (third patch) as RGB of ×4 fusion results, and corresponding SAM error maps produced by all methods on the Chikusei dataset.",
+      "page": 17,
+      "index": 7,
+      "width": 710,
+      "height": 291
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10584v2/fig-008.webp",
+      "caption": "Table 3: Ablation study of CoFusion modules on the PaviaU dataset for ×4 fusion task. The bold and underlined results represent the best and second-best performance, respectively.",
+      "page": 24,
+      "index": 8,
+      "width": 706,
+      "height": 215
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10584v2/fig-009.webp",
+      "caption": "Figure 2: Detailed structure of SpaCAM. It adaptively refines spatial details by leveraging depthwise separable convolutions with multiple dilation rates and the Gated Spatial Block (GSB) mechanism.",
+      "page": 9,
+      "index": 9,
+      "width": 704,
+      "height": 281
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10584v2/fig-010.webp",
+      "caption": "Table 2: Quantitative evaluation on real-world benchmarks (Chikusei, CAVE, and PaviaU) under ×4 scaling factors. The bold and underlined results represent the best and second-best performance, respectively.",
+      "page": 20,
+      "index": 10,
+      "width": 715,
+      "height": 275
+    }
+  ]
+}

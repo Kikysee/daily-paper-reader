@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.11279v1/fig-001.webp",
+      "caption": "Figure 2: Estimated abundance maps for the Samson dataset.",
+      "page": 6,
+      "index": 1,
+      "width": 744,
+      "height": 262
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11279v1/fig-002.webp",
+      "caption": "Figure 3: Estimated abundance maps for the Apex dataset.",
+      "page": 6,
+      "index": 2,
+      "width": 738,
+      "height": 338
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11279v1/fig-003.webp",
+      "caption": "Figure 1: Overview of the proposed DEQ-Unmix Framework.",
+      "page": 3,
+      "index": 3,
+      "width": 910,
+      "height": 443
+    }
+  ]
+}

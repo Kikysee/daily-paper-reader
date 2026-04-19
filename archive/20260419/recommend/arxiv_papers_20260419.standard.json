@@ -1,0 +1,637 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-19T20:18:50.133274+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 5,
+    "deep_cap": 6,
+    "deep_selected": 5,
+    "quick_candidates": 29,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2604.09907v1",
+      "source": "arxiv",
+      "title": "From UAV Imagery to Agronomic Reasoning: A Multimodal LLM Benchmark for Plant Phenotyping",
+      "abstract": "To improve crop genetics, high-throughput, effective and comprehensive phenotyping is a critical prerequisite. While such tasks were traditionally performed manually, recent advances in multimodal foundation models, especially in vision-language models (VLMs), have enabled more automated and robust phenotypic analysis. However, plant science remains a particularly challenging domain for foundation models because it requires domain-specific knowledge, fine-grained visual interpretation, and complex biological and agronomic reasoning. To address this gap, we develop PlantXpert, an evidence-grounded multimodal reasoning benchmark for soybean and cotton phenotyping. Our benchmark provides a structured and reproducible framework for agronomic adaptation of VLMs, and enables controlled comparison between base models and their domain-adapted counterparts. We constructed a dataset comprising 385 digital images and more than 3,000 benchmark samples spanning key plant science domains including disease, pest control, weed management, and yield. The benchmark can assess diverse capabilities including visual expertise, quantitative reasoning, and multi-step agronomic reasoning. A total of 11 state-of-the-art VLMs were evaluated. The results indicate that task-specific fine-tuning leads to substantial improvement in accuracy, with models such as Qwen3-VL-4B and Qwen3-VL-30B achieving up to 78%. At the same time, gains from model scaling diminish beyond a certain capacity, generalization across soybean and cotton remains uneven, and quantitative as well as biologically grounded reasoning continue to pose substantial challenges. These findings suggest that PlantXpert can serve as a foundation for assessing evidence-grounded agronomic reasoning and for advancing multimodal model development in plant science.",
+      "authors": [
+        "Yu Wu",
+        "Guangzeng Han",
+        "Ibra Niang Niang",
+        "Francia Ravelombola",
+        "Maiara Oliveira",
+        "Jason Davis",
+        "Dong Chen",
+        "Feng Lin",
+        "Xiaolei Huang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-04-10T21:08:18+00:00",
+      "link": "https://arxiv.org/pdf/2604.09907v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "UAV imagery for plant phenotyping and agronomic reasoning",
+      "llm_evidence_cn": "用于植物表型分析和农学推理的无人机图像",
+      "llm_evidence": "用于植物表型分析和农学推理的无人机图像",
+      "canonical_evidence": "用于植物表型分析和农学推理的无人机图像",
+      "llm_tldr_en": "A multimodal LLM benchmark for automated plant phenotyping and agronomic reasoning.",
+      "llm_tldr_cn": "一个用于自动化植物表型分析和农学推理的多模态大模型基准。",
+      "llm_tldr": "一个用于自动化植物表型分析和农学推理的多模态大模型基准。",
+      "llm_tags": [
+        "query:profile-1:composite"
+      ],
+      "matched_query_tag": "query:profile-1:composite",
+      "matched_query_text": "Papers central to 请帮我查利用遥感技术进行作物参数估计和土壤水分的文章, especially work that connects or combines: soil moisture retrieval; crop parameter estimation; remote sensing technology applications; agricultural remote sensing; Soil moisture retrieval from microwave remote sensing; Using SAR backscatter to estimate crop biophysical parameters like LAI and biomass; Methods for soil moisture retrieval using remote sensing; Applications of remote sensing in agriculture for crop and soil monitoring.",
+      "matched_requirement_id": "req-composite-profile-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.09996v1",
+      "source": "arxiv",
+      "title": "A Comparative Study of Modern Object Detectors for Robust Apple Detection in Orchard Imagery",
+      "abstract": "Accurate apple detection in orchard images is important for yield prediction, fruit counting, robotic harvesting, and crop monitoring. However, changing illumination, leaf clutter, dense fruit clusters, and partial occlusion make detection difficult. To provide a fair and reproducible comparison, this study establishes a controlled benchmark for single-class apple detection on the public AppleBBCH81 dataset using one deterministic train, validation, and test split and a unified evaluation protocol across six representative detectors: YOLOv10n, YOLO11n, RT-DETR-L, Faster R-CNN (ResNet50-FPN), FCOS (ResNet50-FPN), and SSDLite320 (MobileNetV3-Large). Performance is evaluated primarily using COCO-style mAP@0.5 and mAP@0.5:0.95, and threshold-dependent behavior is further analyzed using precision-recall curves and fixed-threshold precision, recall, and F1-score at IoU = 0.5. On the validation split, YOLO11n achieves the best strict localization performance with mAP@0.5:0.95 = 0.6065 and mAP@0.5 = 0.9620, followed closely by RT-DETR-L and YOLOv10n. At a fixed operating point with confidence >= 0.05, YOLOv10n attains the highest F1-score, whereas RT-DETR-L achieves very high recall but low precision because of many false positives at low confidence. These findings show that detector selection for orchard deployment should be guided not only by localization-aware accuracy but also by threshold robustness and the requirements of the downstream task.",
+      "authors": [
+        "Mohammed Asad",
+        "Ajai Kumar Gautam",
+        "Priyanshu Dhiman",
+        "Rishi Raj Prajapati"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-11T02:56:42+00:00",
+      "link": "https://arxiv.org/pdf/2604.09996v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "apple detection in orchard imagery for crop monitoring",
+      "llm_evidence_cn": "果园图像中的苹果检测用于作物监测",
+      "llm_evidence": "果园图像中的苹果检测用于作物监测",
+      "canonical_evidence": "果园图像中的苹果检测用于作物监测",
+      "llm_tldr_en": "Evaluates object detectors for apple detection in orchards, supporting agricultural crop monitoring.",
+      "llm_tldr_cn": "评估了果园苹果检测的检测器性能，直接支持农业作物监测应用。",
+      "llm_tldr": "评估了果园苹果检测的检测器性能，直接支持农业作物监测应用。",
+      "llm_tags": [
+        "query:q8"
+      ],
+      "matched_query_tag": "query:q8",
+      "matched_query_text": "Applications of remote sensing in agriculture for crop and soil monitoring",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.10823v1",
+      "source": "arxiv",
+      "title": "Uncertainty-Guided Attention and Entropy-Weighted Loss for Precise Plant Seedling Segmentation",
+      "abstract": "Plant seedling segmentation supports automated phenotyping in precision agriculture. Standard segmentation models face difficulties due to intricate background images and fine structures in leaves. We introduce UGDA-Net (Uncertainty-Guided Dual Attention Network with Entropy-Weighted Loss and Deep Supervision). Three novel components make up UGDA-Net. The first component is Uncertainty-Guided Dual Attention (UGDA). UGDA uses channel variance to modulate feature maps. The second component is an entropy-weighted hybrid loss function. This loss function focuses on high-uncertainty boundary pixels. The third component employs deep supervision for intermediate encoder layers. We performed a comprehensive systematic ablation study. This study focuses on two widely-used architectures, U-Net and LinkNet. It analyzes five incremental configurations: Baseline, Loss-only, Attention-only, Deep Supervision, and UGDA-Net. We trained UGDA-net using a high-resolution plant seedling image dataset containing 432 images. We demonstrate improved segmentation performance and accuracy. With an increase in Dice coefficient of 9.3% above baseline. LinkNet's variance is 13.2% above baseline. Overlays that are qualitative in nature show the reduced false positives at the leaf boundary. Uncertainty heatmaps are consistent with the complex morphology. UGDA-Net aids in the segmentation of delicate structures in plants and provides a high-def solution. The results showed that uncertainty-guided attention and uncertainty-weighted loss are two complementing systems.",
+      "authors": [
+        "Mohamed Ehab",
+        "Ali Hamdi"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-04-12T21:26:17+00:00",
+      "link": "https://arxiv.org/pdf/2604.10823v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "plant seedling segmentation for phenotyping",
+      "llm_evidence_cn": "用于表型分析的幼苗分割",
+      "llm_evidence": "用于表型分析的幼苗分割",
+      "canonical_evidence": "用于表型分析的幼苗分割",
+      "llm_tldr_en": "Proposes a dual attention network for precise plant seedling segmentation in precision agriculture.",
+      "llm_tldr_cn": "提出了一种双注意力网络，用于精准农业中的植物幼苗精确分割。",
+      "llm_tldr": "提出了一种双注意力网络，用于精准农业中的植物幼苗精确分割。",
+      "llm_tags": [
+        "query:q2"
+      ],
+      "matched_query_tag": "query:q2",
+      "matched_query_text": "crop parameter estimation",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.09920v1",
+      "source": "arxiv",
+      "title": "Does Your VFM Speak Plant? The Botanical Grammar of Vision Foundation Models for Object Detection",
+      "abstract": "Vision foundation models (VFMs) offer the promise of zero-shot object detection without task-specific training data, yet their performance in complex agricultural scenes remains highly sensitive to text prompt construction. We present a systematic prompt optimization framework evaluating four open-vocabulary detectors -- YOLO World, SAM3, Grounding DINO, and OWLv2 -- for cowpea flower and pod detection across synthetic and real field imagery. We decompose prompts into eight axes and conduct one-factor-at-a-time analysis followed by combinatorial optimization, revealing that models respond divergently to prompt structure: conditions that optimize one architecture can collapse another. Applying model-specific combinatorial prompts yields substantial gains over a naive species-name baseline, including +0.357 mAP@0.5 for YOLO World and +0.362 mAP@0.5 for OWLv2 on synthetic cowpea flower data. To evaluate cross-task generalization, we use an LLM to translate the discovered axis structure to a morphologically distinct target -- cowpea pods -- and compare against prompting using the discovered optimal structures from synthetic flower data. Crucially, prompt structures optimized exclusively on synthetic data transfer effectively to real-world fields: synthetic-pipeline prompts match or exceed those discovered on labeled real data for the majority of model-object combinations (flower: 0.374 vs. 0.353 for YOLO World; pod: 0.429 vs. 0.371 for SAM3). Our findings demonstrate that prompt engineering can substantially close the gap between zero-shot VFMs and supervised detectors without requiring manual annotation, and that optimal prompts are model-specific, non-obvious, and transferable across domains.",
+      "authors": [
+        "Lars Lundqvist",
+        "Earl Ranario",
+        "Hamid Kamangir",
+        "Heesup Yun",
+        "Christine Diepenbrock",
+        "Brian N. Bailey",
+        "J. Mason Earles"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-10T21:30:45+00:00",
+      "link": "https://arxiv.org/pdf/2604.09920v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Agricultural scene object detection for cowpea flowers and pods",
+      "llm_evidence_cn": "针对豇豆花和豆荚的农业场景目标检测",
+      "llm_evidence": "针对豇豆花和豆荚的农业场景目标检测",
+      "canonical_evidence": "针对豇豆花和豆荚的农业场景目标检测",
+      "llm_tldr_en": "Optimizes vision foundation models for zero-shot detection of crop components in agricultural fields.",
+      "llm_tldr_cn": "优化视觉基础模型，实现农业现场作物组件（如花、荚）的零样本检测。",
+      "llm_tldr": "优化视觉基础模型，实现农业现场作物组件（如花、荚）的零样本检测。",
+      "llm_tags": [
+        "query:q4"
+      ],
+      "matched_query_tag": "query:q4",
+      "matched_query_text": "agricultural remote sensing",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.12315v1",
+      "source": "arxiv",
+      "title": "GTPBD-MM: A Global Terraced Parcel and Boundary Dataset with Multi-Modality",
+      "abstract": "Agricultural parcel extraction plays an important role in remote sensing-based agricultural monitoring, supporting parcel surveying, precision management, and ecological assessment. However, existing public benchmarks mainly focus on regular and relatively flat farmland scenes. In contrast, terraced parcels in mountainous regions exhibit stepped terrain, pronounced elevation variation, irregular boundaries, and strong cross-regional heterogeneity, making parcel extraction a more challenging problem that jointly requires visual recognition, semantic discrimination, and terrain-aware geometric understanding. Although recent studies have advanced visual parcel benchmarks and image-text farmland understanding, a unified benchmark for complex terraced parcel extraction under aligned image-text-DEM settings remains absent. To fill this gap, we present GTPBD-MM, the first multimodal benchmark for global terraced parcel extraction. Built upon GTPBD, GTPBD-MM integrates high-resolution optical imagery, structured text descriptions, and DEM data, and supports systematic evaluation under Image-only, Image+Text, and Image+Text+DEM settings. We further propose Elevation and Text guided Terraced parcel network (ETTerra), a multimodal baseline for terraced parcel delineation. Extensive experiments demonstrate that textual semantics and terrain geometry provide complementary cues beyond visual appearance alone, yielding more accurate, coherent, and structurally consistent delineation results in complex terraced scenes.",
+      "authors": [
+        "Zhiwei Zhang",
+        "Xingyuan Zeng",
+        "Xinkai Kong",
+        "Kunquan Zhang",
+        "Haoyuan Liang",
+        "Bohan Shi",
+        "Juepeng Zheng",
+        "Jianxi Huang",
+        "Yutong Lu",
+        "Haohuan Fu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.MM"
+      ],
+      "published": "2026-04-14T05:45:55+00:00",
+      "link": "https://arxiv.org/pdf/2604.12315v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "agricultural parcel extraction in remote sensing",
+      "llm_evidence_cn": "遥感农业地块提取",
+      "llm_evidence": "遥感农业地块提取",
+      "canonical_evidence": "遥感农业地块提取",
+      "llm_tldr_en": "Introduces a multi-modal dataset for terraced agricultural parcel extraction and monitoring.",
+      "llm_tldr_cn": "引入了一个用于梯田农业地块提取和监测的多模态数据集。",
+      "llm_tldr": "引入了一个用于梯田农业地块提取和监测的多模态数据集。",
+      "llm_tags": [
+        "query:q4"
+      ],
+      "matched_query_tag": "query:q4",
+      "matched_query_text": "agricultural remote sensing",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.10112v1",
+      "source": "arxiv",
+      "title": "Dual-Branch Remote Sensing Infrared Image Super-Resolution",
+      "abstract": "Remote sensing infrared image super-resolution aims to recover sharper thermal observations from low-resolution inputs while preserving target contours, scene layout, and radiometric stability. Unlike visible-image super-resolution, thermal imagery is weakly textured and more sensitive to unstable local sharpening, which makes complementary local and global modeling especially important. This paper presents our solution to the NTIRE 2026 Infrared Image Super-Resolution Challenge, a dual-branch system that combines a HAT-L branch and a MambaIRv2-L branch. The inference pipeline applies test-time local conversion on HAT, eight-way self-ensemble on MambaIRv2, and fixed equal-weight image-space fusion. We report both the official challenge score and a reproducible evaluation on 12 synthetic times-four thermal samples derived from Caltech Aerial RGB-Thermal, on which the fused output outperforms either single branch in PSNR, SSIM, and the overall Score. The results suggest that infrared super-resolution benefits from explicit complementarity between locally strong transformer restoration and globally stable state-space modeling.",
+      "authors": [
+        "Xining Ge",
+        "Gengjia Chang",
+        "Weijun Yuan",
+        "Zhan Li",
+        "Zhanglu Chen",
+        "Boyang Yao",
+        "Yihang Chen",
+        "Yifan Deng",
+        "Shuhong Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-11T09:10:56+00:00",
+      "link": "https://arxiv.org/pdf/2604.10112v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "remote sensing infrared image super-resolution",
+      "llm_evidence_cn": "遥感红外图像超分辨率",
+      "llm_evidence": "遥感红外图像超分辨率",
+      "canonical_evidence": "遥感红外图像超分辨率",
+      "llm_tldr_en": "Presents a dual-branch system for enhancing the resolution of thermal infrared remote sensing imagery.",
+      "llm_tldr_cn": "提出一种双分支系统，用于增强热红外遥感图像的分辨率。",
+      "llm_tldr": "提出一种双分支系统，用于增强热红外遥感图像的分辨率。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.09922v1",
+      "source": "arxiv",
+      "title": "K-STEMIT: Knowledge-Informed Spatio-Temporal Efficient Multi-Branch Graph Neural Network for Subsurface Stratigraphy Thickness Estimation from Radar Data",
+      "abstract": "Subsurface stratigraphy contains important spatio-temporal information about accumulation, deformation, and layer formation in polar ice sheets. In particular, variations in internal ice layer thickness provide valuable constraints for snow mass balance estimation and projections of ice sheet change. Although radar sensors can capture these layered structures as depth-resolved radargrams, convolutional neural networks applied directly to radar images are often sensitive to speckle noise and acquisition artifacts. In addition, purely data-driven methods may underuse physical knowledge, leading to unrealistic thickness estimates under spatial or temporal extrapolation. To address these challenges, we develop K-STEMIT, a novel knowledge-informed, efficient, multi-branch spatio-temporal graph neural network that combines a geometric framework for spatial learning with temporal convolution to capture temporal dynamics, and incorporates physical data synchronized from the Model Atmospheric Regional physical weather model. An adaptive feature fusion strategy is employed to dynamically combine features learned from different branches. Extensive experiments have been conducted to compare K-STEMIT against current state-of-the-art methods in both knowledge-informed and non-knowledge-informed settings, as well as other existing methods. Results show that K-STEMIT consistently achieves the highest accuracy while maintaining near-optimal efficiency. Most notably, incorporating adaptive feature fusion and physical priors reduces the root mean-squared error by 21.01% with negligible additional cost compared to its conventional multi-branch variants. Additionally, our proposed K-STEMIT achieves consistently lower per-year relative MAE, enabling reliable, continuous spatiotemporal assessment of snow accumulation variability across large spatial regions.",
+      "authors": [
+        "Zesheng Liu",
+        "Maryam Rahnemoonfar"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CV"
+      ],
+      "published": "2026-04-10T21:41:51+00:00",
+      "link": "https://arxiv.org/pdf/2604.09922v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "thickness estimation from radar data using GNN",
+      "llm_evidence_cn": "利用雷达数据和图神经网络进行厚度估计",
+      "llm_evidence": "利用雷达数据和图神经网络进行厚度估计",
+      "canonical_evidence": "利用雷达数据和图神经网络进行厚度估计",
+      "llm_tldr_en": "Uses graph neural networks to estimate subsurface stratigraphy thickness from radar data, relevant to microwave sensing.",
+      "llm_tldr_cn": "利用图神经网络从雷达数据中估计地下地层厚度，与微波遥感相关。",
+      "llm_tldr": "利用图神经网络从雷达数据中估计地下地层厚度，与微波遥感相关。",
+      "llm_tags": [
+        "query:q5"
+      ],
+      "matched_query_tag": "query:q5",
+      "matched_query_text": "Soil moisture retrieval from microwave remote sensing",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.10217v2",
+      "source": "arxiv",
+      "title": "Are Pretrained Image Matchers Good Enough for SAR-Optical Satellite Registration?",
+      "abstract": "Cross-modal optical-SAR (Synthetic Aperture Radar) registration is a bottleneck for disaster-response via remote sensing, yet modern image matchers are developed and benchmarked almost exclusively on natural-image domains. We evaluate twenty-four pretrained matcher families--in a zero-shot setting with no fine-tuning or domain adaptation on satellite or SAR data--on SpaceNet9 and two additional cross-modal benchmarks under a deterministic protocol with tiled large-image inference, robust geometric filtering, and tie-point-grounded metrics. Our results reveal asymmetric transfer--matchers with explicit cross-modal training do not uniformly outperform those without it. While XoFTR (trained for visible-thermal matching) and RoMa achieve the lowest reported mean error at $3.0$ px on the labeled SpaceNet9 training scenes, RoMa achieves this without any cross-modal training, and MatchAnything-ELoFTR ($3.4$ px)--trained on synthetic cross-modal pairs--matches closely, suggesting (as a working hypothesis) that foundation-model features (DINOv2) may contribute to modality invariance that partially substitutes for explicit cross-modal supervision. 3D-reconstruction matchers (MASt3R, DUSt3R), which are not designed for traditional 2D image matching, are highly protocol-sensitive and remain fragile under default settings. Deployment protocol choices (geometry model, tile size, inlier gating) shift accuracy by up to $33\\times$ for a single matcher, sometimes exceeding the effect of swapping matchers entirely within the evaluated sweep--affine geometry alone reduces mean error from $12.34$ to $9.74$ px. These findings inform both practical deployment of existing matchers and future matcher design for cross-modal satellite registration.",
+      "authors": [
+        "Isaac Corley",
+        "Alex Stoken",
+        "Gabriele Berton"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-11T13:56:20+00:00",
+      "link": "https://arxiv.org/pdf/2604.10217v2",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "SAR-Optical satellite registration for remote sensing",
+      "llm_evidence_cn": "遥感中的 SAR 与光学卫星图像配准",
+      "llm_evidence": "遥感中的 SAR 与光学卫星图像配准",
+      "canonical_evidence": "遥感中的 SAR 与光学卫星图像配准",
+      "llm_tldr_en": "Evaluates pretrained image matchers for cross-modal SAR-optical satellite image registration.",
+      "llm_tldr_cn": "评估了预训练图像匹配器在跨模态 SAR 与光学卫星图像配准中的表现。",
+      "llm_tldr": "评估了预训练图像匹配器在跨模态 SAR 与光学卫星图像配准中的表现。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.10185v1",
+      "source": "arxiv",
+      "title": "Hybrid Physical and Geometrical Optics Method for Modeling Subsurface Imaging Using mmWave FMCW Radar",
+      "abstract": "A hybrid physical and geometrical optics method is proposed to model the subsurface imaging using mmWave FMCW radar. Modeling of the wave propagation for subsurface imaging can improve the interpretation of acquired data and imaging results. Full-wave simulation is common in simulating wave propagation. However, when the frequency is high such as mmWave frequency, it is difficult to implement since it costs large computation resource and time. In this paper, the physical and geometrical optics are hybridized to simulate the wave propagation in subsurface imaging scenarios. In the proposed method, physical optics method is utilized to calculate the reflection from the object and geometrical optics method is utilized to calculate the transmission of the wave through object. By combining the results from physical and geometrical optics, the wave propagation in the subsurface imaging scenarios is simulated. The synthetic-aperture radar imaging is applied to the simulated data and the image is successfully reconstructed. Further, the experiment setup is developed and the comparison between simulation and experiment is carried out. The results demonstrated that the proposed simulation method can model the subsurface imaging with mmWave FMCW radar.",
+      "authors": [
+        "Kaito Ichijo",
+        "Hang Song",
+        "Xin Du",
+        "Bo Wei",
+        "Junichi Takada"
+      ],
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "published": "2026-04-11T12:38:57+00:00",
+      "link": "https://arxiv.org/pdf/2604.10185v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "subsurface imaging using mmWave radar modeling",
+      "llm_evidence_cn": "毫米波雷达地下成像建模",
+      "llm_evidence": "毫米波雷达地下成像建模",
+      "canonical_evidence": "毫米波雷达地下成像建模",
+      "llm_tldr_en": "Proposes a hybrid optics method for mmWave radar subsurface imaging, relevant to microwave sensing principles.",
+      "llm_tldr_cn": "提出一种用于毫米波雷达地下成像的混合光学方法，与微波遥感原理相关。",
+      "llm_tldr": "提出一种用于毫米波雷达地下成像的混合光学方法，与微波遥感原理相关。",
+      "llm_tags": [
+        "query:q5"
+      ],
+      "matched_query_tag": "query:q5",
+      "matched_query_text": "Soil moisture retrieval from microwave remote sensing",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.10347v1",
+      "source": "arxiv",
+      "title": "Multi-modal, multi-scale representation learning for satellite imagery analysis just needs a good ALiBi",
+      "abstract": "Vision foundation models have been shown to be effective at processing satellite imagery into representations fit for downstream tasks, however, creating models which operate over multiple spatial resolutions and modes is challenging. This paper presents Scale-ALiBi, a linear bias transformer attention mechanism with a spatial encoding bias to relationships between image patches at different ground sample distance scales. We provide an implementation of Scale-ALiBi over a dataset of aligned high- and low-resolution optical and low-resolution SAR satellite imagery data using a triple-contrastive and reconstructive architecture, show an improvement on the GEO-Bench benchmark, and release the newly curated dataset publicly.",
+      "authors": [
+        "Patrick Kage",
+        "Pavlos Andreadis"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-11T20:55:28+00:00",
+      "link": "https://arxiv.org/pdf/2604.10347v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "multi-modal satellite imagery analysis including SAR",
+      "llm_evidence_cn": "包含SAR在内的多模态卫星图像分析",
+      "llm_evidence": "包含SAR在内的多模态卫星图像分析",
+      "canonical_evidence": "包含SAR在内的多模态卫星图像分析",
+      "llm_tldr_en": "Introduces Scale-ALiBi for multi-scale and multi-modal satellite imagery representation learning.",
+      "llm_tldr_cn": "引入Scale-ALiBi用于多尺度和多模态卫星图像表征学习。",
+      "llm_tldr": "引入Scale-ALiBi用于多尺度和多模态卫星图像表征学习。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.10217v1",
+      "source": "arxiv",
+      "title": "Are Pretrained Image Matchers Good Enough for SAR-Optical Satellite Registration?",
+      "abstract": "Cross-modal optical-SAR (Synthetic Aperture Radar) registration is a bottleneck for disaster-response via remote sensing, yet modern image matchers are developed and benchmarked almost exclusively on natural-image domains. We evaluate twenty-four pretrained matcher families--in a zero-shot setting with no fine-tuning or domain adaptation on satellite or SAR data--on SpaceNet9 and two additional cross-modal benchmarks under a deterministic protocol with tiled large-image inference, robust geometric filtering, and tie-point-grounded metrics. Our results reveal asymmetric transfer--matchers with explicit cross-modal training do not uniformly outperform those without it. While XoFTR (trained for visible-thermal matching) and RoMa achieve the lowest reported mean error at $3.0$ px on the labeled SpaceNet9 training scenes, RoMa achieves this without any cross-modal training, and MatchAnything-ELoFTR ($3.4$ px)--trained on synthetic cross-modal pairs--matches closely, suggesting (as a working hypothesis) that foundation-model features (DINOv2) may contribute to modality invariance that partially substitutes for explicit cross-modal supervision. 3D-reconstruction matchers (MASt3R, DUSt3R), which are not designed for traditional 2D image matching, are highly protocol-sensitive and remain fragile under default settings. Deployment protocol choices (geometry model, tile size, inlier gating) shift accuracy by up to $33\\times$ for a single matcher, sometimes exceeding the effect of swapping matchers entirely within the evaluated sweep--affine geometry alone reduces mean error from $12.34$ to $9.74$ px. These findings inform both practical deployment of existing matchers and future matcher design for cross-modal satellite registration.",
+      "authors": [
+        "Isaac Corley",
+        "Alex Stoken",
+        "Gabriele Berton"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-11T13:56:20+00:00",
+      "link": "https://arxiv.org/pdf/2604.10217v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "SAR-optical satellite image registration",
+      "llm_evidence_cn": "SAR与光学卫星图像配准",
+      "llm_evidence": "SAR与光学卫星图像配准",
+      "canonical_evidence": "SAR与光学卫星图像配准",
+      "llm_tldr_en": "Evaluates pretrained image matchers for cross-modal SAR-optical satellite registration.",
+      "llm_tldr_cn": "评估预训练图像匹配器在跨模态SAR-光学卫星配准中的表现。",
+      "llm_tldr": "评估预训练图像匹配器在跨模态SAR-光学卫星配准中的表现。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.10584v1",
+      "source": "arxiv",
+      "title": "CoFusion: Multispectral and Hyperspectral Image Fusion via Spectral Coordinate Attention",
+      "abstract": "Multispectral and Hyperspectral Image Fusion (MHIF) aims to reconstruct high-resolution images by integrating low-resolution hyperspectral images (LRHSI) and high-resolution multispectral images (HRMSI). However, existing methods face limitations in modeling cross-scale interactions and spatial-spectral collaboration, making it difficult to achieve an optimal trade-off between spatial detail enhancement and spectral fidelity. To address this challenge, we propose CoFusion: a unified spatial-spectral collaborative fusion framework that explicitly models cross-scale and cross-modal dependencies. Specifically, a Multi-Scale Generator (MSG) is designed to construct a three-level pyramidal architecture, enabling the effective integration of global semantics and local details. Within each scale, a dual-branch strategy is employed: the Spatial Coordinate-Aware Mixing module (SpaCAM) is utilized to capture multi-scale spatial contexts, while the Spectral Coordinate-Aware Mixing module (SpeCAM) enhances spectral representations through frequency decomposition and coordinate mixing. Furthermore, we introduce the Spatial-Spectral Cross-Fusion Module (SSCFM) to perform dynamic cross-modal alignment and complementary feature fusion. Extensive experiments on multiple benchmark datasets demonstrate that CoFusion consistently outperforms state-of-the-art methods, achieving superior performance in both spatial reconstruction and spectral consistency.",
+      "authors": [
+        "Baisong Li"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-12T11:07:24+00:00",
+      "link": "https://arxiv.org/pdf/2604.10584v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "hyperspectral image fusion for remote sensing",
+      "llm_evidence_cn": "遥感高光谱图像融合",
+      "llm_evidence": "遥感高光谱图像融合",
+      "canonical_evidence": "遥感高光谱图像融合",
+      "llm_tldr_en": "Proposes a spatial-spectral collaborative fusion framework for high-resolution hyperspectral imaging.",
+      "llm_tldr_cn": "提出了一种空间-光谱协同融合框架，用于重建高分辨率高光谱图像。",
+      "llm_tldr": "提出了一种空间-光谱协同融合框架，用于重建高分辨率高光谱图像。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.10926v1",
+      "source": "arxiv",
+      "title": "Bayesian Cramér-Rao Bound for Sensing Performance in Meta-Backscatter Systems",
+      "abstract": "Meta-backscatter system that utilizes meta-material sensors is a promising enabler for future environmental sensing, offering distinct advantages such as low cost, zero-power consumption, and robustness. Specifically, the electromagnetic response of the sensor, typically characterized by a frequency-selective absorption profile, is affected by the environmental conditions, allowing the estimation of these conditions from the reflected signal. However, it remains unclear what estimation accuracy can be achieved fundamentally. Motivated by this gap, we quantify this accuracy limit using the Bayesian Cramér-Rao bound (BCRB), which provides a lower bound on the mean-squared error for the environmental condition. Establishing this limit is challenging because the electromagnetic response of the sensor is distorted by the channel fading, while the channel estimation is infeasible since the sensors cannot be configured to predefined states to generate training data. To address this challenge, we consider the joint BCRB of the channel coefficient and the environmental condition in a multicarrier framework. The BCRB of the environmental condition is then obtained by selecting the corresponding element from the joint BCRB. An analysis of the derived BCRB reveals the impact of the absorption peak shape and the number of subcarriers. The derivation and analysis of the BCRB are verified through simulations.",
+      "authors": [
+        "Mengyuan Cao",
+        "Xu Liu",
+        "Hongliang Zhang"
+      ],
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "published": "2026-04-13T02:47:31+00:00",
+      "link": "https://arxiv.org/pdf/2604.10926v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "environmental sensing using meta-backscatter systems",
+      "llm_evidence_cn": "利用超材料反向散射系统进行环境传感",
+      "llm_evidence": "利用超材料反向散射系统进行环境传感",
+      "canonical_evidence": "利用超材料反向散射系统进行环境传感",
+      "llm_tldr_en": "Quantifies the accuracy limits of environmental condition estimation using meta-material backscatter sensors.",
+      "llm_tldr_cn": "量化了利用超材料反向散射传感器进行环境条件估计的准确度极限。",
+      "llm_tldr": "量化了利用超材料反向散射传感器进行环境条件估计的准确度极限。",
+      "llm_tags": [
+        "query:q5"
+      ],
+      "matched_query_tag": "query:q5",
+      "matched_query_text": "Soil moisture retrieval from microwave remote sensing",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.10584v2",
+      "source": "arxiv",
+      "title": "CoFusion: Multispectral and Hyperspectral Image Fusion via Spectral Coordinate Attention",
+      "abstract": "Multispectral and Hyperspectral Image Fusion (MHIF) aims to reconstruct high-resolution images by integrating low-resolution hyperspectral images (LRHSI) and high-resolution multispectral images (HRMSI). However, existing methods face limitations in modeling cross-scale interactions and spatial-spectral collaboration, making it difficult to achieve an optimal trade-off between spatial detail enhancement and spectral fidelity. To address this challenge, we propose CoFusion: a unified spatial-spectral collaborative fusion framework that explicitly models cross-scale and cross-modal dependencies. Specifically, a Multi-Scale Generator (MSG) is designed to construct a three-level pyramidal architecture, enabling the effective integration of global semantics and local details. Within each scale, a dual-branch strategy is employed: the Spatial Coordinate-Aware Mixing module (SpaCAM) is utilized to capture multi-scale spatial contexts, while the Spectral Coordinate-Aware Mixing module (SpeCAM) enhances spectral representations through frequency decomposition and coordinate mixing. Furthermore, we introduce the Spatial-Spectral Cross-Fusion Module (SSCFM) to perform dynamic cross-modal alignment and complementary feature fusion. Extensive experiments on multiple benchmark datasets demonstrate that CoFusion consistently outperforms state-of-the-art methods, achieving superior performance in both spatial reconstruction and spectral consistency.",
+      "authors": [
+        "Baisong Li"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-12T11:07:24+00:00",
+      "link": "https://arxiv.org/pdf/2604.10584v2",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "hyperspectral image fusion for remote sensing",
+      "llm_evidence_cn": "遥感高光谱图像融合",
+      "llm_evidence": "遥感高光谱图像融合",
+      "canonical_evidence": "遥感高光谱图像融合",
+      "llm_tldr_en": "Proposes a spatial-spectral collaborative fusion framework for high-resolution hyperspectral imaging.",
+      "llm_tldr_cn": "提出了一种空间-光谱协同融合框架，用于重建高分辨率高光谱图像。",
+      "llm_tldr": "提出了一种空间-光谱协同融合框架，用于重建高分辨率高光谱图像。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.11279v1",
+      "source": "arxiv",
+      "title": "A Deep Equilibrium Network for Hyperspectral Unmixing",
+      "abstract": "Hyperspectral unmixing (HU) is crucial for analyzing hyperspectral imagery, yet achieving accurate unmixing remains challenging. While traditional methods struggle to effectively model complex spectral-spatial features, deep learning approaches often lack physical interpretability. Unrolling-based methods, despite offering network interpretability, inadequately exploit spectral-spatial information and incur high memory costs and numerical precision issues during backpropagation. To address these limitations, we propose DEQ-Unmix, which reformulates abundance estimation as a deep equilibrium model, enabling efficient constant-memory training via implicit differentiation. It replaces the gradient operator of the data reconstruction term with a trainable convolutional network to capture spectral-spatial information. By leveraging implicit differentiation, DEQ-Unmix enables efficient and constant-memory backpropagation. Experiments on synthetic and two real-world datasets demonstrate that DEQ-Unmix achieves superior unmixing performance while maintaining constant memory cost.",
+      "authors": [
+        "Chentong Wang",
+        "Jincheng Gao",
+        "Fei Zhu",
+        "Jie Chen"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-13T10:38:28+00:00",
+      "link": "https://arxiv.org/pdf/2604.11279v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "hyperspectral unmixing for remote sensing",
+      "llm_evidence_cn": "遥感高光谱解混",
+      "llm_evidence": "遥感高光谱解混",
+      "canonical_evidence": "遥感高光谱解混",
+      "llm_tldr_en": "Develops a deep equilibrium network for accurate and efficient hyperspectral image unmixing.",
+      "llm_tldr_cn": "开发了一种深度平衡网络，用于精确且高效的高光谱图像解混。",
+      "llm_tldr": "开发了一种深度平衡网络，用于精确且高效的高光谱图像解混。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.10591v1",
+      "source": "arxiv",
+      "title": "GeoMeld: Toward Semantically Grounded Foundation Models for Remote Sensing",
+      "abstract": "Effective foundation modeling in remote sensing requires spatially aligned heterogeneous modalities coupled with semantically grounded supervision, yet such resources remain limited at scale. We present GeoMeld, a large-scale multimodal dataset with approximately 2.5 million spatially aligned samples. The dataset spans diverse modalities and resolutions and is constructed under a unified alignment protocol for modality-aware representation learning. GeoMeld provides semantically grounded language supervision through an agentic captioning framework that synthesizes and verifies annotations from spectral signals, terrain statistics, and structured geographic metadata, encoding measurable cross-modality relationships within textual descriptions. To leverage this dataset, we introduce GeoMeld-FM, a pretraining framework that combines multi-pretext masked autoencoding over aligned modalities, JEPA representation learning, and caption-vision contrastive alignment. This joint objective enables the learned representation space to capture both reliable cross-sensor physical consistency and grounded semantics. Experiments demonstrate consistent gains in downstream transfer and cross-sensor robustness. Together, GeoMeld and GeoMeld-FM establish a scalable reference framework for semantically grounded multi-modal foundation modeling in remote sensing.",
+      "authors": [
+        "Maram Hasan",
+        "Md Aminur Hossain",
+        "Savitra Roy",
+        "Souparna Bhowmik",
+        "Ayush V. Patel",
+        "Mainak Singha",
+        "Subhasis Chaudhuri",
+        "Muhammad Haris Khan",
+        "Biplab Banerjee"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-04-12T11:47:11+00:00",
+      "link": "https://arxiv.org/pdf/2604.10591v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Multimodal dataset and foundation models for remote sensing",
+      "llm_evidence_cn": "遥感多模态数据集与基础模型",
+      "llm_evidence": "遥感多模态数据集与基础模型",
+      "canonical_evidence": "遥感多模态数据集与基础模型",
+      "llm_tldr_en": "Introduces a large-scale multimodal dataset for semantically grounded remote sensing foundation models.",
+      "llm_tldr_cn": "介绍了一个用于语义化遥感基础模型的大规模多模态数据集。",
+      "llm_tldr": "介绍了一个用于语义化遥感基础模型的大规模多模态数据集。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
