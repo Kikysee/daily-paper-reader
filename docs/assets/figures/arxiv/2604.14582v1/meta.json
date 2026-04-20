@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.14582v1/fig-001.webp",
+      "caption": "Fig. 3. Visual comparison for HR land-cover mapping. (a) HR image; (b) HR ground-truth label; (c) K-means + voting; (d) EfficientViT; (e) Paraformer; (f) UNetFormer; (g) MapSR; (h) MapSR without graph-based refinement.",
+      "page": 5,
+      "index": 1,
+      "width": 529,
+      "height": 275
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14582v1/fig-002.webp",
+      "caption": "TABLE I PERFORMANCE COMPARISON ON TRAINABLE PARAMS (M) AND SIX REGIONAL SUBSETS OF THE CHESAPEAKE BAY DATASET (MIOU, %)",
+      "page": 4,
+      "index": 2,
+      "width": 1050,
+      "height": 247
+    }
+  ]
+}

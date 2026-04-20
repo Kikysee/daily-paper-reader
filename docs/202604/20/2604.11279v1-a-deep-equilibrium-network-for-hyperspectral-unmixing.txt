@@ -1,0 +1,337 @@
+Title: A Deep Equilibrium Network for Hyperspectral Unmixing
+
+URL Source: https://arxiv.org/pdf/2604.11279v1
+
+Published Time: Tue, 14 Apr 2026 02:04:15 GMT
+
+Number of Pages: 8
+
+Markdown Content:
+# A D EEP EQUILIBRIUM NETWORK FOR HYPERSPECTRAL 
+
+# UNMIXING ∗
+
+Chentong Wang 
+
+Center for Applied Mathematics, KL-AAGDM Tianjin University Tianjin 300072, China 
+
+chentong_wang@tju.edu.cn 
+
+Jincheng Gao 
+
+Center for Applied Mathematics, KL-AAGDM Tianjin University Tianjin 300072, China 
+
+2023233003@tju.edu.cn 
+
+Fei Zhu #
+
+Center for Applied Mathematics, KL-AAGDM Tianjin University Tianjin 300072, China 
+
+fei.zhu@tju.edu.cn 
+
+Jie Chen 
+
+School of Artificial Intelligence Northwestern Polytechnical University Xi’an 710072, China National Engineering Laboratory for Integrated Aero-Space-Ground-Ocean Big Data Application Technology 
+
+dr.jie.chen@ieee.org 
+
+April 14, 2026 
+
+## ABSTRACT 
+
+Hyperspectral unmixing (HU) is crucial for analyzing hyperspectral imagery, yet achieving accurate unmixing remains challenging. While traditional methods struggle to effectively model complex spectral-spatial features, deep learning approaches often lack physical interpretability. Unrolling-based methods, despite offering network interpretability, inadequately exploit spectral-spatial infor-mation and incur high memory costs and numerical precision issues during backpropagation. To address these limitations, we propose DEQ-Unmix, which reformulates abundance estimation as a deep equilibrium model, enabling efficient constant-memory training via implicit differentiation. It replaces the gradient operator of the data reconstruction term with a trainable convolutional net-work to capture spectral-spatial information. By leveraging implicit differentiation, DEQ-Unmix en-ables efficient and constant-memory backpropagation. Experiments on synthetic and two real-world datasets demonstrate that DEQ-Unmix achieves superior unmixing performance while maintaining constant memory cost. 
+
+Keywords Hyperspectral unmixing · deep equilibrium models (DEQ) · neural networks · deep learning 
+
+## 1 Introduction 
+
+Hyperspectral imagery provides rich spectral details but suffers from limited spatial resolution [1]. Hyperspectral unmixing addresses this by extracting constituent pure material signatures (endmembers) and estimating their pixel-wise fractional proportions (abundances). The tasks can be approached either sequentially or simultaneously. Early methods include geometric techniques for endmember extraction [2], constrained regression for abundance estima-tion [3], and convex optimization with handcrafted priors or constraints [4]. Nonnegative matrix factorization (NMF) is a well-established framework to simultaneously estimate both endmembers and abundances [5]. 
+
+> ∗
+
+The work was supported by the National Natural Science Foundation of China under Grant 61701337. (# Corresponding Author: Fei Zhu) 
+
+> arXiv:2604.11279v1 [cs.CV] 13 Apr 2026
+
+A PREPRINT - A PRIL 14, 2026 Deep learning has achieved remarkable success in unmixing, with autoencoders (AEs) emerging as a widely adopted framework. Early AE methods performed pixel-wise encoding to infer abundances, while a decoder reconstructed spectra with network weights representing the estimated endmembers [6]. Subsequent works integrated various net-work structures, such as convolutional neural networks (CNNs) [7, 8] and Transformer networks [9, 10, 11], to better exploit spectral-spatial information for accurate abundance estimation. However, despite efforts to incorporate un-derlying mixing mechanisms into network design [8, 11, 12], AE-based methods are still criticized as “black boxes” lacking physical interpretability. Recent efforts have focused on integrating optimization-inspired modeling with deep learning for greater interpretabil-ity. This includes the plug-and-play (PnP) framework, which employs deep denoisers as implicit regularizers to improve unmixing [13, 14]. Another approach is deep unrolling, which unfolds iterative solvers into feed-forward networks with learnable layers [15]. For example, SNMF-Net [16] unfolds sparse NMF algorithm, and [17] incor-porates deep denoisers into the unrolling scheme. Nevertheless, these methods still have limitations. The PnP-based unmixing [13, 14] relies on separately pre-trained denoisers, restricting their flexibility in exploiting data information. Unrolling unmixing networks often insufficiently model complex spectral-spatial dependencies [16, 18], and per-layer parameterization leads to high memory costs and numerical precision issues during backpropagation [19]. In this paper, we propose DEQ-Unmix, the first hyperspectral unmixing network to leverage the principles of deep equilibrium models (DEQ) [20] to address the aforementioned challenges. Starting from the linear mixing model (LMM) with sparsity regularization, we first derive a fixed-point iteration for the unsupervised unmixing problem, and then replace the gradient operator of the data reconstruction term with a trainable network designed to integrate the spectral-spatial information of the image via a convolutional architecture. Unlike unrolling-based methods, DEQ-Unmix embeds the forward process as a fixed-point iteration, enabling parameter sharing across an arbitrarily deep number of unfolded layers. This avoids the high memory costs and numerical precision issues of a finite, per-layer parameterized architecture. By leveraging implicit differentiation, DEQ-Unmix enables efficient and constant-memory backpropagation. Experiments on synthetic and two real-world hyperspectral datasets demonstrate that DEQ-Unmix achieves competitive unmixing performance while maintaining constant memory cost. 
+
+## 2 Methodology 
+
+2.1 Problem Formulation 
+
+DEQ-Unmix is based on the well-established linear mixing model (LMM) [1]. To preserve the spectral-spatial struc-ture for subsequent network modeling, we use its tensor form: 
+
+Y = A ×3 M + N , (1) where Y ∈ Rh×w×L is the observed hyperspectral image, and the mode-3 product ( ×3) decomposes it into the endmember matrix M ∈ RL×R and the abundance tensor A ∈ Rh×w×R. The term N is the additive noise. Based on the LMM (1), the conventional unmixing problem is formulated by minimizing the reconstruction error under a fixed norm (e.g., the Frobenius norm), while imposing regularization on the abundances and endmembers [1, 5]. Instead of using a fixed metric, we design a data-driven optimization method where a learnable functional metric, S (·),serves as the data reconstruction function to implicitly incorporate spectral-spatial priors in the hyperspectral image. For a physically meaningful solution, we impose the abundance non-negative constraint (ANC), sum-to-one constraint (ASC), and endmember non-negativity, while enforcing ℓ1-based regularization on the abundances for sparsity. DEQ-Unmix performs unmixing in an unsupervised manner to jointly estimate both endmembers and abundances. Thus, the optimization problem becomes 
+
+arg min 
+
+> M≥0,A≥0
+
+S (A ×3 M, Y) + λ∥A∥1,
+
+s.t. 
+
+> R
+
+∑
+
+> r=1
+
+Ai,j,r = 1 , ∀ i = 1 ...h, j = 1 ...w, 
+
+(2) where λ is a positive scalar that controls the sparsity level, R is assumed to be known a priori .
+
+2.2 A Fixed-point Solver for Abundance Tensor 
+
+To solve the problem in (2), we derive an iterative update for the abundance tensor A via a fixed-point iteration. The endmember matrix M is set as a learnable weight matrix W. The update rule for A is derived from a proximal gradient descent approach, which is given by 
+
+A(k+1) = Softmax 
+
+(
+
+γST η·λ
+
+(
+
+A(k) − η ∇S 
+
+(
+
+A(k) ×3 W, Y
+
+)
+
+×3 W⊤)) 
+
+, (3) 2A PREPRINT - A PRIL 14, 2026 where η is the step size. We use the Softmax function to enforce both the ANC and ASC, while γ is a temperature-like parameter controlling the sharpness of the output distribution of Softmax [21]. The term ST η·λ (·) is the soft-thresholding operator, which is defined element-wise as ST η·λ (x) = sign ( x) · max( ∣∣x∣∣ − η · λ, 0) . The sparsity scalar 
+
+λ is implemented as a trainable network parameter. To fully leverage the spectral-spatial context in observed image, we replace the gradient operator ∇S with a learnable network module, Gθ (·, ·) : X × X → X . Therefore, the update rule for the abundance tensor in (3) becomes: 
+
+A(k+1) = Softmax 
+
+(
+
+γST η·λ
+
+(
+
+A(k) − η Gθ
+
+(
+
+A(k) ×3 W, Y
+
+)
+
+×3 W⊤)) 
+
+. (4) The update of A(k+1) depends only on the previous iterate A(k), thus formulating a fixed-point iteration. Therefore, (4) can be written in a compact form: 
+
+A(k+1) = fΘ
+
+(
+
+A(k), Y
+
+)
+
+, (5) where fΘ (·) is the equilibrium layer designed according to the update rule in (4), and Θ = {θ, W, λ } includes all trainable parameters. Specifically, the iteration in (5) terminates when the index k exceeds the maximum iteration 
+
+Kmax or the residual ∥A(k+1) − A(k)∥2 falls below the tolerance ϵ.
+
+2.3 Network Architecture (b) Structure of 
+
+> Symbol Definition
+
+(c) Structure of trainable gradient operator   
+
+> Conv3D
+> Channel Attention
+> LayerNorm
+> ReLU
+> Conv3D
+> Channel Attention
+> ReLU
+> Conv2D
+> C
+> Softmax
+> R
+> Multiplication
+> CConcatenation
+> Residual Connection
+> Mode-3 Multiplication
+> Transpose
+> Subtraction
+> Input ：
+> Initialize
+> Equilibrium Layer Output ：
+> Fixed-point Iteration
+> R
+> ···
+> ···
+> ···
+> ···
+> ···
+> ···
+
+(a) Overall  framework 
+
+Figure 1: Overview of the proposed DEQ-Unmix Framework. The proposed DEQ-Unmix network’s architecture is shown in Fig. 1. For initialization, we use the endmember matrix 
+
+MVCA extracted by vertex component analysis (VCA) [2] to set W, and obtain the initial abundance tensor A(0) using the corresponding solution from fully constrained least squares (FCLS) [3]. The convolutional layers in Gθ (·, ·) adopt Xavier initialization, while λ is set to λ0.As shown in Fig. 1(c), the network module Gθ (·, ·) is designed to approximate the gradient operator ∇S while cap-turing spectral-spatial dependencies in the observed image by leveraging a specialized convolutional architecture. Its input is obtained by concatenating the observed image Y and the current reconstruction A(k) ×3 W along the channel dimension. The input is first processed by a block comprising a 3D convolutional layer with a 3 × 3 × 3 kernel, a CBAM [22]-inspired channel attention module, a Layer Normalization, and a ReLU activation function. This is followed by the second block, which consists of another 3D convolutional layer, a channel attention module, and a ReLU activation function. The feature map is then passed through a 2D convolutional layer with a 3 × 3 kernel, which reduces the channel dimension to align it with the observed image. Finally, a residual connection is applied between the difference (A(k) ×3 W − Y) and the output of the final layer, producing the output of Gθ .According to (5), the forward pass of the proposed DEQ-Unmix implements the following fixed-point iteration 
+
+A∗ = fΘ (A∗, Y) . (6) 3A PREPRINT - A PRIL 14, 2026 Given the substantial computational challenges of solving this problem on high-dimensional hyperspectral data, we adopt Anderson acceleration [23] to efficiently speed up the fixed-point iterations. The fixed-point solution serves as the estimated abundance tensor ˆA, while W functions as the estimated endmember matrix ˆM. The image is reconstructed by 
+
+ˆY = ˆA ×3 ˆM. (7) Following DEQ [20], we use the implicit function theorem to replace memory-intensive backpropagation with the efficient computation of an inverse Jacobian-vector product, given by 
+
+∂L
+
+∂Θ = ∂f ∂Θ 
+
+> ⊤
+
+(
+
+I − ∂f ∂A∗
+
+)−⊤ ∂L
+
+∂A∗ , (8) where L is the loss function. To approximate the inverse Jacobian-vector product, the tensor V∗ is defined as 
+
+V∗ =
+
+(
+
+I − ∂f ∂A∗
+
+)−⊤ ∂L
+
+∂A∗ . (9) Following [19], V∗ is the fixed point of the iteration given by 
+
+V(k+1) =
+
+( ∂f ∂A∗
+
+)⊤
+
+V(k) + ∂L
+
+∂A∗ . (10) With the initial iterate V(0) = 0 , the fixed-point V∗ is written as a Neumann series V∗ = ∑∞
+
+> n=0
+
+[( ∂f ∂A∗
+
+)⊤]n∂L 
+
+> ∂A∗
+
+,which is efficiently computed in practice using PyTorch. 
+
+2.4 Loss Function 
+
+The DEQ-Unmix framework is trained using two complementary losses: reconstruction error (RE) and spectral angle distance (SAD) loss. These are defined as follows: 
+
+LRE (Y, ˆY) = 1
+
+N ∥ ˆY − Y∥2 
+
+> F
+
+, (11) 
+
+LSAD (Y, ˆY) = 1
+
+N
+
+∑
+
+> i,j
+
+arccos 
+
+(
+
+⟨Yi,j, :, ˆYi,j, :⟩∥Yi,j, :∥2∥ ˆYi,j, :∥2
+
+)
+
+, (12) where N = h × w is the number of pixels. The RE loss enforces pixel-wise fidelity but is sensitive to spectral scaling. To address this, the SAD loss measures angular similarity between spectra and is inherently scale-invariant under uniform scaling of endmembers. Following [9], we define the total loss function as a weighted sum of the two losses 
+
+L = αLRE + LSAD , (13) where α is a hyperparameter that balances the two losses. 
+
+## 3 Experimental Results 
+
+In this section, we conduct experiments on both synthetic and real hyperspectral datasets. We compare DEQ-Unmix with several related unmixing techniques: VCA [2]+FCLS [3], PnP-BM3D [13], PnP-BM4D [13], AE-RED [14], the Transformer-based DeepTrans [9], and the unrolling-based SNMF-Net [16]. For a fair comparison, all methods use the same VCA initialization, and their parameters follow the procedures in the original papers. The unmixing performance is evaluated by the abundance root mean square error (RMSE), aRMSE = ( ∥ ˆA−A∥2 
+
+> F
+> N R
+
+)1/2,and the endmember mean spectral angle distance (mSAD), mSAD = 1
+
+> R
+
+∑Rr=1 arccos 
+
+( ⟨ ˆmr ,mr ⟩∥ ˆmr ∥2∥mr ∥2
+
+)
+
+. Notably, each experiment is repeated ten times and average unmixing results are reported. 
+
+3.1 Experiments with Synthetic Datasets 
+
+We generated two synthetic datasets using the Hyperspectral Imagery Synthetic toolbox [24], each of size 100 × 100 
+
+pixels. We selected R = 6 endmembers with L = 224 bands from the USGS spectral library. The corresponding 4A PREPRINT - A PRIL 14, 2026 abundance maps were generated via Gaussian random fields, with values capped at 0.85 to simulate highly mixed scenarios. Gaussian noise was added to the data to simulate realistic conditions, with signal-to-noise ratio (SNR) levels of 15 dB and 30 dB. For synthetic datasets, we adopted consistent global settings: λ0 = 0 .01 , Kmax = 10 , η = 0 .04 , α = 1 , and a weight decay of 10 −5. The base learning rate was set to 0.01 for all parameters except W. Scene-specific adjustments were made based on noise levels: for SNR=15 dB, we set the learning rate of W to 0.003 and γ = 0 .9; for SNR=30 dB, these were adjusted to 0.005 and 0.8, respectively. Quantitative results in Table 1 show that DEQ-Unmix achieves competitive performance under both noise conditions. Notably, even in the challenging high-noise scenario (SNR=15 dB), our model maintains effective unmixing perfor-mance, demonstrating its robustness to noise. Table 1: Unmixing Results on Synthetic Datasets. Best Results in Bold.                                  
+
+> Method SNR=15 dB SNR=30 dB
+> aRMSE mSAD aRMSE mSAD
+> VCA+FCLS 0.0733 0.0824 0.0609 0.0751 PnP-BM3D 0.0586 0.0621 0.0552 0.0598 PnP-BM4D 0.0561 0.0601 0.0536 0.0562 DeepTrans 0.0499 0.0569 0.0485 0.0541 AE-RED 0.0565 0.0575 0.0503 0.0546 SNMF-Net 0.0612 0.0581 0.0499 0.0577 DEQ-Unmix 0.0470 0.0465 0.0441 0.0452
+
+3.2 Experiments with Real Datasets 
+
+The widely used real datasets are Samson and Apex. The Samson dataset, collected by the SAMSON sensor [25], is a 95 × 95 sub-image with 156 bands and contains three endmembers (Soil, Tree, and Water). The Apex dataset, collected by the APEX sensor [26], is a 110 × 110 sub-image with 285 bands, containing four endmembers (Water, Tree, Road, and Roof). The Apex dataset exhibits more complex spatial textures and spectral characteristics. For both datasets, ground truth (GT) endmembers and their corresponding reference abundances provided by [9] are used to assess performance. For both datasets, we set the initial parameter λ0 = 0 .1, the maximum iteration Kmax = 10 , and the step size η = 0 .01 .The remaining parameters were tuned for each dataset. On Samson, the learning rate was 0.01 for all parameters except 
+
+W, which used 0.006 . A fixed weight decay of 10 −5 was applied to all parameters, with γ = 1 and α = 0 .1. For Apex, the learning rate was 0.006 for all parameters except for W, which used 0.01 . The weight decays were 0 for W
+
+and 10 −3 for the other parameters, with γ = 1 .2 and α = 10 .Quantitative results are reported in Table 2. On the Samson dataset, the proposed DEQ-Unmix achieves the best per-formance in both abundance and endmember estimation. The Apex dataset presents greater challenges due to its richer spectral information and more complex spatial structures. Nevertheless, our method still achieves the best results in abundance estimation and a competitive performance in endmember estimation, ranking second to DeepTrans. Visual comparisons of the estimated abundance maps on Samson and Apex are shown in Fig. 2 and Fig. 3, respectively. These comparisons demonstrate that DEQ-Unmix estimates abundance maps that are visually aligned with the reference GT. Table 2: Unmixing Results on Samson and Apex. Best Results in Bold.                                  
+
+> Method Samson Apex
+> aRMSE mSAD aRMSE mSAD
+> VCA+FCLS 0.2835 0.0667 0.1581 0.3958 PnP-BM3D 0.1873 0.0362 0.1466 0.2023 PnP-BM4D 0.1928 0.0656 0.1353 0.2463 DeepTrans 0.0958 0.0448 0.1211 0.0993
+> AE-RED 0.2633 0.0668 0.1214 0.2720 SNMF-Net 0.2776 0.0641 0.1553 0.2528 DEQ-Unmix 0.0621 0.0279 0.1077 0.1236
+
+5A PREPRINT - A PRIL 14, 2026 FCLS PnP-BM3D PnP-BM4D DeepTrans AE-RED SNMF-Net Reference 
+
+> Soil Tree Water
+> Proposed
+> 00.2 0.4 0.6 0.8 1
+
+Figure 2: Estimated abundance maps for the Samson dataset. FCLS PnP-BM3D PnP-BM4D DeepTrans AE-RED SNMF-Net Reference 
+
+> Road Tree Roof Water
+> Proposed
+> 00.2 0.4 0.6 0.8 1
+
+Figure 3: Estimated abundance maps for the Apex dataset. 
+
+3.3 Ablation Study 
+
+We compare DEQ-Unmix against two unrolled baselines with identical depth ( Kmax = 10 ) and the same network operator on the Samson dataset: Unroll (using distinct parameters per layer) and Unroll-S (sharing parameters across layers). As shown in Table 3, DEQ-Unmix significantly reduces memory consumption and training time compared to unrolled baselines, while achieving superior unmixing accuracy. This demonstrates that our equilibrium-based formu-lation enables efficient use of complex spectral-spatial modules without the memory overhead of standard unrolling. Table 3: Ablation results on the Samson dataset comparing Parameter Scale (MB), Running Time (s), Memory (GB), aRMSE, and mSAD. Best Results in Bold. 
+
+Method Parameter Scale Running Time Memory aRMSE mSAD 
+
+Unroll 668.6323 0.6155 1.9317 0.1007 0.0531 Unroll-S 66.8648 0.5695 1.3428 0.0979 0.0506 DEQ-Unmix 66.8648 0.4615 0.2595 0.0621 0.0279 
+
+## 4 Conclusion 
+
+We propose DEQ-Unmix, a deep equilibrium hyperspectral unmixing framework that integrates physical modeling with deep learning. It reformulates the abundance estimation problem as a fixed-point iteration, with a trainable convolutional network replacing the traditional gradient operator of the data reconstruction term. This fixed-point formulation enables parameter sharing across layers, while the network design captures spectral-spatial dependencies. By leveraging implicit differentiation, DEQ-Unmix provides efficient and constant-memory backpropagation. Experi-6A PREPRINT - A PRIL 14, 2026 ments on synthetic datasets, the Samson dataset, and the Apex dataset demonstrate the unmixing effectiveness of the proposed DEQ-Unmix. 
+
+## References 
+
+[1] N. Dobigeon, J.-Y. Tourneret, C. Richard, J.C.M. Bermudez, S. McLaughlin, and A.O. Hero. Nonlinear unmixing of hyperspectral images: Models and algorithms. IEEE Signal Process. Mag. , 31(1):82–94, 2013. [2] J.M.P. Nascimento and J.M.B. Dias. Vertex component analysis: A fast algorithm to unmix hyperspectral data. 
+
+IEEE Trans. Geosci. Remote Sens. , 43(4):898–910, 2005. [3] D.C. Heinz and C.-I. Chang. Fully constrained least squares linear spectral mixture analysis method for material quantification in hyperspectral imagery. IEEE Trans. Geosci. Remote Sens. , 39(3):529–545, 2001. [4] M.-D. Iordache, J.M. Bioucas-Dias, and A. Plaza. Total variation spatial regularization for sparse hyperspectral unmixing. IEEE Trans. Geosci. Remote Sens. , 50(11):4484–4502, 2012. [5] X.-R. Feng, H.-C. Li, R. Wang, Q. Du, X. Jia, and A. Plaza. Hyperspectral unmixing based on nonnegative matrix factorization: A comprehensive review. IEEE J. Sel. Topics Appl. Earth Observ. Remote Sens. , 15:4414–4436, 2022. [6] Y. Qu and H. Qi. udas: An untied denoising autoencoder with sparsity for spectral unmixing. IEEE Trans. Geosci. Remote Sens. , 57(3):1698–1712, 2018. [7] L. Gao, Z. Han, D. Hong, B. Zhang, and J. Chanussot. Cycu-net: Cycle-consistency unmixing network by learning cascaded autoencoders. IEEE Trans. Geosci. Remote Sens. , 60:1–14, 2021. [8] T. Fang, F. Zhu, and J. Chen. Hyperspectral unmixing based on multilinear mixing model using convolutional autoencoders. IEEE Trans. Geosci. Remote Sens. , 62:1–16, 2024. [9] P. Ghosh, S.K. Roy, B. Koirala, B. Rasti, and P. Scheunders. Hyperspectral unmixing using transformer network. 
+
+IEEE Trans. Geosci. Remote Sens. , 60:1–16, 2022. [10] Z. Yang, M. Xu, S. Liu, H. Sheng, and J. Wan. Ust-net: A u-shaped transformer network using shifted windows for hyperspectral unmixing. IEEE Trans. Geosci. Remote Sens. , 61:1–15, 2023. [11] C. Wang, J. Gao, F. Zhu, A. Halimi, and C. Richard. Dtu-net: A multi-scale dilated transformer network for nonlinear hyperspectral unmixing. IEEE Trans. Geosci. Remote Sens. , 64:1–17, 2026. [12] B. Rasti, B. Koirala, and P. Scheunders. Hapkecnn: Blind nonlinear unmixing for intimate mixtures using hapke model and convolutional neural network. IEEE Trans. Geosci. Remote Sens. , 60:1–15, 2022. [13] M. Zhao, X. Wang, J. Chen, and W. Chen. A plug-and-play priors framework for hyperspectral unmixing. IEEE Trans. Geosci. Remote Sens. , 60:1–13, 2021. [14] M. Zhao, J. Chen, and N. Dobigeon. Ae-red: A hyperspectral unmixing framework powered by deep autoencoder and regularization by denoising. IEEE Trans. Geosci. Remote Sens. , 62:1–15, 2024. [15] V. Monga, Y. Li, and Y.C. Eldar. Algorithm unrolling: Interpretable, efficient deep learning for signal and image processing. IEEE Signal Process. Mag. , 38(2):18–44, 2021. [16] F. Xiong, J. Zhou, S. Tao, J. Lu, and Y. Qian. Snmf-net: Learning a deep alternating neural network for hyper-spectral unmixing. IEEE Trans. Geosci. Remote Sens. , 60:1–16, 2021. [17] M. Zhao, L. Tang, and J. Chen. Unrolling plug-and-play network for hyperspectral unmixing. IEEE Trans. Geosci. Remote Sens. , 63:1–13, 2025. [18] C. Cui, X. Wang, S. Wang, L. Zhang, and Y. Zhong. Unrolling nonnegative matrix factorization with group sparsity for blind hyperspectral unmixing. IEEE Trans. Geosci. Remote Sens. , 61:1–12, 2023. [19] D. Gilton, G. Ongie, and R. Willett. Deep equilibrium architectures for inverse problems in imaging. IEEE Trans. Comput. Imag. , 7:1123–1133, 2021. [20] S. Bai, J.Z. Kolter, and V. Koltun. Deep equilibrium models. Adv. Neural Inf. Process. Syst. (NeurIPS) , 32, 2019. [21] F. Wang and H. Liu. Understanding the behaviour of contrastive loss. In Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR) , pages 2495–2504, 2021. [22] S. Woo, J. Park, J.-Y. Lee, and I.S. Kweon. Cbam: Convolutional block attention module. In Proc. Eur. Conf. Comput. Vis. (ECCV) , pages 3–19, 2018. [23] H.F. Walker and P. Ni. Anderson acceleration for fixed-point iterations. SIAM J. Numer. Anal. , 49(4):1715–1735, 2011. 7A PREPRINT - A PRIL 14, 2026 [24] R. A. Borsoi, T. Imbiriba, J. C. M. Bermudez, C. Richard, J. Chanussot, L. Drumetz, J.-Y. Tourneret, A. Zare, and C. Jutten. Spectral variability in hyperspectral data unmixing: A comprehensive review. IEEE Geosci. Remote Sens. Mag. , 9(4):223–270, 2021. [25] C.O. Davis, M. Kavanaugh, R. Letelier, W.P. Bissett, and D. Kohler. Spatial and spectral resolution considerations for imaging coastal waters. In Coast. Ocean Remote Sens. , volume 6680, pages 196–207. SPIE, 2007. [26] M.E. Schaepman, M. Jehle, A. Hueni, P. D’Odorico, A. Damm, J. Weyermann, F.D. Schneider, V. Laurent, C. Popp, F.C. Seidel, et al. Advanced radiometry measurements and earth science applications with the airborne prism experiment (apex). Remote Sens. Environ. , 158:207–219, 2015. 8

@@ -1,0 +1,567 @@
+Title: CoFusion: Multispectral and Hyperspectral Image Fusion via Spectral Coordinate Attention
+
+URL Source: https://arxiv.org/pdf/2604.10584v1
+
+Published Time: Tue, 14 Apr 2026 01:26:56 GMT
+
+Number of Pages: 10
+
+Markdown Content:
+> 1
+
+# CoFusion: Multispectral and Hyperspectral Image Fusion via Spectral Coordinate Attention 
+
+Baisong Li 
+
+Abstract —Multispectral and Hyperspectral Image Fusion (MHIF) aims to reconstruct high-resolution images by integrating low-resolution hyperspectral images (LRHSI) and high-resolution multispectral images (HRMSI). However, existing methods face limitations in modeling cross-scale interactions and spatial-spectral collaboration, making it difficult to achieve an optimal trade-off between spatial detail enhancement and spectral fidelity. To address this challenge, we propose CoFusion: a unified spatial-spectral collaborative fusion framework that explicitly models cross-scale and cross-modal dependencies. Specifically, a Multi-Scale Generator (MSG) is designed to construct a three-level pyramidal architecture, enabling the effective integration of global semantics and local details. Within each scale, adual-branch strategy is employed: the Spatial Coordinate-Aware Mixing module (SpaCAM) is utilized to capture multi-scale spatial contexts, while the Spectral Coordinate-Aware Mixing module (SpeCAM) enhances spectral representations through frequency decomposition and coordinate mixing. Furthermore, we introduce the Spatial-Spectral Cross-Fusion Module (SSCFM) to perform dynamic cross-modal alignment and complementary feature fusion. Extensive experiments on multiple benchmark datasets demonstrate that CoFusion consistently outperforms state-of-the-art methods, achieving superior performance in both spatial reconstruction and spectral consistency. 
+
+Index Terms —Hyperspectral image fusion, Super-resolution, Spatial-spectral collaboration, Deep learning. 
+
+I. I NTRODUCTION 
+
+Multispectral and Hyperspectral Image Fusion (MHIF) aims to reconstruct a high-resolution hyperspectral image (HRHSI) by integrating the rich spectral information of a low-resolution hyperspectral image (LRHSI) with the fine spatial details of a high-resolution multispectral image (HRMSI). This task effectively alleviates the inherent trade-off between spatial and spectral resolutions in remote sensing systems, providing critical data support for a wide range of applications such as land-cover classification [1]–[4], environmental monitoring, and precision agriculture [5]. However, MHIF is essentially a highly ill-posed inverse problem. Its core challenge lies in achieving precise spatial detail reconstruction while maintain-ing spectral fidelity under significant cross-scale and cross-modal discrepancies. Early research primarily relied on model-based meth-ods, including component substitution (CS) [6], [7], multi-resolution analysis (MRA) [8]–[10], and variational optimiza-tion (VO) [11], [12] approaches. CS-based methods inject spatial details directly via transform-domain substitution; how-ever, they often lead to severe spectral distortion due to oversimplified assumptions regarding spectral independence. 
+
+Baisong Li is with the College of Computer Science and Technology, Jilin University, Changchun 130012, China (e-mail: libaisonm@outlook.com). 
+
+MRA-based methods mitigate this issue by utilizing multi-scale decomposition, yet they remain sensitive to filter design and are prone to spatial artifacts such as ringing and blurring. VO-based methods introduce hand-crafted priors to regularize the solution space; nevertheless, their limited representational capacity and high computational costs restrict their applicabil-ity in complex real-world scenarios. With the rapid development of deep learning, data-driven methods have become the mainstream paradigm for MHIF. Existing approaches are mainly based on convolutional neural network (CNN) [13]–[16] and Transformer [17], [18] archi-tectures. CNN-based models effectively capture local spatial structures through hierarchical feature extraction but lack the ability to model long-range dependencies and global contex-tual consistency. In contrast, Transformers utilize self-attention mechanisms to establish global feature interactions; however, their quadratic computational complexity poses significant challenges for high-dimensional hyperspectral data. Further-more, the lack of strong inductive biases for local structures often results in over-smoothing or structural artifacts. To overcome these limitations, recent works have explored hybrid architectures and dynamic modeling strategies [18]. Although these methods have improved representational ca-pacity to some extent, they still struggle to resolve the fun-damental contradiction between spatial detail enhancement and spectral consistency. In particular, most existing methods employ homogeneous or static processing strategies across different regions and scales, lacking adaptive mechanisms to handle diverse spatial structures and spectral characteristics. Consequently, they tend to produce over-smoothing in edge-rich regions while introducing noise in homogeneous areas. Overall, existing methods exhibit the following limitations:  
+
+> •
+
+Inadequate Cross-scale Modeling: The vast resolution difference between LRHSI and HRMSI requires effective interaction between global semantics and local details. However, most methods process different scales indepen-dently, leading to sub-optimal fusion performance.  
+
+> •
+
+Decoupled Spatial-Spectral Modeling: Spatial and spec-tral features are typically extracted separately, lacking sufficient cross-modal interaction, which results in spatial distortion or spectral inconsistency.  
+
+> •
+
+Lack of Adaptive Feature Fusion: Existing fusion strate-gies are generally static and fail to dynamically balance spatial enhancement and spectral preservation under di-verse scene conditions. To address these challenges, we propose CoFusion: a unified spatial-spectral collaborative fusion framework that explicitly models cross-scale and cross-modal interactions. The core 
+
+> arXiv:2604.10584v1 [cs.CV] 12 Apr 2026 2
+
+idea of CoFusion is to achieve joint optimization of spatial and spectral representations through multi-scale hierarchical modeling and adaptive feature fusion. Specifically, we first design a Multi-Scale Generator (MSG) to construct a three-level pyramidal architecture, enabling effective interaction between global semantic information and local spatial details. Within each scale, we introduce a dual-branch collaborative mechanism: the Spatial Coordinate-Aware Mixing (SpaCAM) module captures multi-scale spatial contexts via gated dilated convolutions, while the Spectral Coordinate-Aware Mixing (SpeCAM) module exploits intrin-sic spectral correlations through frequency decomposition and coordinate mixing. Furthermore, to bridge the gap between spatial and spectral representations, we propose the Spatial-Spectral Cross-Fusion Module (SSCFM), which utilizes large-kernel attention and channel excitation to perform dynamic feature alignment and interaction, effectively reducing redun-dancy while preserving complementary information. Extensive experiments on multiple benchmark datasets demonstrate that CoFusion consistently outperforms state-of-the-art methods, achieving superior performance in both spatial detail reconstruction and spectral fidelity preservation. The main contributions of this paper are summarized as follows:  
+
+> •
+
+We propose CoFusion: a unified spatial-spectral collabo-rative fusion framework that explicitly models cross-scale and cross-modal interactions, effectively alleviating the inherent trade-off between spatial detail reconstruction and spectral fidelity preservation in MHIF.  
+
+> •
+
+We design the MSG with a pyramidal hierarchical struc-ture, enabling progressive interaction between global se-mantic representations and local spatial details, thereby improving the alignment and consistency of cross-scale features.  
+
+> •
+
+We introduce a spatial-spectral collaborative modeling mechanism consisting of SpaCAM and SpeCAM, which jointly model spatial contexts and spectral dependencies through coordinate-aware mixing and frequency-aware spectral decomposition, enhancing feature representation from both spatial and spectral perspectives.  
+
+> •
+
+We propose the SSCFM to achieve adaptive feature alignment and dynamic interaction between spatial and spectral representations, effectively reducing redundancy while preserving complementary information. The remainder of this paper is organized as follows: Sec-tion II reviews related work in hyperspectral image fusion, including CS, MRA, VO methods, and deep learning-based approaches. Section III provides a detailed description of the proposed CoFusion framework, including MSG, SpaCAM, SpeCAM, and SSCFM. Section IV describes the experimental setup, datasets, and evaluation metrics, followed by a compre-hensive comparison with state-of-the-art methods and ablation studies. Finally, Section V concludes the paper and discusses potential future research directions. II. R ELATED WORK 
+
+A. Review of MHIF Methods 
+
+Multispectral and Hyperspectral Image Fusion (MHIF) has emerged as a fundamental task in the field of remote sensing, aiming to reconstruct high-fidelity hyperspectral images by integrating high-resolution multispectral images (HRMSI) to compensate for the spatial sparsity of low-resolution hyper-spectral images (LRHSI). Existing methods can be broadly categorized into traditional model-based methods and deep learning-based methods. 
+
+1) Traditional MHIF Methods: Traditional MHIF methods formulate the fusion process through explicit mathematical modeling and are generally classified into component substi-tution (CS), multi-resolution analysis (MRA), and variational optimization (VO) methods. CS-based methods project multi-spectral data into a transform domain and replace specific com-ponents with spatial details extracted from the HRMSI. Repre-sentative methods such as PCA [6], IHS [7], and BDSD [19] are computationally efficient but often produce spectral dis-tortion due to the global substitution operation. MRA-based methods extract spatial details across multiple scales using multi-resolution decomposition techniques, such as SFIM [20], MTF-GLP [21], AWLP [22], and DWT [23]. Although these methods generally improve spectral preservation, they may still introduce spatial artifacts and aliasing effects. VO-based methods [11], [12] model MHIF as a constrained optimization problem by introducing spatial and spectral priors. While these methods provide strong theoretical guarantees, their iterative optimization processes typically result in high computational costs, limiting their scalability for large-scale applications. 
+
+2) Deep Learning-based MHIF Methods: Deep learning has significantly advanced MHIF by replacing hand-crafted priors with data-driven hierarchical representations. Early CNN-based methods, such as MHFnet [15] and HSRnet [13], effectively capture local spatial structures but face limitations in modeling long-range spectral dependencies due to their restricted receptive fields. To address this limitation, Transformer-based models, such as Fusformer [17], introduced self-attention mechanisms to achieve global context modeling. However, the quadratic complexity of self-attention poses computational challenges. Subsequent methods, including PSRT [24], U2Net [25], and 3DT-Net [14], explored more efficient architectures to balance performance and complexity. Recently, hybrid and dynamic fusion strategies have gained increasing attention. SMGU-Net [26] combines optimization-inspired modeling with deep networks but still struggles with complex cross-modal non-linear interactions. Dynamic ap-proaches, such as FMPM-DNet [27] and BUGPan [28], further improve adaptivity through modulation and uncertainty-aware mechanisms. Despite these advancements, existing methods still face challenges in simultaneously maintaining local sharp-ness, global structural consistency, and spectral fidelity. 
+
+B. Attention-based Fusion Mechanisms 
+
+Attention mechanisms have been widely adopted in MHIF to enhance feature representation and facilitate cross-modal 3×2      
+
+> ×2
+> ×2
+> ×2
+> (a) Mixed Scale Generator (MSG)
+> Head
+> SpaCAM
+> SSCFM
+> SpaCAM
+> SSCFM
+> SpaCAM
+> SSCFM SpeCAM
+> SSCFM
+> SpeCAM
+> SSCFM
+> SpeCAM
+> SSCFM
+> Tail
+> HRHSI LRHSI HRMSI
+> HRMSI ×4
+> Downsample Upsample Add Concat DWConv 3×3 Conv
+> Fig. 1. Overall architecture of the proposed CoFusion framework. The framework features a three-level pyramidal pipeline driven by the Multi-Scale Generator (MSG) and employs dual-path coordinate-aware modules for collaborative spatial-spectral reconstruction.
+
+information integration. Existing methods typically employ channel, spatial, or hybrid attention to emphasize meaning-ful features while suppressing redundancy. Channel attention models improve spectral consistency by capturing inter-band dependencies, while spatial attention focuses on salient regions to enhance the preservation of structural details. Recently, Large Kernel Attention (LKA) [29]–[31] and non-local op-erations [32]–[35] have been introduced to better model long-range spatial dependencies. Despite their effectiveness, existing attention-based fusion strategies still exhibit two primary limitations. First, attention is often applied within a single domain, which limits spatial-spectral interaction modeling. Second, many fusion schemes are static or weakly coupled, restricting the adaptive alignment between heterogeneous features and potentially introducing redundancy. To address these issues, we propose the SS-CFM, which integrates LKA and SSE to achieve adaptive spatial-spectral alignment and dynamic cross-modal interac-tion, thereby enabling more effective feature fusion and en-hancing reconstruction quality. III. M ETHODOLOGY 
+
+A. CoFusion Network Architecture 
+
+As illustrated in Fig. 1, CoFusion adopts a Multi-Scale Gen-erator (MSG) to construct a three-level pyramidal pipeline, en-abling joint optimization of fusion performance under different receptive fields. The framework first performs feature align-ment and multi-scale representation learning on the LRHSI and HRMSI to generate multi-scale features {F ic | i = 1 , 2, 3}.At each scale, a dual-branch architecture is employed for parallel feature extraction. The SpeCAM branch focuses on maintaining spectral fidelity by modeling deep spectral de-pendencies through the Spectral Coordinate Mixing (SCM) mechanism. Simultaneously, the SpaCAM branch is dedicated to spatial structure reconstruction, capturing multi-scale spatial contexts via Gated Spatial Blocks (GSB) with varying dilation rates. GCB           
+
+> 3×3
+> DWConv
+> 3×3
+> DWConv
+> Dilate × 1
+> 3×3
+> DWConv
+> GCB GCB
+> Dilate × 2 Dilate × 4
+> Spatial Context-Aware Module （SpaCAM ）Gated Spatial Block (GCB)
+> 3×3 DWConv
+> GELU
+> 1×1 PWConv
+> 3×3 DWConv
+> Softmax Softmax
+> Fig. 2. Detailed structure of SpaCAM. It adaptively refines spatial details by leveraging depthwise separable convolutions with multiple dilation rates and the Gated Spatial Block (GSB) mechanism.
+
+To enable cross-branch interaction, the Spatial-Spectral Cross-Fusion Module (SSCFM) leverages Large Kernel At-tention (LKA) and Spectral Squeeze-and-Excitation (SSE) to perform adaptive feature alignment and fusion. This design balances spatial enhancement and spectral preservation. Fi-nally, the refined multi-scale features are progressively upsam-pled and aggregated through residual connections, eventually generating the HRHSI via a reconstruction head. 
+
+B. MSG: Multi-Scale Generator 
+
+Inspired by HRNet [36], the MSG constructs a three-level pyramidal representation to bridge global semantics and local details (Fig. 1(a)). It generates multi-scale features at scale 
+
+l ∈ { 1, 2, 3}, denoted as local features F lc and global proxy features F lc′ .The MSG maintains parallel feature flows guided by the HRMSI. Specifically, local features are obtained through suc-cessive bilinear downsampling ( ↓2) and encoded via Ec, while global proxy features are generated by upsampling ( ↑2) coarser representations and processed by Ec′ . Formally: 
+
+F lc = Ec
+
+ ↓2 (F l−1 
+
+> c
+
+), F lc′ = Ec′
+
+ ↑2 (F l+1  
+
+> c′
+
+). (1) 
+
+C. SpaCAM: Spatial Context-Aware Module 
+
+In HSI fusion tasks, the scale variance of ground objects is often extreme, and fine textures such as edges and point targets are highly susceptible to destruction by smoothing operators during spatial enhancement. Traditional fixed-kernel convolutions struggle to balance local detail extraction with global context awareness [37], [38] and frequently introduce redundant noise during feature transmission. To address these challenges, we designed SpaCAM to achieve adaptive re-finement of spatial information through multi-receptive field feature extraction and a dynamic gating mechanism. As shown in Fig. 2, this module consists of a series of con-volutional layers with different dilation rates and Gated Spatial Blocks (GSB). First, to capture multi-scale spatial contexts, the input feature F ispa is processed by depthwise separable convolutions (DWConv) with dilation rates d ∈ {1, 2, 4}.By utilizing dilated convolutions to expand the receptive field without increasing parameters, we generate scale-aware feature representations Dij :
+
+Dij = DWConv 3×3,d (MaxPool (F ispa )) , j ∈ { 1, 2, 3} (2) 4Spectral-Coordinate Attention Module (SpeCAM)       
+
+> DWT
+> 3×3
+> DWConv
+> GELU
+> 3×3
+> DWConv
+> GELU
+> CSCM
+> 3×3
+> DWConv
+> GELU
+> Spectral Coordinate
+> Expansion
+> Spectral Coordinate
+> Sorting
+> Spectral Coordinate
+> Mixing
+> TopK
+> Spectral Coordinate Mixing (SCM)
+> Spatial
+> MaxPool
+> Dimension Mapping Spatial
+> MaxPool
+
+Fig. 3. Schematic of SpeCAM and its core Spectral Coordinate Mixing (SCM) operator. This module employs frequency-domain decoupling and a coordinate-based traversal strategy to capture deep spectral correlations. 
+
+Subsequently, to suppress background noise and highlight salient object features, these features are fed into corre-sponding GSBs. Inside each GSB, a Softmax-based gating mechanism is introduced to achieve dynamic attention and feature calibration for important spatial regions: 
+
+F ispa = Softmax (Dij ) ⊗ σ(DWConv (F ispa )) + F ispa (3) where σ denotes the GELU activation function and ⊗ denotes element-wise multiplication. This design ensures the network adaptively focuses on salient spatial details in complex ge-ographical scenes, effectively alleviating edge blurring and outputting the enhanced feature F i+1  
+
+> spa
+
+.Due to the extremely high dimensionality of HSI, traditional attention mechanisms often fail to achieve an ideal balance between computational efficiency and deep spectral correlation modeling. The design of SpeCAM is primarily inspired by two factors: 1) the physical properties of real-world spectral curves are continuous and smooth, and the channel redundancy from discrete sampling contains rich intrinsic structural information; 2) the performance bottleneck of HSI fusion often lies in capturing subtle high-frequency spectral features, which are easily smoothed out by conventional convolutions. Inspired by candidate selection and combination strategies in automatic multi-coordinate update strategies, SpeCAM achieves dynamic reconstruction of critical spectral features through frequency-domain decomposition and coordinate mixing mechanisms, as shown in Fig. 3. To overcome the bottleneck of high-frequency feature mod-eling, the input feature F ispe is first decomposed into a low-frequency component representing the global envelope and a high-frequency component representing detail fluctuations via Discrete Wavelet Transform (DWT) [23]. This frequency-domain decoupling helps the model examine spectral conti-nuity across different scales. Subsequently, the two frequency branches are mapped via DWConv and activation functions, followed by spatial max-pooling to compress dimensions into a vector sequence representing channel saliency. Large-Kernel Attention 1× 1        
+
+> PWConv
+> 1×1
+> PWConv
+> Spatial MaxPool
+> Norm
+> 3×3
+> DWConv
+> 5×5
+> DWConv
+> Softmax
+> Softmax
+> Linear
+> ReLU
+> Linear  Split
+> Mask
+> 3×3
+> DWConv
+> 3×3
+> DWConv
+> GELU  GELU
+> Concat
+> 3×3
+> Conv
+> Spectral Squeeze & Excitation
+> Spatial-Spectral Cross Fusion
+> ReLU  ReLU
+> Spatial-Spectral Cross-Fusion Module （SSCFM ）
+
+Fig. 4. Architecture of SSCFM. It utilizes spatial and spectral branches to achieve fine-grained inter-modal interaction and feature alignment. 
+
+The SCM mechanism is the core of SpeCAM. Within SCM, feature processing involves three stages: 1) Spectral Coordinate Expansion : by modeling global correlations among all channels, a C × C interaction space is constructed to mine continuous spectral features; 2) Spectral Coordinate Ranking :a Top-K operator is used to filter the top K key coordinates, generating a C × K spectral coordinate matrix to aggregate salient innovative information; 3) Spectral Coordinate Mixing :coordinate traversal and innovation are performed on the matrix from left to right, as detailed in Algorithm 1. The update process for the c-th channel at the k-th candidate coordinate follows these criteria: 
+
+¯ztc =
+
+(
+
+ztc, ztc̸ = 0 
+
+zt−1 
+
+> c
+
+, ztc = 0 (4) where c ∈ { 1, . . . , C } and k ∈ { 1, . . . , K }. This formula represents the dynamic innovation logic of spectral coordi-nates: when traversing the C × K matrix, if a non-zero innovation value ztc is detected, the system accepts this new value and updates the state, thereby capturing local mutations (high-frequency features) in the spectral curve. If the value is zero, the previous state zt−1 
+
+> c
+
+is retained to maintain physical spectral continuity. This traversal-based filtering mechanism ensures the model adaptively extracts the most relevant spec-tral features from the sparse matrix. Finally, complementary fusion of high and low-frequency branches is achieved via learnable coefficients α and 1 − α, and the refined spectral feature ¯F ispe is output via residual connection. 
+
+D. SSCFM: Spatial-Spectral Cross-Fusion Module 
+
+After obtaining enhanced spatial features and refined spec-tral features, the key to improving fusion quality lies in achiev-ing deep decoupling and collaborative mapping between the two. We designed the SSCFM, whose core motivation stems from the complementarity and redundancy of cross-modal features in representing geographical entities. Specifically, while spatial features contain rich textural details, they are susceptible to spectral distortion; conversely, spectral features possess physical attribute consistency but lack sufficient spatial resolution. Thus, SSCFM aims to eliminate representational redundancy between modalities and compensate for missing critical details through a cross-modal interaction mechanism. 5
+
+As shown in Fig. 4, this module is jointly driven by Large Kernel Attention (LKA) and Spectral Squeeze-and-Excitation (SSE) [39] branches to complete the final spatial-spectral cross-fusion. Initially, input features F ispa/spe undergo Layer Normaliza-tion (Norm) before entering the LKA branch, where multi-granularity spatial context correlations are captured via parallel 
+
+3 × 3 and 5 × 5 DWConvs. Subsequently, a Softmax operator is used to generate spatial attention masks at different scales to guide precise spatial information selection. Simultaneously, 
+
+F ispa/spe is compressed into a D × 1 × 1 channel vector via spatial max-pooling, followed by linear layers and ReLU activation to achieve spectral reconstruction and information excitation, generating the spectral-guided feature vector V .To maintain a lightweight architecture while enhancing the granularity of feature interaction, we adopt a channel-wise split strategy. Specifically, vector V is uniformly divided into four segments (each with dimension D/ 4 × 1 × 1), which are then fed into the spatial-spectral cross-fusion operator. This design not only reduces the computational complexity of cross-modal point-wise multiplication but also enables the model to explore local correlations within smaller feature sub-spaces. Additionally, considering potential noise interference during sensor imaging, a 10% random Dropout mechanism (implemented via masking) is introduced during interaction with large-scale spatial attention maps. By simulating feature absence, the model is forced to learn more robust fusion logic. Finally, cross-feature flows are re-aggregated via concatenation (Concat) after convolutional calculation, and then output as the final residual map through a 3 × 3 convolutional layer to achieve deep refinement of F ispa/spe .
+
+E. Loss Function 
+
+To guide the network in learning fused features with high spatial resolution and high spectral fidelity, CoFusion employs a joint loss function for end-to-end training. The total loss con-sists of a weighted combination of L1 loss (pixel-level error) and Structural Similarity (SSIM) loss, aiming to constrain the fusion results to approximate the Ground Truth (GT) in both numerical intensity and structural texture. 
+
+a) L1 Loss.: We calculate the pixel-wise Mean Abso-lute Error (MAE) between the final fused image ¯Z and the reference GT image Z to ensure numerical fidelity:           
+
+> L1=1
+> C×H×W
+> CX
+> c=1
+> HX
+> h=1
+> WX
+> w=1
+> |¯Z(c, h, w )−Z(c, h, w )|(5)
+
+where ¯Z is the final result generated by the proposed network based on input LRHSI X and HRMSI Y.
+
+b) SSIM Loss.: SSIM measures the difference between 
+
+¯Z and Z from three dimensions: luminance, contrast, and structure. For the c-th band, SSIM is defined as:                 
+
+> SSIM (xc,yc) = (2 μxcμyc+C1)(2 σxcyc+C2)(μ2
+> xc+μ2
+> yc+C1)( σ2
+> xc+σ2
+> yc+C2)(6)
+
+Algorithm 1: SpeCAM Algorithm 
+
+Input : Spectral feature Fi 
+
+> spe
+
+∈ RH×W ×C ; Mixing weight α; Sparsity K; Initial state z0 ∈ RC
+
+Output: Refined feature ¯Fi 
+
+> spe
+> 1
+
+Stage 1: Frequency Decomposition and Saliency Extraction  
+
+> 2
+
+{flow , f high } ← DWT (Fi
+
+> spe
+
+); 
+
+> 3
+
+for f ∈ { flow , f high } do  
+
+> 4
+
+f ← GELU (DWConv (f )) ; 
+
+> 5
+
+vf ← MaxPool (f ) ; // RC×1×1 
+
+> 6
+
+end  
+
+> 7
+
+Stage 2: Spectral Coordinate Mixing (SCM)  
+
+> 8
+
+zin ← Gθ (Concat (vlow , vhigh )) ; 
+
+> 9
+
+M ← Top-K (Expansion (zin ), K ); 
+
+> 10
+
+z ← z0; 
+
+> 11
+
+for k = 1 to K do  
+
+> 12
+
+z ← Update (z, M(: , k )) ; 
+
+> 13
+
+end  
+
+> 14
+
+a ← Map (z); 
+
+> 15
+
+Stage 3: Weighted Fusion and Residual Learning  
+
+> 16
+
+Flow ← flow ⊗ a · α; 
+
+> 17
+
+Fhigh ← fhigh ⊗ a · (1 − α); 
+
+> 18
+
+Fmid ← GELU (DWConv (Flow + Fhigh )) ; 
+
+> 19
+
+¯Fi 
+
+> spe
+
+← Fmid + Fi
+
+> spe
+
+; 
+
+> 20
+
+return ¯Fi
+
+> spe
+
+;          
+
+> where xcand ycdenote the local window patches of the fused and reference images in the c-th band, respectively. The SSIM loss is constructed by averaging the SSIM values across all bands:
+> Lssim = 1 −1
+> C
+> CX
+> c=1
+> SSIM ( ¯Zc,Zc)(7)
+
+c) Total Loss Function.: Network parameters are opti-mized in an end-to-end manner. The total loss function is integrated by the weighted sum of the two aforementioned terms: 
+
+Ltotal = L1 + λ · L ssim (8) where the trade-off coefficient λ is empirically fixed at 0.1.This joint loss function balances pixel-level accuracy and spatial structural integrity, ensuring the fused image retains the spectral information of X while integrating high-frequency spatial details from Y.IV. E XPERIMENTAL RESULTS AND ANALYSIS 
+
+A. Experimental Settings a) Datasets.: To comprehensively validate the perfor-mance of the proposed method in spatial reconstruction and spectral fidelity, we conducted extensive experiments on three representative benchmark datasets: Chikusei [40], PaviaU, and CAVE. These datasets cover a variety of application scenarios ranging from large-scale outdoor remote sensing monitoring to controlled indoor imaging, providing robust support for evaluating the model’s cross-domain generalization capability. Specifically, Chikusei is a large-scale aerial hyperspectral 6HSRnet  Fusformer  U2Net  3DT-Net  SMGU-Net  CoFusion  GT PSRT  FMPM-DNet BUGPan            
+
+> 40
+> 00
+> 20
+> 30
+> 10
+> Fig. 5. Pseudo-color images with spectral bands 57-27-9 as RGB of ×4 fusion results, and corresponding SAM error maps produced by all methods on the PaviaU dataset. 20
+> 00
+> 10
+> 15
+> 05
+> 20
+> 00
+> 10
+> 15
+> 05
+> HSRnet Fusformer U2Net 3DT-Net SMGU-Net CoFusion GT PSRT FMPM-DNet BUGPan
+> Fig. 6. Pseudo-color images with spectral bands 67-15-13 (first patch) and 64-58-16 (third patch) as RGB of ×4 fusion results, and corresponding SAM error maps produced by all methods on the Chikusei dataset.
+
+dataset collected from a mixed agricultural-urban area, con-taining 2517 × 2335 pixels and 128 spectral bands (363– 1018 nm); its complex spatial structures and subtle land-cover transitions pose a severe challenge to the ability to recover fine details under significant spatial degradation. The PaviaU dataset, acquired by the ROSIS-03 sensor, consists of 
+
+610 × 340 pixels and 103 spectral bands. Its abundant urban elements, such as buildings, roads, and vegetation, introduce significant spatial discontinuities and spectral variability, mak-ing it an ideal benchmark for evaluating spatial-spectral con-sistency in structured scenes. In contrast, the CAVE dataset, containing 32 indoor scenes, provides nearly noise-free ground truth (GT), allowing for precise measurement of the abso-lute accuracy of spectral reconstruction, with an evaluation focus on the model’s ability to preserve intrinsic spectral characteristics. Regarding data simulation, we followed Wald’s protocol, simulating HRMSI via spectral response functions and constructing LRHSI using Gaussian blurring followed by 
+
+4× spatial downsampling. 
+
+b) Comparison Methods and Implementation Details.: 
+
+We conducted an in-depth comparison of CoFusion with eight representative state-of-the-art methods. These algorithms encompass various mainstream architectural paradigms, in-cluding CNN-based models (HSRnet [13]), Transformer-based architectures (Fusformer [17], PSRT [24]), U-Net variants (U2Net [25]), and hybrid design schemes (BUGPan [28], FMPM-DNet [27], SMGU-Net [26]). To ensure experimen-tal fairness, all competing algorithms followed the default hyperparameter configurations provided by their original au-thors. These methods represent different design philosophies in current spatial-spectral modeling, providing a comprehensive benchmark for evaluating the effectiveness of explicit cross-modal collaboration. In terms of evaluation metrics, we employed PSNR and SSIM to measure spatial reconstruction quality, while utilizing SAM and ERGAS to assess spectral fidelity. This dual evalu-ation mechanism is crucial for MHIF tasks, as hyperspectral image fusion inherently involves a trade-off between spatial sharpness and spectral consistency. CoFusion is implemented based on the PyTorch framework and trained end-to-end using the AdamW optimizer. The model is configured with a com-pact hidden dimension ( D = 64 ), emphasizing the efficiency of feature interaction rather than increasing capacity through simple parameter stacking. This design philosophy reflects our core idea of improving feature representation quality through a structured spatial-spectral collaborative mechanism. 7
+
+TABLE I QUANTITATIVE COMPARISON OF VARIOUS METHODS ON THE CHIKUSEI , CAVE, AND PAVIA U DATASETS ACROSS ×2, ×4, AND ×8 SCALING FACTORS .
+
+BOLD INDICATES THE BEST PERFORMANCE , WHILE UNDERLINE DENOTES THE SECOND -BEST .Method Scale Chikusei CAVE PaviaU PSNR ↑ SSIM ↑ SAM ↓ ERGAS ↓ PSNR ↑ SSIM ↑ SAM ↓ ERGAS ↓ PSNR ↑ SSIM ↑ SAM ↓ ERGAS ↓                                                                                                                                                                                                                                                                                                                                                                            
+
+> HSRnet [13] ×251.5324 0.9951 2.0982 1.5893 50.5410 0.9926 2.4608 2.0012 39.4947 0.9662 3.9012 2.4531 Fusformer [17] ×252.3104 0.9954 2.0596 1.5698 51.3352 0.9935 2.3294 1.9692 40.3442 0.9703 3.5187 2.2514 PSRT [24] ×252.3821 0.9957 2.0091 1.4692 51.4128 0.9941 2.1795 1.8891 40.4956 0.9766 2.3996 2.0812 U2Net [25] ×252.4657 0.9961 2.0003 1.4098 51.4816 0.9948 2.1297 1.8496 40.7347 0.9789 2.3092 1.5398 3DT-Net [14] ×252.4155 0.9974 1.9498 1.4195 51.5043 0.9958 2.0496 1.8294 39.7224 0.9784 2.4692 1.7896 BUGPan [28] ×251.6205 0.9957 2.1194 1.5902 50.5846 0.9933 2.4992 2.0418 39.5856 0.9724 3.2294 2.2715 FMPM-DNet [27] ×251.9826 0.9962 2.0497 1.4996 50.9621 0.9943 2.2693 1.9397 40.2562 0.9767 2.9594 2.1312 SMGU-Net [26] ×251.2751 0.9971 2.0195 1.3897 51.5052 0.9956 2.0792 1.8194 37.8881 0.9753 3.0192 2.0496 CoFusion ×253.0875 0.9981 1.8756 1.2536 51.5247 0.9972 2.0238 1.7421 41.3824 0.9872 1.8341 1.2268
+> HSRnet [13] ×447.8548 0.9886 2.6194 2.0896 46.8276 0.9842 3.1392 2.5894 35.7608 0.9512 4.0496 3.4492 Fusformer [17] ×448.6466 0.9891 2.5492 2.0495 47.6268 0.9859 3.0094 2.4792 36.2936 0.9537 4.1192 3.1496 PSRT [24] ×449.0377 0.9901 2.3594 1.9296 47.9984 0.9869 2.8392 2.2994 36.7794 0.9622 3.5994 2.6592 U2Net [25] ×449.0061 0.9911 2.3296 1.8694 47.9379 0.9879 2.7792 2.1696 37.2681 0.9676 3.2394 2.4092 3DT-Net [14] ×446.6940 0.9944 2.5896 2.3294 45.6038 0.9901 3.1992 2.8396 36.6864 0.9722 3.0492 2.5394 BUGPan [28] ×448.3254 0.9909 2.4794 2.1496 47.2645 0.9871 2.9792 2.5594 37.0623 0.9617 3.8492 2.9694 FMPM-DNet [27] ×448.7148 0.9919 2.3994 1.9996 47.7016 0.9886 2.8892 2.3594 37.7147 0.9657 3.4692 2.7096 SMGU-Net [26] ×449.8382 0.9964 2.2594 1.7096 48.8124 0.9931 2.7292 2.0594 37.4201 0.9734 3.2092 2.1694 CoFusion ×450.6742 0.9971 2.1494 1.7252 49.1382 0.9948 2.6045 2.0087 38.3195 0.9824 2.5637 1.9482
+> HSRnet [13] ×846.2262 0.9887 2.8094 2.5396 45.2084 0.9838 3.3692 3.0894 28.6921 0.8924 6.4992 5.4194 Fusformer [17] ×846.3910 0.9899 2.7492 2.4396 45.3427 0.9858 3.2892 2.9694 28.9891 0.8984 6.4192 5.3994 PSRT [24] ×847.1457 0.9924 2.6992 2.2196 46.1125 0.9879 3.1692 2.7294 30.2671 0.9164 6.0892 5.3294 U2Net [25] ×847.3911 0.9941 2.5592 2.1196 46.3639 0.9897 3.0392 2.6394 30.4211 0.9188 5.9392 5.0794 3DT-Net [14] ×846.1842 0.9899 2.9292 2.5096 45.3126 0.9852 3.5092 3.1394 29.4824 0.9049 6.1592 5.3394 BUGPan [28] ×846.8658 0.9893 2.9692 2.5096 45.7846 0.9848 3.4292 3.0194 29.4854 0.9124 6.2692 5.4194 FMPM-DNet [27] ×847.2826 0.9904 2.8192 2.2996 46.2312 0.9864 3.2192 2.8294 30.1849 0.9174 5.8192 5.0494 SMGU-Net [26] ×848.1582 0.9959 2.4892 1.9396 47.1327 0.9914 2.9092 2.4194 28.2848 0.9389 5.8892 4.8594 CoFusion ×848.9371 0.9963 2.2156 1.9875 47.4931 0.9934 2.8276 2.3552 30.7428 0.9481 5.7946 4.5213
+> Best Value -+∞100+∞100+∞100
+
+B. Quantitative Results Analysis 
+
+We performed a comprehensive evaluation of CoFusion across all benchmark datasets for ×2, ×4, and ×8 scaling factors. As shown in Table I, CoFusion consistently achieves optimal performance across various datasets and scaling fac-tors. This strongly demonstrates that explicit modeling of spatial-spectral collaboration can effectively address the inher-ent ambiguity in hyperspectral fusion, successfully achieving a balance between the competing objectives of spatial detail recovery and spectral fidelity preservation. 
+
+a) Chikusei Dataset Analysis.: On the large-scale remote sensing Chikusei dataset, CoFusion demonstrates excellent robustness under the ×8 super-resolution setting. Under this degradation condition, severe information loss increases the difficulty of spatial reconstruction. The improvement in ex-perimental results indicates that SpaCAM helps reconstruct structural priors, while SSCFM enhances the model’s recon-struction stability and structural integrity in harsh degradation environments by integrating multi-scale feature cues. 
+
+b) PaviaU Dataset Analysis.: On the PaviaU dataset, CoFusion achieves steady gains in PSNR and SSIM metrics, reflecting its ability to maintain structural consistency in com-plex urban scenes. Furthermore, the improvement in spectral metrics suggests that spatial enhancement does not lead to significant spectral distortion, indicating that the proposed collaborative mechanism achieves a balance between spatial sharpening and spectral preservation to a certain extent. 
+
+c) CAVE Dataset Analysis.: On the CAVE dataset, CoFu-sion maintains superior spectral fidelity. Given that the spatial variation in this dataset is relatively smooth, it is primarily used to evaluate the model’s spectral representation capability. The experimental performance demonstrates that SpeCAM ef-fectively captures long-range spectral dependencies and main-tains spectral continuity during the feature mapping process. 
+
+d) Performance on Real-world Scenarios.: To evaluate the practical applicability and generalization capability of CoFusion, we conducted experiments on real-world datasets where the ground truth is unavailable. In this unsupervised setting, we employ the Quality with No Reference (QNR) index, which consists of the spectral distortion index Dλ and the spatial distortion index Ds. As summarized in Table II, CoFusion consistently achieves the lowest distortion values (Dλ, D s) and the highest QN R scores across the Chiku-sei, CAVE, and PaviaU datasets. Specifically, compared with Transformer-based methods like PSRT and hybrid models such as SMGU-Net, our method exhibits superior performance in preserving spectral consistency while significantly sharpening spatial structures. These results demonstrate that the proposed spatial-spectral collaborative modeling effectively captures the underlying physical characteristics of the sensors and main-tains a robust fusion logic, even when explicit supervision is absent. In summary, CoFusion demonstrates a remarkable capac-ity to simultaneously improve spectral fidelity and spatial resolution. In contrast to traditional model-based approaches where these two objectives often pose a competitive trade-off, CoFusion achieves synchronized optimization through its collaborative architectural design. The consistent gains across both supervised and unsupervised metrics suggest that 80.20 
+
+> 0.00
+> 0.10
+> 0.15
+> 0.05
+> 0.20
+> 0.00
+> 0.10
+> 0.15
+> 0.05
+
+HSRnet  Fusformer  U2Net  3DT-Net  SMGU-Net  CoFusion  GT PSRT  FMPM-DNet BUGPan 
+
+Fig. 7. Pseudo-color images with spectral bands 20-10-3 ( balloons ) and 6-25-11 ( Chart and Stuffed Toy ) as RGB of ×4 fusion results, and corresponding SAM error maps produced by all methods on the CAVE dataset. TABLE II QUANTITATIVE EVALUATION ON REAL -WORLD BENCHMARKS (C HIKUSEI , CAVE, AND PAVIA U) UNDER ×4 SCALING FACTORS . T HE BOLD AND UNDERLINED RESULTS REPRESENT THE BEST AND SECOND -BEST PERFORMANCE , RESPECTIVELY .Method Chikusei CAVE PaviaU                                                                                                   
+
+> Dλ↓Ds↓QN R ↑Dλ↓Ds↓QN R ↑Dλ↓Ds↓QN R ↑
+> HSRnet [13] 0.0842 0.0915 0.8321 0.0921 0.1045 0.8142 0.1124 0.1256 0.7785 Fusformer [17] 0.0795 0.0882 0.8456 0.0884 0.0998 0.8265 0.1085 0.1198 0.7892 PSRT [24] 0.0768 0.0854 0.8532 0.0852 0.0965 0.8348 0.1042 0.1145 0.7965 U2Net [25] 0.0685 0.0792 0.8698 0.0765 0.0885 0.8512 0.0945 0.1052 0.8124 3DT-Net [14] 0.0712 0.0765 0.8645 0.0798 0.0862 0.8465 0.0982 0.1025 0.8056 BUGPan [28] 0.0815 0.0895 0.8398 0.0905 0.1012 0.8198 0.1105 0.1215 0.7825 FMPM-DNet [27] 0.0745 0.0825 0.8585 0.0825 0.0935 0.8412 0.1015 0.1112 0.8015 SMGU-Net [26] 0.0695 0.0785 0.8652 0.0782 0.0892 0.8485 0.0965 0.1065 0.8095 CoFusion (Ours) 0.0638 0.0712 0.8768 0.0715 0.0810 0.8604 0.0882 0.0956 0.8223
+
+explicit spatial-spectral interaction modeling is a highly ef-fective paradigm for mitigating the fundamental dilemmas in hyperspectral image fusion. 
+
+C. Visual Comparison and Spectral Curve Analysis 
+
+Fig. 6 to Fig. 7 present the qualitative comparison results for each method. From the spatial perspective, CoFusion re-constructs sharper edges and richer textural details, exhibiting a clear visual advantage especially in high-frequency regions such as object boundaries. In contrast, CNN-based methods, limited by local receptive fields, often produce over-smoothed results, while some attention-based methods are prone to intro-ducing spatial inconsistency artifacts when handling complex scene transitions. Analyzing from the spectral dimension, the SAM error maps reveal that competing methods generally suffer from significant error accumulation in boundary regions, reflect-ing their insufficient spatial-spectral alignment capabilities. In sharp contrast, CoFusion produces a more uniform error distribution, indicating that its spatial detail enhancement process strictly adheres to spectral consistency constraints. The spectral reflectance curves in Fig. 8 further validate this conclusion: CoFusion maintains a high degree of fit with the ground truth across the entire band range, proving that fine-grained spatial improvement is not achieved at the expense of spectral integrity. 
+
+D. Model Efficiency Analysis 
+
+Beyond reconstruction accuracy, we further evaluated the computational efficiency of the model, which is of great significance for practical deployment. Fig. 9 illustrates the comparison results of CoFusion with other SOTA methods in terms of parameter count (Params) and inference latency (Latency). The experimental results indicate that CoFusion achieves an excellent balance between performance and efficiency. Regarding inference speed, CoFusion’s inference latency is only 5.65 ms, which is significantly better than models such as 3DTNet (36.43 ms) and U2Net (16.66 ms). In terms of model scale, CoFusion controls the parameter count at 4.91 M; while maintaining a smaller model scale, its PSNR (38.32 dB) and SSIM (0.982) are significantly superior to FMPM-DNet (5.84 M) and SMGU-Net (6.23 M), which have larger parameter counts. This efficiency advantage is primarily attributed to two core design principles: 1) adopting lightweight depthwise separable 9Spectral Band  Spectral Band  Spectral Band 
+
+> Reflectance
+> Reflectance
+> Reflectance
+
+(a ) (b)  (c) 
+
+Fig. 8. Spectral reconstruction error analysis for three datasets. The subplots from left to right display pixel-level spectral response curves at specific locations: (a) region (79, 63) of the Chikusei dataset; (b) pixel (98, 128) in the “ Chart and Stuffed Toy ” scene of the CAVE dataset; and (c) pixel (64, 72) of the PaviaU dataset. The results show that the proposed method (red line) maintains minimal deviation from the ground truth (GT) across the entire spectral range, validating its superior spectral fidelity. a b c d e f g h i                              
+
+> 10 1
+> 10 0
+> 10 1
+> 2.16
+> 0.150
+> 0.300
+> 3.73
+> 6.88
+> 0.330
+> 5.84 6.23 4.91
+> Params (M)
+> abcdefghi
+> 10 0
+> 10 1
+> 10 2
+> 3.26
+> 9.74 12.99 16.66
+> 36.43
+> 16.00
+> 5.43 6.93 5.65
+> Latency Time (ms)
+> abcdefghi
+> 35
+> 36
+> 37
+> 38
+> 39
+> 40
+> 35.76
+> 36.29
+> 36.78
+> 37.27
+> 36.69
+> 37.06
+> 37.71 37.42
+> 38.32
+> PSNR (dB)
+> abcdefghi
+> 0.95
+> 0.96
+> 0.97
+> 0.98
+> 0.99
+> 0.951 0.954
+> 0.962
+> 0.968
+> 0.972
+> 0.962
+> 0.966
+> 0.973
+> 0.982
+> SSIM
+> a: HSRnet
+> b: Fuseformer
+> c: PSRT
+> d: U2net
+> e: 3DTNet
+> f: BUGPan
+> g: FMPM-DNet
+> h: SMGU-Net
+> i: CoFusion
+
+Fig. 9. Model efficiency comparison for ×4 fusion on the PaviaU dataset. The bar chart compares the parameter count (in millions, M) and inference latency (in milliseconds, ms, measured on an Intel Xeon CPU). Note that both axes utilize a logarithmic scale to accommodate the wide range of values. 
+
+convolutions for spatial encoding, which effectively reduces computational complexity; 2) avoiding redundant cross-modal repeated calculations through a structured feature routing mechanism. In summary, the performance improvement of Co-Fusion stems primarily from more effective feature utilization rather than simple parameter stacking, a characteristic that holds high practical value for resource-constrained real-time hyperspectral imaging applications. 
+
+E. Ablation Study 
+
+To validate the design motivation of each core module and its contribution to the final performance, we conducted an ablation study. Specifically, we constructed different variant models by progressively replacing the core components with standard residual blocks. Table III presents the quantitative results for each variant on the PaviaU dataset, with specific analysis as follows: 
+
+TABLE III ABLATION STUDY OF COFUSION MODULES ON THE PAVIA U DATASET FOR 
+
+×4 FUSION TASK . T HE BOLD AND UNDERLINED RESULTS REPRESENT THE BEST AND SECOND -BEST PERFORMANCE , RESPECTIVELY .Variants PSNR (dB) ↑ SSIM ↑ Params (M) ↓ Latency (ms) ↓
+
+w/o SpaCAM 37.1245 0.9612 3.58 4.12 
+
+w/o SpeCAM 37.5862 0.9694 4.15 4.85 w/o SSCFM 37.9518 0.9752 4.62 5.28 Full Model 38.3195 0.9824 4.91 5.65 
+
+The ablation results highlight a clear functional decon-struction of CoFusion: removing SpaCAM causes the most severe PSNR drop (from 38.3195 dB to 37.1245 dB), confirm-ing its fundamental role in recovering high-frequency details and maintaining image topology. Similarly, the ablation of SpeCAM leads to a 0.73 dB decline and obvious spectral distortion, underscoring its criticality in preserving physical properties and cross-band consistency. Furthermore, despite its minimal computational overhead, the removal of SSCFM triggers a systematic performance decline, revealing its indis-pensable role in multi-scale alignment and interaction stabi-lization. Ultimately, the organic integration of these specialized modules constitutes CoFusion’s core advantage in balancing high-precision reconstruction with computational efficiency. V. C ONCLUSION 
+
+In this paper, we proposed CoFusion: a spatial-spectral collaborative framework for Multispectral and Hyperspectral Image Fusion (MHIF). By explicitly modeling cross-scale interactions and spatial-spectral coupling relationships, the proposed method effectively alleviates the inherent trade-off bottleneck between spatial detail enhancement and spectral fidelity preservation. In terms of architectural design, the MSG module bridges global semantics and local details through a multi-scale pyramidal structure. Within each scale, the collab-orative design of SpaCAM and SpeCAM achieves comple-mentary modeling of spatial contextual information and long-range spectral dependencies. Furthermore, the SSCFM enables adaptive feature alignment and dynamic interaction, effectively suppressing the interference of redundant information while enhancing cross-modal consistency. Extensive experimental 10 
+
+results on multiple benchmark datasets demonstrate that CoFu-sion consistently outperforms existing state-of-the-art methods in both spatial reconstruction and spectral fidelity. This fully validates the effectiveness, robustness, and computational ef-ficiency advantages of the proposed collaborative framework in addressing complex image degradation and cross-domain generalization tasks. REFERENCES [1] P. Liu, T. Xu, J. Wang, H. Chen, H. Bai, and J. Li, “Dual-stage hyperspectral image classification model with spectral supertoken,” in 
+
+European Conference on Computer Vision , pp. 368–386, Springer, 2025. [2] R. Hang, Z. Li, Q. Liu, P. Ghamisi, and S. S. Bhattacharyya, “Hyperspec-tral image classification with attention-aided cnns,” IEEE Transactions on Geoscience and Remote Sensing , p. 2281–2293, Mar 2021. [3] X. Cao, J. Yu, R. Xu, J. Wei, and L. Jiao, “Mask-enhanced contrastive learning for hyperspectral image classification,” IEEE Transactions on Geoscience and Remote Sensing , vol. 62, pp. 1–15, 2024. [4] Y. Bai, H. Wu, L. Zhang, and H. Guo, “Lightweight mamba model based on spiral scanning mechanism for hyperspectral image classification,” 
+
+IEEE Geoscience and Remote Sensing Letters , vol. 22, pp. 1–5, 2025. [5] P. K. Sethy, C. Pandey, Y. K. Sahu, and S. K. Behera, “Hyperspec-tral imagery applications for precision agriculture-a systemic survey,” 
+
+Multimedia Tools and Applications , vol. 81, pp. 3005–3038, 2022. [6] P. Kwarteng and A. Chavez, “Extracting spectral contrast in landsat the-matic mapper image data using selective principal component analysis,” 
+
+Photogramm. Eng. Remote Sens , vol. 55, no. 1, pp. 339–348, 1989. [7] C. A. Laben and B. V. Brower, “Process for enhancing the spatial resolution of multispectral imagery using pan-sharpening,” Jan. 4 2000. US Patent 6,011,875. [8] C. S. Yilmaz, V. Yilmaz, and O. Gungor, “A theoretical and practical survey of image fusion methods for multispectral pansharpening,” In-formation Fusion , vol. 79, pp. 1–43, 2022. [9] C. Serifoglu Yilmaz and O. Gungor, “A metaheuristic optimization-based solution to mtf-glp-based pansharpening,” PFG–Journal of Photogram-metry, Remote Sensing and Geoinformation Science , vol. 91, no. 4, pp. 245–272, 2023. [10] Z. Zeng, S. Pal, J. Kline, G. M. Fung, and V. Singh, “Multi resolution analysis (mra) for approximate self-attention,” in International confer-ence on machine learning , pp. 25955–25972, PMLR, 2022. [11] F. Palsson, J. R. Sveinsson, and M. O. Ulfarsson, “A new pansharpening algorithm based on total variation,” IEEE Geoscience and Remote Sensing Letters , vol. 11, no. 1, pp. 318–322, 2013. [12] L.-J. Deng, G. Vivone, W. Guo, M. Dalla Mura, and J. Chanussot, “A variational pansharpening approach based on reproducible kernel hilbert space and heaviside function,” IEEE Transactions on Image Processing ,vol. 27, no. 9, pp. 4330–4344, 2018. [13] J.-F. Hu, T.-Z. Huang, L.-J. Deng, T.-X. Jiang, G. Vivone, and J. Chanus-sot, “Hyperspectral image super-resolution via deep spatiospectral at-tention convolutional neural networks,” IEEE Transactions on Neural Networks and Learning Systems , p. 7251–7265, 2022. [14] Q. Ma, J. Jiang, X. Liu, and J. Ma, “Learning a 3d-cnn and transformer prior for hyperspectral image super-resolution,” Information Fusion ,vol. 100, p. 101907, 2023. [15] Q. Xie, M. Zhou, Q. Zhao, Z. Xu, and D. Meng, “Mhf-net: An interpretable deep network for multispectral and hyperspectral image fu-sion,” IEEE Transactions on Pattern Analysis and Machine Intelligence ,vol. 44, no. 3, pp. 1457–1473, 2022. [16] C. Zhu, T. Zhang, Q. Wu, Y. Li, and Q. Zhong, “An implicit transformer-based fusion method for hyperspectral and multispectral remote sensing image,” International Journal of Applied Earth Observation and Geoin-formation , vol. 131, p. 103955, 2024. [17] J.-F. Hu, T.-Z. Huang, L.-J. Deng, H.-X. Dou, D. Hong, and G. Vivone, “Fusformer: A transformer-based fusion network for hyperspectral im-age super-resolution,” IEEE Geoscience and Remote Sensing Letters ,pp. 1–5, 2022. [18] M. Zhang, C. Zhang, Q. Zhang, J. Guo, X. Gao, and J. Zhang, “Essaformer: Efficient transformer for hyperspectral image super-resolution,” in Proceedings of the IEEE/CVF International Conference on Computer Vision , pp. 23073–23084, 2023. [19] A. Garzelli, F. Nencini, and L. Capobianco, “Optimal mmse pan sharp-ening of very high resolution multispectral images,” IEEE Transactions on Geoscience and Remote Sensing , vol. 46, no. 1, pp. 228–236, 2007. [20] J. Liu, “Smoothing filter-based intensity modulation: A spectral preserve image fusion technique for improving spatial details,” International Journal of remote sensing , vol. 21, no. 18, pp. 3461–3472, 2000. [21] L. Alparone, A. Garzelli, and G. Vivone, “Intersensor statistical match-ing for pansharpening: Theoretical issues and practical solutions,” IEEE Transactions on Geoscience and Remote Sensing , vol. 55, no. 8, pp. 4682–4695, 2017. [22] X. Otazu, M. Gonz´ alez-Aud´ ıcana, O. Fors, and J. N´ u˜ nez, “Introduction of sensor spectral response into image fusion methods. application to wavelet-based methods,” IEEE Transactions on Geoscience and Remote Sensing , vol. 43, no. 10, pp. 2376–2385, 2005. [23] S. G. Mallat, “A theory for multiresolution signal decomposition: the wavelet representation,” IEEE transactions on pattern analysis and machine intelligence , vol. 11, no. 7, pp. 674–693, 2002. [24] S.-Q. Deng, L.-J. Deng, X. Wu, R. Ran, D. Hong, and G. Vivone, “Psrt: Pyramid shuffle-and-reshuffle transformer for multispectral and hyperspectral image fusion,” IEEE Transactions on Geoscience and Remote Sensing , pp. 1–15, 2023. [25] S. Peng, C. Guo, X. Wu, and L.-J. Deng, “U2net: A general frame-work with spatial-spectral-integrated double u-net for image fusion,” in 
+
+Proceedings of the 31st ACM International Conference on Multimedia ,p. 3219–3227, 2023. [26] J. Yan, K. Zhang, Q. Sun, C. Ge, W. Wan, J. Sun, and H. Zhang, “Spatial–spectral unfolding network with mutual guidance for multi-spectral and hyperspectral image fusion,” Pattern Recognition , vol. 161, p. 111277, 2025. [27] X. Wang, Y. Yang, S. Huang, H. Lu, W. Wan, and A. Zhao, “Fmpm-dnet: Hyperspectral pansharpening dynamic network based on feature mod-ulation and probability mask,” in Proceedings of the AAAI Conference on Artificial Intelligence , vol. 39, pp. 861–868, 2025. [28] J. Hou, X. Liu, C. Wu, X. Cong, C. Huang, L.-J. Deng, and J. W. You, “Bidomain uncertainty gated recursive network for pan-sharpening,” 
+
+Information Fusion , vol. 118, p. 102938, 2025. [29] W. Wang, J. Dai, Z. Chen, Z. Huang, Z. Li, X. Zhu, X. Hu, T. Lu, L. Lu, H. Li, et al. , “Internimage: Exploring large-scale vision foundation models with deformable convolutions,” in Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pp. 14408– 14419, 2023. [30] Z. Liu, H. Mao, C.-Y. Wu, C. Feichtenhofer, T. Darrell, and S. Xie, “A convnet for the 2020s,” Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , 2022. [31] C. Peng, X. Zhang, G. Yu, G. Luo, and J. Sun, “Large kernel matters – improve semantic segmentation by global convolutional network,” in 
+
+Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR) , July 2017. [32] Z. Liu, Y. Lin, Y. Cao, H. Hu, Y. Wei, Z. Zhang, S. Lin, and B. Guo, “Swin transformer: Hierarchical vision transformer using shifted windows,” in Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV) , 2021. [33] H. Hu, Z. Zhang, Z. Xie, and S. Lin, “Local relation networks for image recognition,” in Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV) , pp. 3464–3473, 2019. [34] Z. Liu, H. Hu, Y. Lin, Z. Yao, Z. Xie, Y. Wei, J. Ning, Y. Cao, Z. Zhang, L. Dong, F. Wei, and B. Guo, “Swin transformer v2: Scaling up capacity and resolution,” in International Conference on Computer Vision and Pattern Recognition (CVPR) , 2022. [35] B. Li, X. Wang, and H. Xu, “Pif-net: Ill-posed prior guided multispectral and hyperspectral image fusion via invertible mamba and fusion-aware lora,” in Proceedings of the AAAI Conference on Artificial Intelligence ,vol. 40, pp. 5964–5972, 2026. [36] K. Sun, B. Xiao, D. Liu, and J. Wang, “Deep high-resolution rep-resentation learning for human pose estimation,” in Proceedings of the IEEE/CVF conference on computer vision and pattern recognition ,pp. 5693–5703, 2019. [37] J. Dai, H. Qi, Y. Xiong, Y. Li, G. Zhang, H. Hu, and Y. Wei, “Deformable convolutional networks,” in Proceedings of the IEEE international conference on computer vision , pp. 764–773, 2017. [38] X. Zhu, H. Hu, S. Lin, and J. Dai, “Deformable convnets v2: More deformable, better results,” in Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pp. 9308–9316, 2019. [39] J. Hu, L. Shen, and G. Sun, “Squeeze-and-excitation networks,” in 2018 IEEE/CVF Conference on Computer Vision and Pattern Recognition ,pp. 7132–7141, 2018. [40] N. Yokoya and A. Iwasaki, “Airborne hyperspectral data over chikusei,” 
+
+Space Appl. Lab., Univ. Tokyo, Tokyo, Japan, Tech. Rep. SAL-2016-05-27 , p. 5, 2016.

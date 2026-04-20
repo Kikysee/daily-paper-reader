@@ -1,0 +1,347 @@
+Title: MapSR: Prompt-Driven Land Cover Map Super-Resolution via Vision Foundation Models
+
+URL Source: https://arxiv.org/pdf/2604.14582v1
+
+Published Time: Fri, 17 Apr 2026 00:32:54 GMT
+
+Number of Pages: 5
+
+Markdown Content:
+> 1
+
+# MapSR: Prompt-Driven Land Cover Map Super-Resolution via Vision Foundation Models 
+
+Ruiqi Wang , Qi Yu, Jie Ma , Member, IEEE , Hanlin Wu , Member, IEEE 
+
+Abstract —High-resolution (HR) land-cover mapping is often constrained by the high cost of dense HR annotations. We revisit this problem from the perspective of map super-resolution, which enhances coarse low-resolution (LR) land-cover products into HR maps at the resolution of the input imagery. Existing weakly supervised methods can leverage LR labels, but they typically use them to retrain dense predictors with substantial computational cost. We propose MapSR, a prompt-driven framework that decouples supervision from model training. MapSR uses LR labels once to extract class prompts from frozen vision foundation model features through a lightweight linear probe, after which HR mapping proceeds via training-free metric inference and graph-based prediction refinement. Specifically, class prompts are estimated by aggregating high-confidence HR features identified by the linear probe, and HR predictions are obtained by cosine-similarity matching followed by graph-based propagation for spatial refinement. Experiments on the Chesapeake Bay dataset show that MapSR achieves 59.64% mIoU without any HR labels, remaining competitive with the strongest weakly supervised base-line and surpassing a fully supervised baseline. Notably, MapSR reduces trainable parameters by four orders of magnitude and shortens training time from hours to minutes, enabling scalable HR mapping under limited annotation and compute budgets. The code is available at https://github.com/rikirikirikiriki/MapSR. 
+
+Index Terms —Map super-resolution, vision foundation model, prompt-driven segmentation, land-cover mapping, weakly super-vised learning. 
+
+I. I NTRODUCTION 
+
+# WITH the increasing spatial resolution of remote-sensing imagery, scalable high-resolution (HR) land-cover mapping has become increasingly important for Earth surface monitoring and related applications [1]. Obtaining dense HR annotations at scale remains costly and labor-intensive. Despite this cost, most existing HR map-ping methods still formulate land-cover mapping as a dense prediction problem and directly train supervised models on HR labels, ranging from early pixel-wise classifiers such as random forests [2] to recent CNN- and Transformer-based architectures [3], [4]. While effective, these methods depend heavily on large-scale HR annotation and are difficult to scale to new regions. To alleviate this annotation burden, recent methods exploit coarse LR land-cover products to improve HR mapping ac-
+
+This work was supported in part by the National Natural Science Foun-dation of China under Grant 62401064, and in part by the Fundamental Research Funds for the Central Universities under Grant 2024JJ040 and Grant 2024TD001. (Corresponding author: Hanlin Wu.) 
+
+The authors are with the School of Information Science and Technol-ogy, Beijing Foreign Studies University, Beijing 100089, China (e-mail: hlwu@bfsu.edu.cn). 
+
+Fig. 1. Comparison of representative methods in terms of annotation cost and training time for HR land-cover mapping, highlighting the efficiency advantage of MapSR. 
+
+curacy [5], [6]. However, they are still typically implemented within weakly supervised dense prediction frameworks, where LR supervision is used to retrain large segmentation models (on the order of 10 7 parameters) through gradient descent, typ-ically requiring several GPU-hours. As a result, these methods reduce annotation cost without substantially reducing training cost. In other words, even when coarse LR supervision is available, the cost of retraining a large dense predictor remains high. This observation suggests that the main bottleneck is not only the lack of HR labels, but also the prevailing train-then-infer paradigm itself. Rather than treating LR products primarily as supervision for optimizing a dense predictor, we revisit the problem from the perspective of map super-resolution , where coarse LR products are treated as the source to be enhanced into HR land-cover maps. Recent advances in vision foundation models, especially self-supervised vision transformers (ViTs) [7] such as DINOv2 [8], have shown that frozen features can provide strong se-mantic transfer across downstream tasks. Recent work further suggests that upsampled DINOv2 features can already support unsupervised vision tasks and weakly supervised segmentation without retraining a full model [9], [10]. This suggests that LR labels may only be needed once to identify class semantics in the frozen embedding space, turning map super-resolution into a lightweight prompt construction problem rather than a heavy weakly supervised learning problem. Based on this idea, we propose MapSR, a prompt-driven framework for HR land-cover map super-resolution via vision foundation models. MapSR freezes the feature extractor, uses a lightweight linear probe (only 4K trainable parameters) to identify high-confidence HR pixels under LR supervision, aggregates them into class prompts, and performs HR predic-tion by cosine-similarity matching followed by graph-based 
+
+> arXiv:2604.14582v1 [cs.CV] 16 Apr 2026 2
+
+refinement. In this way, supervision is distilled into compact class prototypes rather than full model weights, so new images can be processed without gradient-based optimization (see Fig. 1). The main contributions are as follows: 1) We revisit HR land-cover mapping from the perspective of map super-resolution and formulate it as enhancing coarse LR land-cover products into HR maps, rather than treating them solely as supervision for dense prediction. 2) We propose a prompt-driven paradigm that decouples supervision from model training: LR labels are used once to extract class prompts through a lightweight lin-ear probe, enabling subsequent HR mapping via metric-based inference rather than full-network retraining. 3) We develop a sequential framework that combines frozen vision foundation model features, attention-based feature upsampling, prompt-based pixel classification, and graph-based refinement to produce spatially coher-ent HR land-cover maps. 4) Extensive experiments demonstrate that this paradigm achieves competitive accuracy without HR labels while reducing trainable parameters to only 4K and training time to about 18 minutes. II. M ETHODOLOGY 
+
+A. Problem Formulation 
+
+Given an HR image I ∈ R3×H×W and a coarse LR land-cover product YLR ∈ Y h×w, where h ≪ H and w ≪ W
+
+(typically by a factor of 10–30), the goal of map super-resolution is to recover an HR land-cover map Y ∈ Y H×W by enhancing the LR product to the resolution of the input image. Here, Y = {0, 1, . . . , n } denotes the discrete label space of 
+
+C = n + 1 land-cover classes. The key distinction of our formulation lies in how the LR product is used. Instead of treating it as supervision for retraining a dense predictor, we use it once to extract class prompts, after which HR mapping is performed by metric-based inference in the frozen embedding space. To this end, we extract a dense HR feature map F ∈
+
+RD×H×W from the input image using a frozen ViT encoder and a feature upsampling module. As illustrated in Fig. 2, the proposed approach consists of three steps: (1) constructing class prompts { ˆpc}nc=0 from the LR product via lightweight linear probing; (2) classifying HR pixels via nearest-neighbor search against prompts; and (3) refining the initial predictions through graph-based spatial regularization. Formally, the map-ping is expressed as 
+
+f (I, Y LR ) = g
+
+
+
+arg max  
+
+> c
+
+⟨ ˆF (I), ˆpc(YLR )⟩
+
+
+
+, (1) where ˆF and ˆpc(YLR ) denote the ℓ2-normalized HR feature map and the class prompt extracted from the LR product, respectively, and g(·) is the graph-based refinement operator. 
+
+B. Semantic Feature Embedding 
+
+Self-supervised ViTs like DINOv2 [8] provide robust, se-mantically rich features, but their patch-level outputs are too coarse for HR land-cover mapping. We therefore upsample them into dense, spatially aligned features using the HR image structure. 
+
+1) Foundation Model as Feature Extractor: We adopt a frozen ViT encoder ϕViT pre-trained via self-supervised learn-ing [8]. Given an input image I, the encoder produces patch-level tokens {ti}hpwp 
+
+> i=1
+
+where each ti ∈ RD corresponds to a non-overlapping patch. After discarding the CLS token and reshaping, we obtain: 
+
+FLR = Reshape( ϕViT (I)) ∈ RD×hp×wp , (2) where hp = H/p and wp = W/p for patch size p.
+
+2) Attention-based Feature Upsampling: The patch-level features FLR are much coarser than the target resolution 
+
+H ×W . Rather than using bilinear interpolation, we employ an attention-based feature upsampling module [11] that leverages the HR image I as guidance to densify FLR in a content-aware manner. Specifically, pixel-wise query features are extracted from I,while keys are derived from a downsampled version of I fused with FLR . The values are taken directly from FLR without modification. The resulting dense feature map F ∈ RD×H×W
+
+is then computed via cross-attention: 
+
+F:,u,v = X
+
+> i,j
+
+α(u,v )→(i,j ) · FLR ,:,i,j , (3) where the attention weights α(u,v )→(i,j ) are obtained from the similarity between the HR query at (u, v ) and the LR key at 
+
+(i, j ). This mechanism ensures that F preserves the semantic content of FLR while remaining spatially aligned with the HR image structure. 
+
+C. Class Prompt Construction from LR Labels 
+
+The central challenge in map super-resolution is to trans-fer semantic information from a coarse LR product to an HR land-cover map. We address this by constructing class prompts—representative embeddings for each land-cover class—that capture class semantics from the LR product while remaining applicable to HR pixel classification. From a metric learning perspective, each class prompt can be viewed as a prototype in the embedding space. Under ℓ2
+
+distance, the ideal prompt for class c is the mean embedding of HR pixels belonging to that class: 
+
+p∗ 
+
+> c
+
+= EI,Y ∗
+
+F:,u,v Y ∗ 
+
+> u,v
+
+= c =
+
+Z
+
+> Z
+
+zp(z|c)d z, (4) where Y ∗ ∈ Y H×W denotes the (unavailable) HR ground-truth land-cover map, F:,u,v is the feature embedding of pixel 
+
+(u, v ), and p(z|c) is the conditional probability density of embeddings given class c.Because Y ∗ is unavailable, p∗ 
+
+> c
+
+cannot be computed directly. We therefore estimate class prompts from the coarse LR product in two steps. First, LR supervision is used once to train a lightweight linear probe on frozen HR features. Second, the trained probe is applied to identify HR pixels whose predictions agree with the upsampled LR labels, and their features are aggregated to form class prompts. In this way, the LR product is used only for one-time prompt estimation rather than iterative model updating. 3HR Image  I
+
+> Primary
+> Prediction Cosine similarity Map
+
+LR  Land-Cover Map 
+
+(a)  Semantic Feature Embedding 
+
+> Image Patches
+> Class Prompt
+
+(b)  Prompt Construction  
+
+> High-Confidence
+> Selection
+> Pseudo-labels
+> Upsampled LR Map
+
+(c)  Graph-Based Refinement         
+
+> Interpolation Linear Probe
+> ViT
+> LR Features
+> HR Image I
+> Downsampled I⊕
+> LR Features
+> LR Features
+
+Q
+
+K
+
+V Dense  HR   
+
+> Features
+> Attention-based Feature Upsampling
+> Superpixel
+> Graph-based
+> Propagation
+
+Final  Prediction  
+
+> Fig. 2. Overview of MapSR. (a) Feature extraction and upsampling produce dense HR features from the input image using a frozen vision foundation model. (b) Prompt construction uses the coarse LR land-cover product to extract class prompts for cosine-similarity-based initial prediction. (c) Graph-based prediction refinement propagates prediction scores over a superpixel graph to obtain the final HR land-cover map.
+
+1) Linear Probing with LR Labels: We train a lightweight linear classifier W ∈ RC×D on the frozen HR features F ,using the LR product only as a one-time supervision source. After upsampling YLR to the HR grid via nearest-neighbor interpolation, we denote the resulting noisy pixel-wise label at location (u, v ) as ℓu,v = Y ↑
+
+> LR
+
+(u, v ). The cross-entropy loss is then: 
+
+L(W ) = − X
+
+> (I,Y LR )∈D LR
+
+X
+
+> u,v
+
+log exp  W ⊤ 
+
+> ℓu,v
+
+F:,u,v 
+
+Pnc′=0 exp  W ⊤ 
+
+> c′
+
+F:,u,v 
+
+ , (5) where DLR is the training dataset of LR-labeled images. 
+
+2) High-Confidence Prompt Aggregation: After training, we apply the linear probe W to the full-resolution dense features F ∈ RD×H×W to obtain HR class predictions. For each class c, we retain only pixels whose linear-probe prediction agrees with the upsampled LR label: 
+
+Ωc =
+
+n
+
+(u, v ) | arg max  
+
+> c′
+
+W ⊤ 
+
+> c′
+
+F:,u,v = c, ℓ u,v = c
+
+o
+
+. (6) The class prompt is then computed as the empirical mean of high-confidence features: 
+
+ˆpc = 1
+
+|Ωc|
+
+X
+
+> (u,v )∈Ωc
+
+F:,u,v . (7) Together, linear probing and high-confidence selection pro-vide a simple denoising mechanism for prompt estimation. Since upsampled LR labels usually preserve the dominant class within each region, aggregating only high-confidence predictions yields class prompts that better approximate the underlying HR semantic distribution. 
+
+D. Metric-Based Initial Prediction 
+
+Given the upsampled features F and class prompts { ˆpc}nc=0 ,we perform an initial pixel-wise classification via nearest-class-center assignment in the embedding space. After ℓ2
+
+normalization, cosine similarity becomes a natural measure of semantic affinity: 
+
+sc(u, v ) = ˆp⊤ 
+
+> c
+
+F:,u,v 
+
+∥ ˆpc∥2∥F:,u,v ∥2
+
+= ˆ p⊤ 
+
+> c
+
+ˆF:,u,v , (8) where ˆpc and ˆF:,u,v are ℓ2-normalized vectors. The initial prediction is: 
+
+ˆYu,v = arg max  
+
+> c∈{ 0,...,n }
+
+sc(u, v ). (9) This yields an initial land-cover map, which is subsequently refined through graph-based prediction refinement. 
+
+E. Graph-Based Prediction Refinement 
+
+Our initial HR predictions are based on local feature– prompt similarities and may therefore be unstable near class boundaries. To address this, we refine the prediction scores through graph-based propagation [12], [13], which encourages nearby and semantically similar regions to produce consistent predictions while remaining close to the initial estimate. 
+
+1) Graph Construction: We construct an undirected graph 
+
+G = ( V, E ) where each node corresponds to a superpixel generated by SLIC [14], which reduces computational cost while encouraging local semantic homogeneity. Let {zi}Ni=1 
+
+and {xi}Ni=1 denote the mean feature embeddings and spatial coordinates of each superpixel. Edges are established via k-nearest neighbors in a joint feature-spatial space, with weights: 
+
+Aij =   max(0 , z ⊤ 
+
+> i
+
+zj )γ
+
+| {z }
+
+> Feature similarity
+
+· exp( −σ∥xi − xj ∥p
+
+> 2
+
+)
+
+| {z }
+
+> Spatial proximity
+
+. (10) Here, the parameter γ > 0 sharpens high-similarity edges, and 
+
+σ, p > 0 control the spatial decay rate. 
+
+2) Prediction Propagation: Let ˆY ∈ RN ×C denote the initial superpixel logits, obtained by averaging pixel-level prediction scores within each superpixel. We seek refined 4                                                                                      
+
+> TABLE I PERFORMANCE COMPARISON ON TRAINABLE PARAMS (M) AND SIX REGIONAL SUBSETS OF THE CHESAPEAKE BAY DATASET (MIOU, %)
+> Category Method Trainable Params (M) Delaware New York Maryland Pennsylvania Virginia West Virginia Average
+> Unsupervised K-means + voting 032.70 50.87 46.74 51.34 43.45 45.53 45.11 Weakly-Supervised Paraformer [5] 145.4 54.95 63.83 66.10 56.83 66.23 49.27 59.54 L2HNet [6] 36.92 46.37 59.87 44.16 49.00 65.09 46.80 51.88 Fully-Supervised EfficientViT [15] 51.31 48.13 40.65 45.48 45.04 45.66 32.10 42.84 EfficientViM [16] 21.70 46.81 53.43 50.41 44.28 45.09 40.87 46.82 UNetFormer [17] 11.72 55.08 66.88 66.83 60.04 54.70 42.66 57.70 Prompt-Driven MapSR 0.004 60.91 62.40 66.19 60.26 57.78 50.31 59.64 MapSR †063.51 67.91 70.19 65.78 57.92 54.31 63.27
+
+logits ˜Y ∈ RN ×C that balance fidelity to ˆY and smoothness over the graph [12]: 
+
+˜Y = arg min 
+
+> ˜Y
+
+
+
+∥ ˜Y − ˆY ∥2 
+
+> F
+
++ λ X
+
+> (i,j )∈E
+
+Aij ∥ ˜Yi − ˜Yj ∥22
+
+
+
+. (11) This objective admits a closed-form solution via the linear system: 
+
+(IN − α ˆA) ˜Y = (1 − α) ˆY , (12) where ˆA = D−1/2AD −1/2 is the symmetrically normalized adjacency matrix, Dii = P 
+
+> j
+
+Aij is the degree matrix, and 
+
+α = λ/ (1 + λ). This can be efficiently solved by the fixed-point iteration: 
+
+˜Y (t+1) = α ˆA ˜Y (t) + (1 − α) ˆY , (13) which preserves the same balance between smoothness and fidelity. After convergence, the refined prediction for each superpixel is obtained by taking the class with the highest logit. This graph-based refinement effectively suppresses noise and en-forces spatial consistency, particularly along class boundaries where the initial predictions are most uncertain. III. EXPERIMENTS AND ANALYSIS 
+
+A. Datasets 
+
+Our experiments are conducted on the Chesapeake Bay dataset [18], which covers the Chesapeake Bay watershed and surrounding areas in the United States. The dataset is divided into six regional subsets corresponding to six states in the study area and contains 732 large, non-overlapping tiles. Each tile is approximately 6000 × 7500 pixels at 1 m spatial resolution. The dataset provides 1 m HR images from NAIP, 30 m LR land-cover products from NLCD with 16 original classes, and 1 m ground-truth land-cover maps from the CCLC project. 
+
+B. Experimental Setup 
+
+In our MapSR framework, we adopt DINOv2 with a feature dimension of 768 as the frozen ViT backbone for feature extraction [8]. Following Paraformer [5], the original 16 NLCD/CCLC categories are merged into 5 evaluation classes for all compared methods. A sliding-window strategy with a chip size of 448 is adopted during graph-based prediction refinement to avoid excessive memory consumption, and the outputs are mosaicked to obtain the final result. For graph-based refinement, SLIC superpixels [14] are generated with 
+
+nsegments = 8000 and compactness = 10 . A k-NN graph is constructed with k = 100 , and prediction propagation is performed with α = 0 .5 (i.e., λ = 1 ) and γ = 1 .0. For the spatial kernel, we fix p = 2 and set σ = 1 after coordinate normalization. For each of the six subregions in the Chesapeake Bay dataset, we randomly select ten HR land-cover maps as the test set. Fully supervised baselines (EfficientViT [15], EfficientViM [16], and UNetFormer [17]) are trained on the remaining HR CCLC labels (excluding the test tiles). Weakly supervised baselines (Paraformer [5] and L2HNet [6]) are trained using all available LR NLCD labels as supervision, without accessing HR ground truth. In contrast, MapSR uses the remaining LR products only for prompt construction rather than full-model training, and an additional variant, MapSR †,uses one non-test HR tile to directly estimate class prompts by averaging the features of labeled HR pixels, providing an empirical upper bound under minimal HR supervision. Since no existing unsupervised methods are available for this setting, we construct an unsupervised baseline by applying K-means clustering [19] and assigning each cluster to a class via majority voting from the corresponding LR labels. 
+
+C. Comparison Results 
+
+Here, the trainable parameter count for MapSR refers to the lightweight linear probe only ( C × D), while class prompts are computed by feature averaging without optimization. Ta-ble I summarizes the quantitative comparison. MapSR reaches 59.64% mIoU without any HR labels, remaining competitive with the strongest weakly supervised baseline (Paraformer, 59.54%) and outperforming a fully supervised baseline (UNet-Former, 57.70%). With only one non-test HR tile for prompt estimation, MapSR † further improves to 63.27% (+3.63%), serving as an empirical upper bound under minimal HR supervision. Notably, MapSR optimizes only ∼ 10 3 param-eters, and the lightweight linear probe training takes about 18 minutes on a single RTX 4090 GPU, while deep segmentation baselines typically require ∼ 10 7 parameters and 6–8 GPU-hours, making our paradigm highly practical for large-area HR mapping under limited annotation and compute budgets. 5
+
+Fig. 3. Visual comparison for HR land-cover mapping. (a) HR image; (b) HR ground-truth label; (c) K-means + voting; (d) EfficientViT; (e) Paraformer; (f) UNetFormer; (g) MapSR; (h) MapSR without graph-based refinement. TABLE II ABLATION OF FEATURE UPSAMPLING , GRAPH REFINEMENT , AND SUPERPIXELS ON CHESAPEAKE BAY (N EW YORK )
+
+Feature Upsampling Graph Refine Superpixel mIoU (%) 
+
+57.70 
+
+✓ 61.77 
+
+✓ ✓ 62.26 
+
+✓ ✓ ✓ 62.40 
+
+D. Ablation Study 
+
+To evaluate the contribution of each component, we perform ablation experiments on the New York subset of the Chesa-peake Bay dataset (Table II). First, we investigate the impact of feature upsampling. As a reference, a prompt-based variant without feature upsampling attains 57.70% mIoU. With feature upsampling and without graph-based prediction refinement, MapSR reaches 61.77%, indicating that precise feature alignment is fundamental for HR mapping. Second, graph-based prediction refinement further improves the average mIoU from 61.77% to 62.26%, and incorporat-ing superpixels improves it again to 62.40%. As shown in Fig. 3, the raw MapSR prediction contains isolated noise and irregular boundaries. After graph-based refinement, the results become cleaner and more spatially consistent, demonstrating its capability to suppress local noise and enhance boundary delineation. IV. C ONCLUSION 
+
+This paper proposes MapSR, a prompt-driven framework for HR land-cover mapping that reformulates the task as map super-resolution over coarse LR products. The key idea is to decouple supervision from model training: LR labels are used once to extract class prompts through a lightweight linear probe, after which HR mapping proceeds via training-free metric inference and graph-based refinement. Experiments on the Chesapeake Bay dataset show that MapSR remains competitive with fully and weakly supervised methods while substantially reducing training cost, enabling scalable HR land-cover mapping without HR annotations and under lim-ited compute budgets. Future work will explore more robust prompt construction under temporal mismatch and broader cross-region generalization. REFERENCES [1] H. Zhang, Z.-f. Qi, X.-y. Ye, Y.-b. Cai, W.-c. Ma, and M.-n. Chen, “Analysis of land use/land cover change, population shift, and their effects on spatiotemporal patterns of urban heat islands in metropolitan shanghai, china,” Appl. Geogr. , vol. 44, pp. 121–133, 2013. [2] J. C.-W. Chan and D. Paelinckx, “Evaluation of random forest and adaboost tree-based ensemble classification and spectral band selection for ecotope mapping using airborne hyperspectral imagery,” Remote Sens. Environ. , vol. 112, no. 6, pp. 2999–3011, 2008. [3] C. Robinson, L. Hou, K. Malkin, R. Soobitsky, J. Czawlytko, B. Dilkina, and N. Jojic, “Large scale high-resolution land cover mapping with multi-resolution data,” in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2019, pp. 12 726–12 735. [4] L. Wang, R. Li, C. Duan, C. Zhang, X. Meng, and S. Fang, “A novel transformer based semantic segmentation scheme for fine-resolution remote sensing images,” IEEE Geosci. Remote Sens. Lett. , vol. 19, pp. 1–5, 2022. [5] Z. Li, W. He, J. Li, F. Lu, and H. Zhang, “Learning without exact guid-ance: Updating large-scale high-resolution land cover maps from low-resolution historical labels,” in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2024, pp. 27 717–27 727. [6] Z. Li, H. Zhang, F. Lu, R. Xue, G. Yang, and L. Zhang, “Breaking the resolution barrier: A low-to-high network for large-scale high-resolution land-cover mapping using low-resolution labels,” ISPRS J. Photogramm. Remote Sens. , vol. 192, pp. 244–267, 2022. [7] A. Dosovitskiy, L. Beyer, A. Kolesnikov et al. , “An image is worth 16x16 words: Transformers for image recognition at scale,” arXiv preprint arXiv:2010.11929 , 2020. [8] M. Oquab, T. Darcet, T. Moutakanni, H. Vo, M. Szafraniec, V. Khalidov, P. Fernandez, D. Haziza, F. Massa, A. El-Nouby et al. , “Dinov2: Learning robust visual features without supervision,” arXiv preprint arXiv:2304.07193 , 2023. [9] M. Caron, H. Touvron, I. Misra, H. J´ egou, J. Mairal, P. Bojanowski, and A. Joulin, “Emerging properties in self-supervised vision transformers,” in Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV) , October 2021, pp. 9650–9660. [10] R. Docherty, A. Vamvakeros, and S. J. Cooper, “Upsampling DINOv2 features for unsupervised vision tasks and weakly supervised materials segmentation,” arXiv preprint arXiv:2410.19836 , 2025. [11] T. Wimmer, P. Truong, M.-J. Rakotosaona, M. Oechsle, F. Tombari, B. Schiele, and J. E. Lenssen, “Anyup: Universal feature upsampling,” 
+
+arXiv preprint arXiv:2510.12764 , 2025. [12] D. Zhou, O. Bousquet, T. Lal, J. Weston, and B. Sch¨ olkopf, “Learning with local and global consistency,” Adv. Neural Inf. Process. Syst. ,vol. 16, 2003. [13] V. Stojni´ c, Y. Kalantidis, J. Matas, and G. Tolias, “Lposs: Label propagation over patches and pixels for open-vocabulary semantic segmentation,” in Proceedings of the Computer Vision and Pattern Recognition Conference , 2025, pp. 9794–9803. [14] R. Achanta, A. Shaji, K. Smith, A. Lucchi, P. Fua, and S. S¨ usstrunk, “Slic superpixels compared to state-of-the-art superpixel methods,” IEEE Trans. Pattern Anal. Mach. Intell. , vol. 34, no. 11, pp. 2274–2282, 2012. [15] H. Cai, J. Li, M. Hu, C. Gan, and S. Han, “Efficientvit: Lightweight multi-scale attention for high-resolution dense prediction,” in Proceed-ings of the IEEE/CVF international conference on computer vision ,2023, pp. 17 302–17 313. [16] S. Lee, J. Choi, and H. J. Kim, “Efficientvim: Efficient vision mamba with hidden state mixer based state space duality,” in Proceedings of the Computer Vision and Pattern Recognition Conference , 2025, pp. 14 923–14 933. [17] L. Wang, R. Li, C. Zhang, S. Fang, C. Duan, X. Meng, and P. M. Atkinson, “Unetformer: A unet-like transformer for efficient semantic segmentation of remote sensing urban scene imagery,” ISPRS J. Pho-togramm. Remote Sens. , vol. 190, pp. 196–214, 2022. [18] P. R. Claggett, S. M. McDonald, J. O’Neil-Dunne, S. MacFaden, K. Walker, S. Guinn, L. Ahmed, E. Buford, E. Kurtz, P. McCabe et al. ,“Chesapeake bay land use/land cover (lulc) database 2024 edition,” U.S. Geol. Surv. Data Release , p. 985, 2025. [19] S. Lloyd, “Least squares quantization in pcm,” IEEE Trans. Inf. Theory ,vol. 28, no. 2, pp. 129–137, 1982.
