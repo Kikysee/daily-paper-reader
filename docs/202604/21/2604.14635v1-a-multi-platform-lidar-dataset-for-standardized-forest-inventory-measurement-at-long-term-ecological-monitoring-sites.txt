@@ -1,0 +1,469 @@
+Title: A multi-platform LiDAR dataset for standardized forest inventory measurement at long term ecological monitoring sites
+
+URL Source: https://arxiv.org/pdf/2604.14635v1
+
+Published Time: Fri, 17 Apr 2026 00:31:30 GMT
+
+Number of Pages: 30
+
+Markdown Content:
+# A multi-platform LiDAR dataset for standardized forest inventory measurement at long term ecological monitoring sites 
+
+Michael R. Chang a, Anna Candotti c, Karl von Ellenrieder a, Enrico Tomelleri c,d , Marco Camurri b,a 
+
+> a
+
+Faculty of Engineering, Free University of Bozen-Bolzano, via Bruno Buozzi 1, Bolzano, 39100, BZ, Italy 
+
+> b
+
+Department of Industrial Engineering, University of Trento, via Sommarive 9, Trento, 38123, TN, Italy 
+
+> c
+
+Faculty of Agricultural, Environmental and Food Sciences, Free University of Bozen-Bolzano, piazza Università, 5, Bolzano, 39100, BZ, Italy 
+
+> d
+
+Competence Centre for Mountain Innovation Ecosystems, Free University of Bozen-Bolzano, 
+
+Abstract 
+
+We present a curated multi-platform LiDAR reference dataset from an instru-mented ICOS forest plot, explicitly designed to support calibration, benchmark-ing, and integration of 3D structural data with ecological observations and stan-dard allometric models. The dataset integrates UAV-borne laser scanning (ULS) to measure canopy coverage, terrestrial laser scanning (TLS) for detailed stem mapping, and backpack mobile laser scanning (MLS) with real-time SLAM for efficient sub-canopy acquisition. We focus on the control plot with the most complete and internally consistent registration, where TLS point clouds ( ∼333 million points) are complemented by ULS and MLS data capturing canopy and understory strata. Marker-free, SLAM-aware protocols were used to reduce field and processing time, while manual and automated methods were combined. Fi-nal products are available in LAZ and E57 formats with UTM coordinates, together with registration reports for reproducibility. The dataset provides a benchmark for testing registration methods, evaluating scanning efficiency, and 
+
+Email addresses: mchang@unibz.it (Michael R. Chang), anna.candotti@unibz.it 
+
+(Anna Candotti), karl.vonellenrieder@unibz.it (Karl von Ellenrieder), 
+
+etomelleri@unibz.it (Enrico Tomelleri), marco.camurri@unitn.it (Marco Camurri) 
+
+1
+
+> arXiv:2604.14635v1 [cs.RO] 16 Apr 2026
+
+linking point clouds with segmentation, quantitative structure models, and al-lometric biomass estimation. By situating the acquisitions at a long-term ICOS site, it is explicitly linked to 3D structure with decades of ecological and flux measurements. More broadly, it illustrates how TLS, MLS, and ULS can be combined for repeated inventories and digital twins of forest ecosystems. 
+
+Keywords: aerial laser scanning; carbon monitoring; forest inventory; mobile laser scanning; terrestrial laser scanning 
+
+1. Summary 
+
+Ecosystem monitoring networks such as the Integrated Carbon Observation System (ICOS) [12] rely on repeated inventories to link matter and energy fluxes with above-ground biomass (AGB). Current protocols are based on tree diame-ter, height, and allometric models, which provide continuity but also propagate uncertainties due to model selection and limited calibration data [11]. Ter-restrial laser scanning (TLS) has been tested as a non-destructive alternative, reconstructing tree volume and AGB through quantitative structure models (QSMs) [14]. While TLS reduces bias compared to allometric scaling, especially for large trees, it remains time-intensive and vulnerable to occlusion, limiting its use for repeated inventories [6]. Emerging LiDAR modalities offer complementary advantages. UAV-borne laser scanning (ULS) captures canopy and terrain structure efficiently, whereas mobile laser scanning (MLS) enables rapid sub-canopy acquisition [21, 2]. Their performance under alpine conditions—where steep slopes and dense understory increase registration uncertainty [28]—has yet to be systematically assessed, and long-term strategies for standardization across monitoring sites remain under development [22]. Recent advances such as VIO-enabled TLS [20] and SLAM-based MLS [9] further motivate testing of marker-free registration workflows in operational inventories. The dataset described in this paper and available in [8] addresses this chal-lenge through a case study at the ICOS Class 2 site Renon (IT-Ren) in the 2Italian Alps, a subalpine Norway spruce ( Picea abies ) forest characterized by steep terrain and complex canopy structure. It integrates TLS, MLS, and ULS acquisitions into co-registered point clouds aligned with quality goals outlined in the RINGO project [13] (uniform point density, accurate registration, minimized occlusion). Platform-specific coverage of canopy, trunk, and understory strata is evident in the vertical point-density distributions (Figure 6), and the accu-racy of cross-platform alignment is supported by cloud-to-cloud comparisons (Figure 1). This dataset demonstrates how multi-platform acquisitions can support for-est inventories across ICOS sites. It provides a reusable reference for benchmark-ing registration methods [7], evaluating SLAM- and VIO-based workflows [4, 25], refining biomass estimation through segmentation, QSM, and allometry [26, 33], and assessing the efficiency of alternative scanning strategies. Beyond this single site, the integration principles shown here can be applied across the ICOS net-work and other monitoring programs, including operational contexts such as na-tional forest inventories [17] and emerging autonomous deployments [19, 10, 5]. More broadly, the dataset contributes to the development of digital twins of forest ecosystems, providing opportunities to test when virtual 3D reconstruc-tions become sufficiently accurate to complement or partially replace traditional inventories, and to link digital forest representations with long-term ecological and flux records. The dataset focuses on a single ICOS control plot selected for its comprehen-sive ecological instrumentation and optimal cross-platform LiDAR registration quality. This deliberate focus enables high-density, multi-platform acquisitions that are impractical at scale, but essential for method development, protocol standardization, and calibration. Rather than serving as a statistical sample of forest conditions, this dataset is intended as a reference and benchmarking resource, enabling users to (i) eval-uate multi-platform LiDAR registration and sampling strategies, (ii) test forest inventory algorithms against a well-instrumented ecological plot, and (iii) link 3D forest structure to independent ICOS ecological observations using estab-3lished allometric relationships. 
+
+2. Data Description 
+
+In the following sections we describe the experimental site and design, the different types of laser scanning data used in this dataset, and how they were integrated. 
+
+2.1. Site Description and Experimental Design 
+
+This dataset presents multi-platform LiDAR acquisitions with integrated aerial, terrestrial, and mobile laser scanning from the Italian Alps’ Renon ICOS Class 2 station (IT-Ren, [46.58686, 11.43369]). The site exemplifies challenging subalpine conditions at 1735 m elevation, where its uneven-aged, 200-year-old Norway spruce ( Picea abies ) canopy creates complex scanning scenarios across steep terrain and dense understory. Long-term ecological and flux measurements have been maintained at IT-Ren since 1997 [16], making it an ideal reference site for testing novel LiDAR-based forest inventory approaches. Following ICOS sampling protocols [13, 12], data were collected across three 25 m-radius control plots (CP1–3). CP2 is the focus of this work due to optimal cross-platform registration quality and comprehensive sensor coverage (see Fig-ure 1). CP2 also hosts additional ecological instrumentation, including sensors for litterfall, soil moisture, soil temperature, and soil water potential, allow-ing integration of LiDAR data with ancillary ecosystem observations. These data provide an exemplary TLS registration for non-destructive above-ground biomass (AGB) estimation [11, 14], with accompanying methodology to replicate the full pipeline from field collection to a reproducible “digital forest” product. The dataset includes three primary scanning modalities with distinct con-ventions. Aerial data technically qualify as ULS (Unmanned Laser Scanning) collected via UAV rather than traditional aircraft-based ALS, providing finer spatial resolution from lower altitude [24, 23]. MLS data were collected us-ing an oblique-mounted backpack payload, an important distinction in forestry 4(a) Alignment of all three modalities: ALS, TLS, MLS. 
+
+(b) Cloud-to-cloud distance: MLS to ALS Figure 1: Multi-platform LiDAR integration and registration validation for CP2 forest in-ventory site. Panel (a) demonstrates complementary coverage characteristics of aerial (ALS, orange), mobile (MLS, blue-green), and terrestrial (TLS, white) laser scanning modalities. Panel (b) Cross-platform registration quality assessment showing cloud-to-cloud distance anal-ysis between MLS and ALS datasets. Color mapping indicates geometric alignment accuracy with blue regions showing excellent correspondence (<2cm), green showing good alignment (2-5cm), and warmer colors indicating areas where there simply were no ALS points. This is one example of many pairwise examinations possible with this dataset. 
+
+5where sensor height influences understory occlusion and automatic registration accuracy [30, 3]. TLS data were acquired with a Leica BLK360 using real-time visual–inertial odometry (VIO) for efficient point cloud co-registration in situ , an approach more typical of MLS systems but still novel for static TLS instruments [20]. This combination of modalities enables evaluation of platform-specific strengths and weaknesses—ALS canopy bias, TLS occlusion effects [6], and MLS trajectory constraints—within a standardized ICOS monitoring frame-work. 
+
+2.2. Multi-Platform Integration: Inter-modal registration objects 
+
+Cross-platform integration is the central contribution of this dataset, bring-ing together aerial, terrestrial, and mobile LiDAR acquisitions within a stan-dardized ICOS framework. By combining UAV-based canopy coverage, TLS stem detail, and MLS sub-canopy trajectories, the dataset captures comple-mentary perspectives on forest structure. Platform-specific characteristics are summarized in Table 1, while differences in vertical sampling are shown in Fig-ure 7. Despite order-of-magnitude differences in point densities, ground surfaces derived from cloth simulation filtering (CSF) were consistent across modali-ties, yielding comparable digital terrain models (Figure 5). This consistency underscores the robustness of the integration and provides confidence that the co-registered point clouds can support standardized height normalization and cross-platform analysis in complex structural conditions. 
+
+2.3. Aerial/Unmanned Laser Scanning Data 
+
+Data outputs were processed using YellowScan proprietary software with post-process kinematic (PPK) GNSS georeferencing, achieving approximately 1 cm global positioning accuracy and point density of 1,344 points per square meter across the 13.5-hectare study area with an output 5.07 GB LAS file con-taining 181.72 million points. 6Table 1: Technical specifications and operational characteristics of three LiDAR platforms used in forest inventory 
+
+Modality ALS/ULS TLS MLS Payload Yellowscan Mapper+ Leica BLK360 Frontier ORI-DRS LiDAR Make & Model 
+
+Livox AVIA Proprietary HESAI XT32 
+
+Accuracy &Range 
+
+35-40 mm, 100 m 4-6 mm, 25 m 10-20 mm, 25 m 
+
+Scan Rate (pts/sec) 
+
+Up to 240,000 360,000 640,000 (@ 10 Hz) 
+
+GNSS Integra-tion 
+
+GNSS: 1 cm PPK n/a (External: GCP targets) SLAM-dependent 
+
+Camera Array N/A (lacks op-tional RGB) 4-camera, 13MP each, 150MP spherical 3-camera, Al-phaSense fisheye 
+
+IMU Integra-tion 
+
+GNSS-IMU fusion VIO localization LIO, multi-sensor fusion 
+
+Registration Method 
+
+PPK georefer-encing Manual + VIO prior SLAM + loop closure 
+
+Under-canopy Access 
+
+Limited (canopy penetration only) Complete (360 °
+
+coverage) Good (mobile ground access) 
+
+Collection Speed 
+
+Fast (hectares/hour) Slow (hours/plot, 5-10 min/setup) Moderate (˜ 1plot/hour) 7Table 2: Ground and vegetation stratification metrics for CP2 scanning platforms 
+
+Metric ULS TLS MLS 
+
+Count % Count % Count %
+
+Total Points (35 m ra-dius) 
+
+6,851,016 100.0 203,657,957 100.0 32,859,532 100.0 
+
+Ground Points (CSF) 532,888 13.6 54,148,663 26.6 8,761,875 26.7 
+
+Vegetation Points 5,915,620 86.4 149,589,793 73.4 24,145,090 73.3 
+
+Height Stratification Results 
+
+Understory (0-1.4 m) 47,944 0.8 12,257,657 8.2 5,198,507 21.5 
+
+Trunks (1.4-5 m) 37,962 0.6 53,311,535 35.6 15,757,716 65.3 
+
+Midcanopy (5-13 m) 1,482,391 25.1 63,582,670 42.5 3,031,980 12.6 
+
+Canopy Tops ( >13 m) 4,011,323 67.8 20,437,931 13.7 156,887 0.6 
+
+Height Range (Min-Max) 
+
+-1.12 to 35.26 m -1.15 to 33.54 m -1.28 to 32.87 m 8Figure 2: TLS scan network topology and registration quality assessment for CP2. Link colors indicate registration accuracy: green ( ≤ 0.018 m), yellow ( ≤ 0.030 m), red ( > 0.030 m), and blue (manually aligned links). Top-down view of cloud in Register360 arbitrary reference frame. 
+
+Raw data are provided in LAS 1.2 format. Ground point classification was performed using Cloth Simulation Filter algorithms, with manual noise removal and geometric clipping to the CP2 study area performed in CloudCompare. All coordinates are maintained in UTM Zone 32N reference system (EPSG:32632), serving as the geometric foundation for multi-platform registration with terres-trial and mobile laser scanning datasets. 
+
+2.4. Terrestrial Laser Scanning Data 
+
+Terrestrial data were collected using a Leica BLK360 imaging scanner config-ured for target-free registration across 54 individual scan positions distributed throughout the CP2 study area. Data outputs comprise and RGB-colorized registered network cloud of 333.5 million points after bundle optimization and 1 cm voxel downsampling. Point densities exceed 2000 points/m ² in optimal viewing areas. 9Table 3: TLS Network Registration Summary 
+
+Network Parameter Value 
+
+Setup Count 54 Link Count 85 Total Points (registered) 333.5 million Global Bundle Error 5.0 mm Mean Link Error 14.0 mm Error Range 0.0–20.0 mm Average Overlap 24% Network registration is achieved through 85 inter-scan links with global bun-dle error of 5.0 mm. Individual link registration errors range from 0.0 mm to 20.0 mm with mean alignment accuracy of 14.0 mm. Setup-to-setup overlap varies from 12% to 65% with network average of 24%, reflecting adaptive posi-tioning based on local geometric constraints and sight line availability. Raw data are archived as individual E57 format files preserving complete sensor metadata and registration network topology for alternative processing workflows. Registered output is provided in LAZ format with UTM Zone 32N coordinate system (EPSG:32632) for multi-platform integration. Processing documentation includes complete Leica Register360 bundle adjustment report detailing pairwise link quality metrics summarized in Table 3. 
+
+2.5. Mobile Laser Scanning Data 
+
+Mobile data were collected using a backpack-mounted LiDAR system (Fron-tier device, University of Oxford) employing real-time SLAM processing with loop closure optimization over approximately 58 minutes of field data collection. Data outputs comprise multiple processing levels organized within structured directories containing both processed point cloud products and raw sensor data archives. Primary data products include combined point cloud datasets available in 10 Figure 3: Site context showing CP2 location within the broader ICOS Renon forest monitoring station. Left panel displays multi-platform point cloud data visualization in CloudCompare software with the TLS (terrestrial) and the MLS (mobile) datasets co-registered. Right panel shows QGIS-based site overview with CP2 control plot boundaries (red and green circles in-dicate radii of 25 m and 35 m, respectively), SLAM trajectory paths (orange lines), center point markers (yellow dot), and satellite imagery context. The buffered analysis zones enable edge-effect evaluation and multi-scale forest inventory assessment within the ICOS standard-ized monitoring framework. 
+
+11 both full-resolution and downsampled formats, comprehensive SLAM pose tra-jectories provided in multiple coordinate systems and file formats (CSV, PCD [31], KML, g2o [18]), and raw GNSS measurements enabling independent georefer-encing validation. Individual point cloud segments preserve temporal sequenc-ing through timestamp-based naming conventions, supporting trajectory recon-struction and quality assessment workflows. Raw sensor data are archived as 14 sequential rosbag [1] files spanning the complete data collection session (58 minutes), each approximately 10 GB in size containing synchronized LiDAR point streams, IMU measurements, GNSS ob-servations, and system telemetry. SLAM trajectory accuracy and reconstruction is verified by the global registration correspondence to both TLS (Figure 3, left) and ALS (Figure 1, right). Processing outputs are organized to support both inter-platform analysis (combined_cloud.pcd is transformed and clipped to pro-duce final UTM frame LAS outputs), and intra-platform (individual_clouds/ and slam_poses) alignment. Data organization includes individual timestamped point cloud files corre-sponding to discrete SLAM keyframes, integrated pose solutions in both lo-cal SLAM coordinates and globally registered UTM Zone 32N reference sys-tem (EPSG:32632), and comprehensive sensor data preservation through rosbag archives enabling complete processing workflow reconstruction and alternative algorithm development. 
+
+2.6. Data Formats and File Structure 
+
+The dataset employs a hierarchical directory structure organizing data from raw sensor measurements through platform-specific processing to final inte-grated products. The file structure is shown in Table 4. Top-level files provide immediate access to co-registered study area datasets, while platform-specific directories preserve complete processing workflows and validation documenta-tion. 12 Table 4: Multi-Platform Dataset Hierarchical Structure 
+
+> Directory Level  Data Product  Format  Size (GB)
+> Top-Level Integrated Products
+> renon_CP2_blk360_UTM_clip_35m.las  LAS  7.2
+> renon_CP2_blk360_UTM_clip_35m.laz  LAZ  1.8
+> renon_CP2_Frontier_UTM_clip_35m.las  LAS  1.2
+> Renon_CP2_Mapper_clip_35m.las  LAS  0.2
+> Platform-Specific Directories
+> YS_Mapper+/ Renon_Mapper.las  LAS  5.3
+> Tmat4x4_CP2_blk360_to_Mapper_UTM.txt  TXT  <0.1
+> 2024-11-13-leicaBLK360-icos-CP2/ renon_CP2_blk360_combined.las  LAS  6.5
+> E57_setup_archive/  (54 individual scans)  E57  8.5
+> 20241113blk360icosCP2.pdf  PDF  <0.1
+> 2024-11-21-frontier-icos-CP2/ combined_cloud.pcd  PCD  2.8
+> individual_clouds/  (1160+ point clouds)  PCD  12.0
+> slam_poses_gnss.csv  CSV  <0.1
+> slam_pose_graph.g2o  G2O  <0.1
+> Raw Sensor Data
+> 2024-11-21-frontier-icos-CP2/bags/ frontier_*_*.bag  (14 sequential files)  ROS Bag  140.0
+> raw_gnss_measurements_enu.csv  CSV  <0.1
+
+13 The hierarchical organization of data lineage from raw sensor measurements to final products draws parallel between scan modalities. Top-level files pro-vide immediate access to co-registered study area datasets suitable for com-parative analysis. Platform-specific directories contain complete, internally-consistent processing outputs including individual scan archives that sup-port algorithm development and validation studies. To facilitate access, the platform specific directories are provided directly as ZIP files. Raw sensor data preservation through rosbag archives [1] enables complete workflow reconstruc-tion and alternative processing approaches. Transformation matrices and reg-istration reports document geometric relationships between coordinate systems and provide validation metrics for multi-platform integration quality assessment. 
+
+3. Methods 
+
+3.1. Field Data Collection Protocols 
+
+Data collection was conducted between July-November 2024 at the Renon ICOS station under optimal weather conditions (dry, minimal wind, no pre-cipitation) to ensure consistent data quality across all platforms. Collection proceeded sequentially: aerial surveys were first conducted to establish georefer-enced baseline, followed by terrestrial networks for detailed structural mapping, and mobile surveys for comprehensive understory coverage. 
+
+3.1.1. Aerial/Unmanned Laser Scanning Protocol 
+
+ALS data were collected using a DJI Matrice 300 equipped with a YellowScan Mapper+ LiDAR payload. Data processing was performed using YellowScan Mapper software with post-process kinematic (PPK) georeferencing. The flight path followed a systematic grid pattern at 60-70 m above ground level. Minimal human intervention was required for alignment and georefer-encing of the ALS data. The point cloud was filtered and using YellowScan software. 14 FAIL             
+
+> Start scanning @ center of CP
+> SUCCESS
+> EXPORT: all setups & links
+> (faster from BLK USB-C)
+> Import to PC
+> SUCCESS
+> VIO / ICP
+> auto align
+> FAIL;
+> re-scan closer
+> manual align
+> (slice, rotate)
+> NO;
+> work outwards
+> &/ into gap(s)
+> CP full
+> coverage?
+> CHECK: 35m radius from center
+> Leica Cyclone 360:
+> scan @ highest density
+> in-range (<12m) scan(s)
+> Scan added to network of aligned setups
+> STOP YES
+> Walk
+> CP START rough ' plan ' for TLS setups
+> scan saved with other
+> unaligned setups all scan setups
+> TLS input/output
+> Field Workflow
+> human check
+> contains contains
+> all scan setups
+> and links
+> automatic check
+> REDUCED
+> delete setup
+> START
+> PC Workflow
+> MAKES
+> Optimize Bundle and "Publish"
+> WAIT
+> fresh memory of collection (ideally same person)
+> ADDED "better"
+> link
+> FAIL OK
+> manual
+> align
+> SPREADSHEET
+> links, notes
+> manual vs. auto
+> human docs
+> automatic report
+> Alignment report
+> w/ link quality
+> check bundle
+> Review and Optimize with "TruSlicer"
+> NONE
+> IS IS Locate issue
+> fully-linked Bundle
+> unaligned
+> setup
+> NO
+> OK
+> scan
+> OK?
+> Fully-Aligned Bundle.las
+> w/ optional down-sampling
+> OK
+> FAIL
+> auto
+> align
+> bad
+> link
+> on link
+> closest
+> setup link
+> STOP
+> UNACCEPTABLE
+> ACCEPTABLE TRIGGER
+> compare
+> issues
+> export
+> clouds
+> Automatic Process
+> Manual Software Process
+> IMPROVES
+> IN
+> RECORD:
+> visual
+> quality
+> human "data"
+
+Figure 4: Complete TLS collection and processing workflow integrating field and desktop pro-tocols. The field workflow (left) emphasizes adaptive scan positioning with real-time VIO/ICP alignment quality assessment, while the PC workflow (right) details bundle optimization and link quality validation. Decision points ensure coverage completeness within a 35 m radius while maintaining registration quality through manual intervention when automatic methods fail. The integrated approach reduces field time through in-situ quality control and enables efficient post-processing through documented link relationships. 
+
+3.1.2. Terrestrial Laser Scanning Protocol 
+
+Unlike previous approaches that rely on physical registration targets, our TLS data were collected using a Leica BLK360 scanner featuring integrated visual-inertial odometry (VIO) for improved setup positioning estimation. This technological advancement helps bridge the gap between traditional static TLS and dynamic MLS approaches, reducing field time while maintaining data qual-ity. The BLK360’s shorter effective range (25 m) compared to longer-range sys-tems enables more detailed scan networks while field software facilitates setup optimization around tree occlusions. The Visual-Inertial Odometry integration provides real-time positioning feedback that enables adaptive collection patterns responsive to forest density variations. 15 The scanning process followed an adaptive network-based protocol (Fig-ure 4), starting from the plot center and expanding outward based on real-time registration quality assessment. Point clouds were collected and aligned using in-field manual registration through the Leica Cyclone 360 field collection inter-face application. This process was expanded based on successful or unsuccessful automatic and manual registrations until the full plot radius (initially 25 m, later expanded to 30 m) was covered. For consistency with MLS data and to constrain measurements to the scan-ner’s most accurate range, all setups were imported with a radial filter of 25 m. The TLS data were post-processed and aligned through a combination of manual and partial Iterative Closest Point (ICP) alignments within the Leica Register 360 software. Our registration approach differs from previous methods by eliminating the need for physical reference targets, which were abandoned in CP2 due to previ-ous impracticality. Instead, we developed a network-based registration protocol that meets RINGO goals: 1. Prioritizing high-density scans at close range ( < 12 m) (uniform point density) 2. Employs selective manual intervention only when automated methods fail (accurate co-registration of scans) 3. leveraging VIO for initial alignment and improvisational setup planning (minimized occlusion and noise) During our registration process, we observed that when overlap between scans was limited, manual alignment often produced superior results compared to automated bundle optimization. Therefore, certain links (blue edges in Fig-ure 2) were designated as “fixed” to exclude them from bundle optimization, thereby avoiding automatic adjustments to visually verified alignments. 
+
+3.1.3. Mobile Laser Scanning Protocol 
+
+The backpack MLS configuration employs an oblique LiDAR angle for im-proved mid-high trunk capture, with cameras oriented away from the GNSS 16 antenna to maximize upward canopy coverage. The elevated sensor position provides clearance advantages over ground-based systems for vegetation pene-tration. Based on measurements from previous studies, traditional TLS methods can require several hours of field setup for comprehensive coverage of a single hectare. Our MLS approach allowed traversal of all 3 CPs in half a day. The operator followed paths to meet ICOS RINGO goals: 1. Maximize coverage of the plot area where understory traversability allowed it (uniform point density) 2. Ensure sufficient loop closures for pose graph optimization (accurate co-registration of scans) 3. Oblique LiDAR configuration to capture both trunks upward, and ground-cover downward (minimized occlusion and noise) 
+
+3.2. Data Processing and Quality Control 
+
+Multi-platform processing followed a systematic three-stage approach de-signed to preserve platform-specific characteristics while enabling cross-comparison. The workflow progressed from (i) inter-modality registration, to (ii) standard-ized ground classification, and (iii) height normalization and stratification anal-ysis. 
+
+3.2.1. Registration workflow 
+
+All platforms were co-registered using a hierarchical transformation strategy anchored to the aerial RTK/PPK GNSS positioning, which provided the global geodetic reference frame [24, 23]. TLS and MLS clouds were transformed to this frame using 4 ×4 matrices included with the dataset. Final outputs are delivered in LAS format for compatibility with open-source forestry toolkits such as lidR 
+
+in R [29]. Semi-automatic inter-modality registration was adapted from hierarchical approaches developed for forest mapping [7], with three successive steps: (i) align the ground, (ii) align stems and large branches, and (iii) evaluate canopy and 17 foliage alignment. Registration quality was assessed through cloud-to-cloud distance analysis (Figure 1) and visual inspection of trunk correspondences. This workflow balances automation with manual checks, ensuring reproducibil-ity while capturing local complexities in alpine forest structure. 
+
+3.2.2. Ground classification and height normalization 
+
+Ground points were classified using the Cloth Simulation Filter (CSF) [34] with standardized parameters (class threshold 0.5 m, cloth resolution 0.5 m, rigidness 2 500 iterations). Applying identical settings across modalities en-sured a consistent ground-identification methodology, despite large differences in sampling density and geometry. Ground point spatial distributions highlighted the contrasting sensing ca-pabilities of ULS, TLS, and MLS: ULS provided broad canopy coverage with limited penetration, TLS achieved high near-ground densities but was affected by occlusion, and MLS captured continuous trajectories through accessible un-derstory. Nevertheless, the resulting 0.5 m resolution digital terrain models (DTMs) were visually indistinguishable across modalities (Figure 5), demon-strating the robustness of the CSF workflow and validating cross-platform geo-metric alignment essential for height normalization and subsequent stratification analysis [2, 21]. Height normalization removes ground elevations from all point clouds, en-abling direct comparison of vegetation structure across platforms. The con-sistent elevation ranges achieved across platforms (-1.12 to -1.28 m minimum, 32.87 to 35.26 m maximum) validate successful cross-platform co-registration within the 35 m radius analysis area. 
+
+3.2.3. Vertical distribution analysis and height stratification 
+
+Following ground normalization, vegetation points were stratified into four vertical layers representing key structural components of the forest: understory (0–1.4 m), trunks (1.4–5 m), mid-canopy (5–13 m), and canopy tops ( > 13 m). This classification provides a framework for comparing how each platform sam-18 686430 686440 686450 686460 686470 686480 686490 
+
+> 5162070  5162080  5162090  5162100  5162110  5162120  5162130
+
+ULS 
+
+686430 686440 686450 686460 686470 686480 686490 
+
+> 5162070  5162080  5162090  5162100  5162110  5162120  5162130
+
+TLS 
+
+686430 686440 686450 686460 686470 686480 686490 
+
+> 5162070  5162080  5162090  5162100  5162110  5162120  5162130
+
+0.5 1.0 1.5 2.0 2.5 3.0 3.5 
+
+MLS 
+
+686430 686440 686450 686460 686470 686480 686490 
+
+> 5162070  5162080  5162090  5162100  5162110  5162120  5162130
+
+686430 686440 686450 686460 686470 686480 686490 
+
+> 5162070  5162080  5162090  5162100  5162110  5162120  5162130
+
+686430 686440 686450 686460 686470 686480 686490 
+
+> 5162070  5162080  5162090  5162100  5162110  5162120  5162130
+
+1775 1780 1785 
+
+> Ground Point Density DTM
+
+Figure 5: Ground Points and resulting DTMs per platform. Top row visualizes ground point density at 0.2 m resolution in log 10 scale (range: 0.3-3.9). Bottom row presents corresponding DTMs at 0.5 m resolution (elevation range: 1770.2-1788.6 m) generated through CSF ground classification and kNN inverse distance weighting interpolation. 
+
+19 ples different strata and for quantifying their complementary contributions to forest inventory. Stratification metrics are shown in Table 2. Height distributions reveal distinct sensing biases (Figure 6). ULS is strongly canopy-oriented, TLS achieves the highest densities at trunk level but is affected by occlusion in dense understory, while MLS captures the understory and trunk strata efficiently, but provides limited penetration into upper canopy. Despite these differences, consistent vertical ranges across platforms (min ≈ –1.5 m; max ≈ 35.5 m) confirm successful cross-platform registration and support their integration for structural analysis [26, 33]. 
+
+3.2.4. Spatial Point Density Mapping Across Height Strata 
+
+To visualize coverage patterns, we generated 0.2 m resolution spatial density maps for each height stratum (Figure 7). These maps illustrate how ULS pro-vides uniform canopy coverage, TLS achieves detailed representation of trunks and near-ground vegetation, and MLS contributes dense sampling of understory and mid-trunk regions through operator-guided trajectories. By comparing spatial density distributions across strata, the dataset high-lights platform-specific strengths and weaknesses, offering a practical reference for optimizing inventory protocols under ICOS and related monitoring frame-works. Such stratified mapping also provides a basis for evaluating segmentation methods, quantitative structure modeling, and allometric scaling approaches, and for benchmarking efficiency trade-offs between different scanning modali-ties [6, 30, 3], as well as evaluating segmentation and instance-level tree detection methods [27, 32]. 
+
+3.2.5. Cross-Platform Registration and Integration 
+
+Multi-platform integration facilitated coordinate transformations over dense point-to-point alignment to preserve modality-specific characteristics for com-parative analysis. The aerial survey (ULS) provided the absolute geodetic refer-ence frame through PPK GNSS processing [23], TLS delivered local geometric fidelity via a registered scan network, and MLS accuracy was validated against 20 010 20 30 
+
+> 050000 100000 150000 200000
+
+Points 
+
+> Height (m)
+
+ULS A
+
+> 010 20 30
+> 0.0e+00 2.5e+06 5.0e+06 7.5e+06 1.0e+07
+
+Points 
+
+> Height (m)
+
+TLS B
+
+> 010 20 30
+> 0e+00 1e+06 2e+06 3e+06 4e+06 5e+06
+
+Points 
+
+> Height (m)
+
+MLS C   
+
+> 010 20 30
+> 10 210 510 8
+
+Points (log) 
+
+> Height (m)
+
+ALL DFigure 6: Vegetation height distribution comparison across laser scanning platforms. (A-C) show vegetation-only points, normalized by the CSF DTM, and binned by Z-axis. ULS/ALS (A) is canopy-biased, TLS (B) is subcanopy-biased, but most point-dense, and MLS (C) is most height-constrained and subcanopy-biased. Combined log 10 -scale comparison (D) enables cross-platform analysis despite order-of-magnitude differences in point density. Consistent height ranges across platforms (-1.5 to 35.5 m) indicate successful cross-platform registration, while platform-specific distribution shapes reflect fundamental differences in sensing geometry. 
+
+21 both platforms using ground surfaces and stem bases as common reference fea-tures. Transformation matrices are provided with the dataset to ensure repro-ducibility and integration with alternative workflows. Registration accuracy was evaluated through complementary approaches. Quantitative cloud-to-cloud distance analyses (Figure 1) demonstrate alignment quality between MLS and ULS datasets, while visual inspection of stem align-ments confirmed consistency across modalities. Reported metrics—including voxelized root-mean-square errors, bundle adjustment statistics, and overlap percentages—are included in the metadata files. These support independent validation and adaptation of the dataset for other registration frameworks [7]. By combining automated registration with manual quality checks, the in-tegration workflow ensures robustness under the challenging conditions of sub-alpine forest terrain, where steep slopes and dense understory often degrade alignment accuracy [28, 21]. The resulting co-registered dataset provides a re-producible benchmark for testing new methods in forest inventory, including SLAM- and VIO-based workflows [20, 4, 25]. 
+
+User Notes 
+
+This dataset is intended as an open resource for the forest science commu-nity. It was developed with ICOS monitoring in mind, following the quality goals proposed in the RINGO project: consistent sampling across the plot, ac-curate co-registration between modalities, and reduced occlusion in complex stands. Marker-free protocols, systematic filtering, and loop-closure validation were applied to ensure robust integration of TLS, MLS, and ULS data under challenging alpine conditions, and supports the move toward operational “digital twins” for inventory and monitoring [15]. We invite users to explore the dataset in diverse ways. It provides oppor-tunities to benchmark registration and segmentation algorithms, to compare field efficiency across scanning modalities, and to link structural attributes with above-ground biomass estimation through allometric or quantitative structure 22 0.5 1.0 1.5 2.0 2.5 
+
+ULS 
+
+> tops
+> 0.5 1.0 1.5 2.0 2.5 3.0 3.5
+
+TLS 
+
+> 0.5 1.0 1.5 2.0
+
+MLS 
+
+> 0.5 1.0 1.5 2.0 2.5
+> midcanopy
+> 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0
+> 0.5 1.0 1.5 2.0 2.5 3.0
+> 0.5 1.0 1.5 2.0 2.5
+> trunks
+> 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0
+> 0.5 1.0 1.5 2.0 2.5 3.0 3.5
+> 0.5 1.0 1.5 2.0
+> understory
+> 0.5 1.0 1.5 2.0 2.5 3.0 3.5
+> 0.5 1.0 1.5 2.0 2.5 3.0 3.5
+
+Figure 7: Vertical distribution of point density across forest height strata for three scanning platforms, demonstrating complementary coverage characteristics essential for comprehensive forest inventory. Each circular plot represents point density on log 10 scale across height layers: understory (0-1.4 m), trunks (1.4-5 m), midcanopy (5-13 m), and canopy tops ( > 13 m). ULS shows concentrated detection in upper canopy with limited ground penetration, TLS provides comprehensive coverage across all height strata with highest densities in trunk regions, while MLS exhibits strong understory and trunk detection with reduced canopy access. 
+
+23 modelling approaches. Because TLS, MLS, and ULS each capture different parts of the canopy–understory continuum, the dataset is particularly useful for evaluating how modalities can complement each other in repeated inventories. At the same time, users should remain aware of site-specific challenges. On steep slopes, registration becomes less reliable, especially for MLS where walking paths are constrained. Dense understory benefits from MLS coverage but can introduce noise from multiple reflections. These limitations are not drawbacks, but rather reflect realistic field conditions in structurally complex ecosystems and highlight where different scanning approaches excel. 
+
+Author Contributions 
+
+Conceptualization: MRC, AC, MC, and ET Data curation: MRC, AC Formal analysis: MRC, AC Funding acquisition: MC, ET, KVE Investigation: MRC, AC, ET, and MC Methodology: MRC, MC Software: MRC Supervision: MC, ET, and KVE Validation: MC, ET, and KVE Writing - original draft: MRC Writing - review & editing: MRC, MC, ET, AC, and KVE 
+
+Competing Interests 
+
+The authors declare there are no competing interests. 24 Data Availability 
+
+Data supporting this article, with the exclusion of raw data, are available at [8] through the following DOI: 10.5281/zenodo.17186174 . The dataset includes point clouds, registration data, and comprehensive metadata. All data are provided under Creative Commons Attribution 4.0 International License. Raw sensor data (i.e., rosbags) are available upon request. 
+
+Acknowledgement 
+
+The authors thank the ICOS Principal Investigators for providing facilities during autumn 2024 data collection campaigns. We acknowledge Leonardo Mon-tagnani of the ICOS IT-Ren Selva-Verde station for administering the flux tower site since 1997 and facilitating site access, internet connectivity, and laboratory facilities during November field operations. Special recognition goes to Professor Maurice Fallon of the University of Oxford and the Digiforest consortium (EU Horizon, Grant ID: 101070405) for providing the Frontier mobile mapping payload that enabled comprehensive mobile laser scanning data collection. AC was partially funded by FORMA (EFRE/FESR 2021-2027). Project id: EFRE1079. ET was partially funded by INEST (PNRR - Italian National Plan for Re-covery and Resilience), Project id: ECS00000043. We thank the technical and field support teams who assisted with equip-ment deployment, data collection logistics, and site coordination throughout the multi-platform scanning campaigns. 
+
+4. Abbreviations 
+
+The following abbreviations are used in this manuscript: 25 ALS Aerial Laser Scanning CSF Cloth Simulation Filter DTM Digital Terrain Model GNSS Global Navigation Satellite System ICOS Integrated Carbon Observation System IMU Inertial Measurement Unit LAS LiDAR Data Exchange Format LIO LiDAR-Inertial Odometry LiDAR Light Detection and Ranging MLS Mobile Laser Scanning PPK Post-Processed Kinematic SLAM Simultaneous Localization and Mapping TLS Terrestrial Laser Scanning ULS Unmanned Laser Scanning VIO Visual-Inertial Odometry 
+
+References 
+
+[1] Bags Format 2.0 [2013]. 
+
+URL: https://wiki.ros.org/Bags/Format/2.0 
+
+[2] Balestra, M., Marselis, S., Sankey, T. T., Cabo, C., Liang, X., Mokroš, M., Peng, X., Singh, A., Stereńczak, K., Vega, C., Vincent, G. and Hollaus, M. [2024], ‘LiDAR Data Fusion to Improve Forest Attribute Estimates: A Review’, Curr. For. Rep. 10 (4), 281–297. [3] Bauwens, S., Bartholomeus, H., Calders, K. and Lejeune, P. [2016], ‘Forest Inventory with Terrestrial LiDAR: A Comparison of Static and Hand-Held Mobile Laser Scanning’, Forests 7(6), 127. [4] Boche, S., Laina, S. B. and Leutenegger, S. [2024], ‘Tightly-coupled lidar-visual-inertial slam and large-scale volumetric occupancy mapping’. 26 [5] Border, R., Chebrolu, N., Tao, Y., Gammell, J. D. and Fallon, M. [2024], ‘Osprey: Multi-session autonomous aerial mapping with lidar-based slam and next best view planning’, IEEE Transactions on Field Robotics .[6] Boucher, P. B., Paynter, I., Orwig, D. A., Valencius, I. and Schaaf, C. [2021], ‘Sampling forests with terrestrial laser scanning’, Annals of botany 
+
+128 (6), 689–708. [7] Castorena, J., Dickman, L. T., Killebrew, A., Gattiker, J., Linn, R. and Loudermilk, L. [2025], ‘Forestalign: Automatic forest structure-based align-ment for multi-view TLS and ALS point clouds’, Science of Remote Sensing 
+
+11 , 100194. [8] Chang, M., Candotti, A., von Ellenrieder, K., Tomelleri, E. and Camurri, M. [2025], ‘Data for: “A multi-platform lidar dataset for standardized forest inventory measurement at long term ecological monitoring sites” ’. 
+
+URL: https://doi.org/10.5281/zenodo.17186174 
+
+[9] Chen, S. W., Nardari, G. V., Lee, E. S., Qu, C., Liu, X., Romero, R. A. F. and Kumar, V. [2020], ‘Sloam: Semantic lidar odometry and mapping for forest inventory’, IEEE Robotics and Automation Letters 5(2), 612–619. [10] Cheng, D., Cladera, F., Prabhu, A., Liu, X., Zhu, A., Green, P. C., Ehsani, R., Chaudhari, P. and Kumar, V. [2024], Treescope: An agri-cultural robotics dataset for lidar-based mapping of trees in forests and orchards, in ‘2024 IEEE International Conference on Robotics and Au-tomation (ICRA)’, IEEE, pp. 14860–14866. [11] Demol, M., Calders, K., Burt, A., Disney, M. and Verbeeck, H. [2022], ‘Es-timating individual tree above-ground biomass with terrestrial laser scan-ning: comparison with traditional forest inventory methods’, Remote Sens-ing of Environment 269 , 112819. [12] Gielen, B., de Beeck, M. O., Loustau, D., Ceulemans, R., Jordan, A. and Papale, D. [2017], Integrated carbon observation system (ICOS): An infras-27 tructure to monitor the European greenhouse gas balance, in ‘Terrestrial Ecosystem Research Infrastructures’, CRC Press, pp. 505–520. [13] Gielen, B., Demol, M. and Loustau, D. [2020], Revised scientific–technical protocol for standardized biomass observations in ICOS by means of ground LiDAR, Technical Report Deliverable 1.7, RINGO Project, Horizon 2020. EU Horizon 2020 Grant Agreement No. 730944. [14] Holvoet, J., Gielen, B., Loustau, D. et al. [2025], ‘Towards standardized biomass inventories at ICOS forest sites: lessons learned from tls pilot campaigns’, Agricultural and Forest Meteorology 343 , 109847. [15] Holzinger, A., Schweier, J., Gollob, C., Nothdurft, A., Hasenauer, H., Kirisits, T., Häggström, C., Visser, R., Cavalli, R., Spinelli, R. and Stampfer, K. [2024], ‘From Industry 5.0 to Forestry 5.0: Bridging the gap with Human-Centered Artificial Intelligence’, Curr. For. Rep. .[16] ICOS Italy [2024], ‘Renon/selva verde (IT-Ren) - historical background’. ICOS Italy Station Network, Accessed January 2025. [17] Kükenbrink, D., Marty, M., Rehush, N., Abegg, M. and Ginzler, C. [2025], ‘Evaluating the potential of handheld mobile laser scanning for an opera-tional inclusion in a national forest inventory – a swiss case study’, Remote Sensing of Environment 321 , 114685. [18] Kümmerle, R., Grisetti, G., Strasdat, H., Konolige, K. and Burgard, W. [2011], G2o: A general framework for graph optimization, in ‘2011 IEEE International Conference on Robotics and Automation’, pp. 3607–3613. [19] Mattamala, M., Chebrolu, N., Casseau, B., Freißmuth, L., Frey, J., Tuna, T., Hutter, M. and Fallon, M. F. [2024], ‘Autonomous forest inventory with legged robots: System design and field deployment’, CoRR .[20] Metzler, B. [2024], ‘Visual inertial system technology - Leica RTC360’. Accessed January 2025. 28 [21] Muhojoki, J., Tavi, D., Hyyppä, E., Lehtomäki, M., Faitli, T., Kaartinen, H., Kukko, A., Hakala, T. and Hyyppä, J. [2024], ‘Benchmarking Under-and Above-Canopy Laser Scanning Solutions for Deriving Stem Curve and Volume in Easy and Difficult Boreal Forest Conditions’, Remote Sensing 
+
+16 (10), 1721. [22] Murtiyoso, A., Holm, S., Riihimäki, H., Krucher, A., Griess, H., Griess, V. C. and Schweier, J. [2023], ‘Virtual forests: a review on emerging ques-tions in the use and application of 3D data in forestry’, International Jour-nal of Forest Engineering pp. 1–14. [23] Næsset, E. [2002], ‘Predicting forest stand characteristics with airborne scanning laser using a practical two-stage procedure and field data’, Remote sensing of environment 80 (1), 88–99. [24] Næsset, E. [1997], ‘Estimating timber volume of forest stands using air-borne laser scanner data’, Remote Sensing of Environment 61 (2), 246–253. [25] Oh, H., Chebrolu, N., Mattamala, M., Freißmuth, L. and Fallon, M. [2024], Evaluation and deployment of lidar-based place recognition in dense forests, 
+
+in ‘2024 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)’, IEEE, pp. 12824–12831. [26] Puliti, S., Lines, E. R., Müllerová, J., Frey, J., Schindler, Z., Straker, A., Allen, M. J., Winiwarter, L., Rehush, N., Hristova, H., Murray, B., Calders, K., Terryn, L., Coops, N., Höfle, B., Junttila, S., Krůček, M., Krok, G., Král, K., Levick, S. R., Luck, L., Missarov, A., Mokroš, M., Owen, H. J. F., Stereńczak, K., Pitkänen, T. P., Puletti, N., Saarinen, N., Hopkinson, C., Torresan, C., Tomelleri, E., Weiser, H. and Astrup, R. [2024], ‘Benchmark-ing tree species classification from proximally-sensed laser scanning data: introducing the FOR-species20K dataset’. [27] Puliti, S., Pearse, G., Surový, P., Wallace, L., Hollaus, M., Wielgosz, M. and Astrup, R. [2023], ‘FOR-instance: a UAV laser scanning benchmark dataset for semantic and instance segmentation of individual trees’. 29 [28] Ritter, T., Gollob, C. and Nothdurft, A. [2020], ‘Towards an Optimiza-tion of Sample Plot Size and Scanner Position Layout for Terrestrial Laser Scanning in Multi-Scan Mode’, Forests 11 (10), 1099. [29] Roussel, J.-R., Auty, D., Coops, N. C., Tompalski, P., Goodbody, T. R., Meador, A. S., Bourdon, J.-F., de Boissieu, F. and Achim, A. [2020], ‘lidr: An r package for analysis of airborne laser scanning (als) data’, Remote Sensing of Environment 251 , 112061. 
+
+URL: https://doi.org/10.1016/j.rse.2020.112061 
+
+[30] Su, Y., Guo, Q., Jin, S., Guan, H., Sun, X., Ma, Q., Hu, T., Wang, R. and Li, Y. [2021], ‘The development and evaluation of a backpack lidar system for accurate and efficient forest inventory’, IEEE Geoscience and Remote Sensing Letters 18 (9), 1660–1664. [31] The PCD (Point Cloud Data) file format [2025]. 
+
+URL: https://pcl.readthedocs.io/projects/tutorials/en/master/pcd_file_format.html 
+
+[32] Wielgosz, M., Puliti, S., Wilkes, P. and Astrup, R. [2023], ‘Point2Tree(P2T) – framework for parameter tuning of semantic and in-stance segmentation used with mobile laser scanning data in coniferous forest’. [33] Wielgosz, M., Puliti, S., Xiang, B., Schindler, K. and Astrup, R. [2024], ‘SegmentAnyTree: A sensor and platform agnostic deep learning model for tree segmentation using laser scanning data’, Remote Sensing of Environ-ment 313 , 114367. [34] Zhang, W., Qi, J., Wan, P., Wang, H., Xie, D., Wang, X. and Yan, G. [2016], ‘An easy-to-use airborne lidar data filtering method based on cloth simulation’, Remote Sensing 8(6). 
+
+URL: https://www.mdpi.com/2072-4292/8/6/501 
+
+30

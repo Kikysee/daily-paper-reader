@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.14756v1/fig-001.webp",
+      "caption": "Table 1: Comparison of model performance across feature sets and regression models for VS30 prediction. Metrics are reported on the held-out test set for the full-data models. The final two rows report evaluation on the California-only subset of the same held-out test stations, comparing the best whole-US model against the established USGS California VS30 map (Thompson, 2018).",
+      "page": 6,
+      "index": 1,
+      "width": 818,
+      "height": 277
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14756v1/fig-002.webp",
+      "caption": "Figure 1: Overview of the VS30 dataset, model performance, national prediction, and model interpretation. (a) Spatial distribution of the measured VS30 stations used in this study across the conterminous United States, colored by observed VS30, with the west-east tectonic boundary at 105◦W. (b) Comparison between predicted and measured VS30 for the held-out test set, shown on log-log axes with the 1:1 line. (c) Predicted VS30 over a 1 km land grid across the conterminous United States using the best-performing random-forest model, shown as the resulting distribution of NEHRP site classes. (d) Top ten feature importances for the best-performing model, showing contributions from both log-slope and multiple AlphaEarth embedding dimensions.",
+      "page": 7,
+      "index": 2,
+      "width": 952,
+      "height": 719
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14756v1/fig-003.webp",
+      "caption": "Figure 2: (a) Depth spatial distribution of boreholes from the database. (b) Observed bottom-hole temperature distribution of boreholes from the database. (c) Observed versus predicted bottom-hole temperature distribution for the machine learning method without AlphaEarth embeddings. (d) Observed versus predicted bottom-hole temperature distribution for the machine learning method with AlphaEarth embeddings.",
+      "page": 8,
+      "index": 3,
+      "width": 979,
+      "height": 709
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14756v1/fig-004.webp",
+      "caption": "Figure 3: Subsurface temperature reconstruction using AlphaEarth foundation model enabled neural network with depth ranging from 1000 m to 6000 m.",
+      "page": 9,
+      "index": 4,
+      "width": 976,
+      "height": 908
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.14635v1/fig-001.webp",
+      "caption": "Figure 3: Site context showing CP2 location within the broader ICOS Renon forest monitoring station. Left panel displays multi-platform point cloud data visualization in CloudCompare software with the TLS (terrestrial) and the MLS (mobile) datasets co-registered. Right panel shows QGIS-based site overview with CP2 control plot boundaries (red and green circles indicate radii of 25 m and 35 m, respectively), SLAM trajectory paths (orange lines), center point markers (yellow dot), and satellite imagery context. The buffered analysis zones enable edge-effect evaluation and multi-scale forest inventory assessment within the ICOS standardized monitoring framework.",
+      "page": 11,
+      "index": 1,
+      "width": 720,
+      "height": 398
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14635v1/fig-002.webp",
+      "caption": "Figure 4: Complete TLS collection and processing workflow integrating field and desktop protocols. The field workflow (left) emphasizes adaptive scan positioning with real-time VIO/ICP alignment quality assessment, while the PC workflow (right) details bundle optimization and link quality validation. Decision points ensure coverage completeness within a 35 m radius while maintaining registration quality through manual intervention when automatic methods fail. The integrated approach reduces field time through in-situ quality control and enables efficient post-processing through documented link relationships.",
+      "page": 15,
+      "index": 2,
+      "width": 679,
+      "height": 390
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14635v1/fig-003.webp",
+      "caption": "Figure 6: Vegetation height distribution comparison across laser scanning platforms. (A-C) show vegetation-only points, normalized by the CSF DTM, and binned by Z-axis. ULS/ALS (A) is canopy-biased, TLS (B) is subcanopy-biased, but most point-dense, and MLS (C) is most height-constrained and subcanopy-biased. Combined log10-scale comparison (D) enables cross-platform analysis despite order-of-magnitude differences in point density. Consistent height ranges across platforms (-1.5 to 35.5 m) indicate successful cross-platform registration, while platform-specific distribution shapes reflect fundamental differences in sensing geometry.",
+      "page": 21,
+      "index": 3,
+      "width": 712,
+      "height": 524
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14635v1/fig-004.webp",
+      "caption": "Table 1: Technical specifications and operational characteristics of three LiDAR platforms used in forest inventory",
+      "page": 7,
+      "index": 4,
+      "width": 720,
+      "height": 925
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14635v1/fig-005.webp",
+      "caption": "Table 3: TLS Network Registration Summary",
+      "page": 10,
+      "index": 5,
+      "width": 394,
+      "height": 325
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14635v1/fig-006.webp",
+      "caption": "Figure 7: Vertical distribution of point density across forest height strata for three scanning platforms, demonstrating complementary coverage characteristics essential for comprehensive forest inventory. Each circular plot represents point density on log10 scale across height layers: understory (0-1.4 m), trunks (1.4-5 m), midcanopy (5-13 m), and canopy tops (> 13 m). ULS shows concentrated detection in upper canopy with limited ground penetration, TLS provides comprehensive coverage across all height strata with highest densities in trunk regions, while MLS exhibits strong understory and trunk detection with reduced canopy access.",
+      "page": 23,
+      "index": 6,
+      "width": 681,
+      "height": 768
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14635v1/fig-007.webp",
+      "caption": "Table 4: Multi-Platform Dataset Hierarchical Structure",
+      "page": 13,
+      "index": 7,
+      "width": 1146,
+      "height": 728
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14635v1/fig-008.webp",
+      "caption": "Table 2: Ground and vegetation stratification metrics for CP2 scanning platforms",
+      "page": 8,
+      "index": 8,
+      "width": 799,
+      "height": 541
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14635v1/fig-009.webp",
+      "caption": "Figure 5: Ground Points and resulting DTMs per platform. Top row visualizes ground point density at 0.2 m resolution in log10 scale (range: 0.3-3.9). Bottom row presents corresponding DTMs at 0.5 m resolution (elevation range: 1770.2-1788.6 m) generated through CSF ground classification and kNN inverse distance weighting interpolation.",
+      "page": 19,
+      "index": 9,
+      "width": 706,
+      "height": 454
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14635v1/fig-010.webp",
+      "caption": "Figure 2: TLS scan network topology and registration quality assessment for CP2. Link colors indicate registration accuracy: green (≤ 0.018 m), yellow (≤ 0.030 m), red (> 0.030 m), and blue (manually aligned links). Top-down view of cloud in Register360 arbitrary reference frame.",
+      "page": 9,
+      "index": 10,
+      "width": 650,
+      "height": 435
+    },
+    {
+      "url": "assets/figures/arxiv/2604.14635v1/fig-011.webp",
+      "caption": "Figure 1: Multi-platform LiDAR integration and registration validation for CP2 forest inventory site. Panel (a) demonstrates complementary coverage characteristics of aerial (ALS, orange), mobile (MLS, blue-green), and terrestrial (TLS, white) laser scanning modalities. Panel (b) Cross-platform registration quality assessment showing cloud-to-cloud distance analysis between MLS and ALS datasets. Color mapping indicates geometric alignment accuracy with blue regions showing excellent correspondence (<2cm), green showing good alignment (2-5cm), and warmer colors indicating areas where there simply were no ALS points. This is one example of many pairwise examinations possible with this dataset.",
+      "page": 5,
+      "index": 11,
+      "width": 536,
+      "height": 1076
+    }
+  ]
+}
