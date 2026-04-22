@@ -1,0 +1,796 @@
+Title: From Articles to Canopies: Knowledge-Driven Pseudo-Labelling for Tree Species Classification using LLM Experts
+
+URL Source: https://arxiv.org/pdf/2604.16115v1
+
+Published Time: Mon, 20 Apr 2026 01:01:01 GMT
+
+Number of Pages: 18
+
+Markdown Content:
+# From Articles to Canopies: Knowledge-Driven Pseudo-Labelling for Tree Species Classification using LLM Experts 
+
+Michał Romaszewski a, Dominik Kopeć b,c , Michał Cholewa a, Katarzyna Kołodziej a,Przemysław Głomb a, Jan Niedzielko c, Jakub Charyton c, Justyna Wylazłowska c and Anna Jarocińska d
+
+> a
+
+Institute of Theoretical and Applied Informatics, Polish Academy of Sciences, Bałtycka 5, Gliwice, 44-100, Poland 
+
+> b
+
+University of Lodz, Narutowicza 68, 90-136, Lodz, Poland 
+
+> c
+
+MGGP Aero, Kaczkowskiego 6, 33-100, Tarnów, Poland 
+
+> d
+
+University of Warsaw, Faculty of Geography and Regional Studies, Department of Geoinformatics, Cartography and Remote Sensing, Krakowskie Przedmieście 30, 00-927, Warszawa, Poland 
+
+A R T I C L E I N F O 
+
+Keywords :Hyperspectral ALS LLM Remote Sensing Deep Learning 
+
+A B S T R A C T 
+
+Hyperspectral tree species classification is challenging due to limited and imbalanced class labels, spectral mixing (overlapping light signatures from multiple species), and ecological heterogeneity (variability among ecological systems). Addressing these challenges requires methods that integrate biological and structural characteristics of vegetation, such as canopy architecture and interspecific interactions, rather than relying solely on spectral signatures. This paper presents a biologically informed, semi-supervised deep learning method that integrates multi-sensor Earth observation data, specifically hyperspectral imaging (HSI) and airborne laser scanning (ALS), with expert, ecological knowledge. The approach relies on biologically inspired pseudo-labelling over a precomputed canopy graph, yielding accurate classification at low training cost. In addition, ecological priors on species cohabitation are automatically derived from reliable sources using large language models (LLMs) and encoded as a cohabitation matrix with likelihoods of species occurring together. These priors are incorporated into the pseudo-labelling strategy, effectively introducing expert knowledge into the model. Experiments on a real-world forest dataset demonstrate 5.6% improvement over the best reference method. Expert evaluation of cohabitation priors reveals high accuracy with differences no larger than 15%. 
+
+1. Introduction 
+
+The world’s forests are critical habitats for biodiver-sity [1] and strongly influence climate through complex, planetary scale, physical, chemical, and biological pro-cesses [2]. Forests with a naturally diversified mixture of tree species stand out as especially important, due to their enhanced properties of biomass production, soil carbon storage, water yield and soil retention [3, 4]. Consequently, reliable tree species classification and mapping have become foundational inputs for a number of tasks, e.g. biodiver-sity indices derivation and conservation planning [5] or formulation of management practices [4]. Detailed forest information, including species composition, is viewed as a priority source for EU-level policy decisions, such as forest threats mitigation [6] or accurate planning and management of forests [7]. In parallel, rapid advances in Earth observa-tion and machine learning are making large-scale, species-resolved forest maps technically feasible, from benchmark datasets [8] to national tree species products [9]. From a methodological perspective, tree species classification is a demanding testbed for machine learning, as it is a difficult, multi-label problem with sparse and imbalanced  
+
+> mromaszewski@iitis.pl
+
+(M. Romaszewski) 
+
+> ORCID
+
+(s): 0000-0001-0000-0000 (M. Romaszewski);  
+
+> 0000-0003-0831-2992
+
+(D. Kopeć); 0000-0001-0000-0000 (M. Cholewa);  
+
+> 0000-0002-2329-107X
+
+(K. Kołodziej); 0000-0002-0215-4674 (P. Głomb);  
+
+> 0000-0002-6531-0267
+
+(J. Niedzielko); 0000-0003-2052-9051 (J. Charyton);  
+
+> 0000-0001-6015-0463
+
+(J. Wylazłowska); 0000-0003-3610-4656 (A. Jarocińska) 
+
+labels [10] that requires accounting for a large variety of ecological conditions and the need for combining biolog-ical and machine learning approaches for understanding and quantifying the drivers for classification errors [11]. Importantly, recent reviews [12, 13] show that most existing approaches treat tree species classification as a purely data-driven pattern recognition task, with limited integration of explicit biological and ecological knowledge about species traits, interactions and habitat constraints. Addressing this gap, we present a tree species classifier that couples dedi-cated machine learning techniques with explicit biological background knowledge, aiming for more accurate, robust and ecologically interpretable species maps. Classification of tree species is challenging due to high intra-species variability, which occurs both among individ-ual trees and within a single tree crown. This variability arises because trees of the same species may exhibit different sensor-derived characteristics [14, 15]. Spectral reflectance varies depending on the tree species, but this is only one of many factors affecting reflectance values [13]. Essential are biophysical variables of each plant, such as leaf biochemistry (like pigment content), morphology (leaf area), and canopy structure [14]. Also, the health condition and the genera-tive phase of the trees (appearance of flowers and fruits) influence the reflectance values, especially in the visible and near-infrared range. The size and structure of the tree (including age-related factors) may influence the reflection values recorded by Airborne Laser Scanning (ALS) [11, 13, 16]. Variability within the tree crown is also important, 
+
+M. Romaszewski et al.: Preprint submitted to Elsevier Page 1 of 19 
+
+> arXiv:2604.16115v1 [cs.CV] 17 Apr 2026 Tree Classification from HSI/LiDAR
+
+as pixels dominated by reflectance from leaves or branches can be identified through differences in reflectance in the optical range, as well as in ALS data. If a pixel occurs at the edge of the tree, the reflectance may be influenced by the background, including other adjacent plant species [15, 17]. However, reflectance values may be similar across species due to comparable biophysical plant parameters, as well as blurring of differences under, for example, deteriorating conditions [18, 14]. These factors increase within-species spectral variability and can also cause spectral overlap be-tween different species, making tree species classification a hard problem. Various approaches are used to identify species, in-cluding a combination of different types of data, such as spectral imagery and LiDAR data, which allows the use of biophysical and morphological characteristics of vege-tation [11, 13]. Another solution is to use multi-temporal data [19]. A prominent baseline approach for exploring biologically grounded features in tree species classification involves using ALS and hyperspectral imaging (HSI) data, often for computing vegetation indices, along with classical, explainable machine learning (ML) models such as the random forest (RF) classifier [20, 21, 22]. Segmentation techniques, often used for grouping pixels of individual trees, are also employed [23, 21]. Some works augment data with publicly available Sentinel-2 satellite images [23, 22]. Artificial neural networks, especially deep learning (DL) models [24], often outperform other methods in classifica-tion from remote sensing images by extracting hierarchi-cal features from complex spectral, spatial, and structural data [25, 26]. Recently, a semi-supervised DL approach has become prominent for pixel-level tree species classi-fication [27], often outperforming classical ML models, especially with sufficient training data. However, accurate species classification remains challenging. Both traditional methods and DL approaches work well for the most com-mon classes. However, both struggle with imbalanced data and rare species [24]. Performance reported in tree species identification competition [24] rarely exceeded ∼ 0 .32 F1. Semi-supervised models are designed for settings where labelled data are scarce but unlabelled data are abundant, combining a small labelled set with a much larger unla-belled set to learn more robust decision boundaries and improve generalization. For example, the approach in [28] employs contrastive learning to address the label scarcity problem and reduce the semantic gap between multimodal features; the method combines unsupervised feature extrac-tion with supervised classification. [29] introduces the Near-est Neighbor-based Contrastive Learning Network (NNC-Net), which integrates a nearest-neighbor-based data aug-mentation in which the nearest neighbors of positive samples are fed into the encoder. [30] uses coupled adversarial feature learning (CAFL) and multi-level feature fusion classifica-tion (MFFC). [31] uses unsupervised cross-domain feature fusion with spectral attention, where unlabelled sub-images are used to conduct feature fusion pre-training and a few available labelled samples are used for feature optimisation. Label scarcity [29] is a typical and significant problem for such algorithms. Given the persistent scarcity of labelled pixels, recent work has increasingly emphasized pseudo-labelling as a central mechanism in semi-supervised classification frame-works [27, 23]. A typical criterion for pseudo-labelling of samples is spectral similarity, often accompanied by spatial relationship, according to which neighbouring pixels in a homogenous region are highly probable to belong to the same class [32]. This idea is used to assign pseudo-labels to pixels belonging to the same tree [27]. However, sev-eral studies [17, 15] highlight that only spectral signatures belonging to the centroid of the individual tree provide characteristics useful for tree identification. In contrast, at canopy edges, presence of mixed pixels leads to misclassifi-cation. In this context, pseudo-labelling has shifted towards restricting annotation to the treetops to obtain only high-quality spectral information [27]. However, this introduces yet another limitation on the number of available training samples. The fundamental bottleneck behind limited labelled samples is that tree species identification relies on field surveys, a process that is labour-intensive, costly, and con-strained by limited throughput, the need for expert knowl-edge, and the logistical complexity of accessing remote or difficult terrain [33, 18, 34]. While the increasing availabil-ity of unmanned aerial vehicles (UAVs) has substantially improved access to large-scale, high-resolution HSI and ALS data, enabling comprehensive coverage of entire areas of interest [35], labelled samples are still scarce. While small, such datasets are valuable, as they often provide unique insights into rare, endangered species and ecological processes [36, 37]. However, such datasets are typically class-imbalanced and insufficient for training DL models, which tend to overfit and, as a result, exhibit poor test performance under severely limited supervision [38]. For ex-ample, [39] showed that simulated restriction of the training samples’ number drastically degraded CNN-based classifier accuracy on the tree species classification task. Simulta-neously, the authors demonstrated that architectures based on hierarchical traditional ML approaches remained much more robust in terms of accuracy under such restrictions. This clearly suggests that well-adapted ML approaches are a promising alternative to CNN-based approaches for the sparse-sample HSI classification task. Another requirement is to consider the crown-edge mixed-pixel (spectral mix-ing) effect, where boundary pixels contain a mixture of canopy and background reflectance, reducing pixel purity and increasing misclassification [17, 15]. However, with high-resolution HSI and ALS, individual tree canopies can often be delineated directly from unlabelled data by ex-ploiting biologically informed morphological and structural cues [27, 21]. This suggests a reliable approach that couples unsupervised individual tree crown delineation with a robust classifier to label unlabelled canopy tops based on their proximity to labelled trees.   
+
+> M. Romaszewski et al.: Preprint submitted to Elsevier Page 2 of 19 Tree Classification from HSI/LiDAR
+
+This biologically inspired strategy is well-motivated, but it overlooks a key ecological factor: the local co-occurrence of tree species within the same area, which could provide valuable contextual information for classification. Deriving cohabitation (co-occurrence) information is not straightfor-ward, because it is typically reported in the literature in heterogeneous, non-standardized forms, making it difficult to compile into a consistent, usable dataset. In [23], the expert system is built to establish the rules determining the probabilities of vegetation classes’ occurrence dependent on propagation direction. However, the rules are manually cre-ated from a large set of biological metadata and field surveys strictly related to the study area, which incurs substantial costs and workload and limits scalability. To mitigate this issue, [36] proposes a transfer learning framework that uses a model trained on a large dataset of plant species cohabitation patterns to infer plant relations in much smaller datasets from different regions. This proposal, although much more scalable, requires a large pre-training dataset, which needs to be obtained through extensive and costly field research. In light of these limitations, recent advances in genera-tive, cloud-based artificial intelligence offer a practical way to reduce the dependency on expensive field-derived co-occurrence datasets. State-of-the-art large language models (LLMs) are increasingly effective at retrieving, synthesizing, and interpreting publicly available scientific information, providing a scalable mechanism to extract domain knowl-edge from the literature for downstream use [40]. They are also becoming capable assistants for quantitative scientific analyses [41], which opens the possibility of automatically converting heterogeneous ecological descriptions into struc-tured priors. Building on this capability, we turn to the scien-tific literature as a rich—yet currently underutilized—source of cohabitation evidence. Specifically, we propose to screen publications for co-occurrence statements among a prede-fined set of species labels and automatically translate these into a species cohabitation matrix. This matrix can then be used to inject, automatically, current expert ecological knowledge into our biologically motivated neighborhood-based pseudo-labelling framework, providing a scalable al-ternative to manual rule construction and extensive pre-training field campaigns. Specifically, this paper makes the following contribu-tions to tree species classification and, in particular, to the challenging case of diversified species mapping: 
+
+• We propose a novel semi-supervised deep learning framework for tree species classification that uses bio-logically inspired pseudo-labelling on a precomputed canopy graph built from tree-top detections . The re-sulting fusion neural network achieves high accuracy, low variance and low training cost, and consistently outperforms spectral and multi-sensor references ap-proaches, especially for rare tree species. 
+
+• We propose an LLM-driven ‘virtual cohabitation ex-pert’ for automated derivation of given ecological pa-rameters . We introduce a new method for parameter-ising classification algorithms by automatically min-ing digital manuscript libraries with LLMs to derive species cohabitation patterns and related ecological priors. These priors are encoded as a cohabitation matrix and integrated into the pseudo-labelling and model regularization process, effectively acting as a virtual domain expert that injects biological back-ground knowledge into the parametrization process. The validity of this approach was verified both by experts and by results of the experiments (increasing the classification accuracy). 
+
+• We perform comprehensive evaluation and in-depth analysis on a rich and diversified real-world dataset .We provide an extensive empirical study on a real, unique natural forest dataset, including quantitative comparisons to the state-of-the-art methods, detailed discussion of the proposed components, and an in-depth error analysis with a particular focus on rare and ecologically important tree species. Together, these contributions demonstrate that combining dedicated semi-supervised deep learning with systemati-cally extracted biological knowledge can substantially im-prove the accuracy, robustness and interpretability of large-scale tree species classification. 
+
+2. Method 
+
+2.1. Dataset 
+
+The dataset contains co-registered ALS and HSI data acquired over the extended area of Wigierski National Park in August 2019. The area covered by the data acquisition is 158.3 𝑘𝑚 2. Data collection was carried out using a Vulcanair P-68 Observer 2 aircraft at an average altitude of approxi-mately 1275 m above ground level, following north–south oriented flight lines designed to ensure full coverage with cross-track overlaps of 50% for ALS and 30% for HSI scenes. The HSI data was acquired with a HySpex VS-725 system composed of a VNIR-1800 and two SWIR-384 sensors, covering 400–2500 nm with ground sampling distances of 1 m in both the visible–near-infrared and shortwave infrared ranges, while ALS data was collected with a Riegl VQ-780i laser scanner operating at 1064 nm with a scan angle of 50 ° and a point density of approximately 7.5 points per m sq. HSI and ALS data were collected synchronously during three flight campaigns: 17, 24, and 25 of August 2019 under clear-sky conditions with a minimum solar elevation of 30 °.HSI and ALS data underwent a multi-stage processing workflow to derive geometrically and radiometrically con-sistent products suitable for quantitative analysis. The ALS point cloud was generated, calibrated, and georeferenced, cleaned from extreme elevation outliers, and classified in TerraScan [42] into ground, low, medium, and high veg-etation, buildings, water, and noise classes, followed by    
+
+> M. Romaszewski et al.: Preprint submitted to Elsevier Page 3 of 19 Tree Classification from HSI/LiDAR
+> Figure 1: Visualisation of the Wigierski National Park with sampled trees divided into training, validation and tests subsets
+
+internal visual quality control. HSI was subjected to para-metric geometric correction in PARGE [43] using GPS/INS trajectories and ALS-based DSM, resampled with nearest neighbour and referenced to local coordinate system (PL-1992). Atmospheric correction was applied using ATCOR4 [44] to convert at-sensor radiance to surface reflectance. The corrected scenes were mosaicked into one hyperspectral cube (1 m spatial resolution, 430 bands, ENVI BSQ format) To create labels, field measurements were carried out between June and August 2019. Reference trees’ coordi-nates were captured using a GNSS Trimble DA1 antenna, achieving a maximum error of 1 m. The measurement was performed so that the coordinates indicated the tree crown’s central point. Measurements were recorded on mobile de-vices using an Android-based mobile app. Recorded points were labelled with the tree species name or an indication of tree death, and with the radius value, which enabled circle polygons to be constructed from these points. The value of the radius was defined in the way that the polygon would not exceed the actual size of the tree crown, hence the rasterized reference polygon did not contain pixels outside the tree crown. A total of 942 reference trees were included in the analysis: 799 trees assigned to 16 taxa classes and 143 trees labelled as ‘Other trees’ – composed of less abundant species that could not compose separate taxa class due to insufficient representation in the study area. Reference tree counts by taxa class are presented in Table 1. This collection includes all the main forest-forming species found in the study area. Visualisation of the study area and training, validation and test subsets used in experiments is presented in Figure 1. After post-processing of the field dataset, 1180 back-ground reference polygons were added manually basing on orthophotomap in QGIS. The background class was needed to classify the pixels outside of tree crowns as a background and not as any of tree taxa class. The whole reference dataset was split to 3 parts: ca. 66 % training, ca. 23 % validation and ca 11 % test. Then the reference dataset was rasterized to the same 1 m pixel grid as airborne dataset. Rasterization was performed after the train/validation/test split due to ensure spatially correlated pixels of a single tree crown to be drawn only into one of the train/val/test parts. 
+
+2.2. Neural network architecture 
+
+We adopt a dual-stream multilayer perceptron (MLP) for pixel-wise land-cover classification from co-registered HSI and ALS data. Each training sample consists of a spectral vector 𝐱 HSI ∈ R𝐵 HSI , an ALS feature vector 𝐱 ALS ∈ R𝐵 ALS ,and a class label 𝑦 ∈ {1 , … , 𝐶 }. The model comprises two modality-specific encoders followed by a fusion decoder and a final classifier, and is trained end-to-end on predefined train/validation/test splits. The HSI and ALS encoders are implemented as separate MLPs, 
+
+𝑓 HSI ∶ R𝐵 HSI → R𝐷 HSI , 𝑓 ALS ∶ R𝐵 ALS → R𝐷 ALS ,
+
+each realized as a sequence of fully-connected blocks. Every hidden block consists of a linear layer, batch normalization, GELU non-linearity, and dropout. The last encoder layer is a linear projection without normalization or dropout, yielding latent representations 
+
+𝐳 HSI = 𝑓 HSI (𝐱 HSI ), 𝐳 ALS = 𝑓 ALS (𝐱 ALS ).
+
+These feature representations are concatenated into a joint feature vector 𝐳 = [𝐳 HSI ; 𝐳 ALS ] ∈ R𝐷 HSI +𝐷 ALS , which is passed to a fusion decoder MLP 
+
+𝑔 ∶ R𝐷 HSI +𝐷 ALS → R𝐶 ,
+
+constructed with the same block design (linear + batch nor-malization + GELU + dropout for hidden layers, followed by a final linear classification layer). The network outputs class logits 𝓵 = 𝑔 (𝐳 ) ∈ R𝐶 and class probabilities 𝑝 (𝑐 ∣
+
+𝐱 HSI , 𝐱 ALS ) via a softmax. 
+
+2.2.1. Hyperparameters 
+
+In all experiments we use the following configuration. The HSI encoder has hidden layer sizes 
+
+𝐵 HSI → 256 → 128 → 64 ,
+
+and the ALS encoder 
+
+𝐵 ALS → 128 → 128 → 64 .
+
+Thus, the concatenated latent representation has dimension 
+
+𝐷 HSI + 𝐷 ALS = 64 + 64 = 128 . The fusion decoder maps 
+
+128 → 128 → 𝐶,                                                                                                                                                                                     
+
+> M. Romaszewski et al.: Preprint submitted to Elsevier Page 4 of 19 Tree Classification from HSI/LiDAR Total Training Validation Test Tree taxa class Class code Polygons Pixels Polygons Pixels Polygons Pixels Polygons Pixels
+> Acer platanoides Ace-pla 40 1136 28 758 8233 4145
+> Alnus glutinosa Aln-glu 104 2298 68 1640 24 525 12 133
+> Betula spp. Bet-spp 99 1304 72 912 21 309 683
+> Carpinus betulus Car-bet 18 591 10 333 4162 496
+> Fraxinus excelsior Fra-exc 26 545 18 365 6151 229
+> Larix decidua Lar-dec 29 659 22 497 4122 340
+> Picea abies Pic-abi 103 1646 64 940 26 468 13 238
+> Picea abies - dead Pic-dea 35 486 17 251 13 166 569
+> Pinus sylvestris Pin-syl 101 1221 73 923 15 141 13 157
+> Pinus sylvestris - dead Pin-dea 27 245 22 221 319 25
+> Populus tremula Pop-tre 31 808 23 566 4146 496
+> Quercus robur Que-rob 54 2376 35 1594 10 477 9305
+> Salix trees Sal-tre 23 889 15 576 6209 2104
+> Salix bushes Sal-bus 40 669 27 451 7101 6117
+> Tilia cordata Til-cor 56 1885 35 1024 11 423 10 438 Deciduous trees - dead Dec-dea 13 104 971 331 12Other trees Oth-tre 143 2383 93 1670 34 354 16 359 Background Backgr 1174 27489 802 18014 255 6838 117 2637
+> Table 1
+> Reference tree count by taxa class (polygons and pixels count across Total, Training, Validation and Test sets)
+
+where 𝐶 is the number of land-cover classes. A dropout rate of 0.2 is applied after each hidden layer in both encoders and the decoder. Training is performed with a batch size of 512 for 300 
+
+epochs. We use Adam with learning rate 10 −4 and weight decay 10 −4 , combined with a cosine-annealing schedule over the full training horizon. The model is optimized with a cross-entropy loss. Dur-ing joint training, the two encoders and the decoder are updated simultaneously. In the results this method is referred as Dual-Stream Neural Network (DSNN). We observed that the architecture is robust in terms of parameter selection. 
+
+2.3. Cohabitation matrix 
+
+A symmetric cohabitation matrix 𝐶 ∈ [0 , 1] 𝐶 ×𝐶 where 
+
+𝐶 is the number of classes, is a prior describing compatibility of species in real forest habitats. It keeps 1 on the diagonal (a species is always compatible with itself) and stores a real-valued association strength for every off-diagonal pair, reflecting how often those species are reported to occur together under comparable habitat conditions. In practice it is estimated from habitat and vegeta-tion reports (EUNIS databases [45], literature [46] and expert knowledge), where repeated observations of species lists—often stratified by site descriptors like soil, mois-ture, elevation, stand age, and community type—allow for summarizing co-occurrence as a graded affinity rather than a hard rule. The key idea is that a cohabitation matrix captures which mixtures are typical or rare in a specific environment. That makes it an useful tool for improving semi-supervised scheme. Used in pixel-growing algorithm, a cohabitation matrix can help correcting the results toward more ecologically plausible neighbour expansions and re-duce propagation of unlikely pseudo-labels. In our approach we decided to use automated approach to generating cohabitation matrix. 
+
+2.3.1. Cohabitation matrix generation 
+
+We propose the LLM-driven approach to generating cohabitation information in the form of a matrix. This is aligned with [47], where authors show that large language models can reliably extract and structure relations from unstructured text when guided by constrained prompts and verification requirements. Let  be a set of classes (tree species) and let 𝑐 = ||.Let 𝑟 > 0 denote the radius defining a neighbourhood within which trees may coexist. The cohabitation matrix 𝐻 𝑟 ∈ [0 , 1] 𝑐 ×𝑐 is defined as 
+
+𝐻 𝑟 [𝑖, 𝑗 ] = 
+
+{
+
+1, 𝑖 = 𝑗, 𝑝 𝑖𝑗 , 𝑖 ≠ 𝑗, 
+
+where 𝑝 𝑖𝑗 ∈ [0 , 1] represents the likelihood that species 𝑖 and 
+
+𝑗 occur within distance 𝑟 of each other, where 1 denotes very high likelihood and 0 denotes impossibility. The property that 𝐻 𝑟 [𝑖, 𝑖 ] = 1 for all 𝑖 ∈ {1 , … , 𝑐 }, reflecting that a species co-occurs with itself. The matrix is constructed using a query to LLM (we used ChatGPT 5.0 model). The prompt is provided in Section A.1. The query can be customised with the following parameters: 
+
+• minimum number of sources per species: 2 – number of required, documented sources for habitats in which each of the species is typically observed.   
+
+> M. Romaszewski et al.: Preprint submitted to Elsevier Page 5 of 19 Tree Classification from HSI/LiDAR
+
+• maximum number of sources per species: 4 – number of required sources for observed co-existence for a given species. 
+
+• distance in meters: 20 – cohabitation distance 
+
+• region: Central-Eastern Europe – ecological context for the query and search for sources 
+
+• additional environmental information: Wigry National Park, Poland. No large rivers or urban areas. Natural forests, agricultural areas and bogs. 
+
+• species list: list of classes The model is also required, in addition to matrix estimation, to prepare a report that includes all citations and the rationale for its choices. To prevent the model from hallucinating, the query specifies the main source of citation (in our case, EU-NIS databases) and requires only manuscripts with verifiable DOIs. Visualization of the generated cohabitation matrix is presented in Figure 7. 
+
+2.4. Cohabitation-aware pseudo-labels 
+
+We employ a two-pass classification framework. In the first pass, the initial classifier produces class probability estimates for all candidate tree-top pixels. In the second pass, the classifier is refined using an augmented training set constructed from spatial neighbourhoods around the original labelled samples. Candidate pixels are selected based on the initial classifier output and a class co-occurrence prior that models species co-occurrence and spatial distance. In the results this method is referred as Dual-Stream Neural Network with Pseudo-labels (DSNN+P). 
+
+2.4.1. Detecting treetops 
+
+Candidate treetops pixels are identified with the Canopy Height Model (CHM) using a local maxima detection ap-proach. The CHM is first preprocessed by clipping values to a valid height range (e.g., [5 , 40] m) and applying Gaussian smoothing ( 𝜎 = 1 .0) to reduce noise. Local maxima are then extracted using a fixed window size ( 5 × 5 pixels), with a minimum height threshold (e.g., ℎ𝑚𝑖𝑛 = 5 m) to exclude ground vegetation. Flat plateaus are suppressed to ensure distinct peak localization. The resulting binary map serves as the set of candidate locations 𝑐𝑎𝑛𝑑 .
+
+2.4.2. Selecting candidates 
+
+Let 𝑐𝑎𝑛𝑑 = { 𝑥 1, … , 𝑥 𝑁 } be the set of candidate tree locations, and 𝑡𝑟𝑎𝑖𝑛 = {( 𝑥 ′1, 𝑦 ′1), … , (𝑥 ′ 
+
+> 𝑀
+
+, 𝑦 ′ 
+
+> 𝑀
+
+)} be the set of labeled training samples (parents), where 𝑦 ′ ∈ {1 , … , 𝐾 }
+
+denotes the species class. For each candidate 𝑥 𝑖 , we have an initial probability vector from a neural network classifier: 
+
+𝐏 𝑖 = [ 𝑝 𝑖, 1, … , 𝑝 𝑖,𝐾 ],
+
+> 𝐾
+
+∑
+
+> 𝑘 =1
+
+𝑝 𝑖,𝑘 = 1 
+
+We utilize a Cohabitation Matrix 𝐂 ∈ R𝐾 ×𝐾 , where 
+
+𝐶 𝑢𝑣 represents the frequency or likelihood of observing a neighbor of class 𝑣 given a central tree of class 𝑢 .To calibrate the influence of inter-species mixing versus intra-species clustering, we introduce an arbitrary scaling parameter 𝛿 (default 𝛿 = 0 .75 ). We derive a scaled matrix 
+
+𝐂 ′:
+
+𝐶 ′ 
+
+> 𝑢𝑣
+
+=
+
+{
+
+𝐶 𝑢𝑣 if 𝑢 = 𝑣 𝛿 ⋅ 𝐶 𝑢𝑣 if 𝑢 ≠ 𝑣 
+
+The parameter 𝛿 dampens the probability mass assigned to nearby candidates, reflecting that while cohabitation is possible, purity within a species cluster is often more likely. This matrix is row-normalized to obtain the conditional prior distributions: 
+
+𝜋 𝑢 = [ 𝜋 𝑢, 1, … , 𝜋 𝑢,𝐾 ], where 𝜋 𝑢,𝑣 = 𝐶 ′
+
+> 𝑢𝑣
+
+∑𝑘 𝐶 ′
+
+> 𝑢𝑘
+
+The algorithm iterates over every training sample (par-ent) and evaluates its influence on nearby candidates. For each candidate, the “best” parent (the one providing the strongest evidence) is selected to update the candidate’s label. 
+
+2.4.3. Local context fusion 
+
+Let a single parent 𝑗 with location 𝑥 ′ 
+
+> 𝑗
+
+and class 𝑐 0 = 𝑦 ′
+
+> 𝑗
+
+be given. Let 𝑥 𝑖 be a candidate within a maximum radius 
+
+𝑅 𝑚𝑎𝑥 , and the distance 𝑑 𝑖𝑗 = ‖𝑥 𝑖 − 𝑥 ′ 
+
+> 𝑗
+
+‖2.We define a fused score vector 𝐒 𝑖𝑗 that combines the clas-sifier probabilities 𝐏 𝑖 with the contextual prior 𝜋 𝑐 0 weighted by distance. A weighting function 𝑤 (𝑑 ) models the decay of contex-tual influence: 
+
+𝑤 (𝑑 ) = 
+
+⎧⎪⎪⎨⎪⎪⎩
+
+1 if 𝑑 ≤ 𝑅 𝑚𝑖𝑛 
+
+𝜖 + (1 − 𝜖 )
+
+√
+
+1 − 
+
+( 𝑑 −𝑅 𝑚𝑖𝑛 
+
+> 𝑅 𝑚𝑎𝑥 −𝑅 𝑚𝑖𝑛
+
+)2
+
+if 𝑅 𝑚𝑖𝑛 < 𝑑 < 𝑅 𝑚𝑎𝑥 
+
+𝜖 if 𝑑 ≥ 𝑅 𝑚𝑎𝑥 
+
+where essentially 𝑤 (𝑑 ) ≈ 1 for close neighbors and decays to 𝜖 at 𝑅 𝑚𝑎𝑥 .The fused score for class 𝑘 is given by: 
+
+𝑆 𝑖𝑗,𝑘 = 𝑃 𝑖,𝑘 ⋅ 𝜋 𝑐 0,𝑘 ⋅ Ω𝑖𝑗,𝑘 
+
+The distance modulation term Ω𝑖𝑗,𝑘 only penalizes the prob-ability of the parent’s own class. 
+
+Ω𝑖𝑗,𝑘 =
+
+{
+
+𝑤 (𝑑 𝑖𝑗 ) if 𝑘 = 𝑐 0
+
+1 if 𝑘 ≠ 𝑐 0
+
+Finally, the fused scores are renormalized to obtain a proba-bility distribution: ̃𝑆 𝑖𝑗,𝑘 = 𝑆 𝑖𝑗,𝑘 
+
+∑𝐾  
+
+> 𝓁 =1
+
+𝑆 𝑖𝑗, 𝓁 
+
+.        
+
+> M. Romaszewski et al.: Preprint submitted to Elsevier Page 6 of 19 Tree Classification from HSI/LiDAR
+> (a) (b) (c)
+> Figure 2: Visualization of the pseudo-label algorithm: (a) treetops detected around training (parent) pixels; (b) selected candidates with assigned classes; (c) candidates denoted with a cross are filtered out with probability threshold, remaining candidates are subject to spatial expansion. Green denotes the class Betula spp., and blue denotes the class Alnus glutinosa .
+
+2.4.4. Candidate selection 
+
+After computing the fused scores from all available parents in the neighborhood of candidate 𝑖 , we select the single most authoritative parent to determine the final label. Let  (𝑖 ) be the set of parents within radius 𝑅 𝑚𝑎𝑥 of 𝑖 . The winning parent 𝑗 ∗ is: 
+
+𝑗 ∗ = arg max  
+
+> 𝑗 ∈(𝑖 )
+
+(
+
+max 
+
+> 𝑘
+
+̃ 𝑆 𝑖𝑗,𝑘 
+
+)
+
+,
+
+therefore, we pick the parent that produces the highest single class score (highest confidence). For the selected parent 𝑗 ∗,the final assigned label for candidate 𝑖 is: ̂𝑦 𝑖 = arg max 
+
+> 𝑘
+
+̃ 𝑆 𝑖𝑗 ∗,𝑘 .
+
+2.4.5. Augmented dataset construction 
+
+The refined pseudo-labels are used to generate an aug-mented training dataset. To do this, we retain only those refined candidates whose assigned class probability exceeds the high-confidence threshold 𝜏 = 0.99 . Candidates lo-cated at coordinates already present in the training set are discarded. Visualization of the algorithm is presented in Figure 2. We also increase the size of the training set by per-forming neighbourhood expansion for every candidate, re-turning its 𝑛 -neighbourhood with the same label as the central candidate (e.g., 𝑛 = 1 yields a 3 × 3 block). Rare conflicts (overlaps) are handled by randomly retaining the first occurrence in the candidate list. 
+
+2.5. Reference methods 
+
+Reference methods follow a classical pipeline of feature extraction and classification. Three feature sets were pre-pared: the first, the original hyperspectral reflectance cube (HSI). The second feature set was created using two feature extraction methods applied to the HSI mosaic: 30 most informative bands of the minimum Noise Transformation (MNF) [48]; spectral indices (IND) derived from the HSI mosaic using ENVI SpectraIndices [49]. These features were combined into a second dataset referred to as MNF-IND. The complete list of calculated indices is included in Table 4 in the supplementary materials. The third feature set included features derived from ALS point clouds using the lidR library [50], combined into the MNF-IND-ALS dataset. ALS features were calculated as statistical metrics from the point cloud in the 1 m grid of HSI imagery. The complete list of calculated ALS metrics is presented in Table 5. Those three datasets represent classical approaches to creating air-borne remote sensing datasets for vegetation classification and correspond to established strategies for HSI classifica-tion: (1) HSI consists of the original data without additional feature engineering and is used to ensure a fair comparison between reference methods and the proposed approach on identical inputs; (2) MNF-IND represents the improvement resulting from state-of-the-art feature extraction; (3) MNF-IND-ALS extends this by integrating an additional data modality. The reference classification method was the pixel-based CatBoost [51] algorithm. This algorithm was successfully used in previous works on tree species classification [16]. The model training was performed on all training pixels extracted from rasterized reference dataset. Three models were trained, using 3 datasets: HSI, MNF-IND, MNF-IND-ALS. Internal model validation was performed on pixels extracted from validation dataset. Accuracy assessment was done on the test dataset. Scenarios tested in experiments are presented in Table 2. As our main accuracy measure, we used the F1 score computed for each class (per-class F1) and their arithmetic mean (macro-averaged F1 score) as the aggregated metric. The maps obtained under the best scenarios were compared using the Jaccard index, defined as the ratio of the area of intersection between regions assigned to the same classes and the total area covered by their union.               
+
+> M. Romaszewski et al.: Preprint submitted to Elsevier Page 7 of 19 Tree Classification from HSI/LiDAR Scenario acronym Classifier Description HSI CatBoost Reflectance MNF-IND CatBoost MNF bands, spectral indices from reflectance MNF-IND-ALS CatBoost MNF bands, spectral indices from reflectance, metrics from the ALS point cloud DSNN Dual-Stream Neural Network Reflectance, metrics derived from the ALS point cloud. DSNN+P Dual-Stream Neural Network Reflectance, metrics derived from the ALS point cloud, pseudo-labels.
+> Table 2
+> Classification scenarios and algorithms used in experiments.
+
+3. Results 
+
+In our experiments, the proposed Dual-Stream Neural Network with Pseudo-labels (DSNN+P) algorithm reached 
+
+79 .38 ± 0 .8 macro F1, 90 .09 ± 0 .3 accuracy and 81 .87 ± 0 .04 
+
+balanced accuracy (mean recall). Classification results of the proposed approach (DSNN and DSNN+P) and refer-ence methods using vegetation indices, feature extraction and classification algorithms are presented in Table 3 (for scenarios see Table 2) . DSNN+P provides a large increase in average accuracy compared to the reference methods, and the proposed semi-supervised step yields the best average result and is often superior for in-class classification. The observed advantages are 37 .89 % compared to HSI, 7.15 %compared to MNF-IND, and 5.6% compared to MNF-IND-ALS. Finally, the use of pseudo-labels results in a 1.96 %improvement compared to DSNN. Our choice of reference methods (see Section 2.5) al-lows us to quantify the gains delivered by DSNN/DSNN+P against typical HSI and HSI+ALS processing pipelines. The large improvement of MNF-IND over raw HSI ( +30 .66 
+
+macro F1) is consistent with the well-known difficulty of learning from high-dimensional hyperspectral inputs with-out dedicated feature extraction. In contrast, adding ALS to the classical pipeline yields only a modest additional gain (MNF-IND-ALS vs. MNF-IND +1 .63 macro F1), sug-gesting limited benefit from simple feature level fusion. DSNN/DSNN+P achieves a substantially larger improve-ment, indicating that it learns a more effective joint repre-sentation from both HSI and ALS. We compared class-level results of best reference method (MNF-IND-ALS) with the proposed DSNN+P architecture. Comparisons of class-specific spatial patterns across the entire study area shows high agreement between the maps generated by the two approaches, consisted with numerical results (Figure 3), as confirmed by the Jaccard index, which is 0.939. Class proportions are also comparable (Figure 5). The largest difference in percentage of occurrence is for the Alnus glutinosa class, at 2.11 percentage points. Dis-crepancies are observed locally in small areas (examples on Figure 4). In the first column(Zoom 1, Inventory precinct: Leszczewk, forest division and separation: 41a), the forest stand description [52] indicates a pure 38-year-old Norway spruce ( Picea abies ) stand, also confirmed by the field photo; thus, Picea abies should be almost the only class detected. DSNN+P better matches this condition, whereas MNF-IND-ALS assigns numerous trees to the Other trees 
+
+class, which is present in the area, but occurs in much smaller proportions. In the second column (Zoom 2, inven-tory precinct: Wysoki Most, forest division and separation: 300c), DSNN+P again aligns more closely with the field situation by mapping a pure birch stand ( Betula spp.) at the photo location; in contrast, MNF-IND-ALS identifies small-leaved linden Tilia cordata in substantial quantities despite its absence on site. A similar pattern is observed in the third column (Zoom 3, inventory precinct: Sobolewo, forest division and separation: 150m), where oak ( Quercus robur ) does not occur, and black alder ( Alnus glutinosa ) and birch ( Betula spp.) dominate; DSNN+P provides a markedly more accurate map. Beyond improved aggregate metrics, visual inspection against field photographs in selected areas confirms more accurate labelling at the level of individual crowns and small tree groves. Regarding individual tree species, the confusion matrix of the DSNN+P method, averaged over all experiments and row-normalized is presented in Figure 6. Overall, 12 classes achieve recall above 80% (10, not counting the last three classes that aggregate diverse targets). The most confusing tree taxa classes (measured by class-wise error rate: 1− recall above 25%) are: Carpinus betulus (86.46% error), Acer pla-tanoides (32.28%) and Pinus sylvestris (28.54%) in addition to the Other trees class (38.44%). Some classes are frequently predicted for other taxa, i.e. they ‘attract’ false positive errors. We characterise this tendency using the aggregated incoming error AGE, defined as the off-diagonal column sum in the confusion matrix, and the number of classes NC with incoming confusion above a threshold 𝑑 = 1 %. Ordering classes by AGE and NC, the most prominent false-positive attractors are: Alnus glutinosa 
+
+(𝐴𝐺𝐸 = 116 .7%, 𝑁𝐶 = 7 ), Other trees ( 𝐴𝐺𝐸 = 46 .2%, 
+
+𝑁𝐶 = 5 ), Background ( 𝐴𝐺𝐸 = 25 .3%, 𝑁𝐶 = 4 ) and 
+
+Quercus robur (𝐴𝐺𝐸 = 25 .6%, 𝑁𝐶 = 6 ). 
+
+3.1. Cohabitation matrix evaluation 
+
+Generating the cohabitation matrix required the LLM to analyse each unordered pair of species separately. We decided that the key factor in assessing realistic cohabitation estimates is the existence of supporting sources (EUNIS and environmental databases, as well as relevant scientific papers) for both species in each pair inhabiting the same or very similar habitats. For each pair, the model was directly instructed to provide natural habitats with believable sources of habitat and cohabitation. The model was instructed to decrease the cohabitation coefficient if supporting sources   
+
+> M. Romaszewski et al.: Preprint submitted to Elsevier Page 8 of 19
+
+Tree Classification from HSI/LiDAR 
+
+Figure 3: Tree taxa maps for the entire study area generated using two of the compared methods (MNF-IND-ALS and DSNN+P). The areas shown in detail in Figure 4 are indicated on the map by three squares. HSI MNF-IND MNF-IND-ALS DSNN DSNN+P class-counts Tree taxa class Class code 
+
+Acer platanoides Ace-pla 36.75 63.00 70.68 73.76 75.25 145 
+
+Alnus glutinosa Aln-glu 39.42 60.98 55.75 53.16 55.24 133 
+
+Betula spp. Bet-spp 41.38 82.14 69.82 83.57 84.19 83 
+
+Carpinus betulus Car-bet 0.00 15.38 9.71 26.10 22.73 96 
+
+Fraxinus excelsior Fra-exc 12.77 57.63 78.79 80.67 83.65 29 
+
+Larix decidua Lar-dec 46.75 60.47 87.80 87.40 87.06 40 
+
+Picea abies Pic-abi 70.56 89.66 91.37 91.53 92.22 238 
+
+Picea abies - dead Pic-dea 88.06 97.06 97.81 96.21 97.35 69 
+
+Pinus sylvestris Pin-syl 60.36 79.70 76.63 80.81 88.89 157 
+
+Pinus sylvestris - dead Pin-dea 0.00 88.89 68.41 81.13 80.80 5
+
+Populus tremula Pop-tre 29.27 56.79 62.60 68.38 67.13 96 
+
+Quercus robur Que-rob 64.96 85.63 88.66 90.14 91.30 305 
+
+Salix trees Sal-tre 42.11 49.01 56.98 85.77 86.36 104 
+
+Salix bushes Sal-bus 14.60 67.02 88.29 81.11 80.95 117 
+
+Tilia cordata Til-cor 71.67 88.99 89.52 90.55 91.96 438 Deciduous trees - dead Dec-dea 0.00 100.00 50.00 68.67 75.43 2Other trees Oth-tre 34.59 58.70 65.66 68.35 68.98 359 Background Backgr 93.66 97.67 99.23 99.05 99.11 2637 ̄𝑥 41.49 72.15 73.78 77.42 79.38 Table 3 
+
+Results comparison for tested methods as per-class F1 and mean F1 (macro). For the proposed Dual-Stream Neural Network (DSNN) and DSNN with Pseudo-labels (DSNN+P), results are averaged over five runs. M. Romaszewski et al.: Preprint submitted to Elsevier Page 9 of 19 Tree Classification from HSI/LiDAR  
+
+> Figure 4: Map of tree taxa generated with the two compared methods (MNF-IND-ALS and DSNN+P) for three selected zoom-in areas. The zooms were chosen in locations showing the largest discrepancies between the maps. For each area, a field photograph was taken; the photo location is indicated by a red cross.
+
+could not be found (see part 4 , Scoring guidance” of the prompt in Section A.1). We specifically required sources where both species in a pair appear together – if such could be found – which would be a stronger argument for trees growing in relatively close proximity ( 𝑟 = 20 ) required for the cohabitation matrix. The cohabitation matrix created by the LLM-based sys-tem is presented in Figure 7a. This matrix was verified by domain experts, familiar with forest ecology in north-eastern Poland and the local conditions of Wigry National Park. They evaluated the matrix in the context of the habitats in the study area and at the spatial scale corresponding to the adopted neighborhood range (20 meters). The adjustments proposed by them are presented in Figure 7b. Changes in the cohabitation matrix affected 13 of the 18 taxa. Expert changes in the matrix ranged from -0.10 to +0.15. The dominant direction of change was a decrease in probability by -0.10. The largest change, +0.15, concerned the prob-ability of occurrence in the neighbourhood of the species 
+
+Picea abies (code Pic_abi and Pic_dea) and Alnus glutionsa (Aln_glu) . For these taxa, the original matrix indicated a probability of 0.55, which was clearly insufficient given the frequent occurrence of norwey spruce as an admixture species with permanent coverage in stands dominated by black alder in north-eastern Poland [53] 
+
+4. Discussion 
+
+Our results are comparable to those reported in pre-vious studies. [54] employs a hierarchical, multi-temporal deep learning model with spectral attention mechanisms for landscape-level HSI and ALS-based detection and clas-sification of over 100 million individual trees across 24 sites from the National Ecological Observatory Network (NEON) dataset, achieving the average macro-accuracy of 75.8%, which is notably lower than our reported average macro-accuracy of (81 .92±1 .06)% . Similarly, [21] proposed   
+
+> M. Romaszewski et al.: Preprint submitted to Elsevier Page 10 of 19
+
+Tree Classification from HSI/LiDAR 
+
+Figure 5: Comparison of the area covered by trees for different taxon classes, calculated from maps generated using the DSNN+P and MNF-IND-ALS scenarios. Percentages are given as labels for classes that cover > 1% of the area. Ace-pla 
+
+> Aln-glu
+> Bet-spp
+> Car-bet
+> Fra-exc
+> Lar-dec
+> Pic-abi
+> Pic-dea
+> Pin-dea
+> Pin-syl
+> Pop-tre
+> Que-rob
+> Sal-tre
+> Sal-bus
+> Til-cor
+> Dec-dea
+> Oth-tre
+> Backgr
+
+Ace-pla 
+
+Aln-glu 
+
+Bet-spp 
+
+Car-bet 
+
+Fra-exc 
+
+Lar-dec 
+
+Pic-abi 
+
+Pic-dea 
+
+Pin-dea 
+
+Pin-syl 
+
+Pop-tre 
+
+Que-rob 
+
+Sal-tre 
+
+Sal-bus 
+
+Til-cor 
+
+Dec-dea 
+
+Oth-tre 
+
+Backgr 
+
+67.7 1.7 4.7 0 1.0 0.8 0 0 0 0 0 4.8 0.7 1.5 1.0 0.6 9.8 5.8 
+
+0.2 86.3 3.3 0 0.5 0.3 0 0 0 0 0 1.1 0 1.1 0.3 0 6.6 0.5 
+
+0 0 95.9 0 0 1.2 0 0 0 0 0 1.4 0 0 1.4 0 0 0
+
+2.5 72.9 0 13.5 0 0 0 0 0 0 0 11.0 0 0 0 0 0 0
+
+0 0 0 0 89.7 4.1 0 0 0 0 0 0 0 0 0 0 6.2 0
+
+0 0 0 0 5.5 93.5 0 0 0 0 0 0 0 0 0 0 1.0 0
+
+0 0 0 1.8 0 0 93.6 0 0 2.4 0 0.8 0.1 0 1.2 0 0.3 0
+
+0 0 0 0 0 0 2.6 96.2 0 0.9 0 0 0 0 0.3 0 0 0
+
+0 0 0 0 0 0 0 20.0 80.0 0 0 0 0 0 0 0 0 0
+
+0 0 3.3 0 0 0.6 3.2 0 0 71.5 0 0 0.5 0 0.5 0.4 9.4 10.6 
+
+0 14.6 2.1 0 0 0 0 0 0 0 83.3 0 0 0 0 0 0 0
+
+3.9 0.6 0 0 0 0 0 0 0 0 0 94.5 0 0 0.3 0 0.7 0
+
+0 7.7 3.7 0 0 0 0 0 0 0 0 3.1 81.0 0 3.1 0 0.4 1.2 
+
+0 1.0 0.3 0 0 0 0 0 0 0 0 0 0.5 77.8 1.7 0 11.5 7.2 
+
+0.1 5.5 0.1 0 0.2 0.5 3.1 0 0 0 0 0.9 0.3 0.7 88.0 0 0.3 0.2 
+
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 100.0 0 0
+
+0.8 12.6 0.8 0.2 0.6 0.4 0 0 0 0 17.4 2.6 0.7 1.9 0.4 0 61.6 0
+
+0 0 0 0 0 0 0.1 0 0 0 0 0 0 0.1 0 0 0.1 99.6 
+
+0.0 
+
+2.5 
+
+5.0 
+
+7.5 
+
+10.0 
+
+12.5 
+
+15.0 
+
+17.5 
+
+20.0 
+
+Figure 6: Confusion matrix for DSNN+PL method averaged over experiments 
+
+the workflow for HSI and ALS-based tree species classifi-cation based on recursive feature selection and extraction coupled with a Random Forest model. On the dataset of secondary forest in Northern China, this approach achieved an average macro-F1 of 71.5%, again below our reported 
+
+(79 .74 ± 1 .14)% . In addition, [24] reports low accuracy for rare or less numerous species, macro-F1 value od approx. 
+
+0.32 . Therefore, while our study uses a different dataset, Ace-pla                                                                                                                                                                                                                   
+
+> Aln-glu
+> Bet-spp
+> Car-bet
+> Fra-exc
+> Lar-dec
+> Pic-abi
+> Pic-dea
+> Pin-dea
+> Pin-syl
+> Pop-tre
+> Que-rob
+> Sal-tre
+> Sal-bus
+> Til-cor
+> Dec-dea
+> Oth-tre
+> Backgr
+> Ace-pla
+> Aln-glu
+> Bet-spp
+> Car-bet
+> Fra-exc
+> Lar-dec
+> Pic-abi
+> Pic-dea
+> Pin-dea
+> Pin-syl
+> Pop-tre
+> Que-rob
+> Sal-tre
+> Sal-bus
+> Til-cor
+> Dec-dea
+> Oth-tre
+> Backgr
+> 1.00 0.60 0.75 0.85 0.85 0.65 0.65 0.65 0.65 0.65 0.75 0.85 0.60 0.60 0.85
+> 0.60 1.00 0.70 0.60 0.85 0.55 0.55 0.55 0.55 0.55 0.70 0.60 0.90 0.90 0.60
+> 0.75 0.70 1.00 0.75 0.75 0.80 0.80 0.80 0.85 0.85 0.85 0.75 0.70 0.70 0.75
+> 0.85 0.60 0.75 1.00 0.85 0.65 0.65 0.65 0.65 0.65 0.75 0.90 0.60 0.60 0.85
+> 0.85 0.85 0.75 0.85 1.00 0.65 0.65 0.65 0.65 0.65 0.75 0.85 0.60 0.60 0.85
+> 0.65 0.55 0.80 0.65 0.65 1.00 0.75 0.75 0.75 0.75 0.80 0.65 0.55 0.55 0.65
+> 0.65 0.55 0.80 0.65 0.65 0.75 1.00 1.00 0.85 0.85 0.80 0.65 0.55 0.55 0.65
+> 0.65 0.55 0.80 0.65 0.65 0.75 1.00 1.00 0.85 0.85 0.80 0.65 0.55 0.55 0.65
+> 0.65 0.55 0.85 0.65 0.65 0.75 0.85 0.85 1.00 1.00 0.85 0.85 0.55 0.55 0.65
+> 0.65 0.55 0.85 0.65 0.65 0.75 0.85 0.85 1.00 1.00 0.85 0.85 0.55 0.55 0.65
+> 0.75 0.70 0.85 0.75 0.75 0.80 0.80 0.80 0.85 0.85 1.00 0.75 0.70 0.70 0.75
+> 0.85 0.60 0.75 0.90 0.85 0.65 0.65 0.65 0.85 0.85 0.75 1.00 0.60 0.60 0.85
+> 0.60 0.90 0.70 0.60 0.60 0.55 0.55 0.55 0.55 0.55 0.70 0.60 1.00 1.00 0.60
+> 0.60 0.90 0.70 0.60 0.60 0.55 0.55 0.55 0.55 0.55 0.70 0.60 1.00 1.00 0.60
+> 0.85 0.60 0.75 0.85 0.85 0.65 0.65 0.65 0.65 0.65 0.75 0.85 0.60 0.60 1.00
+> 1.00
+> 1.00
+> 1.00
+> 0.55
+> 0.60
+> 0.65
+> 0.70
+> 0.75
+> 0.80
+> 0.85
+> 0.90
+> 0.95
+> 1.00
+
+(a) Cohabitation matrix Ace-pla                  
+
+> Aln-glu
+> Bet-spp
+> Car-bet
+> Fra-exc
+> Lar-dec
+> Pic-abi
+> Pic-dea
+> Pin-dea
+> Pin-syl
+> Pop-tre
+> Que-rob
+> Sal-tre
+> Sal-bus
+> Til-cor
+> Dec-dea
+> Oth-tre
+> Backgr
+> Ace-pla
+> Aln-glu
+> Bet-spp
+> Car-bet
+> Fra-exc
+> Lar-dec
+> Pic-abi
+> Pic-dea
+> Pin-dea
+> Pin-syl
+> Pop-tre
+> Que-rob
+> Sal-tre
+> Sal-bus
+> Til-cor
+> Dec-dea
+> Oth-tre
+> Backgr
+> -0.10
+> 0.10 0.15 0.15 0.05 0.05
+> 0.10 -0.05
+> -0.10
+> -0.10 -0.10 -0.10 -0.10
+> -0.05 -0.05
+> 0.15 -0.05 -0.10
+> 0.15 -0.05 -0.10
+> 0.05 -0.10
+> 0.05 -0.10
+> -0.10 -0.10
+> -0.10 -0.10 -0.10
+> -0.05 -0.10
+> 0.15
+> 0.10
+> 0.05
+> 0.00
+> 0.05
+> 0.10
+> 0.15
+
+(b) Expert updates 
+
+Figure 7: LLM-based cohabitation matrix (a) and differences proposed by experts (b). Values are percentages, cells without value should be treated as zero. 
+
+these comparisons suggest that our approach represents a promising method for tree species classification. While recent surveys emphasize CNN based pipelines [12], label scarcity has long motivated semi-supervised re-mote sensing classifiers, including MLP-based schemes, since high-capacity models are easy to overfit with few labels; classical learners remain strong baselines under lim-ited supervision, with high performance and simpler hy-perparameter selection [39]. The proposed methodology does not employ label regularisation (e.g. majority voting among neighbouring pixels). Although spatial smoothing can improve results in some areas (Figure 4), its effect is not uniformly beneficial and may blur fine-scale boundaries; therefore, we report unregularised predictions to preserve pixel-level detail. Indirect comparisons of accuracy across different datasets are inherently uncertain due to differences in site conditions, label quality, class composition, and acquisition settings. We therefore compare species-mapping methods under a common experimental protocol, in which DSNN+P yields higher accuracy and produces maps that better align with expert visual assessments. 
+
+4.1. Cohabitation matrix 
+
+None of expert corrections to LLM-generated matrix were lower than −0 .10 and higher than 0.15 . From a botan-ical point of view, the generated matrix can therefore be considered approximately correct and consistent with the domain botanical knowledge on the co-occurrence of species in the forests of north-eastern Poland [53]. As mentioned in Section 3.1, the expert evaluation shows that the LLM-generated matrix achieves its main goal: cap-turing the region’s ecological structure. Consistent with the prompt, high values are generally assigned to species with comparable habitat requirements, while low values are as-sociated with clear habitat mismatches, and the experts confirmed the general results as acceptable. Most corrections targeted borderline cases where “re-gional co-occurrence” can be misleading without finer habi-tat stratification (e.g., wet vs. mesic sites, peatland edges, or successional transitions), as well as classes defined at genus or functional levels (e.g., Betula spp., Salix trees vs. 
+
+M. Romaszewski et al.: Preprint submitted to Elsevier Page 11 of 19 Tree Classification from HSI/LiDAR 
+
+bushes), where a single label aggregates multiple ecological niches and thus blurs pairwise relationships. A separate group concerns dead-tree classes (e.g., Picea dead, Pinus 
+
+dead), for which spatial adjacency reflects stand structure and disturbance processes rather than genuine habitat pref-erence; consequently, such entries should be interpreted as weaker priors. Another approach to replace LLM queries is to infer the cohabitation matrix directly from the training data. This, however, would be unreliable for the majority of similar photogrammetric images of tree cover datasets due to the sparsity of the training data. Individual labelled samples (trees) are sparsely distributed, and there are only a limited number of scenarios in which two or more samples are located within a small radius (20 meters in this work). This sparse distribution would make the estimated likelihoods of close neighbourhoods prone to large errors. Importantly, in our framework, the matrix is not treated as a calibrated ecological probability model but as a soft compatibility prior that modulates pseudo-label selection on the canopy graph. Therefore, the most critical property is the preservation of relative plausibility (ranking of more vs. less likely neighbours) rather than exact numerical calibration. 
+
+5. Conclusions 
+
+Despite the complexity of hyperspectral tree species classification with sparse labels, the proposed dual-stream architecture achieved high accuracy and outperformed state-of-the-art classical pipelines. The proposed approach is both fast to train and easy to parametrize. Our results also demon-strate that LLMs can produce accurate assessments of for-est species co-occurrence that are consistent with domain botanical knowledge. Since obtaining such priors is costly and typically requires expert knowledge, the ability to esti-mate them reliably represents a promising step toward de-veloping expert algorithms that combine machine learning with the estimation of biological parameters. The proposed pseudo-labelling approach leverages cohabitation to extend the training set and improve model accuracy. Overall, our results show that integrating neural network architectures with ecological priors and semi-supervised learning can sig-nificantly improve tree species classification under limited-label conditions. 
+
+6. Acknowledgements 
+
+The authors acknowledge the use of AI-based tools, such as ChatGPT and Grammarly, for assistance in edit-ing, grammar enhancement, and spelling checks during the preparation of this manuscript. Funding: this work was partially supported by project IITIS/BW/08/25 ‘Multi-modal neural networks for tree species classification from remote sensing data’, financed by the the Institute of Theoretical and Applied Informatics, Polish Academy of Sciences. Ground reference data and a complete set of airborne data were obtained as part of the project ‘Acquisition of multi-source remote sensing data and their analysis for the area of Wigry National Park with a part of Wigry lake and the Czarna Hańcza river’ project financed by the Operational Programme Infrastructure and Environment under the program 2.4.4d – assessment of the state of natural resources in national parks using modern remote sensing technologies. 
+
+A. Appendix 
+
+A.1. Cohabitation matrix prompt 
+
+A prompt to generate the cohabition matrix by LLM system: 
+
+> You are a meticulous forest ecology expert and digital librarian. ↪
+> You perform careful web research and return clean, verifiable outputs. If you have a claim you always provide the sources to back it up # TASK 1) Normalize species_list: - Trim lines; drop empties/duplicates. - Exclude non-species lines (e.g., "background", "inne", "lis_mar"). ↪
+> - If there is a ambiguity in understanding of the name (e.g. it can mean two different species) ↪
+> use all options as distinct species. - If a line contains “spp.” mark flags.genus_level=true when used in pairs. ↪
+> 2) Generate ALL unordered species pairs (A,B), where A != B, A <= B alphabetically within the pair. ↪
+> Consider neighbors at stand-scale (same stand or within distance_m m). ↪
+> 3) Divide those pairs into subgroups of 10-12. Prepare report for each subgroup ↪
+> and in the end join them. 4) For EACH pair: - Use web.search() to retrieve min_sources_per_pair–max_sources_per_pair authoritative, ↪
+> verifiable sources that speak to stand-scale co- occurrence or shared habitat in the given ↪
+> region. USING web.search() IS CRUCIAL DO NOT SKIP IT. - For each species provide a source of its natural habitats. USE THEM in your reports, so ↪
+> each pair has at least two sources - natural habitats of A and natural habitats of B - The ↪
+> next sources if present should be about specific co-occurences. - Take into consideration region and additional environmental information ↪
+> - Prioritize: a) EUNIS/JNCC/EEA official habitat pages, b) Publisher DOI landing pages (via doi.org), c) Government/NGO vegetation surveys or credible databases. - If only weaker sources exist, BE SURE to include them (with working URLs), set ↪
+> confidence="low" or "medium", and briefly explain in rationale why evidence is tentative. ↪
+> - Those weaker sources may include university pages, or lesser known books, articles and ↪
+> reports that are accessible. - Be sure that if you find ANY source (be it prioritized sources or the weaker sources) for ↪
+> given pair this pair MUST NOT be left without sources.
+
+M. Romaszewski et al.: Preprint submitted to Elsevier Page 12 of 19 Tree Classification from HSI/LiDAR 
+
+- If out-of-region (e.g., North American taxa with European species), set ↪
+
+flags.out_of_region=true and lower the score appropriately. 4) Scoring guidance: - score in [0,1] is the likelihood of stand-scale adjacency in region. ↪
+
+- Provide score_low and score_high as a plausible range. - High scores (>=0.7) only with strong, in-region, stand-scale evidence. 0.5 = plausible ↪
+
+but mixed evidence; 0.0–0.2 = unlikely or habitat mismatch. - Keep rationale <= 240 chars; no newlines. - If you have weaker sources set confidence to low. 5) If you cannot find sources, for neither cohabitation nor habitats do not include the pair. ↪
+
+6) Citations quality and formatting: - DO NOT fabricate DOIs. If known, put bare DOI (e.g., "10.1000/xyz123") in "doi"; also include ↪
+
+the working URL in "url". - Each source MUST have at least a working URL or a DOI landing page. ↪
+
+- Remove any bracket markers (no `$[. . . ]$ '), no smart quotes, no markdown. ↪
+
+- No newlines in any JSON string. 7) Output requirements: - Output EXACTLY TWO sections in order, separated by these plain-text markers: ↪
+
+===CSV=== cohabitation symmetric matrix with rows and columns from all the tree_species with ↪
+
+cohabitation scores from the initial tree_species, -1.0 when score is unavailable and 1.0 ↪
+
+on the diagonal (self-cohabitation), even if you did not find any cohabitation for them. ↪
+
+===LATEX=== <standalone .tex document> - The LaTeX must: * Use article class; packages: geometry, hyperref, longtable, booktabs, url, inputenc/fontenc. ↪
+
+* Include a longtable with columns: Species A, Species B, Score, Range, Confidence. ↪
+
+* Longtable rows must be separated with double " " char. * After the table, include per-pair subsections with: italic Rationale, then bullet-style ↪
+
+paragraphs listing sources (Title — Authors; Year; DOI/URL). Escape LaTeX special chars. ↪
+
+* Show the score and the (low–high) range in each subsection header. ↪
+
+* For each pair you should have a subsection naming - species A, species B - Habitat A <citation> - Habitat B <citation> - Other sources of co-occurence or lack of thereof (use citations) ↪
+
+- Rationale for your score based on Habitat A, Habitat B and other Sources - use bibliography ↪
+
+and citations instead of inline citing. 
+
+References 
+
+[1] Eckehard G. Brockerhoff, Luc Barbaro, Bastien Castagneyrol, David I. Forrester, Barry Gardiner, Juan Ramón González-Olabarria, Phil O’B. Lyver, and et al. Forest biodiversity, ecosystem func-tioning and the provision of ecosystem services. Biodiversity and Conservation, 26(13):3005–3035, 2017. [2] Gordon B. Bonan. Forests and climate change: Forcings, feedbacks, and the climate benefits of forests. Science, 320(5882):1444–1449, 2008. [3] Lars Gamfeldt, Tord Snäll, Robert Bagchi, Mari Jonsson, Lena Gustafsson, Petter Kjellander, and et al. Higher levels of multiple ecosystem services are found in forests with more tree species. Nature Communications, 4:1340, 2013. [4] Jialing Bai, Chunying Ren, Xinying Shi, Hengxing Xiang, Wenmin Zhang, Hailing Jiang, and et al. Tree species diversity impacts on ecosystem services of temperate forests. Ecological Indicators, 167:112639, 2024. [5] Rajesh Vanguri, Giovanni Laneve, and Agata Hościło. Mapping forest tree species and its biodiversity using EnMAP hyperspectral data along with Sentinel-2 temporal data: An approach of tree species clas-sification and diversity indices. Ecological Indicators, 167:112671, 2024. [6] Clement Atzberger, Guido Zeug, Pierre Defourny, Luiz E.O.C. Aragão, Lisa Hammarström, Markus Immitzer, and European Com-mission. Monitoring of forests through remote sensing – final report. Technical Report KH-03-20-754-EN-N, Publications Office of the European Union, 2020. [7] European State Forest Association (EUSTAFOR). EUSTAFOR position on the EU forest monitoring framework regulation. Position paper, 2024. Brussels, 27 March 2024. [8] Steve Ahlswede, Christian Schulz, Christiano Gava, Patrick Helber, Benjamin Bischke, Michael Förster, Florencia Arias, Jörn Hees, Begüm Demir, and Birgit Kleinschmit. TreeSatAI Benchmark Archive: A multi-sensor, multi-label dataset for tree species classi-fication in remote sensing. Earth System Science Data, 15:681–695, 2023. [9] Lukas Blickensdörfer, Katja Oehmichen, Dirk Pflugmacher, Birgit Kleinschmit, and Patrick Hostert. National tree species mapping using Sentinel-1/2 time series and German National Forest Inventory data. Remote Sensing of Environment, 304:114069, 2024. [10] Ting Qin and et al. Multi-branch and multi-label tree species classifi-cation using multimodal remote sensing datasets. Scientific Reports, 15(32710), 2025. [11] Fabian E. Fassnacht, Hooman Latifi, Krzysztof Stereńczak, Aneta Modzelewska, Michael Lefsky, Lars T. Waser, Christoph Straub, and Arnab Ghosh. Review of studies on tree species classification from remotely sensed data. Remote Sensing of Environment, 186:64–87, 2016. [12] Lihui Zhong, Zhengquan Dai, Panfei Fang, Yong Cao, and Leiguang Wang. A review: Tree species classification based on remote sensing data and classic deep learning-based methods. Forests, 15(5), 2024. [13] Ruiliang Pu. Mapping tree species using advanced remote sensing technologies: A state-of-the-art review and perspective. Journal of Remote Sensing, 2021:1–26, 2021. [14] Sergio Marconi, Ben G Weinstein, Sheng Zou, Stephanie A Bohlman, Alina Zare, Aditya Singh, Dylan Stewart, Ira Harmon, Ashley Steinkraus, and Ethan P White. Continental-scale hyperspectral tree species classification in the United States National Ecological Observatory Network. Remote Sensing of Environment, 282:113264, 2022. [15] Ning Zhang, Yueting Wang, and Xiaoli Zhang. Extraction of tree crowns damaged by dendrolimus tabulaeformis tsai et liu via spectral-spatial classification using UAV-based hyperspectral images. Plant Methods, 16(1):135, 2020. [16] Jan Niedzielko, Dominik Kopeć, Justyna Wylazłowska, Adam Kania, Jakub Charyton, Anna Halladin-Dąbrowska, Maria Niedzielko, and Karol Berłowski. Airborne data and machine learning for urban tree species mapping: Enhancing the legend design to improve the map applicability for city greenery management. International Journal of Applied Earth Observation and Geoinformation, 128:103719, 2024. 
+
+M. Romaszewski et al.: Preprint submitted to Elsevier Page 13 of 19 Tree Classification from HSI/LiDAR 
+
+[17] Hao Zhong, Wenshu Lin, Haoran Liu, Nan Ma, Kangkang Liu, Rongzhen Cao, Tiantian Wang, and Zhengzhao Ren. Identification of tree species based on the fusion of uav hyperspectral image and LiDAR data in a coniferous and broad-leaved mixed forest in northeast china. Frontiers in Plant Science, 13:964769, 2022. [18] Yifang Shi, Tiejun Wang, Andrew K Skidmore, Stefanie Holzwarth, Uta Heiden, and Marco Heurich. Mapping individual silver fir trees using hyperspectral and LiDAR data in a Central European mixed forest. International Journal of Applied Earth Observation and Geoinformation, 98:102311, 2021. [19] Giovanni D’Amico, Mats Nilsson, Arvid Axelsson, and Gherardo Chirici. Data homogeneity impact in tree species classification based on Sentinel-2 multitemporal data case study in central Sweden. International Journal of Remote Sensing, 45(15):5050–5075, 2024. Publisher: Taylor & Francis. [20] Victoria M Scholl, Megan E Cattau, Maxwell B Joseph, and Jen-nifer K Balch. Integrating National Ecological Observatory Network (NEON) airborne remote sensing and in-situ data for optimal tree species classification. Remote Sensing, 12(9):1414, 2020. [21] Ying Quan, Mingze Li, Yuanshuo Hao, Jianyang Liu, and Bin Wang. Tree species classification in a typical natural secondary forest using UAV-borne LiDAR and hyperspectral data. GIScience & Remote Sensing, 60(1):2171706, 2023. [22] Marcin Kluczek, Bogdan Zagajewski, and Tomasz Zwijacz-Kozica. Mountain tree species mapping using sentinel-2, planetscope, and airborne hyspex hyperspectral imagery. Remote Sensing, 15(3):844, 2023. [23] Nasir Farsad Layegh, Roshanak Darvishzadeh, Andrew K Skidmore, Claudio Persello, and Nina Krüger. Integrating semi-supervised learning with an expert system for vegetation cover classification using Sentinel-2 and RapidEye data. Remote Sensing, 14(15):3605, 2022. [24] Sarah J. Graves, Sergio Marconi, Dylan Stewart, Ira Harmon, Ben Weinstein, Yuzi Kanazawa, Victoria M. Scholl, Maxwell B. Joseph, Joseph McGlinchy, Luke Browne, Megan K. Sullivan, Sergio Estrada-Villegas, Daisy Zhe Wang, Aditya Singh, Stephanie Bohlman, Alina Zare, and Ethan P. White. Data science competition for cross-site individual tree species identification from airborne remote sensing data. PeerJ, 11:e16578, 2023. [25] Xianfei Guo, Hui Li, Linhai Jing, Ping Wang, Xianfei Guo, Hui Li, Linhai Jing, and Ping Wang. Individual Tree Species Classification Based on Convolutional Neural Networks and Multitemporal High-Resolution Remote Sensing Images. Sensors, 22(9), 2022. [26] Jian Wang and Yongchang Jiang. A hybrid convolution neural net-work for the classification of tree species using hyperspectral imagery. PLOS ONE, 19(5):e0304469, 2024. [27] Wenge Ni-Meister, Anthony Albanese, and Francesca Lingo. Assess-ing data preparation and machine learning for tree species classifi-cation using hyperspectral imagery. Remote Sensing, 16(17):3313, 2024. [28] Zhongwei Li, Yuewen Wang, Leiquan Wang, Fangming Guo, Ya-jie Yang, and Jie Wei. Pseudo-labelling contrastive learning for semi-supervised hyperspectral and LiDAR data classification. IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing, 2024. [29] Meng Wang, Feng Gao, Junyu Dong, Heng-Chao Li, and Qian Du. Nearest neighbor-based contrastive learning for hyperspectral and LiDAR data classification. IEEE Transactions on Geoscience and Remote Sensing, 61:1–16, 2023. [30] Ting Lu, Kexin Ding, Wei Fu, Shutao Li, and Anjing Guo. Coupled adversarial learning for fusion classification of hyperspectral and LiDAR data. Information Fusion, 93:118–131, 2023. [31] Fangming Guo, Zhongwei Li, Qiao Meng, Guangbo Ren, Leiquan Wang, Jianbu Wang, Huawei Qin, and Jie Zhang. Semi-supervised cross-domain feature fusion classification network for coastal wetland classification with hyperspectral and LiDAR data. International Journal of Applied Earth Observation and Geoinformation, 120:103354, 2023. [32] Xiaozhen Wang, Jiahang Liu, Weijian Chi, Weigang Wang, and Yue Ni. Advances in hyperspectral image classification methods with small samples: A review. Remote Sensing, 15(15):3795, 2023. [33] Fei Tong and Yun Zhang. Tree species classification on hyperspectral imagery using fewer training samples. The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences, 48:71–76, 2024. [34] Meichen Jiang, Jiaxin Kong, Zhaochen Zhang, Jianbo Hu, Yuchu Qin, Kankan Shang, Mingshui Zhao, and Jian Zhang. Seeing trees from drones: The role of leaf phenology transition in mapping species distribution in species-rich montane forests. Forests, 14(5):908, 2023. [35] Janne Mäyrä, Sarita Keski-Saari, Sonja Kivinen, Topi Tanhuanpää, Pekka Hurskainen, Peter Kullberg, Laura Poikolainen, Arto Viinikka, Sakari Tuominen, Timo Kumpula, et al. Tree species classification from airborne hyperspectral and LiDAR data using 3D convolutional neural networks. Remote Sensing of Environment, 256:112322, 2021. [36] Johannes Hirn, Verónica Sanz, José Enrique García, Marta Gob-erna, Alicia Montesinos-Navarro, José Antonio Navarro-Cano, Ri-cardo Sánchez-Martín, Alfonso Valiente-Banuet, and Miguel Verdú. Transfer learning of species co-occurrence patterns between plant communities. Ecological Informatics, 83:102826, 2024. [37] Lindsay C Todman, Alex Bush, and Amelia SC Hood. ’Small Data’ for big insights in ecology. Trends in Ecology & Evolution, 38(7):615–622, 2023. [38] Mingyang Zhang, Zhaoyang Wang, Xiangyu Wang, Maoguo Gong, Yue Wu, and Hao Li. Features kept generative adversarial network data augmentation strategy for hyperspectral image classification. Pattern Recognition, 142:109701, 2023. [39] Fei Tong and Yun Zhang. Spectral–spatial and cascaded multilayer random forests for tree species classification in airborne hyperspectral images. IEEE Transactions on Geoscience and Remote Sensing, 60:1–11, 2022. [40] Andrew V Gougherty and Hannah L Clipp. Testing the reliability of an AI-based large language model to extract ecological information from the scientific literature. npj Biodiversity, 3(1):13, 2024. [41] Adam S Hayes. ’Conversing’ with qualitative data: Enhancing qual-itative research through large language models (llms). International Journal of Qualitative Methods, 24:16094069251322346, 2025. [42] Terrasolid Ltd. TerraScan user guide, 2023. [43] ReSe Applications GmbH. PARGE – orthorectification and geocod-ing software, 2022. [44] ReSe Applications GmbH. ATCOR4 manual, 2018. [45] Milan Chytr` y, Lubomír Tich` y, Stephan M Hennekens, Ilona Knollová, John AM Janssen, John S Rodwell, Tomáš Peterka, Corrado Marcenò, Flavia Landucci, Jiří Danihelka, et al. EUNIS habitat classification: Expert system, characteristic species combinations and distribution maps of european habitats. Applied Vegetation Science, 23(4):648–675, 2020. [46] Rajiv Pandey, Monika Rawat, Vishal Singh, Rasoul Yousefpour, and Zafar A Reshi. Large scale field-based evaluation of niche breadth, niche overlap and interspecific association of Western Himalayan temperate forest tree species. Ecological Indicators, 146:109876, 2023. [47] John Dagdelen, Alexander Dunn, Sanghoon Lee, Nicholas Walker, Andrew S Rosen, Gerbrand Ceder, Kristin A Persson, and Anubhav Jain. Structured information extraction from scientific text with large language models. Nature communications, 15(1):1418, 2024. [48] Anna Jarocińska, Dominik Kopeć, and Marlena Kycko. Comparison of dimensionality reduction methods on hyperspectral images for the identification of heathlands and mires. Scientific Reports, 14(1), 2024. [49] Harris Geospatial Solutions. Envi API programming guide, 2023. [50] Jean-Romain Roussel et al. The lidr package: Airborne LiDAR data manipulation and visualization for forestry applications, 2023. [51] Liudmila Prokhorenkova, Gleb Gusev, Aleksandr Vorobev, Anna Veronika Dorogush, and Andrey Gulin. CatBoost: Unbiased boosting with categorical features. In Advances in Neural Information Processing Systems, volume 31. Curran Associates, Inc., 2018. 
+
+M. Romaszewski et al.: Preprint submitted to Elsevier Page 14 of 19 Tree Classification from HSI/LiDAR 
+
+[52] BULiGL. Forest Data Bank,. https://www.bdl.lasy.gov.pl , 2026. [Online; accessed 4-March-2026]. [53] Władysław Matuszkiewicz, Piotr Sikorski, Wojciech Szwed, and Marek Wierzba. Lasy i Zarośla. Zbiorowiska roślinne Polski—Ilustrowany przewodnik. Wydawnictwo Naukowe PWN, 2012. [54] Ben G Weinstein, Sergio Marconi, Alina Zare, Stephanie A Bohlman, Aditya Singh, Sarah J Graves, Lukas Magee, Daniel J Johnson, Sydne Record, Vanessa E Rubio, et al. Individual canopy tree species maps for the National Ecological Observatory Network. PLoS Biology, 22(7):e3002700, 2024. [55] Rubén Valbuena, Matti Maltamo, Lauri Mehtätalo, and Petteri Packalen. Key structural features of boreal forests may be detected directly using L-moments from airborne LiDAR data. Remote Sensing of Environment, 194:437–446, 2017. 
+
+M. Romaszewski et al.: Preprint submitted to Elsevier Page 15 of 19 Tree Classification from HSI/LiDAR 
+
+Table 4: Hyperspectral-derived indices used in the study. 
+
+Index short name Full name 
+
+ALUI Alunite Index ARI1 Anthocyanin Reflectance Index 1 ARI2 Anthocyanin Reflectance Index 2 ARVI Atmospherically Resistant Vegetation Index BAI Burn Area Index CRI1 Carotenoid Reflectance Index 1 CRI2 Carotenoid Reflectance Index 2 CAI Cellulose Absorption Index CLAI Clay Alteration Index CLAY Clay Minerals Ratio DVI Difference Vegetation Index DWSI Disease Water Stress Index DOLI Dolomite Index EVI Enhanced Vegetation Index FEAI Ferric Iron Alteration Index Fe2+ Ferrous Iron (Fe2+) Index Ferrous Ferrous Minerals Ratio FESI Ferrous Silicates Index GEMI Global Environmental Monitoring Index GARI Green Atmospherically Resistant Index GCI Green Chlorophyll Index GDVI Green Difference Vegetation Index GLI Green Leaf Index GNDVI Green Normalized Difference Vegetation Index GOSAVI Green Optimized Soil Adjusted Vegetation Index GRVI Green Ratio Vegetation Index GSAVI Green Soil Adjusted Vegetation Index GVI Green Vegetation Index OH1 Hydroxyl-Bearing (OH) Altered Minerals Index 1 OH2 Hydroxyl-Bearing (OH) Altered Minerals Index 2 OH3 Hydroxyl-Bearing (OH) Altered Minerals Index 3 IPVI Infrared Percentage Vegetation Index Iron Oxide Iron Oxide Ratio KAI1 Kaolinite Index 1 KAI2 Kaolinite Index 2 KAI3 Kaolinite Index 3 LATI Laterite Index LAI Leaf Area Index LCI Leaf Chlorophyll Index LWVI1 Leaf Water Vegetation Index 1 LWVI2 Leaf Water Vegetation Index 2 LCAI Lignin Cellulose Absorption Index METHANE Methane Index MCARI Modified Chlorophyll Absorption Ratio Index MCARI2 Modified Chlorophyll Absorption Radio Index Improved MNLI Modified Non-Linear Index MNDWI Modified Normalized Difference Water Index MRENDVI Modified Red Edge Normalized Difference Vegetation Index MRESR Modified Red Edge Simple Ratio MSR Modified Simple Ratio MSAVI2 Modified Soil Adjusted Vegetation Index 2 MTVI Modified Triangular Vegetation Index MTVI2 Modified Triangular Vegetation Index - Improved MSI Moisture Stress Index MONI Montmorillonite Index MUSI Muscovite Index NLI Non-Linear Index NBR Normalized Burn Ratio 
+
+continued on next page 
+
+M. Romaszewski et al.: Preprint submitted to Elsevier Page 16 of 19 Tree Classification from HSI/LiDAR 
+
+continued from previous page 
+
+Short_Name Meaning 
+
+NDBI Normalized Difference Built-Up Index NDII Normalized Difference Infrared Index NDLI Normalized Difference Lignin Index NDMI Normalized Difference Mud Index NDNI Normalized Difference Nitrogen Index NDSI Normalized Difference Snow Index NDVI Normalized Difference Vegetation Index NDWI Normalized Difference Water Index NMDI Normalized Multiband Drought Index NPCI Normalized Pigment Chlorophyll Index OSAVI Optimized Soil Adjusted Vegetation Index PHEI Phengitic Index PRI Photochemical Reflectance Index PHAI Phyllic Alteration Index PSRI Plant Senescence Reflectance Index RENDVI Red Edge Normalized Difference Vegetation Index REPI Red Edge Position Index RGRI Red Green Ratio Index RDVI Renormalized Difference Vegetation Index SR Simple Ratio SAVI Soil Adjusted Vegetation Index SIPI1 Structure Independent Pigment Index SIPI Structure Insensitive Pigment Index SGI Sum Green Index TCARI Transformed Chlorophyll Absorption Reflectance Index TDVI Transformed Difference Vegetation Index TGI Triangular Greenness TVI Triangular Vegetation Index VARI Visible Atmospherically Resistant Index VREI1 Vogelmann Red Edge Index 1 WBI Water Band Index WDRVI Wide Dynamic Range Vegetation Index WV-BI WorldView Built-Up Index WV-VI WorldView Improved Vegetative Index WV-II WorldView New Iron Index WV-NHFD WorldView Non-Homogeneous Feature Difference WV-SI WorldView Soil Index WV-WI WorldView Water Index  
+
+> Note: The indices listed in Table 4 are all calculated using ENVI Spectral Indices. Formulas and sources are available in the ENVI on-line manual [49].
+
+M. Romaszewski et al.: Preprint submitted to Elsevier Page 17 of 19 Tree Classification from HSI/LiDAR 
+
+Table 5: LiDAR-derived structural metrics used in the study. 
+
+Short_Name Meaning 
+
+CC Canopy Cover — Ratio of the number of first returns originating from vegetation classes to the number of first returns from all classes. gap_fraction Gap fraction — Ratio of returns classified as ground (all returns below a given threshold [2 m] are treated as ground) to all returns. LAI Leaf Area Index estimate — area of leaf surface per unit ground area, expressing canopy leaf density from a nadir perspective. herbaceous_density Ratio of returns from low and medium vegetation classes below 3 m to all returns within a pixel. shrub_density Ratio of returns from vegetation in the 3–6 m height range to all returns within a pixel. tree_density Ratio of returns from vegetation taller than 6 m to all returns within a pixel. deviation_covar Covariance of pulse-shape deviation values within a grid cell. deviation_max Maximum pulse-shape deviation within a grid cell. deviation_mean Mean pulse-shape deviation within a grid cell. deviation_median Median pulse-shape deviation within a grid cell. deviation_min Minimum pulse-shape deviation within a grid cell. deviation_range Range (maximum minus minimum) of pulse-shape deviation values within a grid cell. deviation_rms Root mean square of pulse-shape deviation values within a grid cell. deviation_var Variance of pulse-shape deviation values within a grid cell. dq_25 25th percentile of pulse-shape deviation values within a grid cell. dq_75 75th percentile of pulse-shape deviation values within a grid cell. iqr Interquartile range of pulse-shape deviation values within a grid cell. FHD Foliage Height Diversity — vertical distribution of foliage quantified as the proportional horizontal foliage cover per height layer relative to total cover. FHDGT Foliage Height Diversity computed for heights above 1 m, emphasizing taller vegetation layers. bin_0.0_0.5 Number of returns in the height interval 0.0–0.5 m. bin_0.5_1.0 Number of returns in the height interval 0.5–1.0 m. bin_1.0_1.5 Number of returns in the height interval 1.0–1.5 m. bin_1.5_2.0 Number of returns in the height interval 1.5–2.0 m. bin_2.0_5.0 Number of returns in the height interval 2–5 m. bin_5.0_10.0 Number of returns in the height interval 5–10 m. bin_10.0_15.0 Number of returns in the height interval 10–15 m. bin_15.0_20.0 Number of returns in the height interval 15–20 m. bin_20.0_25.0 Number of returns in the height interval 20–25 m. bin_25.0_30.0 Number of returns in the height interval 25–30 m. bin_30.0 Number of returns above 30 m. CC_over2m Canopy cover computed using first returns from vegetation above 2 m. H99-H50 Difference between the 99th and 50th percentiles of height distribution. H99-H25 Difference between the 99th and 25th percentiles of height distribution. H90-H50 Difference between the 90th and 50th percentiles of height distribution. H90-H25 Difference between the 90th and 25th percentiles of height distribution. HCV Coefficient of variation of heights derived from first returns. hL1 First L-moment of the height distribution. hL2 Second L-moment of the height distribution. hL3 Third L-moment of the height distribution. hL4 Fourth L-moment of the height distribution. hLskw L-skewness of the height distribution. hLkurt L-kurtosis of the height distribution. zmean Mean height value. zmedian Median height value. zmax Maximum height value. zsd Standard deviation of height values. zskew Skewness of the height distribution. zentropy Shannon entropy of the height distribution histogram within a grid cell.    
+
+> Note: The metrics listed in Table 5 constitute a compilation of original (custom-developed) metrics and established LiDAR-derived metrics adapted from the lidR framework and from published studies on L-moment-based characterization of forest vertical structure [50, 55].
+
+M. Romaszewski et al.: Preprint submitted to Elsevier Page 18 of 19

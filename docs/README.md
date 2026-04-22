@@ -6,62 +6,65 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-21
-- 运行时间：2026-04-21 20:44:00 UTC
+- 最新运行日期：2026-04-22
+- 运行时间：2026-04-22 20:01:41 UTC
 - 运行状态：成功
-- 本次总论文数：14
-- 精读区：3
+- 本次总论文数：15
+- 精读区：4
 - 速读区：11
 
 ### 今日简报（AI）
-今日共追踪14篇前沿论文，重点精读了农业视觉领域的植物幼苗精准分割与伪装杂草
-- 详情：[/202604/21/README](/202604/21/README)
+今日共研读15篇农业AI前沿论文（精读4篇，速读11篇），核心聚焦跨
+- 详情：[/202604/22/README](/202604/22/README)
 
 ### 精读区论文标签
-1. [Uncertainty-Guided Attention and Entropy-Weighted Loss for Precise Plant Seedling Segmentation](/202604/21/2604.10823v1-uncertainty-guided-attention-and-entropy-weighted-loss-for-precise-plant-seedling-segmentation)  
+1. [SWNet: A Cross-Spectral Network for Camouflaged Weed Detection](/202604/22/2604.16147v1-swnet-a-cross-spectral-network-for-camouflaged-weed-detection)  
    标签：评分：9.0/10、query:q4
-   evidence：用于精准农业的植物幼苗分割
-2. [SWNet: A Cross-Spectral Network for Camouflaged Weed Detection](/202604/21/2604.16147v1-swnet-a-cross-spectral-network-for-camouflaged-weed-detection)  
-   标签：评分：9.0/10、query:q8
-   evidence：利用近红外反射率在农业环境中进行杂草检测
-3. [A Compact and Efficient 1.251 Million Parameter Machine Learning CNN Model PD36-C for Plant Disease Detection: A Case Study](/202604/21/2604.11332v1-a-compact-and-efficient-1251-million-parameter-machine-learning-cnn-model-pd36-c-for-plant-disease-detection-a-case-study)  
-   标签：评分：8.0/10、query:q8
-   evidence：利用卷积神经网络进行作物病害检测监测
+   evidence：利用近红外在农业环境中进行杂草检测
+2. [Attention-based Multi-modal Deep Learning Model of Spatio-temporal Crop Yield Prediction with Satellite, Soil and Climate Data](/202604/22/2604.19217v1-attention-based-multi-modal-deep-learning-model-of-spatio-temporal-crop-yield-prediction-with-satellite-soil-and-climate-data)  
+   标签：评分：9.0/10、query:profile-1
+   evidence：利用卫星、土壤和气候数据进行作物产量预测
+3. [GTPBD-MM: A Global Terraced Parcel and Boundary Dataset with Multi-Modality](/202604/22/2604.12315v1-gtpbd-mm-a-global-terraced-parcel-and-boundary-dataset-with-multi-modality)  
+   标签：评分：8.0/10、query:q4
+   evidence：农业地块提取与监测
+4. [A Proxy Consistency Loss for Grounded Fusion of Earth Observation and Location Encoders](/202604/22/2604.18881v1-a-proxy-consistency-loss-for-grounded-fusion-of-earth-observation-and-location-encoders)  
+   标签：评分：8.0/10、query:profile-1
+   evidence：地球观测与代理变量融合以解决稀疏标签问题
 
 ### 速读区论文标签
-1. [HuiYanEarth-SAR: A Foundation Model for High-Fidelity and Low-Cost Global Remote Sensing Imagery Generation](/202604/21/2604.11444v1-huiyanearth-sar-a-foundation-model-for-high-fidelity-and-low-cost-global-remote-sensing-imagery-generation)  
-   标签：评分：7.0/10、query:q5
-   evidence：SAR图像生成与散射机制研究
-2. [GTPBD-MM: A Global Terraced Parcel and Boundary Dataset with Multi-Modality](/202604/21/2604.12315v1-gtpbd-mm-a-global-terraced-parcel-and-boundary-dataset-with-multi-modality)  
+1. [A Resource-Efficient Hybrid CNN-LSTM network for image-based bean leaf disease classification](/202604/22/2604.13835v1-a-resource-efficient-hybrid-cnn-lstm-network-for-image-based-bean-leaf-disease-classification)  
    标签：评分：7.0/10、query:q4
-   evidence：基于遥感的农业监测和地块提取
-3. [SatBLIP: Context Understanding and Feature Identification from Satellite Imagery with Vision-Language Learning](/202604/21/2604.14373v1-satblip-context-understanding-and-feature-identification-from-satellite-imagery-with-vision-language-learning)  
-   标签：评分：7.0/10、query:q8
-   evidence：农村背景理解与地表模式
-4. [From Articles to Canopies: Knowledge-Driven Pseudo-Labelling for Tree Species Classification using LLM Experts](/202604/21/2604.16115v1-from-articles-to-canopies-knowledge-driven-pseudo-labelling-for-tree-species-classification-using-llm-experts)  
+   evidence：现代农业专家系统中的自动诊断
+2. [Robust Multispectral Semantic Segmentation under Missing or Full Modalities via Structured Latent Projection](/202604/22/2604.15856v1-robust-multispectral-semantic-segmentation-under-missing-or-full-modalities-via-structured-latent-projection)  
+   标签：评分：7.0/10、query:q3
+   evidence：用于语义分割的多模态遥感数据
+3. [From Articles to Canopies: Knowledge-Driven Pseudo-Labelling for Tree Species Classification using LLM Experts](/202604/22/2604.16115v1-from-articles-to-canopies-knowledge-driven-pseudo-labelling-for-tree-species-classification-using-llm-experts)  
    标签：评分：7.0/10、query:q4
-   evidence：利用高光谱和激光雷达数据进行树种分类
-5. [When Earth Foundation Models Meet Diffusion: An Application to Land Surface Temperature Super-Resolution](/202604/21/2604.16841v1-when-earth-foundation-models-meet-diffusion-an-application-to-land-surface-temperature-super-resolution)  
+   evidence：高光谱树种分类与冠层结构集成
+4. [Better with Less: Tackling Heterogeneous Multi-Modal Image Joint Pretraining via Conditioned and Degraded Masked Autoencoder](/202604/22/2604.16952v1-better-with-less-tackling-heterogeneous-multi-modal-image-joint-pretraining-via-conditioned-and-degraded-masked-autoencoder)  
+   标签：评分：7.0/10、query:q6
+   evidence：高分辨率图像的光学与SAR联合预训练
+5. [Hyperspectral Unmixing Hierarchies](/202604/22/2604.16969v1-hyperspectral-unmixing-hierarchies)  
    标签：评分：7.0/10、query:profile-1
-   evidence：用于地表温度超分辨率的地球基础模型
-6. [Better with Less: Tackling Heterogeneous Multi-Modal Image Joint Pretraining via Conditioned and Degraded Masked Autoencoder](/202604/21/2604.16952v1-better-with-less-tackling-heterogeneous-multi-modal-image-joint-pretraining-via-conditioned-and-degraded-masked-autoencoder)  
-   标签：评分：7.0/10、query:profile-1
-   evidence：光学与合成孔径雷达（SAR）联合预训练
-7. [Bayesian Cramér-Rao Bound for Sensing Performance in Meta-Backscatter Systems](/202604/21/2604.10926v1-bayesian-cramr-rao-bound-for-sensing-performance-in-meta-backscatter-systems)  
-   标签：评分：6.0/10、query:q5
-   evidence：利用后向散射信号进行环境传感
-8. [A Resource-Efficient Hybrid CNN-LSTM network for image-based bean leaf disease classification](/202604/21/2604.13835v1-a-resource-efficient-hybrid-cnn-lstm-network-for-image-based-bean-leaf-disease-classification)  
-   标签：评分：6.0/10、query:q4
-   evidence：农业专家系统与豆类叶片病害分类
-9. [Remote Sensing Image Super-Resolution for Imbalanced Textures: A Texture-Aware Diffusion Framework](/202604/21/2604.13994v1-remote-sensing-image-super-resolution-for-imbalanced-textures-a-texture-aware-diffusion-framework)  
+   evidence：用于成分分析的高光谱解混
+6. [DiffuSAM: Diffusion Guided Zero-Shot Object Grounding for Remote Sensing Imagery](/202604/22/2604.18201v1-diffusam-diffusion-guided-zero-shot-object-grounding-for-remote-sensing-imagery)  
+   标签：评分：7.0/10、query:q3
+   evidence：遥感影像中的目标定位与接地
+7. [Deep Spatially-Regularized and Superpixel-Based Diffusion Learning for Unsupervised Hyperspectral Image Clustering](/202604/22/2604.13307v1-deep-spatially-regularized-and-superpixel-based-diffusion-learning-for-unsupervised-hyperspectral-image-clustering)  
    标签：评分：6.0/10、query:q3
-   evidence：地物遥感图像超分辨率
-10. [A multi-platform LiDAR dataset for standardized forest inventory measurement at long term ecological monitoring sites](/202604/21/2604.14635v1-a-multi-platform-lidar-dataset-for-standardized-forest-inventory-measurement-at-long-term-ecological-monitoring-sites)  
+   evidence：遥感高光谱图像的无监督聚类
+8. [UHR-BAT: Budget-Aware Token Compression Vision-Language model for Ultra-High-Resolution Remote Sensing](/202604/22/2604.13565v1-uhr-bat-budget-aware-token-compression-vision-language-model-for-ultra-high-resolution-remote-sensing)  
+   标签：评分：6.0/10、query:q3
+   evidence：超高分辨率遥感图像框架
+9. [Remote Sensing Image Super-Resolution for Imbalanced Textures: A Texture-Aware Diffusion Framework](/202604/22/2604.13994v1-remote-sensing-image-super-resolution-for-imbalanced-textures-a-texture-aware-diffusion-framework)  
+   标签：评分：6.0/10、query:q3
+   evidence：遥感图像超分辨率框架
+10. [WILD-SAM: Phase-Aware Expert Adaptation of SAM for Landslide Detection in Wrapped InSAR Interferograms](/202604/22/2604.14540v1-wild-sam-phase-aware-expert-adaptation-of-sam-for-landslide-detection-in-wrapped-insar-interferograms)  
+   标签：评分：6.0/10、query:q3
+   evidence：利用InSAR干涉图和微波遥感进行滑坡检测
+11. [A multi-platform LiDAR dataset for standardized forest inventory measurement at long term ecological monitoring sites](/202604/22/2604.14635v1-a-multi-platform-lidar-dataset-for-standardized-forest-inventory-measurement-at-long-term-ecological-monitoring-sites)  
    标签：评分：6.0/10、query:q8
-   evidence：用于森林调查和生态监测的激光雷达数据集
-11. [Subsurface Property Mapping using Google AlphaEarth Foundations](/202604/21/2604.14756v1-subsurface-property-mapping-using-google-alphaearth-foundations)  
-   标签：评分：6.0/10、query:profile-1
-   evidence：利用基础模型进行地下属性制图
+   evidence：用于森林调查和监测的激光雷达数据集
 
 
 <div class="dpr-home-promo-card">

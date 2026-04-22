@@ -1,0 +1,610 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-22T19:56:31.122569+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 4,
+    "deep_cap": 6,
+    "deep_selected": 4,
+    "quick_candidates": 21,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2604.16147v1",
+      "source": "arxiv",
+      "title": "SWNet: A Cross-Spectral Network for Camouflaged Weed Detection",
+      "abstract": "This paper presents SWNet, a bimodal end-to-end cross-spectral network specifically engineered for the detection of camouflaged weeds in dense agricultural environments. Plant camouflage, characterized by homochromatic blending where invasive species mimic the phenotypic traits of primary crops, poses a significant challenge for traditional computer vision systems. To overcome these limitations, SWNet utilizes a Pyramid Vision Transformer v2 backbone to capture long-range dependencies and a Bimodal Gated Fusion Module to dynamically integrate Visible and Near-Infrared information. By leveraging the physiological differences in chlorophyll reflectance captured in the NIR spectrum, the proposed architecture effectively discriminates targets that are otherwise indistinguishable in the visible range. Furthermore, an Edge-Aware Refinement module is employed to produce sharper object boundaries and reduce structural ambiguity. Experimental results on the Weeds-Banana dataset indicate that SWNet outperforms ten state-of-the-art methods. The study demonstrates that the integration of cross-spectral data and boundary-guided refinement is essential for high segmentation accuracy in complex crop canopies. The code is available on GitHub: https://cod-espol.github.io/SWNet/",
+      "authors": [
+        "Henry O. Velesaca",
+        "Luigi Miranda",
+        "Angel D. Sappa"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-04-17T15:20:31+00:00",
+      "link": "https://arxiv.org/pdf/2604.16147v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "weed detection in agricultural environments using NIR",
+      "llm_evidence_cn": "利用近红外在农业环境中进行杂草检测",
+      "llm_evidence": "利用近红外在农业环境中进行杂草检测",
+      "canonical_evidence": "利用近红外在农业环境中进行杂草检测",
+      "llm_tldr_en": "Introduces a cross-spectral network for detecting camouflaged weeds in crops using visible and NIR data.",
+      "llm_tldr_cn": "引入了一种利用可见光和近红外数据检测作物中伪装杂草的跨光谱网络。",
+      "llm_tldr": "引入了一种利用可见光和近红外数据检测作物中伪装杂草的跨光谱网络。",
+      "llm_tags": [
+        "query:q4"
+      ],
+      "matched_query_tag": "query:q4",
+      "matched_query_text": "agricultural remote sensing",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.19217v1",
+      "source": "arxiv",
+      "title": "Attention-based Multi-modal Deep Learning Model of Spatio-temporal Crop Yield Prediction with Satellite, Soil and Climate Data",
+      "abstract": "Crop yield prediction is one of the most important challenge, which is crucial to world food security and policy-making decisions. The conventional forecasting techniques are limited in their accuracy with reference to the fact that they utilize static data sources that do not reflect the dynamic and intricate relationships that exist between the variables of the environment over time [5,13]. This paper presents Attention-Based Multi-Modal Deep Learning Framework (ABMMDLF), which is suggested to be used in high-accuracy spatio-temporal crop yield prediction.   The model we use combines multi-year satellite imagery, high-resolution time-series of meteorological data and initial soil properties as opposed to the traditional models which use only one of the aforementioned factors [12, 21]. The main architecture involves the use of Convolutional Neural Networks (CNN) to extract spatial features and a Temporal Attention Mechanism to adaptively weight important phenological periods targeted by the algorithm to change over time and condition on spatial features of images and video sequences. As can be experimentally seen, the proposed research work provides an R^2 score of 0.89, which is far better than the baseline models do.",
+      "authors": [
+        "Gopal Krishna Shyam",
+        "Ila Chandrakar"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-04-21T08:23:50+00:00",
+      "link": "https://arxiv.org/pdf/2604.19217v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "crop yield prediction using satellite, soil, and climate data",
+      "llm_evidence_cn": "利用卫星、土壤和气候数据进行作物产量预测",
+      "llm_evidence": "利用卫星、土壤和气候数据进行作物产量预测",
+      "canonical_evidence": "利用卫星、土壤和气候数据进行作物产量预测",
+      "llm_tldr_en": "Presents a multi-modal deep learning framework for spatio-temporal crop yield prediction using multi-source data.",
+      "llm_tldr_cn": "提出一种多模态深度学习框架，利用多源数据进行时空作物产量预测。",
+      "llm_tldr": "提出一种多模态深度学习框架，利用多源数据进行时空作物产量预测。",
+      "llm_tags": [
+        "query:profile-1:composite"
+      ],
+      "matched_query_tag": "query:profile-1:composite",
+      "matched_query_text": "Papers central to 请帮我查利用遥感技术进行作物参数估计和土壤水分的文章, especially work that connects or combines: soil moisture retrieval; crop parameter estimation; remote sensing technology applications; agricultural remote sensing; Soil moisture retrieval from microwave remote sensing; Using SAR backscatter to estimate crop biophysical parameters like LAI and biomass; Methods for soil moisture retrieval using remote sensing; Applications of remote sensing in agriculture for crop and soil monitoring.",
+      "matched_requirement_id": "req-composite-profile-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.18881v1",
+      "source": "arxiv",
+      "title": "A Proxy Consistency Loss for Grounded Fusion of Earth Observation and Location Encoders",
+      "abstract": "Supervised learning with Earth observation inputs is often limited by the sparsity of high-quality labeled or in-situ measured data to use as training labels. With the abundance of geographic data products, in many cases there are variables correlated with - but different from - the variable of interest that can be leveraged. We integrate such proxy variables within a geographic prior via a trainable location encoder and introduce a proxy consistency loss (PCL) formulation to imbue proxy data into the location encoder. The first key insight behind our approach is to use the location encoder as an agile and flexible way to learn from abundantly available proxy data which can be sampled independently of training label availability. Our second key insight is that we will need to regularize the location encoder appropriately to achieve performance and robustness with limited labeled data. Our experiments on air quality prediction and poverty mapping show that integrating proxy data implicitly through the location encoder outperforms using both as input to an observation encoder and fusion strategies that use frozen, pretrained location embeddings as a geographic prior. Superior performance for in-sample prediction shows that the PCL can incorporate rich information from the proxies, and superior out-of-sample prediction shows that the learned latent embeddings help generalize to areas without training labels.",
+      "authors": [
+        "Zhongying Wang",
+        "Kevin Lane",
+        "Levi Cai",
+        "Morteza Karimzadeh",
+        "Esther Rolf"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-04-20T22:01:23+00:00",
+      "link": "https://arxiv.org/pdf/2604.18881v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "fusion of Earth observation and proxy variables for sparse labels",
+      "llm_evidence_cn": "地球观测与代理变量融合以解决稀疏标签问题",
+      "llm_evidence": "地球观测与代理变量融合以解决稀疏标签问题",
+      "canonical_evidence": "地球观测与代理变量融合以解决稀疏标签问题",
+      "llm_tldr_en": "Integrates proxy variables with Earth observation data to improve learning when in-situ labels are sparse.",
+      "llm_tldr_cn": "将代理变量与地球观测数据集成，以改善实地标签稀疏时的学习效果。",
+      "llm_tldr": "将代理变量与地球观测数据集成，以改善实地标签稀疏时的学习效果。",
+      "llm_tags": [
+        "query:profile-1:composite"
+      ],
+      "matched_query_tag": "query:profile-1:composite",
+      "matched_query_text": "Papers central to 请帮我查利用遥感技术进行作物参数估计和土壤水分的文章, especially work that connects or combines: soil moisture retrieval; crop parameter estimation; remote sensing technology applications; agricultural remote sensing; Soil moisture retrieval from microwave remote sensing; Using SAR backscatter to estimate crop biophysical parameters like LAI and biomass; Methods for soil moisture retrieval using remote sensing; Applications of remote sensing in agriculture for crop and soil monitoring.",
+      "matched_requirement_id": "req-composite-profile-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.12315v1",
+      "source": "arxiv",
+      "title": "GTPBD-MM: A Global Terraced Parcel and Boundary Dataset with Multi-Modality",
+      "abstract": "Agricultural parcel extraction plays an important role in remote sensing-based agricultural monitoring, supporting parcel surveying, precision management, and ecological assessment. However, existing public benchmarks mainly focus on regular and relatively flat farmland scenes. In contrast, terraced parcels in mountainous regions exhibit stepped terrain, pronounced elevation variation, irregular boundaries, and strong cross-regional heterogeneity, making parcel extraction a more challenging problem that jointly requires visual recognition, semantic discrimination, and terrain-aware geometric understanding. Although recent studies have advanced visual parcel benchmarks and image-text farmland understanding, a unified benchmark for complex terraced parcel extraction under aligned image-text-DEM settings remains absent. To fill this gap, we present GTPBD-MM, the first multimodal benchmark for global terraced parcel extraction. Built upon GTPBD, GTPBD-MM integrates high-resolution optical imagery, structured text descriptions, and DEM data, and supports systematic evaluation under Image-only, Image+Text, and Image+Text+DEM settings. We further propose Elevation and Text guided Terraced parcel network (ETTerra), a multimodal baseline for terraced parcel delineation. Extensive experiments demonstrate that textual semantics and terrain geometry provide complementary cues beyond visual appearance alone, yielding more accurate, coherent, and structurally consistent delineation results in complex terraced scenes.",
+      "authors": [
+        "Zhiwei Zhang",
+        "Xingyuan Zeng",
+        "Xinkai Kong",
+        "Kunquan Zhang",
+        "Haoyuan Liang",
+        "Bohan Shi",
+        "Juepeng Zheng",
+        "Jianxi Huang",
+        "Yutong Lu",
+        "Haohuan Fu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.MM"
+      ],
+      "published": "2026-04-14T05:45:55+00:00",
+      "link": "https://arxiv.org/pdf/2604.12315v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "agricultural parcel extraction and monitoring",
+      "llm_evidence_cn": "农业地块提取与监测",
+      "llm_evidence": "农业地块提取与监测",
+      "canonical_evidence": "农业地块提取与监测",
+      "llm_tldr_en": "Creates a multi-modal dataset for terraced agricultural parcel extraction to support precision management.",
+      "llm_tldr_cn": "创建一个多模态数据集，用于梯田农业地块提取，支持精准农业管理。",
+      "llm_tldr": "创建一个多模态数据集，用于梯田农业地块提取，支持精准农业管理。",
+      "llm_tags": [
+        "query:q4"
+      ],
+      "matched_query_tag": "query:q4",
+      "matched_query_text": "agricultural remote sensing",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.13835v1",
+      "source": "arxiv",
+      "title": "A Resource-Efficient Hybrid CNN-LSTM network for image-based bean leaf disease classification",
+      "abstract": "Accurate and resource-efficient automated diagnosis is a cornerstone of modern agricultural expert systems. While Convolutional Neural Networks (CNNs) have established benchmarks in plant pathology, their ability to capture long-range spatial dependencies is often limited by standard pooling layers, and their high memory footprint hinders deployment on portable devices. This paper proposes a lightweight hybrid CNN-LSTM system for bean leaf disease classification. By integrating an LSTM layer to model the spatial-sequential relationships within feature maps, our hybrid architecture achieves a 94.38% accuracy while maintaining an exceptionally small footprint of 1.86 MB; a 70% reduction in size compared to traditional CNN-based systems. Furthermore, we provide a systematic evaluation of image augmentation strategies, demonstrating that tailored transformations are superior to generic combinations for maintaining the integrity of diagnostic patterns. Results on the $\\textit{ibean}$ dataset confirm that the proposed system achieves state-of-the-art F1 scores of 99.22% with EfficientNet-B7+LSTM, providing a robust and scalable framework for real-time agricultural decision support in resource-constrained environments. The code and augmented datasets used in this study are publicly available on this $\\href{https://github.com/HJin-R/bean_disease}{Github}$ repo.",
+      "authors": [
+        "Hye Jin Rhee",
+        "Joseph Damilola Akinyemi"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-15T13:09:47+00:00",
+      "link": "https://arxiv.org/pdf/2604.13835v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "automated diagnosis in modern agricultural expert systems",
+      "llm_evidence_cn": "现代农业专家系统中的自动诊断",
+      "llm_evidence": "现代农业专家系统中的自动诊断",
+      "canonical_evidence": "现代农业专家系统中的自动诊断",
+      "llm_tldr_en": "Proposes a lightweight CNN-LSTM for bean leaf disease classification to improve agricultural monitoring efficiency.",
+      "llm_tldr_cn": "提出一种轻量级CNN-LSTM网络用于豆类叶片病害分类，提高农业监测效率。",
+      "llm_tldr": "提出一种轻量级CNN-LSTM网络用于豆类叶片病害分类，提高农业监测效率。",
+      "llm_tags": [
+        "query:q4"
+      ],
+      "matched_query_tag": "query:q4",
+      "matched_query_text": "agricultural remote sensing",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.13307v1",
+      "source": "arxiv",
+      "title": "Deep Spatially-Regularized and Superpixel-Based Diffusion Learning for Unsupervised Hyperspectral Image Clustering",
+      "abstract": "An unsupervised framework for hyperspectral image (HSI) clustering is proposed that incorporates masked deep representation learning with diffusion-based clustering, extending the Spatially-Regularized Superpixel-based Diffusion Learning ($S^2DL$) algorithm. Initially, a denoised latent representation of the original HSI is learned via an unsupervised masked autoencoder (UMAE) model with a Vision Transformer backbone. The UMAE takes spatial context and long-range spectral correlations into account and incorporates an efficient pretraining process via masking that utilizes only a small subset of training pixels. In the next stage, the entropy rate superpixel (ERS) algorithm is used to segment the image into superpixels, and a spatially regularized diffusion graph is constructed using Euclidean and diffusion distances within the compressed latent space instead of the HSI space. The proposed algorithm, Deep Spatially-Regularized Superpixel-based Diffusion Learning ($DS^2DL$), leverages more faithful diffusion distances and subsequent diffusion graph construction that better reflect the intrinsic geometry of the underlying data manifold, improving labeling accuracy and clustering quality. Experiments on Botswana and KSC datasets demonstrate the efficacy of $DS^2DL$.",
+      "authors": [
+        "Vutichart Buranasiri",
+        "James M. Murphy"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-04-14T21:21:51+00:00",
+      "link": "https://arxiv.org/pdf/2604.13307v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "unsupervised hyperspectral image clustering for remote sensing",
+      "llm_evidence_cn": "遥感高光谱图像的无监督聚类",
+      "llm_evidence": "遥感高光谱图像的无监督聚类",
+      "canonical_evidence": "遥感高光谱图像的无监督聚类",
+      "llm_tldr_en": "Introduces an unsupervised framework for hyperspectral image clustering using masked deep representation learning.",
+      "llm_tldr_cn": "介绍了一种利用掩码深度表示学习进行高光谱图像聚类的无监督框架。",
+      "llm_tldr": "介绍了一种利用掩码深度表示学习进行高光谱图像聚类的无监督框架。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.15856v1",
+      "source": "arxiv",
+      "title": "Robust Multispectral Semantic Segmentation under Missing or Full Modalities via Structured Latent Projection",
+      "abstract": "Multimodal remote sensing data provide complementary information for semantic segmentation, but in real-world deployments, some modalities may be unavailable due to sensor failures, acquisition issues, or challenging atmospheric conditions. Existing multimodal segmentation models typically address missing modalities by learning a shared representation across inputs. However, this approach can introduce a trade-off by compromising modality-specific complementary information and reducing performance when all modalities are available. In this paper, we tackle this limitation with CBC-SLP, a multimodal semantic segmentation model designed to preserve both modality-invariant and modality-specific information. Inspired by the theoretical results on modality alignment, which state that perfectly aligned multimodal representations can lead to sub-optimal performance in downstream prediction tasks, we propose a novel structured latent projection approach as an architectural inductive bias. Rather than enforcing this strategy through a loss term, we incorporate it directly into the architecture. In particular, to use the complementary information effectively while maintaining robustness under random modality dropout, we structure the latent representations into shared and modality-specific components and adaptively transfer them to the decoder according to the random modality availability mask. Extensive experiments on three multimodal remote sensing image sets demonstrate that CBC-SLP consistently outperforms state-of-the-art multimodal models across full and missing modality scenarios. Besides, we empirically demonstrate that the proposed strategy can recover the complementary information that may not be preserved in a shared representation. The code is available at https://github.com/iremulku/Multispectral-Semantic-Segmentation-via-Structured-Latent-Projection-CBC-SLP-.",
+      "authors": [
+        "Irem Ulku",
+        "Erdem Akagündüz",
+        "Ömer Özgür Tanrıöver"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-04-17T09:05:22+00:00",
+      "link": "https://arxiv.org/pdf/2604.15856v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "multimodal remote sensing data for semantic segmentation",
+      "llm_evidence_cn": "用于语义分割的多模态遥感数据",
+      "llm_evidence": "用于语义分割的多模态遥感数据",
+      "canonical_evidence": "用于语义分割的多模态遥感数据",
+      "llm_tldr_en": "Develops a robust multimodal semantic segmentation model for remote sensing under missing modality conditions.",
+      "llm_tldr_cn": "开发了一种鲁棒的多模态遥感语义分割模型，适用于模态缺失的情况。",
+      "llm_tldr": "开发了一种鲁棒的多模态遥感语义分割模型，适用于模态缺失的情况。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.13565v1",
+      "source": "arxiv",
+      "title": "UHR-BAT: Budget-Aware Token Compression Vision-Language model for Ultra-High-Resolution Remote Sensing",
+      "abstract": "Ultra-high-resolution (UHR) remote sensing imagery couples kilometer-scale context with query-critical evidence that may occupy only a few pixels. Such vast spatial scale leads to a quadratic explosion of visual tokens and hinders the extraction of information from small objects. Previous works utilize direct downsampling, dense tiling, or global top-k pruning, which either compromise query-critical image details or incur unpredictable compute. In this paper, we propose UHR-BAT, a query-guided and region-faithful token compression framework to efficiently select visual tokens under a strict context budget. Specifically, we leverage text-guided, multi-scale importance estimation for visual tokens, effectively tackling the challenge of achieving precise yet low-cost feature extraction. Furthermore, by introducing region-wise preserve and merge strategies, we mitigate visual token redundancy, further driving down the computational budget. Experimental results show that UHR-BAT achieves state-of-the-art performance across various benchmarks. Code will be available at https://github.com/Yunkaidang/UHR.",
+      "authors": [
+        "Yunkai Dang",
+        "Minxin Dai",
+        "Yuekun Yang",
+        "Zhangnan Li",
+        "Wenbin Li",
+        "Feng Miao",
+        "Yang Gao"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-04-15T07:21:37+00:00",
+      "link": "https://arxiv.org/pdf/2604.13565v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "ultra-high-resolution remote sensing imagery framework",
+      "llm_evidence_cn": "超高分辨率遥感图像框架",
+      "llm_evidence": "超高分辨率遥感图像框架",
+      "canonical_evidence": "超高分辨率遥感图像框架",
+      "llm_tldr_en": "Proposes a token compression framework for efficient processing of ultra-high-resolution remote sensing data.",
+      "llm_tldr_cn": "提出了一种用于高效处理超高分辨率遥感数据的令牌压缩框架。",
+      "llm_tldr": "提出了一种用于高效处理超高分辨率遥感数据的令牌压缩框架。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.16115v1",
+      "source": "arxiv",
+      "title": "From Articles to Canopies: Knowledge-Driven Pseudo-Labelling for Tree Species Classification using LLM Experts",
+      "abstract": "Hyperspectral tree species classification is challenging due to limited and imbalanced class labels, spectral mixing (overlapping light signatures from multiple species), and ecological heterogeneity (variability among ecological systems). Addressing these challenges requires methods that integrate biological and structural characteristics of vegetation, such as canopy architecture and interspecific interactions, rather than relying solely on spectral signatures. This paper presents a biologically informed, semi-supervised deep learning method that integrates multi-sensor Earth observation data, specifically hyperspectral imaging (HSI) and airborne laser scanning (ALS), with expert, ecological knowledge. The approach relies on biologically inspired pseudo-labelling over a precomputed canopy graph, yielding accurate classification at low training cost. In addition, ecological priors on species cohabitation are automatically derived from reliable sources using large language models (LLMs) and encoded as a cohabitation matrix with likelihoods of species occurring together. These priors are incorporated into the pseudo-labelling strategy, effectively introducing expert knowledge into the model. Experiments on a real-world forest dataset demonstrate 5.6% improvement over the best reference method. Expert evaluation of cohabitation priors reveals high accuracy with differences no larger than 15%.",
+      "authors": [
+        "Michał Romaszewski",
+        "Dominik Kopeć",
+        "Michał Cholewa",
+        "Katarzyna Kołodziej",
+        "Przemysław Głomb",
+        "Jan Niedzielko",
+        "Jakub Charyton",
+        "Justyna Wylazłowska",
+        "Anna Jarocińska"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-17T14:52:02+00:00",
+      "link": "https://arxiv.org/pdf/2604.16115v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Hyperspectral tree species classification and canopy architecture integration",
+      "llm_evidence_cn": "高光谱树种分类与冠层结构集成",
+      "llm_evidence": "高光谱树种分类与冠层结构集成",
+      "canonical_evidence": "高光谱树种分类与冠层结构集成",
+      "llm_tldr_en": "Integrates hyperspectral and laser scanning data for tree species classification using ecological knowledge.",
+      "llm_tldr_cn": "结合高光谱和激光扫描数据，利用生态知识进行树种分类。",
+      "llm_tldr": "结合高光谱和激光扫描数据，利用生态知识进行树种分类。",
+      "llm_tags": [
+        "query:q4"
+      ],
+      "matched_query_tag": "query:q4",
+      "matched_query_text": "agricultural remote sensing",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.13994v1",
+      "source": "arxiv",
+      "title": "Remote Sensing Image Super-Resolution for Imbalanced Textures: A Texture-Aware Diffusion Framework",
+      "abstract": "Generative diffusion priors have recently achieved state-of-the-art performance in natural image super-resolution, demonstrating a powerful capability to synthesize photorealistic details. However, their direct application to remote sensing image super-resolution (RSISR) reveals significant shortcomings. Unlike natural images, remote sensing images exhibit a unique texture distribution where ground objects are globally stochastic yet locally clustered, leading to highly imbalanced textures. This imbalance severely hinders the model's spatial perception. To address this, we propose TexADiff, a novel framework that begins by estimating a Relative Texture Density Map (RTDM) to represent the texture distribution. TexADiff then leverages this RTDM in three synergistic ways: as an explicit spatial conditioning to guide the diffusion process, as a loss modulation term to prioritize texture-rich regions, and as a dynamic adapter for the sampling schedule. These modifications are designed to endow the model with explicit texture-aware capabilities. Experiments demonstrate that TexADiff achieves superior or competitive quantitative metrics. Furthermore, qualitative results show that our model generates faithful high-frequency details while effectively suppressing texture hallucinations. This improved reconstruction quality also results in significant gains in downstream task performance. The source code of our method can be found at https://github.com/ZezFuture/TexAdiff.",
+      "authors": [
+        "Enzhuo Zhang",
+        "Sijie Zhao",
+        "Dilxat Muhtar",
+        "Zhenshi Li",
+        "Xueliang Zhang",
+        "Pengfeng Xiao"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-15T15:36:49+00:00",
+      "link": "https://arxiv.org/pdf/2604.13994v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "remote sensing image super-resolution framework",
+      "llm_evidence_cn": "遥感图像超分辨率框架",
+      "llm_evidence": "遥感图像超分辨率框架",
+      "canonical_evidence": "遥感图像超分辨率框架",
+      "llm_tldr_en": "Proposes a texture-aware diffusion framework to improve the resolution and spatial perception of remote sensing images.",
+      "llm_tldr_cn": "提出了一种纹理感知扩散框架，用于提高遥感图像的分辨率和空间感知能力。",
+      "llm_tldr": "提出了一种纹理感知扩散框架，用于提高遥感图像的分辨率和空间感知能力。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.16952v1",
+      "source": "arxiv",
+      "title": "Better with Less: Tackling Heterogeneous Multi-Modal Image Joint Pretraining via Conditioned and Degraded Masked Autoencoder",
+      "abstract": "Learning robust representations across extremely heterogeneous modalities remains a fundamental challenge in multi-modal vision. As a critical and profound instantiation of this challenge, high-resolution (HR) joint optical and synthetic aperture radar (SAR) pretraining seeks modality synergy to mutually enhance single-source representations; its potential is severely hindered by the Heterogeneity-Resolution Paradox: finer spatial scales drastically amplify the physical divergence between complex radar geometries and non-homologous optical textures. Consequently, migrating medium-resolution-oriented rigid alignment paradigms to HR scenarios triggers either severe feature suppression to force equivalence, or feature contamination driven by extreme epistemic uncertainty. Both extremes inevitably culminate in profound representation degradation and negative transfer. To overcome this bottleneck, we propose CoDe-MAE, pioneering a \\textit{better synergy with less alignment} philosophy. First, Optical-anchored Knowledge Distillation (OKD) implicitly regularizes SAR's speckle noise by mapping it into a pure semantic manifold. Building on this, Conditioned Contrastive Learning (CCL) utilizes a gradient buffering mechanism to align shared consensus while safely preserving divergent physical signatures. Concurrently, Cross-Modal Degraded Reconstruction (CDR) deliberately strips non-homologous spectral pseudo-features, truncating the inherently ill-posed mapping to capture true structural invariants. Extensive analyses validate our theoretical claims. Pretrained on 1M samples, CoDe-MAE demonstrates remarkable data efficiency, successfully preventing representation degradation and establishing new state-of-the-art performance across diverse single- and bi-modal downstream tasks, substantially outperforming foundation models scaled on vastly larger datasets.",
+      "authors": [
+        "Bowen Peng",
+        "Yongxiang Liu",
+        "Jie Zhou",
+        "Xiaodong Chen",
+        "Tianpeng Liu",
+        "Xiaogang Yu",
+        "Li Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-18T10:23:00+00:00",
+      "link": "https://arxiv.org/pdf/2604.16952v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "joint optical and SAR pretraining for high-resolution imagery",
+      "llm_evidence_cn": "高分辨率图像的光学与SAR联合预训练",
+      "llm_evidence": "高分辨率图像的光学与SAR联合预训练",
+      "canonical_evidence": "高分辨率图像的光学与SAR联合预训练",
+      "llm_tldr_en": "Develops a pretraining paradigm for heterogeneous optical and SAR data, crucial for remote sensing tasks.",
+      "llm_tldr_cn": "开发了针对光学和SAR异构数据的预训练范式，对遥感任务至关重要。",
+      "llm_tldr": "开发了针对光学和SAR异构数据的预训练范式，对遥感任务至关重要。",
+      "llm_tags": [
+        "query:q6"
+      ],
+      "matched_query_tag": "query:q6",
+      "matched_query_text": "Using SAR backscatter to estimate crop biophysical parameters like LAI and biomass",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.14540v1",
+      "source": "arxiv",
+      "title": "WILD-SAM: Phase-Aware Expert Adaptation of SAM for Landslide Detection in Wrapped InSAR Interferograms",
+      "abstract": "Detecting slow-moving landslides directly from wrapped Interferometric Synthetic Aperture Radar (InSAR) interferograms is crucial for efficient geohazard monitoring, yet it remains fundamentally challenged by severe phase ambiguity and complex coherence noise. While the Segment Anything Model (SAM) offers a powerful foundation for segmentation, its direct transfer to wrapped phase data is hindered by a profound spectral domain shift, which suppresses the high-frequency fringes essential for boundary delineation. To bridge this gap, we propose WILD-SAM, a novel parameter-efficient fine-tuning framework specifically designed to adapt SAM for high-precision landslide detection on wrapped interferograms. Specifically, the architecture integrates a Phase-Aware Mixture-of-Experts (PA-MoE) Adapter into the frozen encoder to align spectral distributions and introduces a Wavelet-Guided Subband Enhancement (WGSE) strategy to generate frequency-aware dense prompts. The PA-MoE Adapter exploits a dynamic routing mechanism across heterogeneous convolutional experts to adaptively aggregate multi-scale spectral-textural priors, effectively aligning the distribution discrepancy between natural images and interferometric phase data. Meanwhile, the WGSE strategy leverages discrete wavelet transforms to explicitly disentangle high-frequency subbands and refine directional phase textures, injecting these structural cues as dense prompts to ensure topological integrity along sharp landslide boundaries. Extensive experiments on the ISSLIDE and ISSLIDE+ benchmarks demonstrate that WILD-SAM achieves state-of-the-art performance, significantly outperforming existing methods in both target completeness and contour fidelity.",
+      "authors": [
+        "Yucheng Pan",
+        "Heping Li",
+        "Zhangle Liu",
+        "Sajid Hussain",
+        "Bin Pan"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-16T02:16:29+00:00",
+      "link": "https://arxiv.org/pdf/2604.14540v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Landslide detection using InSAR interferograms and microwave remote sensing",
+      "llm_evidence_cn": "利用InSAR干涉图和微波遥感进行滑坡检测",
+      "llm_evidence": "利用InSAR干涉图和微波遥感进行滑坡检测",
+      "canonical_evidence": "利用InSAR干涉图和微波遥感进行滑坡检测",
+      "llm_tldr_en": "Adapts the Segment Anything Model for high-precision landslide detection using microwave InSAR data.",
+      "llm_tldr_cn": "利用微波InSAR数据调整SAM模型，实现高精度滑坡检测。",
+      "llm_tldr": "利用微波InSAR数据调整SAM模型，实现高精度滑坡检测。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.16969v1",
+      "source": "arxiv",
+      "title": "Hyperspectral Unmixing Hierarchies",
+      "abstract": "Unmixing reveals the spatial distribution and spectral details of different constituents, called endmembers, in a hyperspectral image. Because unmixing has limited ground truth requirements, can accommodate mixed pixels, and is closely tied to light propagation, it is a uniquely powerful tool for analyzing hyperspectral images. However, spectral variability inhibits unmixing performance, the proper way to determine the number of endmembers is ambiguous, and the clarity of the endmembers degrades as more are included. Hierarchical structure is a possible solution to all three problems.   Here, hierarchical unmixing is defined by imposing a hierarchical abundance sum constraint on Deep Nonnegative Matrix Factorization. Binary Linear Unmixing Tactile Hierarchies (BLUTHs) solve the hierarchical unmixing problem with a simple network architecture. Sparsity modulation unmixing growth tailors the topology of a BLUTH to each scene. The structure imposed by BLUTHs allows endmembers with varying levels of spectral contrast to be revealed, mitigating the challenge of spectral variability.   The performance of BLUTHs exceeds state-of-the-art unmixing algorithms on laboratory scenes, particularly with regard to abundance estimation, while their performance remains competitive on remote sensing scenes. In addition, ocean color unmixing by BLUTHs is demonstrated on hyperspectral scenes from the HYPSO and PACE satellites.",
+      "authors": [
+        "Joseph L. Garrett",
+        "P. S. Vishnu",
+        "Pauliina Salmi",
+        "Daniela Lupu",
+        "Nitesh Kumar Singh",
+        "Ion Necoara",
+        "Tor Arne Johansen"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "eess.IV"
+      ],
+      "published": "2026-04-18T11:34:16+00:00",
+      "link": "https://arxiv.org/pdf/2604.16969v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "hyperspectral unmixing for constituent analysis",
+      "llm_evidence_cn": "用于成分分析的高光谱解混",
+      "llm_evidence": "用于成分分析的高光谱解混",
+      "canonical_evidence": "用于成分分析的高光谱解混",
+      "llm_tldr_en": "Proposes a hierarchical unmixing method for hyperspectral images to reveal spatial and spectral details.",
+      "llm_tldr_cn": "提出了一种高光谱图像分层解混方法，用于揭示空间和光谱细节。",
+      "llm_tldr": "提出了一种高光谱图像分层解混方法，用于揭示空间和光谱细节。",
+      "llm_tags": [
+        "query:profile-1:composite"
+      ],
+      "matched_query_tag": "query:profile-1:composite",
+      "matched_query_text": "Papers central to 请帮我查利用遥感技术进行作物参数估计和土壤水分的文章, especially work that connects or combines: soil moisture retrieval; crop parameter estimation; remote sensing technology applications; agricultural remote sensing; Soil moisture retrieval from microwave remote sensing; Using SAR backscatter to estimate crop biophysical parameters like LAI and biomass; Methods for soil moisture retrieval using remote sensing; Applications of remote sensing in agriculture for crop and soil monitoring.",
+      "matched_requirement_id": "req-composite-profile-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.14635v1",
+      "source": "arxiv",
+      "title": "A multi-platform LiDAR dataset for standardized forest inventory measurement at long term ecological monitoring sites",
+      "abstract": "We present a curated multi-platform LiDAR reference dataset from an instrumented ICOS forest plot, explicitly designed to support calibration, benchmarking, and integration of 3D structural data with ecological observations and standard allometric models. The dataset integrates UAV-borne laser scanning (ULS) to measure canopy coverage, terrestrial laser scanning (TLS) for detailed stem mapping, and backpack mobile laser scanning (MLS) with real-time SLAM for efficient sub-canopy acquisition. We focus on the control plot with the most complete and internally consistent registration, where TLS point clouds (~333 million points) are complemented by ULS and MLS data capturing canopy and understory strata. Marker-free, SLAM-aware protocols were used to reduce field and processing time, while manual and automated methods were combined. Final products are available in LAZ and E57 formats with UTM coordinates, together with registration reports for reproducibility. The dataset provides a benchmark for testing registration methods, evaluating scanning efficiency, and linking point clouds with segmentation, quantitative structure models, and allometric biomass estimation. By situating the acquisitions at a long-term ICOS site, it is explicitly linked to 3D structure with decades of ecological and flux measurements. More broadly, it illustrates how TLS, MLS, and ULS can be combined for repeated inventories and digital twins of forest ecosystems.",
+      "authors": [
+        "Michael R. Chang",
+        "Anna Candotti",
+        "Karl von Ellenrieder",
+        "Enrico Tomelleri",
+        "Marco Camurri"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-16T05:25:18+00:00",
+      "link": "https://arxiv.org/pdf/2604.14635v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LiDAR dataset for forest inventory and monitoring",
+      "llm_evidence_cn": "用于森林调查和监测的激光雷达数据集",
+      "llm_evidence": "用于森林调查和监测的激光雷达数据集",
+      "canonical_evidence": "用于森林调查和监测的激光雷达数据集",
+      "llm_tldr_en": "Provides a multi-platform LiDAR dataset for forest structural monitoring and ecological observations.",
+      "llm_tldr_cn": "提供了一个用于森林结构监测和生态观测的多平台激光雷达数据集。",
+      "llm_tldr": "提供了一个用于森林结构监测和生态观测的多平台激光雷达数据集。",
+      "llm_tags": [
+        "query:q8"
+      ],
+      "matched_query_tag": "query:q8",
+      "matched_query_text": "Applications of remote sensing in agriculture for crop and soil monitoring",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.18201v1",
+      "source": "arxiv",
+      "title": "DiffuSAM: Diffusion Guided Zero-Shot Object Grounding for Remote Sensing Imagery",
+      "abstract": "Diffusion models have emerged as powerful tools for a wide range of vision tasks, including text-guided image generation and editing. In this work, we explore their potential for object grounding in remote sensing imagery. We propose a hybrid pipeline that integrates diffusion-based localization cues with state-of-the-art segmentation models such as RemoteSAM and SAM3 to obtain more accurate bounding boxes. By leveraging the complementary strengths of generative diffusion models and foundational segmentation models, our approach enables robust and adaptive object localization across complex scenes. Experiments demonstrate that our pipeline significantly improves localization performance, achieving over a 14% increase in Acc@0.5 compared to existing state-of-the-art methods.",
+      "authors": [
+        "Geet Sethi",
+        "Panav Shah",
+        "Ashutosh Gandhe",
+        "Soumitra Darshan Nayak"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-04-20T12:50:26+00:00",
+      "link": "https://arxiv.org/pdf/2604.18201v1",
+      "tags": [
+        "keyword:遥感农业",
+        "query:遥感农业"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Object grounding and localization in remote sensing imagery",
+      "llm_evidence_cn": "遥感影像中的目标定位与接地",
+      "llm_evidence": "遥感影像中的目标定位与接地",
+      "canonical_evidence": "遥感影像中的目标定位与接地",
+      "llm_tldr_en": "Integrates diffusion models with segmentation for zero-shot object grounding in remote sensing images.",
+      "llm_tldr_cn": "将扩散模型与分割模型结合，实现遥感图像中的零样本目标定位。",
+      "llm_tldr": "将扩散模型与分割模型结合，实现遥感图像中的零样本目标定位。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "remote sensing technology applications",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

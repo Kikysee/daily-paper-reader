@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.13307v1/fig-001.webp",
+      "caption": "Table 1: Comparison of S2DL and DS2DL across KSC and Botswana datasets.",
+      "page": 6,
+      "index": 1,
+      "width": 372,
+      "height": 394
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13307v1/fig-002.webp",
+      "caption": "Figure 1: Top: Botswana; Bottom: KSC.",
+      "page": 6,
+      "index": 2,
+      "width": 452,
+      "height": 813
+    }
+  ]
+}
