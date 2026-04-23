@@ -1,0 +1,699 @@
+Title: Hyperspectral Unmixing Hierarchies
+
+URL Source: https://arxiv.org/pdf/2604.16969v1
+
+Published Time: Tue, 21 Apr 2026 00:46:40 GMT
+
+Number of Pages: 22
+
+Markdown Content:
+> HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 1
+
+# Hyperspectral Unmixing Hierarchies 
+
+Joseph L. Garrett , Member, IEEE, P. S. Vishnu, Pauliina Salmi, Daniela Lupu, Nitesh Kumar Singh, Ion Necoara, Tor Arne Johansen , Senior Member, IEEE, 
+
+Abstract —Unmixing reveals the spatial distribution and spec-tral details of different constituents, called endmembers, in a hyperspectral image. Because unmixing has limited ground truth requirements, can accommodate mixed pixels, and is closely tied to light propagation, it is a uniquely powerful tool for analyzing hyperspectral images. However, spectral variability inhibits unmixing performance, the proper way to determine the number of endmembers is ambiguous, and the clarity of the endmembers degrades as more are included. Hierarchical structure is a possible solution to all three problems. Here, hierarchical unmixing is defined by imposing a hier-archical abundance sum constraint on Deep Nonnegative Ma-trix Factorization. Binary Linear Unmixing Tactile Hierarchies (BLUTHs) solve the hierarchical unmixing problem with a simple network architecture. Sparsity modulation unmixing growth tailors the topology of a BLUTH to each scene. The structure imposed by BLUTHs allows endmembers with varying levels of spectral contrast to be revealed, mitigating the challenge of spectral variability. The performance of BLUTHs exceeds state-of-the-art unmix-ing algorithms on laboratory scenes, particularly with regard to abundance estimation, while their performance remains compet-itive on remote sensing scenes. In addition, ocean color unmixing by BLUTHs is demonstrated on hyperspectral scenes from the HYPSO and PACE satellites. 
+
+Index Terms —Imaging Spectroscopy, Archetypal Analysis, Simulated Annealing, Ocean Color, Support Vector Machines 
+
+I. I NTRODUCTION 
+
+# HYPERSPECTRAL imaging, occasionally called imaging spectroscopy [1], collects detailed pixel-wise informa-tion at finely-spaced wavelengths about the response of a scene to incident electromagnetic radiation. It is used to study coatings[2], [3], microplastics [4], [5], geology [6], [7], [8], artwork [9], food [10], and remote sensing from drones and satellites [1], [11], among other applications. The recently launched Plankton, Aerosol, Cloud, ocean Ecosystem (PACE) satellite images the whole Earth daily, laying the foundation for consistent long-term monitoring of large-scale ecosystem dynamics [12], while several small satellite hyperspectral constellations, such as HYPSO, Zhuhai-1, and Hyperfield [13], [14], [15], which regularly acquire higher-resolution imagery of a few locations, as well as demonstration missions such as EnMAP, PRISMA, and EMIT [16], [17], [18]. Hyperspectral data are well-suited for the monitoring of aquatic environ-ments, particularly the optically complex waters. The analytic 
+
+J. L. Garrett (joseph.garrett@ntnu.no), P. S. Vishnu, T. A. Johansen from Department of Engineering Cybernetics, Norwegian University of Science and Technology P. Salmi from Department of Biology, Norwegian University of Science and Technology D. Lupu, and I. Necoara from Department of Automatic Control and Systems Engineering, University Politehnica Bucharest. N. K. Nitesh from School of Computer Science UPES, Dehradun, India. 0100 200 bands 0.0 0.5 1.0 normalized radiance (a) (b) (c) 
+
+Fig. 1. Although the Jasper scene (a) is commonly partitioned into four endmembers in order to evaluate hyperspectral unmixing techniques (b, colored edges), the data contain a more detailed structure, which is depicted at four levels of an unmixing hierarchy. The finely partitioned spectra show subtle differences (c). Solid lines indicate endmembers present in the labels and dashed lines show finely-partitioned endmembers. 
+
+tools to process the images from the numerous and varied hyperspectral imaging satellites must be developed. Unmixing identifies the constituents, or endmembers, present in a scene and estimates how the light reflected from a pixel is split between them [19] (for example, in Fig. 1). The unmixing process consists of several tasks: the estimation of the number of endmembers, endmember extraction, and abundance estimation as well as according to the level of supervision they require [20]. The effectiveness of unmixing has lead it to be used as the basis for many other procedures in hyperspectral image processing, such as multispectral-hyperspectral fusion [21] and hyperspectral content-based image retrieval [22]. Despite the successes of hyperspectral unmixing, there have been some recurrent problems, some of which plague every algorithm. First, algorithms must accom-modate the spectral variation of endmembers, which is readily apparent even in the simplest of scenes [23]. Second, unmixing algorithms generally require the number of endmembers to be determined in advance, but the various techniques for esti-mating the number of endmembers in advance generally give inconsistent estimates [24]. These challenges are connected. For any given scene, if fewer endmembers are included in the scene, then there will be more spectral variation within endmembers. Ocean color (OC) is an ideal use-case for exploring how these challenges affect unmixing. The main contributors to OC  
+
+> arXiv:2604.16969v1 [cs.CV] 18 Apr 2026 HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 2
+
+are phytoplankton, non-algal particles, including sediments, and dissolved organic matter (cDOM) [25]. Optically complex waters, such as inland waters, estuaries, and fjord systems, contain spectra that are dominated by sediments and cDOM with varying characteristics which causes water quality esti-mation algorithms to generalize poorly. Moreover, the exact number of constituents is always unknown due to biological and topological variation (shifting shorelines, sediment char-acteristics, phytoplankton, dissolved material). Because deep water tends to be very dark, small systematic effects caused by thin clouds or imperfect atmospheric compensation can have a notable effect. In addition, water presents rapidly changing spatial patterns and on-water measurements are valid only for a few hours. Unmixing can address the first challenge by revealing how land and cloud pixels contribute to the signal, called the adjacency effect [26]. It can mitigate the second by identifying endmember spectra so that the subsequent analysis can be connected to spectra themselves rather than specific geographic coordinates. Aquatic phenomena such as harmful algal bloom identification [27] and extent estimation [28], mining pollution [29], and algal species composition, both in nature [30] and in a laboratory [31], [32], have all been explored with unmixing. Moreover, unmixing is similar to optical water type (OWT) frameworks that cluster together observations of the water based on spectral measurements. OWTs provide a basis for picking or blending subsequent al-gorithms based on optical conditions. OWTs have been created by techniques including by k-means clustering [25], fuzzy c-means clustering[33], [34], hierarchical clustering [35], and gaussian processes [36]. Hierarchical structure has been used to adapt to spectral variation or to uncertainty in the number of endmembers. Multiple Endmember Spectral Mixture Analysis (MESMA) introduced endmember bundles in a semi-supervised manner [37], [38], while an automated variant allowed it to operate unsupervised [39]. Endmember bundles introduce 2 levels of hierarchy and increase the robustness of unmixing against spectral variation. MESMA has been applied in many appli-cations such as algal bloom detection and wildfire burn area monitoring [40], [30], [41], [42]. A similar group of methods replace the lowest level of the hierarchy with a probability distribution [43], [44], [45], [46]. A few methods have extended the hierarchical structure be-yond two levels. Hierarchical MESMA extends the endmem-ber bundle concept up to 4 layers of depth with 20 endmem-bers, but still relies on partial supervision [47]. In Hierarchical Clustering of Hyperspectral Images Using Rank-Two Non-negative Matrix Factorization (H2NMF), non-negative matrix factorization (NMF) clusters hyperspectral data into a binary decision tree and extracts representative endmember spectra [48]. Multilayer unmixing creates a hierarchy of abundances by applying NMF repeatedly, with the output of each layer as the input to the objective function of the subsequent layer [49]. In contrast, Deep Nonnegative Matrix Factorization (DNMF) trains the layers simultaneously [50], [51], [52], [53]. However, [54] showed that the original update rule was inconsistent with the original DNMF objective function and proposed self-consistent data-centric and layer-centric versions of the objective functions. A recent comparison suggested that although hierarchical methods were less accurate on a bench-mark dataset, their robustness enhanced their applicability to real data from the PRISMA satellite [55]. Here the Hierarchical Abundance Sum Constraint (HASC) is introduced and imposed on DNMF so that the subsequent layers of the networks can be interpreted as continually finer distinctions between different endmember spectra. The primary contributions of this article are: 1) A new hierarchical network, the Binary Linear Unmix-ing Tactile Hierarchy (BLUTH), demonstrates that the HASC can address spectral variability and endmember number uncertainty. 2) The Sparsity Modulation Unmixing Growth (SMUG) algorithm grows BLUTH networks without a pre-defined structure. The primary contributions are built on two smaller develop-ments which can be used independently: a) Two variants of Archetypal Analysis [56] compatible with mini-batching. b) Two variants of unmixing by annealing [57], one stochastic and one deterministic. The BLUTH networks are compared to other unmixing tech-niques on a series of 8 standard hyperspectral unmixing scenes and evaluated for ocean color unmixing on images of an algal bloom from the PACE and HYPSO satellites. II. B ACKGROUND 
+
+A. What is unmixing? 
+
+Unmixing is the process of partitioning the pixels of a spectral image. The linear mixing model (LMM) describes unmixing under the assumption that photons only interact with a single material. Within the LMM, unmixing is the process of identifying the spectra of the endmembers (S) in an image and their abundances (A) in each pixel: 
+
+Y ≈ SA, (1) where Y ∈ RB×N is the original hyperspectral image, 
+
+S ∈ RB×P , A ∈ RP ×N , P is the number of endmembers, 
+
+B the number of bands and N the number of pixels. Two assumptions, phrased as constraints, permit unmixing to be interpreted in terms of light scattering. The first assumption is that the whole signal from a pixel is the sum of the signal from the individual endmembers in that pixel, called the Abundance Sum Constraint (ASC). The second assumption is that no end-member can cover a negative surface area, which is called the abundance non-negativity constraint (ANC). Although more sophisticated models of light scattering can be accommodated, the linear mixing model with these two constraints remains central to unmixing and its interpretation. 
+
+B. Varieties of unmixing 
+
+Hundreds of variants have been developed because unmix-ing is both a necessary task in hyperspectral image processing but also challenging and nonconvex [19]. A recent review [58] categorizes many of the algorithms, while the HySUPP HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 3 
+
+> Fig. 2. Unmixing techniques share characteristics with both dimensionality reduction (DR) and clustering, and those former techniques can be viewed as unmixing with the pure pixel proportion taken to the 0 (DR) or 1 (clustering) limit. Sparsity modulation unmixing growth (SMUG) grows a network by forcing it back and forth across this phase diagram. SMUG alternates between four modalities. The equilibrate modality (red) uses gradient descent to move the network from its current set of parameters (black) towards a local minimum of the objective function without adjusting the sparsity penalty. The sparsify modality (blue) gradually increases the sparsity penalty in order to push the network towards a pure pixel proportion setpoint. The de-sparsify modality (purple) forces the network to become less sparse. The shake modality (orange) periodically applies a sparsity penalty to push the network out of insufficiently sparse local minima. Note that the objective function resides in a much higher dimensionality than the simplified 1D representation depicted here.
+
+experiments provide a clear numerical comparison of several methods, focusing on the degree of annotation [59]. Unmixing algorithms can be categorized as Geometric, Non-negative Matrix Factorization (NMF) based, or deep learning based [58]. This article focuses on NMF-based methods because they provide sufficient performance and are amenable to customization [60]. Unmixing algorithms also vary in the amount of supervision which they require: unsuper-vised (occasionally called blind), semi-supervised (e.g. with spectral libraries), or supervised (with labeled pixels) [59]. Only unsupervised algorithms are tested here because they are suitable for remote scenes in which the specific endmembers are not known in advance. Moreover, while library-based unmixing would have benefits, it suffers worse performance in practice [59]. Because overly smooth output have been observed as a common failure mode of unmixing algorithms, sparsity-promoting regularization has become common, with over 30 variants listed in [58]. Even though sparsity, or the number of elements of A which vanish, is not differentiable, related penalties on the abundances or endmember spectra can be used. Sparseness, which refers to the ratio of the L1 and L2 norms scaled between 0 and 1, is a way to quantify sparsity within NMF [61], [62]. Moreover, group sparsity has been applied the aforementioned endmember bundles, showing the compatibility of sparsity-promoting penalties with hierarchy [63]. In the HySUPP experiments, it is reported that methods which apply sparsity regularization directly to abundances show worse performance [59]. The paradox of sparsity is that unmixing often produces scenes which are insufficiently sparse relative to manual labels, but directly incorporating sparsity into the objective function decreases performance. Other algorithms include sparsity regularization not as a penalty term in the objective function, but rather as a con-straint. Many early geometrical methods involve a process for identifying pixels which contain non-zero abundance for only one endmember, called pure pixels [64]. More recently, Archetypal Analysis, in which all endmember spectra are convex sums of individual pixels, has become a simple way to induce sparsity [56], [65], [66]. The objective functions used for unmixing are non-convex, which implies the presence of local minima. Entropic De-scent Archetype Analysis (EDAA) addresses nonconvexity by running with an ensemble of initial conditions and selecting the optimal run based on secondary criteria [66]. Markov random fields have been adopted as a tool for modeling the spatial dependencies. Simulated annealing and Hamiltonian Monte Carlo have been proposed as tools which allow them to escape local minima [44], [45]. Similarly Deterministic Annealing NMF (DA-NMF) includes a term to decrease, rather than increase, the sparsity of the objective function, which, taken to its limit, makes the objective function convex [57]. The non-convexity of the DA-NMF objective function is gradually introduced by decreasing the magnitude of the regularization. While DA-NMF has a single minimum when regularized, the maximally sparse objective function would have pN degenerate local minima, illustrating the connection between sparsity and non-convexity. A few algorithms aim to unmix larger datasets, although most unmixing algorithms are tailored for small test scenes of fewer than 10 5 pixels. The Distributed Parallel Geometric Distance method focuses on how to estimate the endmembers separately for subsection of the data so that they can later be fused [67]. While hyperspectral scenes can be analyzed indi-vidually, they are often parts of much larger data repositories collected over many years. Joint unmixing of multi-temporal scenes was shown to mitigate inconsistencies that were present if the scenes were unmixed separately [68], [69]. For example, FM-MESMA demonstrates how MESMA can be accelerated on multi-temporal image sequences [70]. The experiments on larger dataset typically have focused on increasing the number of pixels analyzed, rather than the number of endmembers. To increase the number of endmembers productively requires the imposition of some structure. Hierarchical unmixing is needed to equip the analysis of larger datasets with the capability of considering the relationship between constituents. 
+
+C. Unmixing and other hyperspectral processing techniques 
+
+Unmixing is related to other hyperspectral processing tech-niques [71]. Unmixing, in the limit that pure pixel proportion (PPP) of the scene vanishes, can be interpreted as dimension-ality reduction, while it can be interpreted as clustering in the opposite limit (Fig 2). The connection between clustering and unmixing has been exploited by a few techniques. Be-cause H2NMF initializes unmixing with divisive hierarchical clustering, it implicitly adheres to the HASC. The method HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 4          
+
+> Fig. 3. Succinct notation is used for several groups of endmember abundances: the descendants of node αat level m(blue), the endmembers on level m
+> complementary to η(red), each side of a split (pink), the descendants of node
+> βwhich precede node κ(orange), each are given their own notation.
+
+of Veganzones et al, similarly initializes hierarchical clus-tering with unmixing, but, unlike H2NMF, does not attempt to extract endmembers from the clusters [72]. In a similar vein, agglomerative hierarchical clustering has been used to estimate the appropriate number of endmembers [73]. In that work, initial clusters were formed with k-means clustering, because hyperspectral images are typically too large for fully agglomerative hierarchical clustering, as the computational time it requires scales as O(N 2) [74]. III. M ECHANICS OF UNMIXING HIERARCHIES 
+
+A. Notation 
+
+Matrices are represented as capital letters, vectors as bold lower-case letters, and scalars as lower-case letters. The end-member indices and regularization parameters will be indexed with Greek letters, pixels and bands will be denoted with the Latin alphabet. For simplicity of exposition, the individual endmember sζ or spectrum yn and abundance an of a each pixel will be used instead of the full matrices. The subscript n
+
+is dropped whenever only a single pixels is considered. A few groups related to the hierarchy structure required additional notation (Fig. 3). 
+
+B. What is an unmixing hierarchy? 
+
+NMF searches for a factorization of a matrix Y into two lower-rank matrices S and A by minimizing a objective function of the form ∥Y − SA ∥2
+
+> F
+
+, where ∥ · ∥ F is the Frobenius norm [60]. In contrast, hierarchical unmixing factors Y into a series of matrices Sm ∈ RB×km and Am ∈ Rkm×N
+
+which minimize PMm μm∥Y − SmAm∥2
+
+> F
+
+, akin to the data-centric objective proposed in [54], where km is the number of endmembers at level m, and μm is the weight given to the 
+
+mth level. The difference between hierarchical unmixing and the variants of DNMF proposed in [54] comes from the cou-pling between subsequent Am, rather than from the objective function itself. In DNMF, the feature matrices are coupled via matrix multiplication so that Am−1 = UmAm, where 
+
+Um ∈ Rkm−1×km is a non-negative matrix and the km are sorted in ascending order. The Um are updated throughout the optimization process in DNMF, whereas the the Um are fixed in hierarchical unmixing except when the structure of the network changes. Then updates to AM implicitly update all of the abundances. For a single pixel, the HASC can be written as: 
+
+aα = X
+
+> β∈[α→m]
+
+aβ , (2) which, applied to all pixels, implies that AM determines the 
+
+Am for m < M . The HASC implies that the elements of 
+
+Um must be 0 or 1, each column must sum to 1, and each row must sum to a positive integer (the number of nodes into which each endmember is split). The constraints which characterize the hierarchical unmix-ing objective function are phrased most simply as vectors. The data-consistency term is f (S, a) = ∥y − Sa∥22 for a single pixel at a single level. A sparsity regularization term is added to the objective function as well, g(a) = −∥ a∥22, which can be interpreted as the L1-L2 difference norm [75], with the L1 term dropped since it is constant. The full optimization problem is then written as a sum over pixels n and levels m:
+
+min 
+
+> Sm,amn
+> M
+
+X
+
+> mN
+
+X
+
+> n
+
+
+
+μmf (Sm, amn ) + γmg(amn )
+
+
+
+, (3) subject to (i) the abundance nonnegativity constraint (ANC), (ii) the abundance sum to 1 constraint (ASC) and (iii) the HASC. The ANC is phrased as Sm, amn ≥ 0, while aΩn = 1 
+
+suffices to express the ASC when the HASC is included, and 
+
+Ω is the unitary endmember. Then γ > 0 promotes sparsity while γ < 0 discourages sparsity. Constraints of the form (iv) 
+
+Sm = Y Z m for Zm ∈ RN ×km , with the constraints that (v) 
+
+Zm ≥ 0 and (vi) P 
+
+> i
+
+Zmij = 1 , can be additionally included to enforce archetypal analysis. The final constraint, (vii) Zmij =0 or 1, is used to enforce pure pixel analysis (Appendix E). In summary, basic hierarchical unmixing minimizes equation 3 with constraints (i-iii), while the other constraints enable AA updates of the endmember spectra. 
+
+C. Binary Unmixing 
+
+Suppose there are only two endmembers: sα, sβ ∈ RB .Let y ∈ RB be a hyperspectral pixel. Then the endmember abundance a is determined by the x ∈ [0 , 1] which minimizes 
+
+∥y − (xsα + (1 − x)sβ )∥22 − γ∥a∥22. (4) where a = [ x, (1 − x)] .If ∥sα − sβ ∥22 > γ, the minimizing x can be written analytically: 
+
+x = Φ w⊺y − d + 1 2
+
+!
+
+, (5) HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 5  
+
+> Fig. 4. The equilibrate modality uses a constant sparsity penalty, γ(red). The sparsify modality gradually increases the penalty within each set (3 sets of 10 steps pictured), but resets it between them (blue). In the shake modality, the original value of the objective function is evaluated in the first set, then a periodic sparsity penalty is applied in the second set, and the objective function around the new minima is evaluated in the third step (orange). During fine-tuning, the de-sparsify modality uses a negative penalty function (purple).
+
+where w = 2 p/(∥p∥22 − γ), p = sα − sβ , d = wT ( sβ +sα 
+
+> 2
+
+),and Φ is a clipped rectified linear unit (cReLU) that truncates 
+
+x to the relevant range: 
+
+Φ( u) = 
+
+
+
+0, if u ≤ 0
+
+u, if 1 > u > 01, if u ≥ 1
+
+. (6) 
+
+D. Binary Linear Unmixing Tactile Hierarchies 
+
+The binary unmixing framework is extended to images with more than two endmembers through the use of a multi-layer structure. A Binary Linear Unmixing Tactile Hierarchy (BLUTH) structures the endmembers in order to retain the clarity of 2-endmember unmixing. Rather than updating the abundances directly, BLUTHs update them implicitly through the weights defined in equation 5. Then the whole abundance map is implicitly updated each time the weights are updated, facilitating batching. The weights, wζ and dζ , rather than being calculated from the spectra of each pixel, are learned globally. The word tactile in BLUTH refers to how the weights of the network, although learned, can be interpreted through equation 5 as hyperplanes and modified directly. When the HASC is enforced on binary unmixing, the abundance of an endmember at level m + 1 for a single pixel can be calculated from the abundance at level m:
+
+aζ+ = xζ+ aζ and aζ− = (1 − xζ+ )aζ (7) where ζ is an endmember with two direct endmember descen-dants, ζ+ and ζ−, and xζ+ is the splitting coefficient defined in equation 5. Extending this inductively leads to the BLUTH formula for each aζ :
+
+aζ = Y
+
+> β∈[Ω ,ζ )
+
+xβ (y), (8) where Ω is the origin endmember which contains all others as descendants. Since aζ (y) is a function of y while the weights are held constant, it is not strictly necessary to retain the                      
+
+> TABLE I SPARSITY MODULATION MODALITIES
+> Modality Core Pattern Termination Equilibrate Constant γAfter nruns
+> Sparsify Increase γeach step for nruns PPP Setpoint Shake Turn γon every other step Objective increases De-sparsify Decay of negative γAfter nruns
+
+entirity of A in memory. Note that the normalization of y
+
+described in Appendix A applies only to the objective function equation 3. 
+
+E. Training overview 
+
+The training of a BLUTH is partitioned into two stages: a growth stage and a fine-tuning stage (Fig. 5). Both stages use an alternating minimization framework to separately update the abundances A and the endmember spectra S. The splitting weights wζ are updated sequentially through block coordinate (gradient) descent strategy [76], and A is updated implicitly through them. At each step, the direction of the gradient is calculated first, and then a line search method finds the minimum of the objective function along that direction. The mathematical details of the abundance updates can be found in appendices F and G. In the growth stage, the endmember spectra are selected from the spectra in the data, in a process here designated as Pure Pixel Analysis (PPA). PPA constrains the S update step so that a spectrum which already represents an endmember cannot be selected again. For the tests reported here, the fine tuning stage is run twice. The first time uses PPA for spectra updates, as in the growth stage, while the second uses AA. Both endmember spectra update variants are described in Appendix E. 
+
+1) Sparsity Modulation Modalities: The individual update steps of the BLUTH training procedure are linked together through a pattern of sparsity modulation, in which the sparsity regularization parameter ( γ) is varied, in both the growth and fine-tuning stages. The exponential decay pattern proposed for DA-NMF, developed as the De-sparsify Modality (DeSM) here, is supplemented with 3 other modalities (Figs. 2 and 4 and Table I). The equilibrate modality (EqM), in which the endmember and abundance matrices are updated with alternation mini-mization and a constant sparsity regularization level γ, for nruns 
+
+steps before stopping, provides a stable basis for the training and is re-used as part of the Shake and De-sparsify modalities. The Sparsify modality (SpM) gradually increases the spar-sity the abundances to the level specified by the PPP set-point, a hyperparameter set at the start of the training, see Appendix B. Because the application of sparsity tends to lock the abundances into local minima, the sparsity regularization periodically vanishes to ensure that the abundances do not get trapped in a local minima. SpM increases γ with a fixed step size for nruns updates. If the PPP is then above the setpoint, the SpM concludes and the training algorithm proceeds to the next modality. However, if the PPP is still below the setpoint, the γ step size is increased, and γ is increased again from 0. The process is until the PPP setpoint is reached. HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 6
+
+SpM utilizes the hierarchical structure of the BLUTH. The modulation begins by adjusting γ only for the highest level of the network. After the PPP setpoint is reached for the highest level of the network, SpM begins to modulate γ for the two highest levels. The process is repeated until all levels reach the PPP setpoint. Unlike prior group sparsity penalties, which sought to control both inter- and intragroup sparsity [63], SpM does not explicitly distinguish between groups, but instead sequentially imparts sparsity to each level of the hierarchy. The Shake Modality (ShM) forces sparsity into the network without increasing the data-consistency term of the objective function. The ShM consists of two stages: (i) first, the EqM is run once with γ = 0 and then (ii) a positive γ is applied to the objective function on every other step, with γ = 0 
+
+during the alternate steps for nruns . The value and standard deviation of the data-consistency term of the objective function are estimated in the first run of (i). After stage (ii) is applied, stage (i) is run again, and the system relaxes to a local minimum while the data-consistency term is estimated again. Then, if the minimum value of the objective is less than the estimate from the initial run of stage (i), stage (ii) is run again. The alternation between stages (i) and (ii) repeats until the minimum value of the objective function after stage (ii) is greater than the initial estimate, then the ShM ends. The De-sparsify modality (DeSM) decreases the sparsity of the system, to escape local minimum. The DeSM is used in both the growth stage and the fine tuning stage, but appears in the former in an abbreviated form. In the fine-tuning stage, DeSM decreases the sparsity of the system by applying a negative value of γ in a dynamic, exponentially decreasing pattern, akin to DA-NMF (Appendix H). The DeSM modality is formed by joining the EqM and ShM modalities. For each value of γ, the EqM is run once, followed by the ShM to prevent the unique spatial patterns of small endmembers from vanishing. Because of the time requirements of DeSM ( O(n2
+
+> runs
+
+) at a minimum), an abbreviated version is used in the growth stage, called DeSM-g, which uses linear support vector machines (SVM) to accelerate training [77]. At each node with de-scendants, the lowest-level endmember spectra of the positive and negative branches are used as pseudolabels for the SVM training. Because PPA is used for spectral updates during the growth stage, each labeled spectrum corresponds to a pixel in the data set. Since these spectra are already linearly separated by the BLUTH network, each endmember is guaranteed to have at least 1 pure pixel as partitioned by the SVM. However, since SVMs also maximize the margin between the labelled data, they maximize the number of mixed pixels while retain-ing the intricate spatial patterns. The weights from the SVMs are directly moved to update the wζ . While DeSM-g works well in the growth stage, the use of AA spectral updates, rather than PPA, in the fine-tuning stage eliminates its pure pixel guarantee. 
+
+2) Sparsity Modulation Unmixing Growth (SMUG): The BLUTH network is grown in a greedy, exhaustive manner. When there are p endmembers present, each endmember is split into 2 more in a separate network and stabilized. Then the new endmember split which decreases the objective function Competing networks      
+
+> Split
+> De-Sparsify
+> Relax
+> Sparsify
+> Initialize
+> (a) SMUG (b) Fine Tuning
+> Select
+> minimum
+> objective
+> De-Sparsify
+> - Adjust γ
+> Relax
+> Training complete
+> Simplify objective
+> Fig. 5. The Sparsity Modulation Unmixing Growth procedure sequentially adds endmembers to the hierarchy, minimizing the objective function at each step (a). In the fine-tuning stage, the structure is held constant, while the endmembers relax (b). The colors indicate the modalities of Figure 4.
+
+the most is retained.The process is repeated until the stopping criterion, here the maximum number of endmembers, is met. The SMUG algorithm addresses one central challenge: new endmembers are initialized most clearly when the abundances are very sparse, but the estimates of how a new endmember will affect the objective function become more accurate after the system relaxes. The overall strategy of SMUG is then to (i) sparsify the abundances of the original p endmembers (ii) split each endmember in a copy of the network, (iii) each copy is de-sparsified, (iv) the abundances equilibrate for each (v) select which copy to retain before restarting at (i) if the stopping criterion is not met. Each of the stages (i-iv) operates by applying the modalities listed above (Fig. 5). During (i) the SpM is applied to the entire network. In stage (ii) the ζth endmember is split into two new endmembers in a copy of the original network. First, the pixels with aζ = 1 are split into two clusters and wζ is initialized according to equation 5. Second, EqM is applied to the pure pixels repeatedly, updating only the ζth endmember and its two descendants, until both have at least one pure pixel. Third, the rest of the nodes are then included and EqM is run once more. Finally, SpM is run on all the nodes, so that all nodes are at a similar level of sparsity. The initialization process is repeated for each split endmember. The desparsify stage (iii) applies DeSM-q to the nodes, so that they become less sparse but retain at least one pure pixel, before starting the relaxation stage (iv). Then the EqM is run twice with γ = 0 , once with only abundance matrix updates, and then with both abundance and spectra matrix updates. Next, the ShM is run to prevent the system from becoming trapped in insufficiently-sparse local minima. After that, the EqM is run twice more. The value of the lowest level of the objective functions for each copy is then compared (v). The copy with the smallest objective function becomes the new base BLUTH. If the network has the desired number of endmembers is reached, then the training enters the fine-tuning stage, otherwise the sequence is repeated from step (i). 
+
+3) Fine-tuning stage: In the fine-tuning stage, the abun-dances and endmember spectra are updated, but overall topol-ogy of the network is maintained (Fig. 5b). In the transition HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 7
+
+from SMUG to fine-tuning, the SpM is applied to sparsify the whole network. In the first part of the fine-tuning stage, the DeSM extracts the network from overly sparse local minima. The γ < 0 sections allow the network to explore more paths of relaxation, while ShM prevents small endmembers from vanishing. The final relaxation stage is designed to allow the system to gently come to rest in a minimum of the objective function which is reasonably sparse. In this stage, only the lowest-level terms are considered in the objective function and all updates use the larger batch size. The final stage is run twice, once continuing with PPA updates to the abundance matrix and once with AA updates to the abundance matrix, so that the spectral matrix update techniques can be compared. After the stage is complete, the network is saved. IV. E XPERIMENTS 
+
+A. Evaluation scenes 
+
+Both remote sensing images and laboratory-acquired scenes are used for testing. Six sets of manual labels are used for the remote scenes, including the Samson, Jasper Ridge, APEX, Urban, and Wash-ington DC scenes, with two sets of labels for the Urban scene. These scenes were compiled for testing in [66], and were recorded by a variety of hyperspectral cameras over the visible and shortwave infrared portion of the electromagnetic spectrum. The labels were applied to these scenes manually in a process described in [78]. The labels do not indicate a 
+
+ground truth , but rather how a human analyst unmixed the datasets. Two scenes recorded in a laboratory complement the re-mote scenes [20] with labels that function as ground truth 
+
+because the proportion of each material in each pixel could be determined precisely. However, many of the effects which complicate remote sensing scenes (atmosphere, jitter, spectral variability) are either absent or much reduced because of the laboratory setting. Therefore, these scenes give a clear estimate of how an algorithm will perform in laboratory conditions, but not necessarily of how they will perform in the field. The two sets of scenes complement each other. The remote sensing scenes contain all the artifacts and complications of real data but have specious labels, while the laboratory scenes have reliable labels but lack the complications of remote sens-ing. Together, they provide a more comprehensive perspective on the performance of different unmixing algorithms. One ambition in the development of BLUTH was the unmixing of water masses. In the absence of test datasets with ground truth, a scene with a Coccolithophore bloom was unmixed. The goal of the test was to see if the BLUTH could separate the different water masses from each other according to their spectral signatures, as well as separate the water from clouds and land. Hyperspectral images of the bloom both from the large and extremely precise PACE satellite as well as the HYPSO-2 cubesat were unmixed [13], [12]. Both images show the mouth of Oslofjord meeting the Skagerrak on May 28th, 2025. With PACE the L2 Near Real-Time Bottom-of-atmosphere reflectance is used. A 200 × 150 pixel subscene is selected with 122 bands (Fig. 10b). The HYPSO scene is reduced to a 200 × 200 pixel subscene with 105 of the original 120 bands retained. The first 8 bands, 5 bands around the 760 nm O 2 absorption line, and the last 2 bands are excluded from the analysis. A columnwise, smoothed dark pixel subtraction is applied to the L1D top-of-atmosphere reflectance HYPSO-2 scene as an approximate atmospheric correction [79]. 
+
+B. The evaluated techniques 
+
+The experiments include unmixing methods that rely on different aspects of the BLUTH architecture: implicit end-member spectral constraints (EDAA, DAAA, SAPPA) [66], hierarchical structure (H2NMF, DC-DNMF)[48], [54], and dynamic optimization procedures (DAAA, SAPPA)[57] (Table II). These are compared against three unmixing techniques which achieved the state-of-the-art performance in the recent HySUPP unmixing comparison: MiSiCNet [80], MSNet[81], and Nonnegative Matrix Factorization-Quadratic Minimum Volume (NMF-QMV) [82], [59]. The BLUTH architecture it-self is trained in both pure pixel analysis (PPA) and archetypal analysis (AA) forms. To test the robustness of the BLUTH algorithm against errors in the number of endmembers, both variants are also trained with two additional endmembers.                        
+
+> Method Hierarchy SmDynamic HySUPP Constraint SoTA MiSiCNet [80] ✓
+> MSNet [81] ✓
+> NMF-QMV [82] ✓
+> H2NMF [48] ✓≈PPA DC-DNMF [54] ✓
+> EDAA [66] AA ✓
+> DAAA [57] AA ✓
+> SAPPA [83], [57] PPA ✓
+> BLUTH-AA ✓AA ✓
+> BLUTH-PPA ✓PPA ✓
+> TABLE II THE EVALUATED UNMIXING METHODS
+
+C. Evaluation criteria 
+
+The abundances and endmember spectra are evaluated sep-arately in terms of their similarity to a manually-processed endmembers. The accuracy of the reconstructed endmember spectra is evaluated through the spectral angle with respect to the manually-processed spectral angle, expressed in degrees: 
+
+Φ( η, ζ ) = cos −1 sTη sζ
+
+∥sη ∥2∥sζ ∥2
+
+!
+
+, (9) where sη and sζ are the estimated and manually processed spectra, respectively. The spectral angle approaches zero as the estimated spectra becomes more similar to the manually-processed spectra, but tends towards 180 degrees as they become more dissimilar. The Intersection over Union (IoU) metric is often used to characterize the performance of tasks such as clustering and classification. The ASC allows IoU to be generalized to unmixing: IoU (η, ζ ) = 
+
+PNn min( aηn , a ζn )
+
+PNn max( aηn , a ζn ) , (10) HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 8 
+
+> Fig. 6. The APEX scene unmixed into Road, Tree, Roof and Water endmembers.
+
+where aζn and aηn refer to the estimated and labeled end-member abundance at pixel n. Unlike other metrics used to characterize the abundance estimation portion of unmixing, such as the root mean square error, IoU is bounded between 0 and 1, which permits comparison between endmembers. Other generalizations consistent with the clustering definition of IoU could be defined, but equation 10 is used because of its simplicity. V. R ESULTS 
+
+The unmixing techniques generally achieve decent perfor-mance on most of the datasets (Tables S-II and S-III). A threshold of ten degrees above the minimum spectral angle for an endmember is used to evaluate whether a technique has found it. All the unmixing techniques visually appear to find the three correct endmembers in the Samson scene (Figs. S2 and S3). Algorithms based on AA updates of the spectra perform the best on all endmembers. The two BLUTH networks with addi-tional endmembers show only slightly degraded performance, with the most significant degredation occuring for water .Half of the techniques find the four endmembers on the Jasper Ridge scene (Fig S4), while the other half either lack the road endmember or the dirt endmember. The best perfor-mance is again achieved by the AA-based algorithms, except DAAA, while the techniques NMF-QMV, MiSiCNet, MSNet, and DC-DNMF all predict inadequately sparse endmember abundances. The two BLUTH networks with additional end-members do detect all endmembers in the manual labels, but exhibit excessive sparsity. Seven of the techniques find the proper endmembers in the Apex scene (Fig 6). The most common failure mode is to miss the road endmember and instead split the tree 
+
+endmember into two, as exemplified by DAAA, NMF-QMV, MiSiCNet, MSNet, and DC-DNMF. As before, the techniques which rely on AA perform the best spectral estimation, but each endmember spectra is estimated best with a different technique. While EDAA achieves the highest IoU on three of four endmembers, the second-highest IoU is achieved by a BLUTH technique. The two BLUTH networks with additional endmembers show performance comparable to those with the original number of endmembers, even achieving the two lowest roof spectral angles. The Urban scene is processed with two different sets of labels: one with 4 endmembers and one with 6. When only 4 endmembers are considered, the roof endmember is missed by 7 of the techniques (according to the spectral angle threshold) (Fig. S5) because of the inadequate sparsity failure mode. However, when 6 endmembers are considered, only EDAA finds all 6 endmembers (Fig. S6). Most of the techniques locate shadows rather than the metal endmember. On these scenes, the BLUTH networks with two extra endmembers produce comparable results in terms of correspondence with the manual labels, but they also exhibit more sparsity, particularly in 4-endmember case. No technique clearly unmixes all 6 endmembers in the Washington, DC scene when using the designated number of endmembers, although the two BLUTH networks with extra endmembers do (Fig. S7). Only H2NMF, DAAA, DC-DNMF, and SAPPA locate more than half of the grass abundance, but they all lack the roof endmember. Only BLUTH-AA and NMF-QMV, of the techniques using the designated number of endmembers, find the roof endmember. The Simple Mixing Scene of the Realistic Mixing Miniature Scenes causes all of the techniques to produce inadequately sparse endmember abundances (Fig 7). However, the spectral angle calculation shows that some of the techniques find all 4 endmembers despite an excess of mixed pixels. The 
+
+moss endmember achieves an IoU above 0.5 only if unmixed by BLUTH with excess endmembers or BLUTH-PPA. No techniques unmix Pebbles to an IoU above 0.5, but only NMF-QMV and MSNet fall below 0.1. Even though the IoU values for the sticks endmember are all very small because it is present in such a small number of pixels, there is clear variation between the techniques. The techniques BLUTH-AA, BLUTH+2, and MiSiCNet all detect it. The BLUTH+2 networks detect it most clearly, with the AA variant achieving a spectral angle below 5 degrees, less than half the spectral angle of any of the techniques using the designated number of endmembers. The Complex Mixing Scene of the Realistic Mixing Minia-ture Scenes also causes all of the techniques to produce inadequately sparse endmember abundances (Fig S8). All of HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 9 
+
+> Fig. 7. The abundances of the RMMS-Simple Mixing Scene unmixed into 4 endmembers.
+
+the endmembers of the scene were missed by at least one unmixing technique. The IoU of moss exceeds 0.5 for all of the hierarchical techniques, but none of the others. The 
+
+pebbles endmember IoU only exceeds 0.1 for the hierarchical techniques, excluding DC-DNMF. The sticks endmember was particularly challenging, and its IoU only exceeded 0.02 for the BLUTH+2 networks. More consistent behavior was observed in the detection of the true vegetation class, as all techniques except EDAA, MiSiCNet, and MSNet achieved IoUs above 0.2 and spectral angles below 4 degrees. All techniques except MiSiCNet and DC-DNMF achieved IoUs above 0.5 and spectral angles below 5 degrees for the false vegetation 
+
+endmember. The performance of the BLUTHs with extra endmembers motivated an investigation into how their architecture grew as the number of endmembers increased on the Simple Mixing Scene (Fig. 8). BLUTH networks were trained with 4, 6, and 8 endmembers. With four endmembers, the endmembers occur at different levels of the hierarchy. The highest level shows a clear split between vegetation and non-vegetation, but the vegetation is partitioned into three endmembers, and the non-vegetation is not partitioned at all. The spectra of the recovered endmembers show what has happened in more detail (Fig. 9). The spectra of the leaves is recovered fairly well, but the spectra of the endmembers which are identified as the pebbles ,
+
+sticks and moss are all notably darker than the endmembers in the manual labels. The spectrum identified as moss is in fact much darker than any spectrum in the manual labels. In essence, shadows in the image have been assigned to the 
+
+moss endmember and the sticks endmember is a combination of the sticks and moss spectra in the manual labels. Overall, the abundances succumb to the inadequate abundance sparsity failure mode. BLUTH-PPA with 4 endmembers shows similar results, but with the final identification of moss and sticks 
+
+switched because of small changes in their abundances. The abundances of the selected endmembers become more sparse as the number of endmembers included in the network increases, although the sparsity at the highest level decreases. The endmembers included in the manual labels are all at the second level for networks with both 6 and 8 endmembers. With 6, the endmember selected as moss is split into two endmembers at the third level, which roughly correspond to 
+
+moss itself and shadows, according to the spectra in Fig. 9b. The spectrum corresponding to moss is then split into two more endmembers, which are positioned towards the center and the edge of the scene. In addition, with 6 members, the 
+
+pebble , stick , and leaves spectra are brighter than indicated in the manual labels, while the moss is still darker. The basic structure of the 6-endmember hierarchy remains the same when two more endmembers are added. The new endmem-bers simply split the pebble and shadow endmembers. The abundances of the endmembers identified with those from the manual labels do not change noticeably. However, the spectra in Fig 9c show that while moss is close to the spectrum in the HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 10 (a) (b) (c)  
+
+> Fig. 8. The Simple Mixing Scene unmixed with 4 (a), 6 (b) or 8 (c) endmembers with BLUTH-AA. The highlighted abundances are determined to correspond to the endmembers manually-labelled endmembers as moss (green), pebbles (blue), sticks (red), and leaves (orange).
+
+manual labels, both sticks and leaves are brighter than those in the labels, while pebbles is darker. For 6 and 8 endmembers, BLUTH-AA and BLUTH-PPA show similar results. In the final tests, the BLUTH unmixing of the Skagerrak scenes is able to clearly resolve different portions of the water (Fig. 10). The split between land and water occurs at the first level of the hierarchy, and clouds are split off just below that, for both the PACE and HYPSO images. Spectral features relating to the coccolithophorid bloom (blue) as well as CDOM-dominated river run-off (yellow) can be clearly distinguished in both sets of unmixed spectra, although PACE is much less noisy. Weights were added to standardize the contribution of each pixel to the objective function so that the land pixels would not contribute a disproportionate amount, based on preliminary tests. VI. D ISCUSSION 
+
+Overall, the above experiments show that BLUTHs have the strongest performance of any of the techniques in several aspects, but are also competitive in general. To aid in the interpretation of the IoU and spectral angle metrics, which vary quite a bit between endmembers, the number of endmembers missed by each unmixing technique in each scene is tallied in Table III. Although the BLUTH-based techniques generally show a slightly lower IoU on the remote scenes than EDAA, they show comparable spectral angles for most endmembers. On the laboratory scenes, the BLUTH-based techniques record the top two IoU performances for every endmember, and include the smallest spectral angle for 4/9 endmembers, with the others split between the annealing techniques and H2NMF. Increasing the depth of the BLUTH networks by 2 endmem-bers only harmed the performance on one scene (Jasper Ridge) and improved it on the laboratory scenes. BLUTH-AA seems slightly more robust than BLUTH-PPA, but the difference is small relative to the difference with other techniques (Fig. S1). Moreover, when the BLUTH algorithms fail, such as when shadows are found instead of metal on the Urban6 scene, it does not necessarily imply worse behavior in the ocean color use case. It merely shows that BLUTHs are sensitive to dark pixels, which is not terribly prohibitive to partitioning (relatively dark) water masses.  
+
+> Fig. 9. The endmember spectra in the RMMS-Simple Mixing Scene. The spectra of the 4 selected endmembers (solid lines) are compared to the manually-labeled (dashed lines) moss (green), pebbles (blue), sticks (red), and leaves (orange). Spectra from descendants of the selected endmembers are shown as dotted lines, with dark →light representing left →right in Fig. 8.
+
+The small file size required to store the output of a BLUTH was noted during testing to be another benefit. Most of the unmixing techniques require storing a dictionary of size P B 
+
+as well as a map of size P N . However, BLUTHs store the function for mapping pixels to abundances explicitly, instead of storing the abundance per pixel. Therefore, they require 
+
+P B to store the spectra of the endmember nodes, but only require (P − 1)(2 B + 1) to store the function for partitioning abundances. This leads to significant reduction of storage needs. For example, the Urban with 6 endmembers requires 2.3 MB with the other techniques but a BLUTH only requires 10.4 kB with 4-byte floats. Among the other tested techniques, several other patterns are apparent. The techniques with constrained endmember selection (AA or PPA) show much better performance overall than those without. This effect is quite strong; every technique that uses AA or PPA misses fewer endmembers than every technique that does not impose those constraints. One compli-cation here is that all of those techniques also incorporate a strategy to deal with the nonconvex objective function: SMUG (BLUTHs), annealing (DAAA and SAPPA), or multiple runs (EDAA). The effects of hierarchy are more ambiguous. While the BLUTHs themselves perform well, and H2NMF records com-parable performance, DC-DNMF performs relatively poorly. H2NMF implicitly adheres to the HASC during its clustering stage (although not explicitly stated in [48]), and BLUTHs adhere to it at all stages, while DC-DNMF only adheres to the ordinary ASC. DC-DNMF’s performance could be due to the absence of HASC. A notable difference exists between the remote scenes and the laboratory scenes. For example, EDAA achieves top-2 IoU performance on over half of the remote endmembers, but on none of the laboratory endmembers, while BLUTHs perform better on the laboratory scenes than on the remote sensing scenes. One immediate visual difference is that the laboratory endmember labels are much sparser than the labels of the remote scenes. However, there may be other aspects of the images which contribute to the behavior gap. Inadequatly sparse abundances seems to be the most common failure mode, except for H2NMF. HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 11                                                                                                                         
+
+> Technique Sa JAU4 U6 WSM CM Total BLU-AA 000112004BA+2 000010001BLU-PPA 000112105BP+2 000010001DAAA 011123109SAPPA 000111104EDAA 000021137NMF-QMV 1421543222 MiSiCNet 1323661426 MSNet 0110231210 H2NMF 010011216DC-DNMF 0222451319 TABLE III NUMBER OF MISSED ENDMEMBERS ON EACH SCENE ,DEFINED AS A SPECTRAL ANGLE MORE THAN 10 DEGREES ABOVE THE MINIMUM .
+
+VII. C ONCLUSION 
+
+The hierarchical abundance sum constraint, introduced above, provides the foundation of the BLUTH unmixing. The SMUG algorithm for growing the BLUTH networks can achieve stable training and accurate endmember esti-mates. The BLUTHs themselves, although they are built on a simple architecture, give performances which exceed or are comparable to the state-of-the-art unmixing techniques on the datasets evaluated. Tests on unlabeled images over water bodies suggest that the BLUTH networks are appropriate for partitioning hyperspectral ocean color images. In the course of these tests a few relatively neglected unmixing techniques, including H2NMF and deterministic an-nealing, which were included because of technical similarities with the proposed BLUTHs, were shown to have behavior competitive with state-of-the-art techniques. This suggests that other algorithms with surprisingly good performance may reside in the older unmixing literature, and that pre-2015 methods should still be included in comparisons of unmixing performance. On that note, although BLUTHs are technically deep neural networks (multi-layered networks with neurons and activation functions), they functionally share little with deep learning: the outputs are interpretable at every level of the hierarchy, the weights of each node can be interpreted independently, and BLUTHs can be trained on small datasets. Accelerating the training speed of the BLUTH networks is the greatest challenge for applying them to large datasets. Although duration was not a primary concern here, BLUTHs required about 3 hours to train on the Samson scene, and over a day to train on the Washington, DC scene. These are still relatively small scenes, with at most ≈ 10 5 pixels. A single scene from the HYPSO constellation contains 6×
+
+as many pixels. The HYPSO database of over 3000 images contains > 10 9 pixels, and it is a fairly small database compared to larger, monolithic satellites currently in orbit. The PACE satellite, which collects data continually, has many times that. It is hoped that optimization techniques borrowed from other unmixing algorithms, particularly EDAA, might help to bridge those four orders of magnitude, so that the entire database can be jointly unmixed. The SMUG algorithm, since it requires p copies of the network to be re-trained each time a new endmember is added, dominates the computational time requirement. There are also many small changes to the networks which the above results suggest could bring significant performance improvements. First, the layerwise objective function weight-ing could be explored in more detail, as we expect that it could have a significant influence on the output. The Pure Pixel Proportion setpoint and batch sizes did not seem to have a large effect on the output, but could be explored further. In addition, batching is the only way that randomness enters the SMUG algorithm, so it could be used to modulate randomness. Numerous new unmixing possibilities are opened up by the HASC beyond BLUTHs. For example, one simple general-ization could be to allow a node to split into more than two new endmembers at a time. This would aid in cases where there is ambiguity regarding 2-way splits. For example, should clouds be grouped with water or land? Moreover, the constraint could be incorporated into older Deep NMF techniques, such as DC-DNMF. Although SMUG was developed for growing a network, the framework of sparsity modulation could bring general benefits towards exploring the solution space of the nonconvex unmixing problem, perhaps combined with the method of multiple solutions used by EDAA. ACKNOWLEDGMENT 
+
+This work was supported in part by NO Grants 2014 – 2021, under Project ELO-Hyp, contract no. 24/2020, in part by the Research Council of Norway and Industry Partners through SoS (337495) and HYPSCI (325961), and in part by the European Union under the Horizon Europe Programme, Grant Agreement No. 101082004 (DiverSea). Views and opinions expressed are however those of the author(s) only and do not necessarily reflect those of the European Union or European Research Executive Agency (REA). Neither the European Union nor the granting authority can be held responsible for them. We would like to thank the scientists and engineers who shared their data and software. The HYPSO-2 image can be found at https://hypso.space/dataportal/. The PACE image can be found at https://pace.oceansciences.org/access pace data.htm. The Remote Sensing test scenes can be down-loaded from https://github.com/inria-thoth/EDAA. The Real-istic Miniature Mixing Scenes can be downloaded at https:// data.mendeley.com/datasets/6bg6342xg9/1. The EDAA, NMF-QMV, and MiSiCNet algorithms are part of the HySUPP package https://github.com/inria-thoth/HySUPP. The H2NMF and DC-DNMF algorithms can be downloaded from https: //sites.google.com/site/nicolasgillis/code. Code to train BLUTHs is available at https://git.ntnu.no/ NTNU-SmallSatLab/BLUTH. We acknowledge the use of Numpy and Scikit-learn (as a python interface to libsvm) in the BLUTHs themselves, as well as pyTables for saving BLUTH weights, Scipy for endmember/label identification, and graphviz and matplotlib for visualization [84], [85], [77], [86], [87], [88], [89]. REFERENCES [1] A. F. H. Goetz et al. , “Imaging Spectrometry for Earth Remote Sensing,”     
+
+> Science ,” 1985. HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 12 (a) (b) (c) (d)
+> (e)
+> (f)
+> ToA Reflectance
+> (dark pixel subtraction)
+
+Fig. 10. Unmixing hierarchies can separate water masses both in data collected by large hyperspectral missions such as the PACE satellite (a,b,c) as well as from smaller hyperspectral cubesats, such as HYPSO-2 (d,e,f). The images show a coccolithophore in the Skagerrak on May 28, 2025. The spatial maps of the aquatic endmember abundances are highlighted in the colors in which their spectra are plotted in the next figure. [2] B. Raeissi et al. , “Detection of different chemical binders in coatings using hyperspectral imaging,” Journal of Coatings Technology and Research ,” 2022. [3] P. Ma et al. , “Coating Condition Detection and Assessment on the Steel Girder of a Bridge through Hyperspectral Imaging,” Coatings ,” 2023. [4] S. Primpke et al. , “Rapid Identification and Quantification of Microplas-tics in the Environment by Quantum Cascade Laser-Based Hyperspectral Infrared Chemical Imaging,” Environmental Science & Technology ,” 2020. [5] A. Faltynkova et al. , “Use of an uncrewed surface vehicle and near infrared hyperspectral imaging for sampling and analysis of aquatic microplastics,” Marine Pollution Bulletin ,” 2024. [6] I. Dumke et al. , “First hyperspectral imaging survey of the deep seafloor: High-resolution mapping of manganese nodules,” Remote Sensing of Environment ,” 2018. [7] A. Van Exem et al. , “New source-to-sink approach in an arctic catchment based on hyperspectral core-logging (Lake Linn´ e, Svalbard),” Quater-nary Science Reviews ,” 2019. [8] M. M. Sahoo et al. , “Modelling Spectral Unmixing of Geological Mix-tures: An Experimental Study Using Rock Samples,” Remote Sensing ,” 2023. [9] E. Catelli et al. , “Can hyperspectral imaging be used to map corrosion products on outdoor bronze sculptures?” Journal of Spectral Imaging ”2018. [10] A. T. Badar´ o et al. , “Near infrared hyperspectral imaging and spectral unmixing methods for evaluation of fiber distribution in enriched pasta,” 
+
+Food Chemistry ,” 2021. [11] Z. Zhang et al. , “UAV Hyperspectral Remote Sensing Image Classifica-tion: A Systematic Review,” IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing ,” 2025. [12] H. M. Dierssen et al. , “Synergies Between NASA’s Hyperspectral Aquatic Missions PACE, GLIMR, and SBG: Opportunities for New Science and Applications,” Journal of Geophysical Research: Biogeo-sciences ,” 2023. [13] M. E. Grøtte et al. , “Ocean Color Hyperspectral Remote Sensing With High Resolution and Low Latency–The HYPSO-1 CubeSat Mission,” 
+
+IEEE Transactions on Geoscience and Remote Sensing ,” 2021. [14] Q. Zhang et al. , “On-Orbit Radiometric Calibration of Hyperspectral Sensors on Board Micro-Nano Satellite Constellation Based on RadCal-Net Data,” Remote Sensing ,” 2022. [15] T. Tikka et al. , “Hyperfield - Hyperspectral small satellites for improving life on Earth,” in 2023 IEEE Aerospace Conference , 2023. [16] J. Roger et al. , “High-Resolution Methane Mapping With the EnMAP Satellite Imaging Spectroscopy Mission,” IEEE Transactions on Geo-science and Remote Sensing ,” 2024. [17] J. Lou et al. , “Variational Autoencoder Framework for Hyperspectral Retrievals (Hyper-VAE) of Phytoplankton Absorption and Chlorophyll a in Coastal Waters for NASA’s EMIT and PACE Missions,” IEEE Transactions on Geoscience and Remote Sensing ,” 2025. [18] B. S. Reddy and H. R. Shwetha, “Integrating Soil Spectral Library and PRISMA Data to Estimate Soil Organic Carbon in Crop Lands,” IEEE Geoscience and Remote Sensing Letters ,” 2024. [19] J. M. Bioucas-Dias et al. , “Hyperspectral Unmixing Overview: Geo-metrical, Statistical, and Sparse Regression-Based Approaches,” IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing ,” 2012. [20] C. Cui et al. , “Realistic Mixing Miniature Scene Hyperspectral Un-mixing: From Benchmark Datasets to Autonomous Unmixing,” IEEE Transactions on Geoscience and Remote Sensing ,” 2023. [21] N. Yokoya et al. , “Coupled Nonnegative Matrix Factorization Unmixing for Hyperspectral and Multispectral Data Fusion,” IEEE Transactions on Geoscience and Remote Sensing ,” 2012. [22] F. ¨ Omr¨ uuzun et al. , “A Novel Semantic Content-Based Retrieval System for Hyperspectral Remote Sensing Imagery,” Remote Sensing ,” 2024. [23] B. Somers et al. , “Endmember variability in Spectral Mixture Analysis: A review,” Remote Sensing of Environment ,” 2011. [24] L. Drumetz et al. , “Spectral Variability Aware Blind Hyperspectral Image Unmixing Based on Convex Geometry,” IEEE Transactions on Image Processing ,” 2020. [25] E. Spyrakos et al. , “Optical types of inland and coastal waters,” 
+
+Limnology and Oceanography ,” 2018. [26] D. Burazerovi´ c et al. , “Detecting the Adjacency Effect in Hyperspectral Imagery With Spectral Unmixing Techniques,” IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing ,” 2013. [27] E. Alfaro-Mej´ ıa et al. , “A blind convolutional deep autoencoder for spectral unmixing of hyperspectral images over waterbodies,” Frontiers in Earth Science ,” 2023. [28] B. Pan et al. , “A Novel Spectral-Unmixing-Based Green Algae Area Estimation Method for GOCI Data,” IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing ,” 2017. [29] V. Kopaˇ ckov´ a and L. Hlad´ ıkov´ a, “Applying Spectral Unmixing to Determine Surface Water Parameters in a Mining Environment,” Remote Sensing ,” 2014. [30] C. J. Legleiter et al. , “Spectral mixture analysis for surveillance of harmful algal blooms (SMASH): A field-, laboratory-, and satellite-based approach to identifying cyanobacteria genera from remotely sensed data,” Remote Sensing of Environment ,” 2022. [31] M. Mehrubeoglu et al. , “Resolving Mixed Algal Species in Hyperspec-tral Images,” Sensors ,” 2014. [32] P. Naik et al. , “Blind and endmember guided autoencoder model for unmixing the absorbance spectra of phytoplankton pigments,” Scientific Reports ,” 2025. [33] T. S. Moore et al. , “An optical water type framework for selecting and blending retrievals from bio-optical algorithms in lakes and coastal waters,” Remote Sensing of Environment ,” 2014. HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 13 
+
+[34] E. C. Atwood et al. , “Framework for Regional to Global Extension of Optical Water Types for Remote Sensing of Optically Complex Transitional Water Bodies,” Remote Sensing ,” 2024. [35] K. Shi et al. , “Classification of Inland Waters Based on Bio-Optical Properties,” IEEE Journal of Selected Topics in Applied Earth Obser-vations and Remote Sensing ,” 2014. [36] K. Blix et al. , “Learning Relevant Features of Optical Water Types,” 
+
+IEEE Geoscience and Remote Sensing Letters ,” 2022. [37] D. A. Roberts et al. , “Mapping Chaparral in the Santa Monica Mountains Using Multiple Endmember Spectral Mixture Models,” Remote Sensing of Environment ,” 1998. [38] C. Bateson et al. , “Endmember bundles: a new approach to incorporating endmember variability into spectral mixture analysis,” IEEE Transac-tions on Geoscience and Remote Sensing ,” 2000. [39] B. Somers et al. , “Automated Extraction of Image-Based Endmember Bundles for Improved Spectral Unmixing,” IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing ,” 2012. [40] A. Fernandez-Manso et al. , “Burn severity influence on post-fire vegeta-tion cover resilience from Landsat MESMA fraction images time series in Mediterranean forest ecosystems,” Remote Sensing of Environment ,” 2016. [41] S. H. Peterson et al. , “Oil detection in the coastal marshes of Louisiana using MESMA applied to band subsets of AVIRIS data,” Remote Sensing of Environment ,” 2015. [42] V. Fern´ andez-Garc´ ıa et al. , “Multiple Endmember Spectral Mixture Analysis (MESMA) Applied to the Study of Habitat Diversity in the Fine-Grained Landscapes of the Cantabrian Mountains,” Remote Sensing ,” 2021. [43] K. E. Themelis et al. , “A Novel Hierarchical Bayesian Approach for Sparse Semisupervised Hyperspectral Unmixing,” IEEE Transactions on Signal Processing ,” 2012. [44] Y. Altmann et al. , “Unsupervised Post-Nonlinear Unmixing of Hyper-spectral Images Using a Hamiltonian Monte Carlo Algorithm,” IEEE Transactions on Image Processing ,” 2014. [45] P. Chen et al. , “Toward a Sparse Bayesian Markov Random Field Approach to Hyperspectral Unmixing and Classification,” IEEE Trans-actions on Image Processing ,” 2017. [46] Y. Zhou et al. , “A Gaussian Mixture Model Representation of End-member Variability in Hyperspectral Unmixing,” IEEE Transactions on Image Processing ,” 2018. [47] J. Franke et al. , “Hierarchical Multiple Endmember Spectral Mixture Analysis (MESMA) of hyperspectral imagery for urban environments,” 
+
+Remote Sensing of Environment ,” 2009. [48] N. Gillis et al. , “Hierarchical Clustering of Hyperspectral Images Using Rank-Two Nonnegative Matrix Factorization,” IEEE Transactions on Geoscience and Remote Sensing ,” 2014. [49] R. Rajabi and H. Ghassemian, “Spectral Unmixing of Hyperspectral Imagery Using Multilayer NMF,” IEEE Geoscience and Remote Sensing Letters ,” 2015. [50] X.-R. Feng et al. , “Hyperspectral Unmixing Using Sparsity-Constrained Deep Nonnegative Matrix Factorization With Total Variation,” IEEE Transactions on Geoscience and Remote Sensing ,” 2018. [51] H. Fang et al. , “Sparsity-Constrained Deep Nonnegative Matrix Fac-torization for Hyperspectral Unmixing,” IEEE Geoscience and Remote Sensing Letters ,” 2018. [52] H.-C. Li et al. , “Self-Supervised Robust Deep Matrix Factorization for Hyperspectral Unmixing,” IEEE Transactions on Geoscience and Remote Sensing ,” 2022. [53] R. Huang et al. , “Hyperspectral Unmixing Using Robust Deep Nonneg-ative Matrix Factorization,” Remote Sensing ,” 2023. [54] P. De Handschutter and N. Gillis, “A consistent and flexible framework for deep matrix factorizations,” Pattern Recognition ,” 2023. [55] G. Settembre et al. , “Advancing blind hyperspectral unmixing in re-mote sensing: comparing deep-inspired subspace learning methods,” 
+
+Advanced Modeling and Simulation in Engineering Sciences ,” 2025. [56] A. Cutler and L. Breiman, “Archetypal Analysis,” Technometrics ,” 1994. [57] H. Peng et al. , “Nonnegative matrix factorization with deterministic annealing for unsupervised unmixing of hyperspectral imagery,” in 2012 19th IEEE International Conference on Image Processing , 2012. [58] X.-R. Feng et al. , “Hyperspectral Unmixing Based on Nonnegative Matrix Factorization: A Comprehensive Review,” IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing ,” 2022. [59] B. Rasti et al. , “Image Processing and Machine Learning for Hyperspec-tral Unmixing: An Overview and the HySUPP Python Package,” IEEE Transactions on Geoscience and Remote Sensing ,” 2024. [60] D. D. Lee and H. S. Seung, “Learning the parts of objects by non-negative matrix factorization,” Nature ,” 1999. [61] P. O. Hoyer, “Non-negative Matrix Factorization with Sparseness Con-straints,” Journal of Machine Learning Research ,” 2004. [62] S. Jia and Y. Qian, “Constrained Nonnegative Matrix Factorization for Hyperspectral Unmixing,” IEEE Transactions on Geoscience and Remote Sensing ,” 2009. [63] L. Drumetz et al. , “Hyperspectral Image Unmixing With Endmember Bundles and Group Sparsity Inducing Mixed Norms,” IEEE Transac-tions on Image Processing ,” 2019. [64] C.-I. Chang and A. Plaza, “A fast iterative algorithm for implementation of pixel purity index,” IEEE Geoscience and Remote Sensing Letters ,” 2006. [65] N. Akhtar and A. Mian, “RCMF: Robust Constrained Matrix Factor-ization for Hyperspectral Unmixing,” IEEE Transactions on Geoscience and Remote Sensing ,” 2017. [66] A. Zouaoui et al. , “Entropic Descent Archetypal Analysis for Blind Hyperspectral Unmixing,” IEEE Transactions on Image Processing ,” 2023. [67] C. Ca˜ nada et al. , “Distributed Parallel Hyperspectral Unmixing for Large-Scale Data in Spark Environments via Geometric Distance,” IEEE Transactions on Geoscience and Remote Sensing ,” 2025. [68] S. Henrot et al. , “Dynamical Spectral Unmixing of Multitemporal Hyperspectral Images,” IEEE Transactions on Image Processing ,” 2016. [69] P.-A. Thouvenin et al. , “Online Unmixing of Multitemporal Hyperspec-tral Images Accounting for Spectral Variability,” IEEE Transactions on Image Processing ,” 2016. [70] R. A. Borsoi et al. , “Fast Unmixing and Change Detection in Mul-titemporal Hyperspectral Data,” IEEE Transactions on Computational Imaging ,” 2021. [71] D. Hong et al. , “Interpretable Hyperspectral Artificial Intelligence: When nonconvex modeling meets hyperspectral remote sensing,” IEEE Geoscience and Remote Sensing Magazine ,” 2021. [72] M. A. Veganzones et al. , “Hyperspectral Image Segmentation Using a New Spectral Unmixing-Based Binary Partition Tree Representation,” 
+
+IEEE Transactions on Image Processing ,” 2014. [73] J. Prades et al. , “Estimation of the Number of Endmembers in Hy-perspectral Images Using Agglomerative Clustering,” Remote Sensing ,” 2020. [74] F. Murtagh and P. Contreras, “Algorithms for hierarchical clustering: an overview,” WIREs Data Mining and Knowledge Discovery ,” 2012. [75] P. Yin et al. , “Ratio and difference of $l 1$ and $l 2$ norms and sparse representation with coherent dictionaries,” Communications in Information and Systems ,” 2014. [76] K. Lange, Optimization , ser. Springer Texts in Statistics. New York, NY: Springer New York, 2013, vol. 95. [77] C.-C. Chang and C.-J. Lin, “LIBSVM: A library for support vector machines,” ACM Trans. Intell. Syst. Technol. ,” 2011. [78] F. Zhu, “Hyperspectral Unmixing: Ground Truth Labeling, Datasets, Benchmark Performances and Survey,” arXiv:1708.05125 [cs] ,” 2017. [79] P. S. Chavez, “An improved dark-object subtraction technique for atmospheric scattering correction of multispectral data,” Remote Sensing of Environment ,” 1988. [80] B. Rasti et al. , “MiSiCNet: Minimum Simplex Convolutional Network for Deep Hyperspectral Unmixing,” IEEE Transactions on Geoscience and Remote Sensing ,” 2022. [81] Y. Yu et al. , “Multi-stage convolutional autoencoder network for hyper-spectral unmixing,” International Journal of Applied Earth Observation and Geoinformation ,” 2022. [82] L. Zhuang et al. , “Regularization Parameter Selection in Minimum Volume Hyperspectral Unmixing,” IEEE Transactions on Geoscience and Remote Sensing ,” 2019. [83] S. Kirkpatrick et al. , “Optimization by Simulated Annealing,” Science ,” 1983. [84] C. R. Harris et al. , “Array programming with NumPy,” Nature ,” 2020. [85] F. Pedregosa et al. , “Scikit-learn: Machine Learning in Python,” Journal of Machine Learning Research ,” 2011. [86] F. Alted and M. Fern´ andez-Alonso, “PyTables: processing and analyzing extremely large amounts of data in Python,” PyCon2003. April ,” 2003. [87] P. Virtanen et al. , “SciPy 1.0: fundamental algorithms for scientific computing in Python,” Nature Methods ,” 2020. [88] J. Ellson et al. , “Graphviz and Dynagraph — Static and Dynamic Graph Drawing Tools,” in Graph Drawing Software , G. Farin et al. , Eds., 2004. [89] P. Barrett et al. , “matplotlib–A Portable Python Plotting Package,” in 
+
+Astronomical data analysis software and systems XIV , vol. 347, 2005. [90] N. Metropolis et al. , “Equation of State Calculations by Fast Computing Machines,” The Journal of Chemical Physics ,” 1953. HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 14 
+
+SUPPLEMENTAL INFORMATION 
+
+A. Normalization 
+
+The normalization of the pixels mitigates the effect of the scaling degree of freedom which plagues non-negative matrix factorization and related techniques. L1-normalization is common in optical water type analysis, in which it is called spectral curve integral normalization [25]. On the other hand, L2-normalization is proposed in [66]. Paired with the squared error in the objective function, the L2 norm gives equal weight to each pixel. While normalization improves overall performance, it also prevents the endmember spectra from being directly interpreted as remote sensing reflectance themselves. Because the normalized spectra lack information about their original magnitude, they cannot be inverted back into reflectance or radiance. Here, this trade-off is negotiated by partial L2-normalization. A partially L2-normalized spectra can be written as: 
+
+˜y = y
+
+(∥y∥2)1−ϵ , (S1) where ϵ ∈ [0 , 1] determines the degree of normalization. If ϵ > 
+
+0, then the endmember spectra are invertible. More precisely, 
+
+y = ˜ y∥ ˜y∥(1 −ϵ)/ϵ  
+
+> 2
+
+. (S2) Within the context of the LMM, normalization allows the magnitude of the endmember spectra to vary with the pixel brightness to accommodate spectral variation. At pixel x, end-member spectra s has an effective magnitude of ∥y∥1−ϵ 
+
+> 2
+
+∥s∥ϵ
+
+> 2
+
+.The choice of ϵ greatly effects unmixing performance, and the requirement of invertibility offers no guidelines for choosing ϵ
+
+except ϵ > 0. Scale independence implies that multiplying the data by a constant should not change algorithm performance, which suggests that ϵ should depend only on ratios of pixel brightness, such as ∥ymax ∥2/∥ymin ∥2, rather than the pixel values themselves. If the luminosity range scales with the number of endmembers raised to some power, then 
+
+pν = ( ∥ymax ∥2/∥ymin ∥)ϵ (S3) 
+
+=⇒ ϵ = ν log( p)log 
+
+ ∥ymax ∥2
+
+> ∥ymin ∥2
+
+ . (S4) The value of ν is set to be 1/4 throughout all experiments, based on initial tests on the Jasper Ridge scene (Table S-I). Then neither ϵ nor ν remain as variable hyperparameters. 
+
+B. Hyperparameters 
+
+There are 6 hyperparameters which must be set to train a BLUTH. In general, the only hyperparameters that must be varied between images are the standard and large batch sizes. The pure pixel proportion (PPP) setpoint is used in the SpM. In general, increasing the PPP setpoint improves accuracy but also greatly increases calculation time. In the experiments presented here, it is either set to 0.5, or 0.8 if there are classes which are much less abundant than the others. The scaling between layers is set such that μm+1 = 4 μm (equation 3) and ν = 0 .25 for the partial normalization exponent, and 
+
+nruns = 10 for all experiments. The methods from the HySUPP review and H2NMF used the hyperparameters suggested in their codebases. DC-DNMF was only adjusted from its default settings by imposing the abundance sum constraint. A few time constants and iteration counts for DAAA and SAPPA were tested, and not much variation was seen as long as both were sufficiently large. 
+
+C. The competing unmixing techniques 
+
+Deterministic Annealing Archetypal Analysis (DAAA) and Simulated Annealing Pure Pixel Analysis (SAPPA) were both developed from Deterministic Annealing Nonnegative Matrix Factorization [57]. However, because the unavailability of that code and ambiguities regarding the implementation of the abundance sum constraint, the method was implemented again with some simple changes. The implementations used here are described in Appendix H. The ν = 1 /4 normalization, used by the BLUTHs, is also used for these techniques. Entropic Descent Archetypal Analysis (EDAA) [66] com-bines Archetypal Analysis with updates which are designed to be accelerated by GPUs. Because EDAA is extremely fast, it can be run for many different random initializations and hyperparameters. Because the unmixing objective function is nonconvex, these different runs typically stop at different minima. A combination of the reconstruction accuracy and the endmember spectral coherence is then used to select a particular run of unmixing. The original presentation of EDAA found extremely high performance in abundance estimation, surpassing deep learning techniques, but the later HySUPP analysis showed mediocre performance in reconstruction ac-curacy, while it still achieved the lowest spectral angle of the blind methods on one dataset. The L2-normalization specified in its original presentation is used here. The implementation presented in HySUPP is used for testing here [59]. MiSiCNet is a deep network which constrains its output to the simplex and incorporates both spatial and spectral information [80]. It performs backpropagation in PyTorch on the unmixing objective function with a regularization term acting on the endmember geometry. It exhibited the best performance on two of the three blind unmixing datasets in the HySUPP comparison, and the best spectral on one of them [59]. MSNet is another deep convolutional neural network au-toencoder that unmixes scenes at 3 different levels of spatial resolution [81]. It exhibited the best performance on one of the three blind unmixing datasets in the HySUPP comparison [59]. Nonnegative Matrix Factorization-Quadratic Minimum Vol-ume incorporates a sparsity penalty not on the abundances, but rather on the endmember spectra and [82] provides a way to estimate the proper weight to apply to the regularization term. It provided the second best abundance estimation performance on all of the HySUPP blind unmixing tests, as well as the lowest spectral angle on one dataset [59]. Hierarchical Clustering of an HSI based on Rank-Two NMF (H2NMF) [48] explicitly connects unmixing and clustering. It HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 15 
+
+is based an a divisive hierarchical clustering algorithm which, like the BLUTH architecture, successively splits clusters into two. Once image is split into clusters, the endmember spectra are selected from the pixels of each cluster based the mean-removed spectral angle. The recovered spectra are used to estimate the abundances. Here, H2NMF was applied to L2-normalized data. The original H2NMF implementation in MatLab is used. Notably, the H2NMF algorithm implicitly satisfies both the HASC, because of its reliance on clustering, and PPA, because of how the endmember spectra are selected. Data-centric Deep Nonnegative Matrix Factorization (DC-DNMF)[54] minimizes the revised data-centric D-NMF objec-tive function with a projected gradient optimization. Notably, the objective function used by DC-DNMF is essentially the same as that used by BLUTH, with the exception of the HASC and constraints on the endmember spectra. The layer-wise structure is defined before training, unlike H2NMF and BLUTH, and the number of layers are chosen to follow the architecture found by the BLUTH algorithm on the same scene. The MatLab implementation of DC-DNMF is used. 
+
+D. Binary updates with additional endmembers 
+
+For scenes with more than two endmembers, binary unmix-ing can be applied by updating each endmember separately in a 1-v-rest configuration. Then the abundance of endmember ζ
+
+is: 
+
+aζ = (y − s/ζ )⊺(sζ − s/ζ ) − γ∥a/ζ ∥22∥a/ζ ∥−21
+
+∥(sζ − s/ζ )∥22 − γ(1 + ∥a/ζ ∥22∥a/ζ ∥−21 ) (S5) where a/ζ indicates the abundance vector with endmember 
+
+ζ removed, and s/ζ is the spectrum implied by the relative abundances of the endmembers other than ζ. In the case when 
+
+∥a/ζ ∥1 = 0 , it is assumed that s/ζ is the average of the spectra of the endmembers ̸ = ζ.
+
+E. Batchable Archetype Analysis and Pure Pixel Analysis 
+
+Archetypal analysis (AA) uses the same objective function as NMF, but constrains the matrix S so that it must be a convex sum of the data points themselves [66]: 
+
+min  
+
+> S,A
+
+∥Y − SA ∥2
+
+> F
+
+, (S6) with the constraint 
+
+S = Y X (S7) where all the entries of X are non-negative and its columns sum to one. The constraint implies that each endmember is a weighted average of pixels in the scene. One challenge of AA is that X has size N × P , which means that it is slow to update and does not straightforwardly permit batching during the training process. Here we introduce a new update rule that permits batching. Instead of directly updating X, S is updated in a way that implicitly satisfies equation S7. As in NMF, AA typically minimizes S and A though alternating minimazation. Because the update of A can be performed by any variant of NMF, only the update of S is considered here. Furthermore, we consider cyclic block coordinate descent over the different endmembers, so that each is column of S is updated sequentially. Now, consider the spectra of one pixel from the data, z, and an endmember sζ that satisfies equation S6. Then the part of the objective function which depends on S can be re-written so that: 
+
+min ∥Y −(S + bU )A∥2 
+
+> F
+
+(S8) 
+
+= min ∥E∥2 
+
+> F
+
+− 2bTr (EA ⊺U ⊺) + b2∥U A ∥2
+
+> F
+
+where the ζth column of U is uζ = z − sζ while the others are zero, E = Y − SA , and b ∈ (0 , 1) . Then, (1 − b)sζ + bz
+
+satisfies the AA constraint on endmember spectra as long as 
+
+sζ already satisfied the constraint. For a given uζ , the b which minimizes the objective function is then: 
+
+b = tr (EA ⊺U ⊺)
+
+∥U A ∥2
+
+> F
+
+. (S9) Computation can be accelerated by rewriting the equation to neglect the empty columns of U . In addition, pixel x is dropped from Y and A to avoid biasing the estimate of b for small batch sizes. If b calculated according to equation S9 falls outside the allowed range, it is set to 0. Once b is found for each pixel in the batch, the pixel which minimizes the objective function is selected. A related technique, Pure Pixel Analysis (PPA), is defined restricting AA further so that only spectra found in the scene can be selected. Spectra which satisfy PPA thus satisfy AA, although the inverse is not true. PPA imparts even more sparsity than AA because it implies that for each endmember there is at least one pixel in the dataset for which an abundance of 1 would minimize the objective function. The objective function is then computed for each pixel spectrum in the batch. The spectrum is initially set to be the one that minimizes the objective function. If the selected spec-trum is identical to a current endmember spectrum, then the spectrum which leads to the next-smallest objective function is selected. Then, as long as the batch size is larger than the number of endmembers, the new endmember spectrum will not be identical to one of the previous endmember spectra. Note that AA performed in this way is guaranteed not to increase the objective function evaluated on the batch used, as 
+
+b = 0 for all pixels if none of them can decrease the objective function. PPA, on the other hand, can increase the objective function because it always selects a new spectrum, and there may not be a spectrum in the batch which does not increase the objective function. 
+
+F. BLUTH abundance updates 
+
+Cyclic block coordinate (gradient) descent is used to train the parameters that a BLUTH uses to partition each pixel into abundances. The abundances at any level can be written as a product of the abundances of levels above it (eq. 8). The weights wTζ and the offset dζ can thus be set independently for each node ζ, while the others remain fixed. First the direction of the gradient at each node is calculated, and then the step size is determined by a line search. HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 16 
+
+The regularized objective function at level can be written as a sum over all pixels: 
+
+X
+
+> m,n
+
+
+
+μmu2 
+
+> mn
+
+− γma2
+
+> mn
+
+
+
+, (S10) where umn = yn − Smamn is the the discrepancy between the observed nth pixels and its representation at the mth level, and amn is its abundance ( nth column of Am). Taking a derivative of the first term with respect to the weights at the ζ node in the lth level (m ≥l), we find that 
+
+du2
+
+> mn
+
+dwζ
+
+= −2umn 
+
+
+
+Sm
+
+damn 
+
+dwζ
+
+
+
+. (S11) The abundances change as a function of the weights: 
+
+damn 
+
+dwζ
+
+= yn
+
+2 (aln Almn )⊺Φ′
+
+> ζn
+
+, (S12) where Almn ∈ Rk×k is a diagonal matrix defined elementwise as: 
+
+(almn )η = ± Y
+
+> β∈(ζ,η ]
+
+xβn . (S13) The term (almn )η is positive if the endmember η is on the side of the positive descendants of node ζ, and negative if it is on the negative side, and Φ′ 
+
+> ζ
+
+is one if the argument of the cReLU operator is between 0 and 1, and zero otherwise. The effective spectra of the positive and negative side of node ζ at level l can then be written as: 
+
+s± 
+
+> [ζ→m]n
+
+= X
+
+> α∈C±
+
+sαn 
+
+ Y
+
+> β∈(ζ,α ]
+
+xβn 
+
+
+
+. (S14) After simplification, it can be seen the the update depends only on the error, the different between the effective spectra, the abundance, and the pixel spectrum, activated by Φ′:
+
+du2
+
+> mn
+
+dwζ
+
+= −
+
+
+
+u⊺
+
+> mn
+
+ s+[ζ→m]n − s−
+
+> [ζ→m]n
+
+
+
+aζn ynΦ′
+
+> ζn
+
+. (S15) The gradient that originates from the regularization term is calculated similarly: 
+
+da2
+
+> mn
+
+dwζ
+
+= 2 aTmn 
+
+damn 
+
+dwζ
+
+, (S16) 
+
+= aTmn (a+[ζ→m]n − a−
+
+> [ζ→m]n
+
+)aζn ynΦ′
+
+> ζn
+
+, (S17) where 
+
+a± 
+
+> [ζ→m]n
+
+= X
+
+> α∈[ζ→m]±
+
+aαn ˆaα
+
+ Y
+
+> β∈(ζ,α ]
+
+xβn 
+
+
+
+, (S18) where the ˆaα are used to distinguish the directions that the different endmembers take on in the vector. The full gradient with respect to wζ is then found by sum-ming both terms of the of the objective function, appropriately weighted, over all pixels and all levels below ζ. The gradient determines the direction of the update step, ˆvζ . The magnitude is determined by inserting bˆvζ into the objective function and differentiating with respect to b. The above equations can be re-used after accounting for the fact that the derivative of xζ
+
+with respect to b is a scalar: 
+
+dx ζn 
+
+db = yn · ˆv
+
+2 Φ′
+
+> ζn
+
+. (S19) The derivative with respect to b is then linear except at 2N
+
+discontinuities. Thus, the value of b can be chosen exactly in order to minimize the objective function according to the numerical integration technique described below. Therefore, it is not necessary to set a learning rate, reducing the number of hyperparameters. 
+
+G. Integration of piecewise linear derivative 
+
+The objective function is quadratic in wζ except at the points where (w⊺ 
+
+> ζ
+
+yn − d + 1) = 0 for some pixel n. At these points, the function is continuous but the derivative is not uniquely defined. Note that the gradient can be written as a sum over all the individual pixels (equations S15 and S17). The factor of Φ′ 
+
+> ζn
+
+acts as an activation function for whether individual pixels contribute to the gradient. Numerical integration is then used to determine where, along the direction of a vector ˆv the gradient vanishes. First, all the magnitudes b at which there is a zero-intercept of a pixel are calculated. Then, using the initial values of Φ′
+
+> ζn
+
+, an initial estimate of the b at which the derivative vanishes is computed. If no zero-intercepts fall between b = 0 and the estimated minimum, then b is set to that value for the update step. Otherwise, the derivative is integrated up to the nearest zero-intercept and updated by accounting for changes in the activation functions. The process stops when the derivative becomes positive, and b is set to the value at which the it vanishes. However, if there is a discontinuity in the derivative such that it is never 0, then it is set to a value just below the discontinuity. 
+
+H. Unmixing by Annealing 
+
+Annealing is a technique for finding a minimum of an objective function by dynamically altering the update process through a decreasing parameter, typically called temperature (T , a scalar) in analogy with metallurgical annealing [90], [83]). Deterministic annealing NMF (DA-NMF) directly mod-ifies the objective function by adding a penalty term [57]: 
+
+GDA (S, A, T ) = G0(S, A ) + T G s(A), (S20) Where G0 is the original objective function and Gs is a sparsity-reducing penalty term. In the limit of T → ∞ , the objective function becomes convex with a global minimum consisting of equal abundances of all endmembers at each pixel. The parameter T is then updated following an expo-nential decay equation determined by the initial conditions and a decay rate. In the limit T → 0, the original objective function is recovered, so the minimum recovered by DA-NMF is also a minimum of the original objective function. In this way, non-convexity is slowly added to the objective function, so that the final minimum smoothly evolves from the global minimum of the simplified convex objective function, which can be found uniquely. HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 17 
+
+The original implementation of DA-NMF performed com-paratively well on the Urban scene [57], but some challenges were encountered in re-creating it for these tests, particularly with respect to the ASC. Since some changes were necessary, the method has been re-developed as Deterministic Annealing Archetypal Analysis (DAAA). DAAA proceeds by alternating minimization, as most unmixing algorithms do. Although the original DA-NMF proposes a sparsity penalty proportional to 
+
+− P 
+
+> p
+
+ap log ap, which would correspond to entropy if the abundances were replaced with probabilities, DAAA uses the L2 sparsity penalty because it can be linearized for exact block updates, as in SMUG. At each value of T , the abundance matrix is updated using equation S5 and the spectral matrix is updated using equation S9. The algorithm ends after a pre-determined number of iterations. Instead of directly altering the objective function, simulated annealing alters how the solution space is explored. Because PPA discretizes the process of determining the endmember spectra, it is well suited for simulated annealing. In simulated annealing, a random change to the system is proposed and it is accepted or rejected according to how it affects the ob-jective function. In Simulated Annealing Pure Pixel Analysis (SAPPA), the nth pixel spectrum is proposed as the spectrum for the ζth endmember with probability: 
+
+pζn = aζn 
+
+PNj=0 aζj 
+
+. (S21) Once the proposed spectrum is selected, the abundances are updated according to equation S5 (with γ = 0 ). The update step is then accepted with probability: 
+
+e−(Gf −Gi)/T , (S22) where Gi is the value of the objective function before the proposed update, and Gf is the updated value. Therefore, proposed update steps that decrease the objective function are always accepted, but there is also non-vanishing probability of accepting update steps that increase the objective function. This allows simulated annealing to escape local minima and, ideally, find the global minimum. 
+
+I. Step Sizes and Setpoints in Sparsity Modulation 
+
+Rather than setting one sparsity penalty for the whole optimization process, SMUG dynamically adjusts a sparsity penalty according to the state of the system and the modality that the optimization algorithm is in. The changes to the sparsity penalty are parametrized by the sparsity step size 
+
+δγ , or how much the penalty changes between steps of the optimization algorithm. The SpM begins by determining the initial maximum value of γ to be applied as: 
+
+γmax = Gll 
+
+(P 
+
+> ζ,n
+
+a2
+
+> ζn
+
+)/N − P −1 , (S23) where Gll is the data-centric term at the lowest layer from the objective function, and the denominator adjusts for the current sparsity of A. Each step of the SpM gain adjustment then adds γmax /n runs to γ. After each set of nruns , γmax is adjusted depending on how much the pure pixel proportion (PPP) has changed. As PPP changes more, the gain is adjusted more slowly. Before there is any change to the PPP, it is multiplied 
+
+2×, but close to the setpoint, it changes only 1.1×.In ShM, the step size is initialized to γmax above, but it is increased linearly instead of multiplicatively. After the relaxation step in ShM, the γ calculated by equation S23 is added again to the setpoint. In DeSM the baseline gain is initialized to −Gll in equation S23. For the ith step, γ is −Gll /i .                                                                                                                           
+
+> ϵTrees Water Dirt Road PPA AA PPA AA PPA AA PPA AA IoU 0.00 0.916 0.914 0.548 0.576 0.704 0.705 0.095 0.102 0.06 0.905 0.909 0.525 0.554 0.692 0.679 0.032 0.025
+> →0.11 0.792 0.819 0.913 0.912 0.756 0.768 0.676 0.659 0.23 0.821 0.819 0.934 0.931 0.788 0.770 0.731 0.689 0.45 0.848 0.843 0.933 0.935 0.800 0.788 0.740 0.707 1.00 0.791 0.767 0.739 0.704 0.641 0.737 0.569 0.525 SA 0.00 2.89 2.96 7.93 7.198 3.73 4.20 33.22 34.09 0.06 3.04 2.90 15.33 10.77 3.73 5.77 61.01 59.10
+> →0.11 6.23 5.75 3.43 2.75 1.52 1.77 2.58 3.47 0.23 5.04 6.39 4.47 3.34 1.52 2.04 2.33 3.48 0.45 4.85 5.81 4.47 3.35 1.85 2.83 1.31 2.10 1.00 4.31 4.65 4.44 5.33 7.20 5.03 4.40 2.53 TABLE S-I JASPER RIDGE METRICS WITH SORTED BY PARTIAL NORMALIZATION EXPONENT . T HE LARGEST IOU ( SMALLEST SA) FOR EACH ENDMEMBER IS IN A BOLD FONT . T HE ARROW SHOWS THE LEVEL OF PARTIAL NORMALIZATION THAT WAS SELECTED BASED ON THESE EXPERIMENTS .THE INTERMEDIATE ϵARE CALCULATED FROM ν=1/8,1/4,1/2 AND 1(EQUATION S4)
+> Fig. S1. The Jasper scene unmixed 10 times with minibatching and a batch size of half the pixels. Open markers correspond to PPA and closed markers correspond to AA in the fine-tuning stage. HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 18
+
+Scene Class BLU-AA BA+2 BLU-PPA BP+2 DAAA SAPPA EDAA QMV MiSiC MSNet H2NMF DC-DMF Samson Soil 0.52 0.71 0.64 0.66 0.45 0.50 1.65 4.54 10.87 2.87 2.88 1.52 Tree 1.89 1.85 1.79 1.54 2.13 1.88 1.98 7.68 3.46 1.96 4.90 2.68 Water 1.79 6.77 1.74 6.25 2.55 4.21 1.31 17.44 9.19 1.81 6.15 5.99 Jasper Tree 5.75 5.25 6.24 4.72 4.26 5.50 4.24 13.31 10.86 3.55 2.58 10.06 Water 2.75 4.39 3.44 3.44 10.99 5.65 2.79 15.99 12.68 1.86 8.38 10.60 Dirt 1.78 7.37 1.52 6.57 4.63 1.93 2.78 11.75 43.41 10.99 13.57 40.15 Road 3.48 9.65 2.59 2.73 59.88 2.29 3.01 36.69 19.28 22.84 8.21 18.85 Apex Road 7.11 8.40 6.16 6.42 39.41 11.89 13.55 56.22 51.10 45.19 13.25 54.11 Tree 7.45 9.81 8.52 9.37 2.09 6.65 7.73 16.97 37.22 7.59 9.52 30.83 Roof 6.91 3.72 6.52 3.62 8.55 7.53 7.85 8.05 7.05 5.93 5.33 10.80 Water 2.50 2.61 3.26 2.69 2.80 3.26 2.09 9.79 3.08 2.55 2.81 3.54 Urban Road 3.04 4.33 3.31 3.43 6.43 5.09 5.53 9.18 32.34 8.26 8.07 12.99 Grass 2.08 2.79 2.51 3.11 2.75 3.17 2.11 7.26 15.82 8.22 4.34 12.73 Tree 2.89 4.25 3.20 3.66 4.34 2.58 2.90 9.47 10.94 2.59 1.73 6.48 Roof 16.75 3.21 15.91 2.42 18.13 13.55 11.14 18.27 27.68 7.11 6.08 32.93 Urban Road 4.67 6.73 2.39 5.67 10.52 6.48 5.12 19.61 49.31 29.83 6.08 23.65 Grass 4.60 2.79 3.68 2.62 7.19 5.43 2.09 14.99 27.68 9.20 1.53 10.39 Tree 8.25 9.58 8.12 9.63 5.06 8.01 8.87 22.50 16.57 7.43 6.20 11.18 Roof 6.14 4.55 7.77 3.85 18.37 3.06 13.81 20.23 39.71 8.17 4.09 32.84 Metal 46.88 52.83 47.32 50.90 47.74 46.87 4.44 8.00 18.25 10.30 21.33 14.80 Dirt 7.06 3.85 6.07 3.86 2.85 5.05 13.86 24.28 36.96 13.57 9.45 32.80 WDC Grass 4.57 4.09 4.76 3.74 19.24 2.92 7.40 33.34 35.71 7.64 9.52 20.89 Tree 15.09 10.14 15.34 6.72 9.74 4.15 2.10 20.34 33.64 15.47 7.24 28.59 Road 17.87 5.33 2.33 1.68 34.54 8.17 4.63 40.10 31.06 24.47 5.94 16.84 Roof 5.48 3.04 27.08 2.28 15.58 51.31 50.93 7.49 30.42 24.12 27.58 47.05 Water 1.32 1.33 1.93 2.01 4.40 2.24 1.17 12.90 21.79 1.68 1.97 3.58 Trail 5.81 6.49 4.41 3.53 5.57 3.67 2.11 6.45 28.00 8.58 5.25 26.92 SMS Moss 3.89 1.84 1.41 1.56 2.77 2.81 8.85 25.96 11.53 8.59 2.61 5.13 Pebbles 0.32 1.26 0.97 1.69 0.70 0.83 5.54 14.49 2.96 9.41 18.53 8.95 Sticks 12.29 4.12 16.39 5.40 24.67 26.37 17.00 17.17 11.77 19.08 21.94 25.15 Leaves 2.61 1.79 2.18 2.41 0.80 0.27 1.64 2.19 6.31 2.76 4.98 2.25 CMS Moss 0.88 1.09 1.46 1.37 1.31 1.45 10.66 1.96 7.16 10.17 0.58 4.40 Pebbles 6.02 4.03 6.37 3.90 7.80 4.64 28.84 12.72 15.31 8.38 0.69 28.49 Sticks 13.66 5.88 14.06 5.14 12.14 13.79 18.31 25.82 39.90 18.05 22.13 25.71 True V 1.79 1.75 1.56 2.07 1.07 3.08 4.24 3.04 13.77 12.14 2.46 10.22 False V 4.07 1.69 4.25 2.35 3.47 4.25 2.99 1.19 20.32 1.30 0.74 11.13 TABLE S-II THE SPECTRAL ANGLES OF THE ENDMEMBERS CALCULATED IN EACH SCENE RELATIVE TO THE MANUALLY -LABELLED ENDMEMBERS IN DEGREES . T HE SMALLEST SPECTRAL ANGLE FOR EACH ENDMEMBER IS SHOWN IN bold , WHILE THE SECOND SMALLEST IS SHOWN IN Italic .
+
+Fig. S2. The Samson scene unmixed into three endmembers by several algorithms. HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 19 
+
+Scene Class BLU-AA BA+2 BLU-PPA BP+2 DAAA SAPPA EDAA QMV MiSiC MSNet H2NMF DC-DMF Samson Soil 0.876 0.809 0.865 0.816 0.917 0.908 0.912 0.744 0.520 0.833 0.846 0.865 Tree 0.891 0.915 0.883 0.919 0.952 0.942 0.934 0.754 0.755 0.904 0.870 0.885 Water 0.947 0.814 0.943 0.819 0.911 0.906 0.945 0.638 0.667 0.840 0.885 0.814 Jasper Tree 0.819 0.705 0.792 0.715 0.897 0.851 0.864 0.721 0.755 0.881 0.589 0.679 Water 0.912 0.826 0.913 0.873 0.551 0.893 0.910 0.555 0.688 0.885 0.899 0.669 Dirt 0.768 0.422 0.756 0.459 0.699 0.813 0.816 0.564 0.295 0.573 0.418 0.347 Road 0.659 0.397 0.676 0.602 0.044 0.674 0.651 0.159 0.287 0.249 0.311 0.296 Apex Road 0.446 0.464 0.456 0.458 0.050 0.457 0.503 0.088 0.136 0.081 0.401 0.151 Tree 0.825 0.763 0.819 0.773 0.678 0.822 0.830 0.600 0.589 0.611 0.786 0.729 Roof 0.745 0.595 0.719 0.600 0.702 0.744 0.746 0.647 0.653 0.691 0.649 0.676 Water 0.688 0.685 0.688 0.688 0.671 0.706 0.667 0.545 0.594 0.616 0.659 0.593 Urban Road 0.729 0.689 0.723 0.566 0.796 0.795 0.833 0.725 0.511 0.706 0.740 0.660 Grass 0.704 0.637 0.702 0.616 0.748 0.763 0.823 0.727 0.611 0.657 0.679 0.602 Tree 0.728 0.709 0.740 0.674 0.734 0.762 0.866 0.659 0.594 0.795 0.790 0.691 Roof 0.516 0.544 0.524 0.550 0.630 0.671 0.709 0.569 0.415 0.515 0.727 0.498 Urban Road 0.584 0.479 0.664 0.517 0.487 0.528 0.662 0.416 0.130 0.276 0.596 0.303 Grass 0.731 0.667 0.720 0.662 0.783 0.778 0.629 0.536 0.383 0.569 0.475 0.415 Tree 0.712 0.652 0.713 0.630 0.527 0.769 0.759 0.514 0.538 0.723 0.874 0.645 Roof 0.488 0.450 0.478 0.451 0.581 0.468 0.678 0.326 0.334 0.425 0.735 0.420 Metal 0.007 0.018 0.008 0.023 0.052 0.030 0.227 0.173 0.171 0.164 0.027 0.131 Dirt 0.611 0.490 0.654 0.496 0.388 0.575 0.453 0.232 0.412 0.480 0.367 0.304 WDC Grass 0.472 0.458 0.469 0.472 0.503 0.500 0.457 0.384 0.291 0.443 0.536 0.554 
+
+Tree 0.428 0.568 0.425 0.671 0.601 0.692 0.671 0.458 0.417 0.398 0.042 0.123 Road 0.141 0.414 0.625 0.520 0.080 0.617 0.551 0.079 0.154 0.113 0.365 0.194 Roof 0.260 0.275 0.036 0.275 0.095 0.007 0.011 0.119 0.076 0.126 0.022 0.143 Water 0.754 0.749 0.824 0.696 0.456 0.803 0.787 0.468 0.370 0.716 0.766 0.629 Trail 0.586 0.585 0.584 0.622 0.452 0.661 0.534 0.392 0.310 0.517 0.474 0.399 SMS Moss 0.343 0.724 0.585 0.699 0.362 0.494 0.297 0.145 0.337 0.263 0.337 0.421 Pebbles 0.145 0.486 0.124 0.219 0.146 0.151 0.101 0.097 0.102 0.068 0.141 0.102 Sticks 0.014 0.048 0.001 0.076 0.001 0.003 0.008 0.020 0.018 0.007 0.002 0.002 Leaves 0.171 0.236 0.224 0.183 0.114 0.131 0.079 0.065 0.093 0.102 0.062 0.101 CMS Moss 0.668 0.827 0.665 0.838 0.411 0.415 0.230 0.349 0.353 0.246 0.555 0.531 Pebbles 0.148 0.224 0.166 0.239 0.070 0.072 0.004 0.043 0.031 0.035 0.102 0.046 Sticks 0.008 0.025 0.007 0.027 0.006 0.007 0.007 0.002 0.007 0.010 0.002 0.007 True V 0.448 0.389 0.451 0.386 0.206 0.238 0.172 0.224 0.110 0.099 0.334 0.230 False V 0.548 0.790 0.631 0.779 0.536 0.594 0.596 0.604 0.227 0.494 0.716 0.359 TABLE S-III THE IOUS OF THE ENDMEMBERS CALCULATED IN EACH SCENE RELATIVE TO THE MANUALLY -LABELLED ENDMEMBERS . T HE LARGEST IOU FOR EACH ENDMEMBER IS SHOWN IN bold , WHILE THE SECOND LARGEST IS SHOWN IN Italic .
+
+Fig. S3. The endmember spectra predicted by the unmixing of the Samson scene. Dotted lines correspond to techniques based on AA/PPA and dashed lines correspond to hierarchical techniques. HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 20 
+
+Fig. S4. The Jasper scene unmixed into 4 endmembers. 
+
+Fig. S5. The Urban scene unmixed into 4 endmembers. 
+
+Fig. S6. The Urban scene unmixed into 6 endmembers. HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 21 
+
+Fig. S7. The Washington, DC scene unmixed into 6 endmembers. HYPERSPECTRAL UNMIXING HIERARCHIES - TO BE SUBMITTED TO IEEE FOR POSSIBLE PUBLICATION 22 
+
+Fig. S8. The abundances of the RMMS-Complex Mixing Scene unmixed by 12 different techniques.

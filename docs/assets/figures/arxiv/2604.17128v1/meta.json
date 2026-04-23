@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.17128v1/fig-001.webp",
+      "caption": "Fig. 3. Spatial transfer results for BS2020 → DC2020. Panels show (a) lidar snow depth reference, (b) Retrieved SWE using physics-based approach [14], and (c) MLP-predicted snow depth.",
+      "page": 2,
+      "index": 1,
+      "width": 856,
+      "height": 344
+    }
+  ]
+}
